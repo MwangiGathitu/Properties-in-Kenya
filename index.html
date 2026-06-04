@@ -13,20 +13,27 @@
   <div id="listings"></div>
 
   <script>
-    // 1. CONNECT TO SUPABASE
+    // Connect to Supabase
     const supabaseUrl = "https://nqwvsmuvltbiekfnvovx.supabase.co";
     const supabaseKey = "sb_publishable_FEKjDkO1lH5fiN496q_LQQ_4B8sAXoP";
 
-    const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
+    const supabaseClient = supabase.createClient(
+      supabaseUrl,
+      supabaseKey
+    );
 
-    // 2. LOAD DATA
+    // Load properties from database
     async function loadProperties() {
+
       const { data, error } = await supabaseClient
         .from("properties")
         .select("*");
 
+      // Improved error reporting
       if (error) {
-        console.log("ERROR:", error);
+        console.error("ERROR DETAILS:", error);
+        console.error("MESSAGE:", error.message);
+        console.error("CODE:", error.code);
         return;
       }
 
@@ -37,6 +44,7 @@
       container.innerHTML = "";
 
       data.forEach(property => {
+
         const card = document.createElement("div");
 
         card.style.border = "1px solid #ccc";
