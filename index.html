@@ -49,12 +49,12 @@
       border-radius: 12px;
       overflow: hidden;
       box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      cursor: pointer;
       transition: 0.2s;
     }
 
     .card:hover {
       transform: translateY(-5px);
-      box-shadow: 0 8px 20px rgba(0,0,0,0.15);
     }
 
     .card img {
@@ -84,7 +84,7 @@
     }
 
     button {
-      margin: 3px;
+      margin: 5px;
       padding: 6px 10px;
       border: none;
       border-radius: 6px;
@@ -95,6 +95,11 @@
     button:hover {
       background: #ddd;
     }
+
+    #detailView {
+      display: none;
+      padding: 20px;
+    }
   </style>
 </head>
 
@@ -104,45 +109,19 @@
   <h1>Properties in Kenya</h1>
 
   <input id="search" placeholder="Search properties..." />
-
-  <div style="margin-top:10px;">
-    <label>Max Price:</label>
-    <input type="range" id="priceRange" min="0" max="20000000" step="500000" />
-    <span id="priceLabel">20,000,000</span>
-  </div>
-
-  <div style="margin-top:10px;">
-    <select id="typeFilter">
-      <option value="">All Types</option>
-      <option value="House">House</option>
-      <option value="Apartment">Apartment</option>
-      <option value="Land">Land</option>
-    </select>
-  </div>
-
-  <div style="margin-top:10px;">
-    <button onclick="setLocation('')">All</button>
-    <button onclick="setLocation('Nairobi')">Nairobi</button>
-    <button onclick="setLocation('Kilimani')">Kilimani</button>
-    <button onclick="setLocation('Westlands')">Westlands</button>
-  </div>
 </header>
 
 <div id="listings"></div>
 
+<div id="detailView"></div>
+
 <script>
-  // SUPABASE CONNECTION
+  // SUPABASE
   const supabaseUrl = "https://nqwvsmuvltbiekfnvovx.supabase.co";
   const supabaseKey = "sb_publishable_FEKjDkO1lH5fiN496q_LQQ_4B8sAXoP";
   const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
 
   let allProperties = [];
-  let filters = {
-    search: "",
-    maxPrice: 20000000,
-    type: "",
-    location: ""
-  };
 
   // LOAD DATA
   async function loadProperties() {
@@ -159,7 +138,7 @@
     render(data);
   }
 
-  // RENDER CARDS
+  // RENDER LIST
   function render(data) {
     const container = document.getElementById("listings");
     container.innerHTML = "";
@@ -167,6 +146,8 @@
     data.forEach(p => {
       const card = document.createElement("div");
       card.className = "card";
+
+      card.onclick = () => openProperty(p);
 
       const image = p.image_url
         ? p.image_url
@@ -185,56 +166,87 @@
     });
   }
 
-  // FILTER ENGINE
-  function applyFilters() {
+  // OPEN DETAIL VIEW
+  function openProperty(p) {
 
-    const filtered = allProperties.filter(p => {
+    const image = p.image_url
+      ? p.image_url
+      : `https://picsum.photos/seed/${p.id}/800/500`;
 
-      const matchSearch =
-        (p.title || "").toLowerCase().includes(filters.search) ||
-        (p.location || "").toLowerCase().includes(filters.search) ||
-        (p.property_type || "").toLowerCase().includes(filters.search);
+    const whatsappMessage = encodeURIComponent(
+      `Hello, I am interested in this property: ${p.title} located in ${p.location} priced at KSh ${p.price}`
+    );
 
-      const matchPrice = Number(p.price) <= filters.maxPrice;
+    const images = [
+      image,
+      `https://picsum.photos/seed/${p.id}-1/800/500`,
+      `https://picsum.photos/seed/${p.id}-2/800/500`
+    ];
 
-      const matchType =
-        filters.type === "" || p.property_type === filters.type;
+    document.getElementById("listings").style.display = "none";
+    document.getElementById("detailView").style.display = "block";
 
-      const matchLocation =
-        filters.location === "" || (p.location || "").includes(filters.location);
+    document.getElementById("detailView").innerHTML = `
+      <button onclick="closeDetail()">⬅ Back</button>
 
-      return matchSearch && matchPrice && matchType && matchLocation;
-    });
+      <h2>${p.title}</h2>
 
-    render(filtered);
+      <img src="${image}" style="width:100%; max-height:400px; object-fit:cover; border-radius:10px;" />
+
+      <div style="display:flex; gap:10px; margin-top:10px;">
+        ${images.map(img => `
+          <img src="${img}" style="width:100px; height:70px; object-fit:cover; border-radius:6px;" />
+        `).join("")}
+      </div>
+
+      <h3>KSh ${Number(p.price).toLocaleString()}</h3>
+      <p><strong>Location:</strong> ${p.location}</p>
+      <p>${p.description}</p>
+
+      <button onclick="toggleFavorite('${p.id}')">❤️ Favorite</button>
+
+      <a 
+        href="https://wa.me/254700000000?text=${whatsappMessage}" 
+        target="_blank"
+        style="display:inline-block; margin-top:10px; padding:10px; background:green; color:white; border-radius:6px; text-decoration:none;"
+      >
+        💬 WhatsApp Inquiry
+      </a>
+    `;
+  }
+
+  // CLOSE DETAIL
+  function closeDetail() {
+    document.getElementById("detailView").style.display = "none";
+    document.getElementById("listings").style.display = "grid";
+  }
+
+  // FAVORITES
+  function toggleFavorite(id) {
+    let favs = JSON.parse(localStorage.getItem("favs") || "[]");
+
+    if (favs.includes(id)) {
+      favs = favs.filter(f => f !== id);
+    } else {
+      favs.push(id);
+    }
+
+    localStorage.setItem("favs", JSON.stringify(favs));
+    alert("Favorites updated");
   }
 
   // SEARCH
   document.getElementById("search").addEventListener("input", function(e) {
-    filters.search = e.target.value.toLowerCase();
-    applyFilters();
+    const value = e.target.value.toLowerCase();
+
+    const filtered = allProperties.filter(p =>
+      (p.title || "").toLowerCase().includes(value) ||
+      (p.location || "").toLowerCase().includes(value) ||
+      (p.property_type || "").toLowerCase().includes(value)
+    );
+
+    render(filtered);
   });
-
-  // PRICE SLIDER
-  document.getElementById("priceRange").addEventListener("input", function(e) {
-    filters.maxPrice = Number(e.target.value);
-    document.getElementById("priceLabel").innerText =
-      Number(e.target.value).toLocaleString();
-
-    applyFilters();
-  });
-
-  // TYPE FILTER
-  document.getElementById("typeFilter").addEventListener("change", function(e) {
-    filters.type = e.target.value;
-    applyFilters();
-  });
-
-  // LOCATION FILTER
-  function setLocation(loc) {
-    filters.location = loc;
-    applyFilters();
-  }
 
   loadProperties();
 </script>
