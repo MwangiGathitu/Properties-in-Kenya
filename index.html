@@ -82,6 +82,19 @@
       font-size: 14px;
       color: #333;
     }
+
+    button {
+      margin: 3px;
+      padding: 6px 10px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      background: #eee;
+    }
+
+    button:hover {
+      background: #ddd;
+    }
   </style>
 </head>
 
@@ -89,19 +102,47 @@
 
 <header>
   <h1>Properties in Kenya</h1>
-  <input id="search" placeholder="Search location, price, type..." />
+
+  <input id="search" placeholder="Search properties..." />
+
+  <div style="margin-top:10px;">
+    <label>Max Price:</label>
+    <input type="range" id="priceRange" min="0" max="20000000" step="500000" />
+    <span id="priceLabel">20,000,000</span>
+  </div>
+
+  <div style="margin-top:10px;">
+    <select id="typeFilter">
+      <option value="">All Types</option>
+      <option value="House">House</option>
+      <option value="Apartment">Apartment</option>
+      <option value="Land">Land</option>
+    </select>
+  </div>
+
+  <div style="margin-top:10px;">
+    <button onclick="setLocation('')">All</button>
+    <button onclick="setLocation('Nairobi')">Nairobi</button>
+    <button onclick="setLocation('Kilimani')">Kilimani</button>
+    <button onclick="setLocation('Westlands')">Westlands</button>
+  </div>
 </header>
 
 <div id="listings"></div>
 
 <script>
-  // CONNECT SUPABASE
+  // SUPABASE CONNECTION
   const supabaseUrl = "https://nqwvsmuvltbiekfnvovx.supabase.co";
   const supabaseKey = "sb_publishable_FEKjDkO1lH5fiN496q_LQQ_4B8sAXoP";
-
   const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
 
   let allProperties = [];
+  let filters = {
+    search: "",
+    maxPrice: 20000000,
+    type: "",
+    location: ""
+  };
 
   // LOAD DATA
   async function loadProperties() {
@@ -144,18 +185,56 @@
     });
   }
 
-  // SEARCH SYSTEM
-  document.getElementById("search").addEventListener("input", function(e) {
-    const value = e.target.value.toLowerCase();
+  // FILTER ENGINE
+  function applyFilters() {
 
-    const filtered = allProperties.filter(p =>
-      (p.title || "").toLowerCase().includes(value) ||
-      (p.location || "").toLowerCase().includes(value) ||
-      (p.property_type || "").toLowerCase().includes(value)
-    );
+    const filtered = allProperties.filter(p => {
+
+      const matchSearch =
+        (p.title || "").toLowerCase().includes(filters.search) ||
+        (p.location || "").toLowerCase().includes(filters.search) ||
+        (p.property_type || "").toLowerCase().includes(filters.search);
+
+      const matchPrice = Number(p.price) <= filters.maxPrice;
+
+      const matchType =
+        filters.type === "" || p.property_type === filters.type;
+
+      const matchLocation =
+        filters.location === "" || (p.location || "").includes(filters.location);
+
+      return matchSearch && matchPrice && matchType && matchLocation;
+    });
 
     render(filtered);
+  }
+
+  // SEARCH
+  document.getElementById("search").addEventListener("input", function(e) {
+    filters.search = e.target.value.toLowerCase();
+    applyFilters();
   });
+
+  // PRICE SLIDER
+  document.getElementById("priceRange").addEventListener("input", function(e) {
+    filters.maxPrice = Number(e.target.value);
+    document.getElementById("priceLabel").innerText =
+      Number(e.target.value).toLocaleString();
+
+    applyFilters();
+  });
+
+  // TYPE FILTER
+  document.getElementById("typeFilter").addEventListener("change", function(e) {
+    filters.type = e.target.value;
+    applyFilters();
+  });
+
+  // LOCATION FILTER
+  function setLocation(loc) {
+    filters.location = loc;
+    applyFilters();
+  }
 
   loadProperties();
 </script>
