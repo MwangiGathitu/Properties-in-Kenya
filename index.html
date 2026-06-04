@@ -2,9 +2,60 @@
 <html>
 <head>
   <title>Properties in Kenya</title>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
+
 <body>
+
   <h1>Properties in Kenya</h1>
-  <p>Live listings coming from Supabase soon...</p>
+
+  <div id="listings"></div>
+
+  <script>
+    // 1. CONNECT TO SUPABASE
+    const supabaseUrl = "https://nqwvsmuvltbiekfnvovx.supabase.co";
+    const supabaseKey = "sb_publishable_FEKjDkO1lH5fiN496q_LQQ_4B8sAXoP";
+
+    const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
+
+    // 2. LOAD DATA
+    async function loadProperties() {
+      const { data, error } = await supabaseClient
+        .from("properties")
+        .select("*");
+
+      if (error) {
+        console.log("ERROR:", error);
+        return;
+      }
+
+      console.log("DATA:", data);
+
+      const container = document.getElementById("listings");
+
+      container.innerHTML = "";
+
+      data.forEach(property => {
+        const card = document.createElement("div");
+
+        card.style.border = "1px solid #ccc";
+        card.style.margin = "10px";
+        card.style.padding = "10px";
+
+        card.innerHTML = `
+          <h2>${property.title}</h2>
+          <p><strong>Price:</strong> ${property.price}</p>
+          <p><strong>Location:</strong> ${property.location}</p>
+          <p>${property.description}</p>
+        `;
+
+        container.appendChild(card);
+      });
+    }
+
+    loadProperties();
+  </script>
+
 </body>
 </html>
