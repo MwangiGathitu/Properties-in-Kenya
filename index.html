@@ -1,180 +1,227 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Properties in Kenya</title>
-
-  <script type="importmap">
-  {
-    "imports": {
-      "@supabase/supabase-js": "https://esm.sh/@supabase/supabase-js@2"
-    }
-  }
-  </script>
-
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Properties in Kenya — Find Your Next Home</title>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <style>
-    * { box-sizing: border-box; }
-
+    * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
-      font-family: Arial, sans-serif;
-      margin: 0;
-      background: #f4f4f4;
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      background: #f8fafc;
+      color: #1e293b;
     }
-
     header {
-      padding: 20px;
-      text-align: center;
       background: white;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+      padding: 1rem 2rem;
       position: sticky;
       top: 0;
       z-index: 100;
-      border-bottom: 1px solid #eee;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+    }
+    .logo {
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: #0f172a;
+      text-decoration: none;
+    }
+    .search-section {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      align-items: center;
+    }
+    input, select {
+      padding: 0.6rem 0.9rem;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      outline: none;
+      transition: 0.2s;
+    }
+    input:focus, select:focus {
+      border-color: #3b82f6;
+      box-shadow: 0 0 0 2px rgba(59,130,246,0.2);
+    }
+    #search {
+      min-width: 220px;
+    }
+    .filter-group {
+      display: flex;
+      gap: 0.5rem;
+      align-items: center;
+    }
+    .price-inputs {
+      display: flex;
+      gap: 0.3rem;
+      align-items: center;
+    }
+    .price-inputs input {
+      width: 100px;
     }
 
-    h1 { margin: 0; font-size: 22px; }
-
-    input, textarea {
-      padding: 8px;
-      margin: 5px;
-      width: 220px;
-      border: 1px solid #ccc;
-      border-radius: 6px;
-      font-size: 14px;
+    .container {
+      max-width: 1200px;
+      margin: 2rem auto;
+      padding: 0 1rem;
     }
-
-    button {
-      padding: 8px 14px;
-      margin: 5px;
-      cursor: pointer;
-      border: none;
-      border-radius: 6px;
-      background: #0070f3;
-      color: white;
-      font-size: 14px;
+    #resultsInfo {
+      margin-bottom: 1rem;
+      color: #64748b;
+      font-size: 0.9rem;
     }
-
-    button:hover { background: #005bb5; }
-
     #listings {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-      gap: 20px;
-      padding: 20px;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 1.5rem;
     }
-
     .card {
       background: white;
-      border-radius: 10px;
+      border-radius: 12px;
       overflow: hidden;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+      transition: transform 0.2s, box-shadow 0.2s;
       cursor: pointer;
-      box-shadow: 0 1px 4px rgba(0,0,0,0.08);
-      transition: transform 0.15s;
     }
-
-    .card:hover { transform: translateY(-2px); }
-
+    .card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+    }
     .card img {
       width: 100%;
-      height: 180px;
+      height: 200px;
       object-fit: cover;
     }
-
-    .content { padding: 12px; }
-
+    .card-content {
+      padding: 1rem;
+    }
     .card-title {
-      font-weight: bold;
-      font-size: 15px;
-      margin-bottom: 4px;
-      color: #111;
+      font-weight: 600;
+      font-size: 1.05rem;
+      margin-bottom: 0.3rem;
+    }
+    .card-price {
+      font-weight: 700;
+      color: #2563eb;
+      font-size: 1.1rem;
+      margin-bottom: 0.4rem;
+    }
+    .card-meta {
+      font-size: 0.85rem;
+      color: #64748b;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+    }
+    .type-badge {
+      background: #e2e8f0;
+      color: #334155;
+      padding: 0.2rem 0.6rem;
+      border-radius: 20px;
+      font-size: 0.75rem;
+      font-weight: 500;
+      text-transform: capitalize;
     }
 
-    .price {
-      font-weight: bold;
-      color: #0070f3;
-      font-size: 15px;
-      margin-bottom: 4px;
-    }
-
-    .meta {
-      font-size: 13px;
-      color: #666;
-    }
-
+    /* Detail view */
     #detailView {
       display: none;
-      padding: 20px;
-      max-width: 800px;
-      margin: 0 auto;
-    }
-
-    .form-box {
+      padding: 1.5rem;
+      max-width: 850px;
+      margin: 2rem auto;
       background: white;
-      padding: 20px;
-      margin: 16px;
-      border-radius: 10px;
-      box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+      border-radius: 12px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.08);
     }
-
-    .form-box h3 {
-      margin-top: 0;
-      font-size: 16px;
-      color: #333;
+    .back-btn {
+      background: #e2e8f0;
+      border: none;
+      padding: 0.5rem 1rem;
+      border-radius: 6px;
+      margin-bottom: 1rem;
+      cursor: pointer;
+    }
+    .detail-img {
+      width: 100%;
+      max-height: 400px;
+      object-fit: cover;
+      border-radius: 8px;
+      margin-bottom: 1rem;
+    }
+    .detail-price {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #2563eb;
+      margin: 0.5rem 0;
+    }
+    .wa-btn {
+      display: inline-block;
+      background: #25D366;
+      color: white;
+      padding: 0.8rem 1.5rem;
+      border-radius: 6px;
+      text-decoration: none;
+      font-weight: 600;
+      margin-top: 1rem;
     }
 
     #noResults {
-      display: none;
       text-align: center;
-      padding: 40px;
-      color: #888;
-      font-size: 15px;
+      padding: 3rem;
+      color: #94a3b8;
       grid-column: 1 / -1;
+      font-size: 1rem;
     }
 
-    .wa-btn {
-      display: inline-block;
-      margin-top: 16px;
-      padding: 10px 20px;
-      background: #25D366;
-      color: white;
-      text-decoration: none;
-      border-radius: 8px;
-      font-size: 15px;
-      font-weight: bold;
+    @media (max-width: 640px) {
+      header {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      .search-section {
+        flex-direction: column;
+        width: 100%;
+      }
+      .filter-group, .price-inputs {
+        flex-wrap: wrap;
+      }
     }
-
-    .back-btn {
-      background: #555;
-      margin-bottom: 16px;
-    }
-
-    .back-btn:hover { background: #333; }
   </style>
 </head>
-
 <body>
 
 <header>
-  <h1>Properties in Kenya</h1>
+  <a href="/" class="logo">🏡 Properties in Kenya</a>
+  <div class="search-section">
+    <input type="text" id="search" placeholder="Search by title or location" />
+    <div class="filter-group">
+      <select id="typeFilter">
+        <option value="all">All types</option>
+        <option value="for sale">For Sale</option>
+        <option value="for rent">For Rent</option>
+      </select>
+      <div class="price-inputs">
+        <input type="number" id="minPrice" placeholder="Min KSh" />
+        <span>-</span>
+        <input type="number" id="maxPrice" placeholder="Max KSh" />
+      </div>
+    </div>
+  </div>
 </header>
 
-<!-- SUBMISSION FORM -->
-<div class="form-box">
-  <h3>Submit a Property</h3>
-  <input id="title"    placeholder="Title" />
-  <input id="price"    placeholder="Price (KES)" />
-  <input id="location" placeholder="Location" />
-  <input id="type"     placeholder="Type (for sale / for rent)" />
-  <input id="image"    placeholder="Image URL (optional)" />
-  <textarea id="desc"  placeholder="Description" rows="3"></textarea>
-  <br>
-  <button onclick="submitProperty()">Submit for Approval</button>
+<div class="container">
+  <div id="resultsInfo"></div>
+  <div id="listings"></div>
 </div>
 
-<!-- LISTINGS GRID -->
-<div id="listings">
-  <div id="noResults">No approved properties found.</div>
-</div>
-
-<!-- DETAIL VIEW -->
+<!-- DETAIL VIEW (hidden) -->
 <div id="detailView"></div>
 
 <script type="module">
@@ -186,7 +233,7 @@
 
   let allProperties = [];
 
-  // LOAD ONLY APPROVED PROPERTIES
+  // ---------- FETCH APPROVED LISTINGS ----------
   async function loadProperties() {
     const { data, error } = await supabaseClient
       .from("properties")
@@ -195,28 +242,54 @@
       .order("created_at", { ascending: false });
 
     if (error) {
-      console.error("Supabase error:", error.message);
+      console.error("Supabase error:", error);
       return;
     }
 
     allProperties = data || [];
-    render(allProperties);
+    applyFilters();
   }
 
-  // RENDER PROPERTY CARDS
-  function render(data) {
+  // ---------- CLIENT-SIDE FILTERS ----------
+  function applyFilters() {
+    const searchTerm = document.getElementById("search").value.toLowerCase().trim();
+    const typeFilter = document.getElementById("typeFilter").value;
+    const minPrice = parseFloat(document.getElementById("minPrice").value) || 0;
+    const maxPrice = parseFloat(document.getElementById("maxPrice").value) || Infinity;
+
+    let filtered = allProperties.filter(p => {
+      // search title & location
+      const titleMatch = p.title?.toLowerCase().includes(searchTerm);
+      const locationMatch = p.location?.toLowerCase().includes(searchTerm);
+      const matchesSearch = !searchTerm || titleMatch || locationMatch;
+
+      // type filter (assuming property_type holds "for sale"/"for rent")
+      const matchesType = typeFilter === "all" || (p.property_type?.toLowerCase() === typeFilter);
+
+      // price range
+      const price = parseFloat(p.price) || 0;
+      const matchesPrice = price >= minPrice && price <= maxPrice;
+
+      return matchesSearch && matchesType && matchesPrice;
+    });
+
+    renderListings(filtered);
+  }
+
+  // ---------- RENDER CARDS ----------
+  function renderListings(data) {
     const container = document.getElementById("listings");
-    const noResults = document.getElementById("noResults");
+    const resultsInfo = document.getElementById("resultsInfo");
+    container.innerHTML = "";
 
-    const cards = container.querySelectorAll(".card");
-    cards.forEach(c => c.remove());
+    resultsInfo.textContent = data.length
+      ? `Showing ${data.length} property${data.length > 1 ? 'ies' : 'y'}`
+      : "No properties match your filters.";
 
-    if (!data || data.length === 0) {
-      noResults.style.display = "block";
+    if (data.length === 0) {
+      container.innerHTML = `<div id="noResults">No properties found. Try adjusting your filters.</div>`;
       return;
     }
-
-    noResults.style.display = "none";
 
     data.forEach(p => {
       const card = document.createElement("div");
@@ -232,112 +305,60 @@
         : "Price on request";
 
       card.innerHTML = `
-        <img src="${image}" alt="${p.title}"
-             onerror="this.src='https://picsum.photos/seed/${p.id}/400/300'">
-        <div class="content">
+        <img src="${image}" alt="${p.title}" onerror="this.src='https://picsum.photos/seed/${p.id}/400/300'">
+        <div class="card-content">
           <div class="card-title">${p.title || "Untitled"}</div>
-          <div class="price">${price}</div>
-          <div class="meta">${p.location || ""} &nbsp;·&nbsp; ${p.property_type || p.status || ""}</div>
+          <div class="card-price">${price}</div>
+          <div class="card-meta">
+            <span>📍 ${p.location || "N/A"}</span>
+            <span class="type-badge">${p.property_type || "N/A"}</span>
+          </div>
         </div>
       `;
-
       container.appendChild(card);
     });
   }
 
-  // OPEN DETAIL VIEW
-  function openProperty(p) {
+  // ---------- DETAIL VIEW ----------
+  window.openProperty = function(p) {
+    document.getElementById("listings").parentElement.style.display = "none";
+    const detailView = document.getElementById("detailView");
+    detailView.style.display = "block";
+
     const image = p.image_url
       ? p.image_url
       : `https://picsum.photos/seed/${p.id}/800/500`;
+    const price = p.price ? `KSh ${Number(p.price).toLocaleString()}` : "Price on request";
+    const whatsappMsg = encodeURIComponent(`Hello, I am interested in ${p.title} in ${p.location}.`);
 
-    const price = p.price
-      ? `KSh ${Number(p.price).toLocaleString()}`
-      : "Price on request";
-
-    const msg = encodeURIComponent(
-      `Hello, I am interested in ${p.title} located in ${p.location}. Please share more details.`
-    );
-
-    document.getElementById("listings").style.display = "none";
-    document.getElementById("detailView").style.display = "block";
-
-    document.getElementById("detailView").innerHTML = `
+    detailView.innerHTML = `
       <button class="back-btn" onclick="closeDetail()">← Back to listings</button>
+      <img class="detail-img" src="${image}" alt="${p.title}" onerror="this.src='https://picsum.photos/seed/${p.id}/800/500'">
       <h2>${p.title || "Property"}</h2>
-      <img src="${image}" alt="${p.title}"
-           style="width:100%; max-height:400px; object-fit:cover; border-radius:10px;"
-           onerror="this.src='https://picsum.photos/seed/${p.id}/800/500'">
-      <h3>${price}</h3>
+      <div class="detail-price">${price}</div>
       <p><strong>Location:</strong> ${p.location || "—"}</p>
-      <p><strong>Type:</strong> ${p.property_type || p.status || "—"}</p>
-      <p>${p.description || ""}</p>
-      <a class="wa-btn"
-         href="https://wa.me/254700000000?text=${msg}"
-         target="_blank">
-        WhatsApp Inquiry
+      <p><strong>Type:</strong> ${p.property_type || "—"}</p>
+      <p>${p.description || "No description provided."}</p>
+      <a class="wa-btn" href="https://wa.me/254700000000?text=${whatsappMsg}" target="_blank">
+        💬 Chat on WhatsApp
       </a>
     `;
-  }
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
 
-  // CLOSE DETAIL VIEW — exposed to global scope for onclick in innerHTML
   window.closeDetail = function() {
     document.getElementById("detailView").style.display = "none";
-    document.getElementById("listings").style.display = "grid";
-  }
+    document.getElementById("listings").parentElement.style.display = "block";
+  };
 
-  // SUBMIT PROPERTY — exposed to global scope for onclick in HTML
-  window.submitProperty = async function() {
-    const { data: { user } } = await supabaseClient.auth.getUser();
+  // ---------- EVENT LISTENERS ----------
+  document.getElementById("search").addEventListener("input", applyFilters);
+  document.getElementById("typeFilter").addEventListener("change", applyFilters);
+  document.getElementById("minPrice").addEventListener("input", applyFilters);
+  document.getElementById("maxPrice").addEventListener("input", applyFilters);
 
-    if (!user) {
-      alert("You must be logged in to submit a property.");
-      return;
-    }
-
-    const title    = document.getElementById("title").value.trim();
-    const price    = document.getElementById("price").value.trim();
-    const location = document.getElementById("location").value.trim();
-    const type     = document.getElementById("type").value.trim();
-    const image    = document.getElementById("image").value.trim();
-    const desc     = document.getElementById("desc").value.trim();
-
-    if (!title || !price || !location || !type) {
-      alert("Please fill in Title, Price, Location, and Type.");
-      return;
-    }
-
-    const { error } = await supabaseClient
-      .from("properties")
-      .insert([{
-        title,
-        price,
-        location,
-        property_type: type,
-        image_url:     image || null,
-        description:   desc,
-        approval_status: "pending",
-        agent_id:      user.id
-      }]);
-
-    if (error) {
-      console.error("Insert error:", error.message);
-      alert("Submission failed: " + error.message);
-      return;
-    }
-
-    alert("Property submitted successfully. It will appear after admin approval.");
-
-    ["title","price","location","type","image","desc"].forEach(id => {
-      document.getElementById(id).value = "";
-    });
-
-    loadProperties();
-  }
-
-  // START
+  // ---------- INIT ----------
   loadProperties();
 </script>
-
 </body>
 </html>
