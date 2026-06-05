@@ -1,109 +1,248 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Admin Dashboard</title>
-
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PropDesk Admin — Properties in Kenya</title>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
   <style>
+    * { box-sizing: border-box; }
     body {
-      font-family: Arial;
-      padding: 20px;
+      font-family: Arial, sans-serif;
+      margin: 0;
       background: #f4f4f4;
+      color: #111;
     }
+    header {
+      padding: 20px;
+      background: white;
+      border-bottom: 1px solid #ddd;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    h1 { font-size: 20px; margin: 0; }
+    button {
+      padding: 8px 14px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 14px;
+    }
+    .btn-primary { background: #0070f3; color: white; }
+    .btn-success { background: #10b981; color: white; }
+    .btn-danger { background: #ef4444; color: white; }
+    .btn-logout { background: #6b7280; color: white; }
 
+    .login-box, .dashboard {
+      max-width: 900px;
+      margin: 40px auto;
+      padding: 20px;
+    }
+    .login-box input {
+      padding: 10px;
+      margin: 6px 0;
+      width: 100%;
+      border: 1px solid #d1d5db;
+      border-radius: 6px;
+      font-size: 14px;
+    }
     .card {
       background: white;
       padding: 15px;
       margin-bottom: 10px;
       border-radius: 10px;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
     }
-
-    button {
-      padding: 8px 12px;
-      margin-right: 8px;
-      border: none;
-      cursor: pointer;
+    .property-info {
+      flex: 1;
     }
-
-    .approve { background: green; color: white; }
-    .reject { background: red; color: white; }
+    .property-info strong {
+      font-size: 15px;
+    }
+    .property-info span {
+      font-size: 13px;
+      color: #6b7280;
+      margin-left: 10px;
+    }
+    .status-badge {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 10px;
+      font-size: 12px;
+      font-weight: bold;
+      margin-left: 10px;
+    }
+    .status-approved { background: #d1fae5; color: #065f46; }
+    .status-pending { background: #fef3c7; color: #92400e; }
+    .status-rejected { background: #fee2e2; color: #991b1b; }
+    .actions button {
+      margin-left: 5px;
+    }
+    .error { color: red; margin-top: 10px; }
   </style>
 </head>
-
 <body>
 
-<h2>Admin Dashboard</h2>
+<header>
+  <h1>🏠 PropDesk Admin</h1>
+  <span id="adminEmail" style="font-size:14px; color:#555;"></span>
+  <button id="logoutBtn" class="btn-logout" style="display:none;" onclick="logout()">Logout</button>
+</header>
 
-<div id="status">Loading...</div>
-<div id="list"></div>
+<!-- LOGIN BOX (hidden when logged in) -->
+<div id="loginBox" class="login-box">
+  <h2>Admin Login</h2>
+  <input type="email" id="email" placeholder="Email" autocomplete="email">
+  <input type="password" id="password" placeholder="Password" autocomplete="current-password">
+  <br><br>
+  <button class="btn-primary" onclick="login()">Log in</button>
+  <p id="loginError" class="error"></p>
+</div>
+
+<!-- DASHBOARD (hidden until admin authenticated) -->
+<div id="dashboard" class="dashboard" style="display:none;">
+  <div id="statusMsg">Loading...</div>
+  <div id="list"></div>
+</div>
 
 <script>
   const supabaseUrl = "https://nqwvsmuvltbiekfnvovx.supabase.co";
-
   const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5xd3ZzbXV2bHRiaWVrZm52b3Z4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA1NjU4MDAsImV4cCI6MjA5NjE0MTgwMH0.Xrc-bbAuWdvKSPHnVhTaLiQphV61xeYtDepWePqsrdo";
+  const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
 
-  const client = supabase.createClient(supabaseUrl, supabaseKey);
+  const loginBox = document.getElementById("loginBox");
+  const dashboard = document.getElementById("dashboard");
+  const loginError = document.getElementById("loginError");
+  const adminEmailSpan = document.getElementById("adminEmail");
+  const logoutBtn = document.getElementById("logoutBtn");
+  const statusMsg = document.getElementById("statusMsg");
 
-  const statusBox = document.getElementById("status");
+  // ---------- Login ----------
+  window.login = async function() {
+    loginError.textContent = "";
+    const email = document.getElementById("email").value.trim();
+    const password = document.getElementById("password").value;
 
-  function setStatus(msg) {
-    statusBox.innerText = msg;
-  }
-
-  // 🔥 LOAD ALL PROPERTIES (ADMIN ONLY)
-  async function loadProperties() {
-    setStatus("Loading properties...");
-
-    const { data, error } = await client
-      .from('properties')
-      .select('*');
-
+    const { error } = await supabaseClient.auth.signInWithPassword({ email, password });
     if (error) {
-      console.log(error);
-      setStatus("ERROR: " + error.message);
+      loginError.textContent = error.message;
+      return;
+    }
+    // Check if admin
+    await checkAndShowAdmin();
+  };
+
+  // ---------- Logout ----------
+  window.logout = async function() {
+    await supabaseClient.auth.signOut();
+    loginBox.style.display = "block";
+    dashboard.style.display = "none";
+    logoutBtn.style.display = "none";
+    adminEmailSpan.textContent = "";
+    document.getElementById("email").value = "";
+    document.getElementById("password").value = "";
+  };
+
+  // ---------- Check admin role ----------
+  async function checkAndShowAdmin() {
+    const { data: { user } } = await supabaseClient.auth.getUser();
+    if (!user) {
+      // not logged in
+      loginBox.style.display = "block";
+      dashboard.style.display = "none";
+      logoutBtn.style.display = "none";
       return;
     }
 
-    setStatus("Loaded: " + data.length);
+    // get profile role
+    const { data: profile, error: profileError } = await supabaseClient
+      .from("profiles")
+      .select("role")
+      .eq("id", user.id)
+      .single();
 
+    if (profileError || !profile || profile.role !== "admin") {
+      // not admin → force logout
+      await supabaseClient.auth.signOut();
+      loginBox.style.display = "block";
+      dashboard.style.display = "none";
+      logoutBtn.style.display = "none";
+      loginError.textContent = "Access denied. Not an admin account.";
+      return;
+    }
+
+    // Admin confirmed
+    loginBox.style.display = "none";
+    dashboard.style.display = "block";
+    logoutBtn.style.display = "inline-block";
+    adminEmailSpan.textContent = user.email;
+    loadAllProperties();
+  }
+
+  // ---------- Load properties (now only for admin) ----------
+  async function loadAllProperties() {
+    statusMsg.textContent = "Loading properties...";
+    const { data, error } = await supabaseClient
+      .from("properties")
+      .select("*")
+      .order("created_at", { ascending: false });
+
+    if (error) {
+      statusMsg.textContent = "Error: " + error.message;
+      return;
+    }
+
+    statusMsg.textContent = `Loaded: ${data.length} properties`;
     const list = document.getElementById("list");
     list.innerHTML = "";
 
     data.forEach(prop => {
       const div = document.createElement("div");
       div.className = "card";
-
       div.innerHTML = `
-        <h3>${prop.title}</h3>
-        <p>${prop.location}</p>
-        <p>${prop.price}</p>
-        <p>Status: ${prop.approval_status}</p>
-
-        <button class="approve" onclick="updateStatus('${prop.id}', 'approved')">Approve</button>
-        <button class="reject" onclick="updateStatus('${prop.id}', 'rejected')">Reject</button>
+        <div class="property-info">
+          <strong>${prop.title || "Untitled"}</strong>
+          <span>${prop.location || ""} · KSh ${prop.price ? Number(prop.price).toLocaleString() : "—"}</span>
+          <span class="status-badge status-${prop.approval_status}">${prop.approval_status}</span>
+        </div>
+        <div class="actions">
+          <button class="btn-success" onclick="updateStatus('${prop.id}', 'approved')">Approve</button>
+          <button class="btn-danger" onclick="updateStatus('${prop.id}', 'rejected')">Reject</button>
+        </div>
       `;
-
       list.appendChild(div);
     });
   }
 
-  async function updateStatus(id, status) {
-    const { error } = await client
-      .from('properties')
-      .update({ approval_status: status })
-      .eq('id', id);
+  // ---------- Update approval_status ----------
+  window.updateStatus = async function(propertyId, newStatus) {
+    const { error } = await supabaseClient
+      .from("properties")
+      .update({ approval_status: newStatus })
+      .eq("id", propertyId);
 
     if (error) {
-      alert(error.message);
+      alert("Update failed: " + error.message);
       return;
     }
+    loadAllProperties();
+  };
 
-    loadProperties();
-  }
-
-  loadProperties();
+  // ---------- On page load, check session ----------
+  (async () => {
+    const { data: { session } } = await supabaseClient.auth.getSession();
+    if (session?.user) {
+      await checkAndShowAdmin();
+    } else {
+      loginBox.style.display = "block";
+      dashboard.style.display = "none";
+      logoutBtn.style.display = "none";
+    }
+  })();
 </script>
-
 </body>
 </html>
