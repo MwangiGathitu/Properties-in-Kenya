@@ -3,250 +3,187 @@
 <head>
   <title>Admin Dashboard</title>
 
-  <!-- Supabase CDN (ONLY ONE SOURCE - NO DUPLICATES) -->
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script type="module">
+    import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+
+    // ✅ SUPABASE CONFIG (YOUR REAL KEY ALREADY INSERTED)
+    const supabaseUrl = "https://nqwvsmuvltbiekfnvovx.supabase.co";
+    const supabaseKey =
+      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5xd3ZzbXV2bHRiaWVrZm52b3Z4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA1NjU4MDAsImV4cCI6MjA5NjE0MTgwMH0.Xrc-bbAuWdvKSPHnVhTaLiQphV61xeYtDepWePqsrdo";
+
+    const supabase = createClient(supabaseUrl, supabaseKey);
+
+    let currentUser = null;
+    let currentTab = "pending";
+
+    // ======================
+    // LOGIN
+    // ======================
+    window.login = async function () {
+      const email = document.getElementById("email").value;
+      const password = document.getElementById("password").value;
+
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email,
+        password
+      });
+
+      if (error) {
+        alert(error.message);
+        return;
+      }
+
+      currentUser = data.user;
+
+      // check admin role
+      const { data: profile } = await supabase
+        .from("profiles")
+        .select("role")
+        .eq("id", currentUser.id)
+        .single();
+
+      if (!profile || profile.role !== "admin") {
+        alert("Access denied: Not admin");
+        return;
+      }
+
+      document.getElementById("loginBox").style.display = "none";
+      document.getElementById("adminPanel").style.display = "block";
+
+      loadListings();
+    };
+
+    // ======================
+    // LOAD LISTINGS
+    // ======================
+    async function loadListings() {
+      const { data, error } = await supabase
+        .from("properties")
+        .select("*")
+        .order("created_at", { ascending: false });
+
+      if (error) {
+        console.error("Load error:", error);
+        return;
+      }
+
+      render(data);
+    }
+
+    // ======================
+    // RENDER WITH FILTERS
+    // ======================
+    function render(data) {
+      const container = document.getElementById("listings");
+      const search = document.getElementById("search")?.value || "";
+
+      container.innerHTML = "";
+
+      const filtered = data.filter(p => {
+        const matchesTab = p.approval_status === currentTab;
+        const matchesSearch =
+          p.title?.toLowerCase().includes(search.toLowerCase()) ||
+          p.location?.toLowerCase().includes(search.toLowerCase());
+
+        return matchesTab && matchesSearch;
+      });
+
+      filtered.forEach(p => {
+        const div = document.createElement("div");
+        div.style = "background:white;padding:12px;margin:10px;border-radius:8px";
+
+        div.innerHTML = `
+          <h3>${p.title}</h3>
+          <p>${p.location}</p>
+          <p>Status: <b>${p.approval_status}</b></p>
+
+          <button onclick="approve('${p.id}')">Approve</button>
+          <button onclick="reject('${p.id}')">Reject</button>
+        `;
+
+        container.appendChild(div);
+      });
+    }
+
+    // ======================
+    // ACTIONS
+    // ======================
+    window.approve = async function (id) {
+      await supabase
+        .from("properties")
+        .update({ approval_status: "approved" })
+        .eq("id", id);
+
+      loadListings();
+    };
+
+    window.reject = async function (id) {
+      await supabase
+        .from("properties")
+        .update({ approval_status: "rejected" })
+        .eq("id", id);
+
+      loadListings();
+    };
+
+    // ======================
+    // TABS
+    // ======================
+    window.setTab = function (tab) {
+      currentTab = tab;
+      loadListings();
+    };
+
+    window.filterSearch = function () {
+      loadListings();
+    };
+  </script>
 
   <style>
-    body {
-      font-family: Arial;
-      background: #f4f4f4;
-      margin: 0;
-      padding: 20px;
-    }
+    body { font-family: Arial; background:#f4f4f4; padding:20px; }
 
-    .box {
-      background: white;
-      padding: 15px;
-      margin-bottom: 10px;
-      border-radius: 8px;
-    }
+    button { margin:5px; padding:6px 10px; cursor:pointer; }
 
-    button {
-      margin: 5px;
-      padding: 6px 10px;
-      cursor: pointer;
+    .tabs button {
+      background:#0070f3;
+      color:white;
+      border:none;
+      border-radius:6px;
     }
 
     input {
-      padding: 8px;
-      margin: 5px;
-    }
-
-    .hidden {
-      display: none;
-    }
-
-    .tabs button {
-      margin-right: 8px;
+      padding:8px;
+      margin:10px 0;
+      width:250px;
     }
   </style>
 </head>
 
 <body>
 
-<!-- LOGIN BOX -->
-<div id="loginBox" class="box">
+<!-- LOGIN -->
+<div id="loginBox">
   <h2>Admin Login</h2>
-  <input id="email" placeholder="Email">
-  <input id="password" type="password" placeholder="Password">
+  <input id="email" placeholder="Email" />
+  <input id="password" type="password" placeholder="Password" />
   <button onclick="login()">Login</button>
 </div>
 
 <!-- ADMIN PANEL -->
-<div id="adminBox" class="hidden">
+<div id="adminPanel" style="display:none;">
 
-  <h2>Admin Control Room</h2>
+  <h2>Property Moderation</h2>
 
-  <button onclick="logout()">Logout</button>
+  <input id="search" placeholder="Search..." oninput="filterSearch()" />
 
-  <hr>
-
-  <!-- TABS -->
   <div class="tabs">
     <button onclick="setTab('pending')">Pending</button>
     <button onclick="setTab('approved')">Approved</button>
     <button onclick="setTab('rejected')">Rejected</button>
-    <button onclick="setTab('all')">All</button>
   </div>
-
-  <br>
 
   <div id="listings"></div>
 </div>
-
-<script>
-// ==============================
-// SUPABASE CONFIG (YOUR KEY)
-// ==============================
-
-const supabaseUrl = "https://nqwvsmuvltbiekfnvovx.supabase.co";
-
-const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5xd3ZzbXV2bHRiaWVrZm52b3Z4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA1NjU4MDAsImV4cCI6MjA5NjE0MTgwMH0.Xrc-bbAuWdvKSPHnVhTaLiQphV61xeYtDepWePqsrdo";
-
-const supabase = supabase.createClient(supabaseUrl, supabaseKey);
-
-// ==============================
-// STATE
-// ==============================
-
-let user = null;
-let profile = null;
-let listings = [];
-let tab = "pending";
-
-// ==============================
-// LOGIN
-// ==============================
-
-async function login() {
-  const email = document.getElementById("email").value;
-  const password = document.getElementById("password").value;
-
-  const { data, error } = await supabase.auth.signInWithPassword({
-    email,
-    password
-  });
-
-  if (error) {
-    alert(error.message);
-    return;
-  }
-
-  user = data.user;
-
-  const { data: prof } = await supabase
-    .from("profiles")
-    .select("role")
-    .eq("id", user.id)
-    .single();
-
-  profile = prof;
-
-  if (!profile || profile.role !== "admin") {
-    alert("Access denied");
-    return;
-  }
-
-  document.getElementById("loginBox").classList.add("hidden");
-  document.getElementById("adminBox").classList.remove("hidden");
-
-  loadListings();
-}
-
-window.login = login;
-
-// ==============================
-// LOGOUT
-// ==============================
-
-async function logout() {
-  await supabase.auth.signOut();
-  location.reload();
-}
-
-window.logout = logout;
-
-// ==============================
-// LOAD LISTINGS
-// ==============================
-
-async function loadListings() {
-  const { data, error } = await supabase
-    .from("properties")
-    .select("*")
-    .order("created_at", { ascending: false });
-
-  if (error) {
-    console.log("Load error:", error);
-    return;
-  }
-
-  listings = data || [];
-  render();
-}
-
-// ==============================
-// TABS
-// ==============================
-
-function setTab(t) {
-  tab = t;
-  render();
-}
-
-window.setTab = setTab;
-
-// ==============================
-// APPROVE
-// ==============================
-
-async function approve(id) {
-  await supabase
-    .from("properties")
-    .update({
-      approval_status: "approved",
-      approved_at: new Date().toISOString()
-    })
-    .eq("id", id);
-
-  loadListings();
-}
-
-window.approve = approve;
-
-// ==============================
-// REJECT
-// ==============================
-
-async function reject(id) {
-  await supabase
-    .from("properties")
-    .update({
-      approval_status: "rejected",
-      rejected_at: new Date().toISOString()
-    })
-    .eq("id", id);
-
-  loadListings();
-}
-
-window.reject = reject;
-
-// ==============================
-// RENDER
-// ==============================
-
-function render() {
-  const container = document.getElementById("listings");
-  container.innerHTML = "";
-
-  const filtered = listings.filter(p => {
-    if (tab !== "all" && p.approval_status !== tab) return false;
-    return true;
-  });
-
-  if (filtered.length === 0) {
-    container.innerHTML = "<p>No listings found</p>";
-    return;
-  }
-
-  filtered.forEach(p => {
-    const div = document.createElement("div");
-    div.className = "box";
-
-    div.innerHTML = `
-      <h3>${p.title}</h3>
-      <p>${p.location}</p>
-      <p>Status: <b>${p.approval_status}</b></p>
-
-      <button onclick="approve('${p.id}')">Approve</button>
-      <button onclick="reject('${p.id}')">Reject</button>
-    `;
-
-    container.appendChild(div);
-  });
-}
-</script>
 
 </body>
 </html>
