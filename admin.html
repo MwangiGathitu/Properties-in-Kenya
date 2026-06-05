@@ -24,10 +24,12 @@
       padding: 8px 12px;
       margin-right: 5px;
       cursor: pointer;
+      border: none;
+      border-radius: 5px;
     }
 
-    .approve { background: green; color: white; border: none; }
-    .reject { background: red; color: white; border: none; }
+    .approve { background: green; color: white; }
+    .reject { background: red; color: white; }
   </style>
 </head>
 
@@ -38,12 +40,18 @@
 <div id="list"></div>
 
 <script>
-  const supabaseUrl = "YOUR_SUPABASE_URL";
-  const supabaseKey = "YOUR_SUPABASE_ANON_KEY";
+  // =========================
+  // SUPABASE CONNECTION
+  // =========================
+  const supabaseUrl = "https://nqwvsmunvtbiekfnvovx.supabase.co";
+
+  const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5xd3ZzbXV2bHRiaWVrZm52b3Z4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA1NjU4MDAsImV4cCI6MjA5NjE0MTgwMH0.Xrc-bbAuWdvKSPHnVhTaLiQphV61xeYtDepWePqsrdo";
 
   const client = supabase.createClient(supabaseUrl, supabaseKey);
 
-  // Load pending properties
+  // =========================
+  // LOAD PENDING PROPERTIES
+  // =========================
   async function loadProperties() {
     const { data, error } = await client
       .from('properties')
@@ -52,6 +60,7 @@
 
     if (error) {
       console.error(error);
+      alert("Error loading properties");
       return;
     }
 
@@ -63,19 +72,26 @@
       div.className = "card";
 
       div.innerHTML = `
-        <h3>${prop.title}</h3>
-        <p>${prop.location}</p>
-        <p>Price: ${prop.price}</p>
+        <h3>${prop.title || "No Title"}</h3>
+        <p>${prop.location || "No Location"}</p>
+        <p>Price: ${prop.price || "N/A"}</p>
 
-        <button class="approve" onclick="updateStatus('${prop.id}', 'approved')">Approve</button>
-        <button class="reject" onclick="updateStatus('${prop.id}', 'rejected')">Reject</button>
+        <button class="approve" onclick="updateStatus('${prop.id}', 'approved')">
+          Approve
+        </button>
+
+        <button class="reject" onclick="updateStatus('${prop.id}', 'rejected')">
+          Reject
+        </button>
       `;
 
       list.appendChild(div);
     });
   }
 
-  // Update property status
+  // =========================
+  // UPDATE STATUS
+  // =========================
   async function updateStatus(id, status) {
     const { error } = await client
       .from('properties')
@@ -83,14 +99,15 @@
       .eq('id', id);
 
     if (error) {
-      alert("Error updating status");
       console.error(error);
+      alert("Failed to update status");
       return;
     }
 
     loadProperties();
   }
 
+  // INIT
   loadProperties();
 </script>
 
