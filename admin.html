@@ -12,16 +12,11 @@
       background: #f4f4f4;
     }
 
-    h2 {
-      margin-bottom: 20px;
-    }
-
     .card {
       background: white;
       padding: 15px;
       margin-bottom: 10px;
       border-radius: 10px;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
     }
 
     button {
@@ -29,7 +24,6 @@
       margin-right: 8px;
       border: none;
       cursor: pointer;
-      border-radius: 5px;
     }
 
     .approve { background: green; color: white; }
@@ -45,7 +39,6 @@
 <div id="list"></div>
 
 <script>
-  // ✅ USE ONLY THIS SYSTEM
   const supabaseUrl = "https://nqwvsmuvltbiekfnvovx.supabase.co";
 
   const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5xd3ZzbXV2bHRiaWVrZm52b3Z4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA1NjU4MDAsImV4cCI6MjA5NjE0MTgwMH0.Xrc-bbAuWdvKSPHnVhTaLiQphV61xeYtDepWePqsrdo";
@@ -58,14 +51,13 @@
     statusBox.innerText = msg;
   }
 
-  // 🔥 LOAD PROPERTIES
+  // 🔥 LOAD ALL PROPERTIES (ADMIN ONLY)
   async function loadProperties() {
-    setStatus("Loading pending properties...");
+    setStatus("Loading properties...");
 
     const { data, error } = await client
       .from('properties')
-      .select('*')
-      .eq('status', 'pending');
+      .select('*');
 
     if (error) {
       console.log(error);
@@ -73,7 +65,7 @@
       return;
     }
 
-    setStatus("Loaded: " + data.length + " properties");
+    setStatus("Loaded: " + data.length);
 
     const list = document.getElementById("list");
     list.innerHTML = "";
@@ -86,6 +78,7 @@
         <h3>${prop.title}</h3>
         <p>${prop.location}</p>
         <p>${prop.price}</p>
+        <p>Status: ${prop.approval_status}</p>
 
         <button class="approve" onclick="updateStatus('${prop.id}', 'approved')">Approve</button>
         <button class="reject" onclick="updateStatus('${prop.id}', 'rejected')">Reject</button>
@@ -95,16 +88,14 @@
     });
   }
 
-  // 🔥 UPDATE STATUS
   async function updateStatus(id, status) {
     const { error } = await client
       .from('properties')
-      .update({ status })
+      .update({ approval_status: status })
       .eq('id', id);
 
     if (error) {
-      alert("Update failed: " + error.message);
-      console.log(error);
+      alert(error.message);
       return;
     }
 
