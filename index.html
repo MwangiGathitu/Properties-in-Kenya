@@ -2,12 +2,12 @@
 <html>
 <head>
   <title>Properties in Kenya</title>
-
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
   <style>
+    * { box-sizing: border-box; }
+
     body {
-      font-family: Arial;
+      font-family: Arial, sans-serif;
       margin: 0;
       background: #f4f4f4;
     }
@@ -18,6 +18,8 @@
       background: white;
       position: sticky;
       top: 0;
+      z-index: 100;
+      border-bottom: 1px solid #eee;
     }
 
     h1 {
@@ -28,14 +30,24 @@
     input, textarea {
       padding: 8px;
       margin: 5px;
-      width: 200px;
+      width: 220px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 14px;
     }
 
     button {
-      padding: 8px 12px;
+      padding: 8px 14px;
       margin: 5px;
       cursor: pointer;
+      border: none;
+      border-radius: 6px;
+      background: #0070f3;
+      color: white;
+      font-size: 14px;
     }
+
+    button:hover { background: #005bb5; }
 
     #listings {
       display: grid;
@@ -49,7 +61,11 @@
       border-radius: 10px;
       overflow: hidden;
       cursor: pointer;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+      transition: transform 0.15s;
     }
+
+    .card:hover { transform: translateY(-2px); }
 
     .card img {
       width: 100%;
@@ -57,25 +73,75 @@
       object-fit: cover;
     }
 
-    .content {
-      padding: 10px;
+    .content { padding: 12px; }
+
+    .card-title {
+      font-weight: bold;
+      font-size: 15px;
+      margin-bottom: 4px;
+      color: #111;
     }
 
     .price {
       font-weight: bold;
-      color: blue;
+      color: #0070f3;
+      font-size: 15px;
+      margin-bottom: 4px;
+    }
+
+    .meta {
+      font-size: 13px;
+      color: #666;
     }
 
     #detailView {
       display: none;
       padding: 20px;
+      max-width: 800px;
+      margin: 0 auto;
     }
 
     .form-box {
       background: white;
-      padding: 15px;
-      margin: 10px;
+      padding: 20px;
+      margin: 16px;
+      border-radius: 10px;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.08);
     }
+
+    .form-box h3 {
+      margin-top: 0;
+      font-size: 16px;
+      color: #333;
+    }
+
+    #noResults {
+      display: none;
+      text-align: center;
+      padding: 40px;
+      color: #888;
+      font-size: 15px;
+      grid-column: 1 / -1;
+    }
+
+    .wa-btn {
+      display: inline-block;
+      margin-top: 16px;
+      padding: 10px 20px;
+      background: #25D366;
+      color: white;
+      text-decoration: none;
+      border-radius: 8px;
+      font-size: 15px;
+      font-weight: bold;
+    }
+
+    .back-btn {
+      background: #555;
+      margin-bottom: 16px;
+    }
+
+    .back-btn:hover { background: #333; }
   </style>
 </head>
 
@@ -85,31 +151,36 @@
   <h1>Properties in Kenya</h1>
 </header>
 
-<!-- FORM -->
+<!-- SUBMISSION FORM -->
 <div class="form-box">
-  <h3>Submit Property</h3>
-
-  <input id="title" placeholder="Title" />
-  <input id="price" placeholder="Price" />
+  <h3>Submit a Property</h3>
+  <input id="title"    placeholder="Title" />
+  <input id="price"    placeholder="Price (KES)" />
   <input id="location" placeholder="Location" />
-  <input id="type" placeholder="Type (for sale / for rent)" />
-  <input id="image" placeholder="Image URL" />
-  <textarea id="desc" placeholder="Description"></textarea>
-
+  <input id="type"     placeholder="Type (for sale / for rent)" />
+  <input id="image"    placeholder="Image URL (optional)" />
+  <textarea id="desc"  placeholder="Description" rows="3"></textarea>
   <br>
-
-  <button onclick="submitProperty()">Submit</button>
+  <button onclick="submitProperty()">Submit for Approval</button>
 </div>
 
-<!-- LISTINGS -->
-<div id="listings"></div>
+<!-- LISTINGS GRID -->
+<div id="listings">
+  <div id="noResults">No approved properties found.</div>
+</div>
 
-<!-- DETAIL -->
+<!-- DETAIL VIEW -->
 <div id="detailView"></div>
 
 <script>
+  // ─────────────────────────────────────────────
+  // PASTE YOUR SUPABASE ANON KEY BELOW
+  // Supabase → Project Settings → API → anon public
+  // ─────────────────────────────────────────────
   const supabaseUrl = "https://nqwvsmuvltbiekfnvovx.supabase.co";
-  const supabaseKey = "YOUR_SUPABASE_ANON_KEY";
+  const supabaseKey = "PASTE_YOUR_ANON_KEY_HERE";
+  // ─────────────────────────────────────────────
+
   const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
 
   let allProperties = [];
@@ -119,35 +190,53 @@
     const { data, error } = await supabaseClient
       .from("properties")
       .select("*")
-      .eq("approval_status", "approved");
+      .eq("approval_status", "approved")
+      .order("created_at", { ascending: false });
 
     if (error) {
-      console.error(error);
+      console.error("Supabase error:", error.message);
       return;
     }
 
-    allProperties = data;
-    render(data);
+    allProperties = data || [];
+    render(allProperties);
   }
 
+  // RENDER PROPERTY CARDS
   function render(data) {
     const container = document.getElementById("listings");
-    container.innerHTML = "";
+    const noResults = document.getElementById("noResults");
+
+    // Remove all cards (keep the noResults div)
+    const cards = container.querySelectorAll(".card");
+    cards.forEach(c => c.remove());
+
+    if (!data || data.length === 0) {
+      noResults.style.display = "block";
+      return;
+    }
+
+    noResults.style.display = "none";
 
     data.forEach(p => {
       const card = document.createElement("div");
       card.className = "card";
-
       card.onclick = () => openProperty(p);
 
-      const image = p.image_url || `https://picsum.photos/seed/${p.id}/400/300`;
+      const image = p.image_url
+        ? p.image_url
+        : `https://picsum.photos/seed/${p.id}/400/300`;
+
+      const price = p.price
+        ? `KSh ${Number(p.price).toLocaleString()}`
+        : "Price on request";
 
       card.innerHTML = `
-        <img src="${image}">
+        <img src="${image}" alt="${p.title}" onerror="this.src='https://picsum.photos/seed/${p.id}/400/300'">
         <div class="content">
-          <div class="price">KSh ${Number(p.price).toLocaleString()}</div>
-          <div>${p.location}</div>
-          <div>${p.property_type}</div>
+          <div class="card-title">${p.title || "Untitled"}</div>
+          <div class="price">${price}</div>
+          <div class="meta">${p.location || ""} &nbsp;·&nbsp; ${p.property_type || p.status || ""}</div>
         </div>
       `;
 
@@ -155,52 +244,67 @@
     });
   }
 
+  // OPEN DETAIL VIEW
   function openProperty(p) {
-    const image = p.image_url || `https://picsum.photos/seed/${p.id}/800/500`;
+    const image = p.image_url
+      ? p.image_url
+      : `https://picsum.photos/seed/${p.id}/800/500`;
+
+    const price = p.price
+      ? `KSh ${Number(p.price).toLocaleString()}`
+      : "Price on request";
 
     const msg = encodeURIComponent(
-      `Hello, I am interested in ${p.title} in ${p.location}`
+      `Hello, I am interested in ${p.title} located in ${p.location}. Please share more details.`
     );
 
     document.getElementById("listings").style.display = "none";
     document.getElementById("detailView").style.display = "block";
 
     document.getElementById("detailView").innerHTML = `
-      <button onclick="closeDetail()">Back</button>
-
-      <h2>${p.title}</h2>
-      <img src="${image}" style="width:100%; max-height:400px; object-fit:cover;">
-
-      <h3>KSh ${Number(p.price).toLocaleString()}</h3>
-      <p>${p.description}</p>
-
-      <a href="https://wa.me/254700000000?text=${msg}" target="_blank">
+      <button class="back-btn" onclick="closeDetail()">← Back to listings</button>
+      <h2>${p.title || "Property"}</h2>
+      <img src="${image}" alt="${p.title}"
+           style="width:100%; max-height:400px; object-fit:cover; border-radius:10px;"
+           onerror="this.src='https://picsum.photos/seed/${p.id}/800/500'">
+      <h3>${price}</h3>
+      <p><strong>Location:</strong> ${p.location || "—"}</p>
+      <p><strong>Type:</strong> ${p.property_type || p.status || "—"}</p>
+      <p>${p.description || ""}</p>
+      <a class="wa-btn"
+         href="https://wa.me/254700000000?text=${msg}"
+         target="_blank">
         WhatsApp Inquiry
       </a>
     `;
   }
 
+  // CLOSE DETAIL VIEW
   function closeDetail() {
     document.getElementById("detailView").style.display = "none";
     document.getElementById("listings").style.display = "grid";
   }
 
-  // SUBMIT PROPERTY (CONTROLLED)
+  // SUBMIT PROPERTY
   async function submitProperty() {
-
     const { data: { user } } = await supabaseClient.auth.getUser();
 
     if (!user) {
-      alert("You must be logged in");
+      alert("You must be logged in to submit a property.");
       return;
     }
 
-    const title = document.getElementById("title").value;
-    const price = document.getElementById("price").value;
-    const location = document.getElementById("location").value;
-    const type = document.getElementById("type").value;
-    const image = document.getElementById("image").value;
-    const desc = document.getElementById("desc").value;
+    const title    = document.getElementById("title").value.trim();
+    const price    = document.getElementById("price").value.trim();
+    const location = document.getElementById("location").value.trim();
+    const type     = document.getElementById("type").value.trim();
+    const image    = document.getElementById("image").value.trim();
+    const desc     = document.getElementById("desc").value.trim();
+
+    if (!title || !price || !location || !type) {
+      alert("Please fill in Title, Price, Location, and Type.");
+      return;
+    }
 
     const { error } = await supabaseClient
       .from("properties")
@@ -209,22 +313,29 @@
         price,
         location,
         property_type: type,
-        image_url: image,
-        description: desc,
+        image_url:     image || null,
+        description:   desc,
         approval_status: "pending",
-        agent_id: user.id
+        agent_id:      user.id
       }]);
 
     if (error) {
-      console.error(error);
-      alert("Failed to submit");
+      console.error("Insert error:", error.message);
+      alert("Submission failed: " + error.message);
       return;
     }
 
-    alert("Submitted for approval");
+    alert("Property submitted successfully. It will appear after admin approval.");
+
+    // Clear the form
+    ["title","price","location","type","image","desc"].forEach(id => {
+      document.getElementById(id).value = "";
+    });
+
     loadProperties();
   }
 
+  // START
   loadProperties();
 </script>
 
