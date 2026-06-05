@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Login</title>
+
+  <script type="module">
+    import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+
+    const supabase = createClient(
+      "https://nqwvsmuvltbiekfnvovx.supabase.co",
+      "YOUR_ANON_KEY"
+    );
+
+    window.login = async function () {
+      const email = document.getElementById("email").value;
+      const password = document.getElementById("password").value;
+
+      const { error } = await supabase.auth.signInWithPassword({
+        email,
+        password
+      });
+
+      if (error) {
+        alert(error.message);
+        return;
+      }
+
+      // redirect after login
+      window.location.href = "admin.html";
+    };
+  </script>
+</head>
+
+<body style="font-family: Arial; padding: 40px;">
+  <h2>Admin Login</h2>
+
+  <input id="email" placeholder="Email" style="display:block; margin:10px 0; padding:8px;">
+  <input id="password" type="password" placeholder="Password" style="display:block; margin:10px 0; padding:8px;">
+
+  <button onclick="login()" style="padding:10px 15px;">
+    Login
+  </button>
+</body>
+</html>
