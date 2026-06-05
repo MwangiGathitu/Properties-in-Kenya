@@ -7,25 +7,40 @@
     import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
     const supabaseUrl = "https://nqwvsmuvltbiekfnvovx.supabase.co";
-    const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5xd3ZzbXV2bHRiaWVrZm52b3Z4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA1NjU4MDAsImV4cCI6MjA5NjE0MTgwMH0.Xrc-bbAuWdvKSPHnVhTaLiQphV61xeYtDepWePqsrdo";
+
+    const supabaseKey =
+      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5xd3ZzbXV2bHRiaWVrZm52b3Z4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA1NjU4MDAsImV4cCI6MjA5NjE0MTgwMH0.Xrc-bbAuWdvKSPHnVhTaLiQphV61xeYtDepWePqsrdo";
 
     const supabase = createClient(supabaseUrl, supabaseKey);
 
-    const ADMIN_PASSWORD = "1234"; // optional layer (you can remove later)
+    async function checkAdmin() {
+      const {
+        data: { user }
+      } = await supabase.auth.getUser();
 
-    window.login = function () {
-      const input = document.getElementById("password").value;
-
-      if (input !== ADMIN_PASSWORD) {
-        alert("Wrong password");
+      if (!user) {
+        window.location.href = "login.html";
         return;
       }
 
-      document.getElementById("loginBox").style.display = "none";
+      const { data: profile, error } = await supabase
+        .from("profiles")
+        .select("role")
+        .eq("id", user.id)
+        .single();
+
+      if (error || !profile || profile.role !== "admin") {
+        alert("Access denied");
+        await supabase.auth.signOut();
+        window.location.href = "login.html";
+        return;
+      }
+
+      document.getElementById("adminEmail").textContent = user.email;
       document.getElementById("adminPanel").style.display = "block";
 
       loadListings();
-    };
+    }
 
     async function loadListings() {
       const { data, error } = await supabase
@@ -35,65 +50,165 @@
 
       if (error) {
         console.error(error);
+        alert(error.message);
         return;
       }
 
-      const container = document.getElementById("listings");
-      container.innerHTML = "";
+      const pending = document.getElementById("pending");
+      const approved = document.getElementById("approved");
+      const rejected = document.getElementById("rejected");
 
-      data.forEach(p => {
+      pending.innerHTML = "";
+      approved.innerHTML = "";
+      rejected.innerHTML = "";
+
+      data.forEach((p) => {
         const div = document.createElement("div");
-        div.style = "background:white;padding:10px;margin:10px;border-radius:8px";
+        div.className = "card";
 
         div.innerHTML = `
-          <h3>${p.title}</h3>
-          <p>${p.location}</p>
-          <p>Status: <b>${p.approval_status}</b></p>
+          <h3>${p.title || "Untitled Property"}</h3>
+          <p><strong>Location:</strong> ${p.location || "-"}</p>
+          <p><strong>Status:</strong> ${p.approval_status || "pending"}</p>
 
-          <button onclick="approve('${p.id}')">Approve</button>
-          <button onclick="reject('${p.id}')">Reject</button>
+          <button onclick="approve('${p.id}')">
+            Approve
+          </button>
+
+          <button onclick="reject('${p.id}')">
+            Reject
+          </button>
         `;
 
-        container.appendChild(div);
+        if (p.approval_status === "approved") {
+          approved.appendChild(div);
+        } else if (p.approval_status === "rejected") {
+          rejected.appendChild(div);
+        } else {
+          pending.appendChild(div);
+        }
       });
     }
 
     window.approve = async function (id) {
-      await supabase
+      const { error } = await supabase
         .from("properties")
-        .update({ approval_status: "approved" })
+        .update({
+          approval_status: "approved"
+        })
         .eq("id", id);
+
+      if (error) {
+        alert(error.message);
+        return;
+      }
 
       loadListings();
     };
 
     window.reject = async function (id) {
-      await supabase
+      const { error } = await supabase
         .from("properties")
-        .update({ approval_status: "rejected" })
+        .update({
+          approval_status: "rejected"
+        })
         .eq("id", id);
+
+      if (error) {
+        alert(error.message);
+        return;
+      }
 
       loadListings();
     };
+
+    window.logout = async function () {
+      await supabase.auth.signOut();
+      window.location.href = "login.html";
+    };
+
+    window.addEventListener("load", () => {
+      checkAdmin();
+    });
   </script>
 
   <style>
-    body { font-family: Arial; background:#f4f4f4; padding:20px; }
-    button { margin:5px; padding:6px 10px; }
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f4f4;
+      padding: 20px;
+      margin: 0;
+    }
+
+    .header {
+      background: white;
+      border-radius: 10px;
+      padding: 20px;
+      margin-bottom: 20px;
+
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .section {
+      margin-bottom: 30px;
+    }
+
+    .card {
+      background: white;
+      border-radius: 10px;
+      padding: 15px;
+      margin-top: 10px;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+    }
+
+    button {
+      padding: 8px 12px;
+      margin-right: 8px;
+      cursor: pointer;
+      border: none;
+      border-radius: 6px;
+      background: #0070f3;
+      color: white;
+    }
+
+    button:hover {
+      opacity: 0.9;
+    }
   </style>
 </head>
 
 <body>
 
-<div id="loginBox">
-  <h2>Admin Login</h2>
-  <input id="password" type="password" placeholder="Enter password" />
-  <button onclick="login()">Login</button>
-</div>
-
 <div id="adminPanel" style="display:none;">
-  <h2>Property Moderation</h2>
-  <div id="listings"></div>
+
+  <div class="header">
+    <div>
+      <h2>Property Moderation</h2>
+      <div id="adminEmail"></div>
+    </div>
+
+    <button onclick="logout()">
+      Logout
+    </button>
+  </div>
+
+  <div class="section">
+    <h2>Pending Listings</h2>
+    <div id="pending"></div>
+  </div>
+
+  <div class="section">
+    <h2>Approved Listings</h2>
+    <div id="approved"></div>
+  </div>
+
+  <div class="section">
+    <h2>Rejected Listings</h2>
+    <div id="rejected"></div>
+  </div>
+
 </div>
 
 </body>
