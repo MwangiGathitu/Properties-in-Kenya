@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Admin Dashboard</title>
+
+  <script type="module">
+    import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+
+    const supabaseUrl = "https://nqwvsmuvltbiekfnvovx.supabase.co";
+    const supabaseKey = "YOUR_ANON_KEY";
+
+    const supabase = createClient(supabaseUrl, supabaseKey);
+
+    const ADMIN_PASSWORD = "1234"; // change this later
+
+    window.login = function () {
+      const input = document.getElementById("password").value;
+
+      if (input !== ADMIN_PASSWORD) {
+        alert("Wrong password");
+        return;
+      }
+
+      document.getElementById("loginBox").style.display = "none";
+      document.getElementById("adminPanel").style.display = "block";
+
+      loadListings();
+    };
+
+    async function loadListings() {
+      const { data, error } = await supabase
+        .from("properties")
+        .select("*")
+        .order("created_at", { ascending: false });
+
+      if (error) {
+        console.error(error);
+        return;
+      }
+
+      const container = document.getElementById("listings");
+      container.innerHTML = "";
+
+      data.forEach(p => {
+        const div = document.createElement("div");
+        div.style = "background:white;padding:10px;margin:10px;border-radius:8px";
+
+        div.innerHTML = `
+          <h3>${p.title}</h3>
+          <p>${p.location}</p>
+          <p>Status: <b>${p.approval_status}</b></p>
+
+          <button onclick="approve('${p.id}')">Approve</button>
+          <button onclick="reject('${p.id}')">Reject</button>
+        `;
+
+        container.appendChild(div);
+      });
+    }
+
+    window.approve = async function (id) {
+      await supabase
+        .from("properties")
+        .update({ approval_status: "approved" })
+        .eq("id", id);
+
+      loadListings();
+    };
+
+    window.reject = async function (id) {
+      await supabase
+        .from("properties")
+        .update({ approval_status: "rejected" })
+        .eq("id", id);
+
+      loadListings();
+    };
+  </script>
+
+  <style>
+    body { font-family: Arial; background:#f4f4f4; padding:20px; }
+    button { margin:5px; padding:6px 10px; }
+  </style>
+</head>
+
+<body>
+
+<div id="loginBox">
+  <h2>Admin Login</h2>
+  <input id="password" type="password" placeholder="Enter password" />
+  <button onclick="login()">Login</button>
+</div>
+
+<div id="adminPanel" style="display:none;">
+  <h2>Property Moderation</h2>
+  <div id="listings"></div>
+</div>
+
+</body>
+</html>
