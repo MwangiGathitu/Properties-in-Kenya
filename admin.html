@@ -12,47 +12,55 @@
       background: #f4f4f4;
     }
 
+    h2 {
+      margin-bottom: 20px;
+    }
+
     .card {
       background: white;
       padding: 15px;
       margin-bottom: 10px;
       border-radius: 10px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
     }
 
     button {
-      padding: 8px 10px;
-      margin-right: 5px;
+      padding: 8px 12px;
+      margin-right: 8px;
+      border: none;
       cursor: pointer;
+      border-radius: 5px;
     }
 
-    .approve { background: green; color: white; border: none; }
-    .reject { background: red; color: white; border: none; }
+    .approve { background: green; color: white; }
+    .reject { background: red; color: white; }
   </style>
 </head>
 
 <body>
 
 <h2>Admin Dashboard</h2>
-<div id="status"></div>
+
+<div id="status">Loading...</div>
 <div id="list"></div>
 
 <script>
-  // 🔥 SUPABASE CONFIG (YOUR PROJECT)
+  // ✅ USE ONLY THIS SYSTEM
   const supabaseUrl = "https://nqwvsmuvltbiekfnvovx.supabase.co";
 
-  const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5xd3ZzbXV2bHRiaWVrZm52b3Z4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA1NjU4MDAsImV4cCI6MjA5NjE0MTgwMH0.Xrc-bbAuWdvKSPnVhTaLiQphV61xeYtDepWePqsrdo";
+  const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5xd3ZzbXV2bHRiaWVrZm52b3Z4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA1NjU4MDAsImV4cCI6MjA5NjE0MTgwMH0.Xrc-bbAuWdvKSPHnVhTaLiQphV61xeYtDepWePqsrdo";
 
   const client = supabase.createClient(supabaseUrl, supabaseKey);
 
   const statusBox = document.getElementById("status");
 
   function setStatus(msg) {
-    statusBox.innerHTML = `<p><b>${msg}</b></p>`;
+    statusBox.innerText = msg;
   }
 
   // 🔥 LOAD PROPERTIES
   async function loadProperties() {
-    setStatus("Loading properties...");
+    setStatus("Loading pending properties...");
 
     const { data, error } = await client
       .from('properties')
@@ -60,12 +68,12 @@
       .eq('status', 'pending');
 
     if (error) {
-      console.log("ERROR:", error);
+      console.log(error);
       setStatus("ERROR: " + error.message);
       return;
     }
 
-    setStatus("Loaded " + data.length + " properties");
+    setStatus("Loaded: " + data.length + " properties");
 
     const list = document.getElementById("list");
     list.innerHTML = "";
@@ -95,8 +103,8 @@
       .eq('id', id);
 
     if (error) {
-      console.log("UPDATE ERROR:", error);
-      alert(error.message);
+      alert("Update failed: " + error.message);
+      console.log(error);
       return;
     }
 
