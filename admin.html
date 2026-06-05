@@ -1,186 +1,22 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Admin Control Room</title>
-
-  <script type="module">
-    import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
-
-    const supabaseUrl = "https://nqwvsmuvltbiekfnvovx.supabase.co";
-    const supabaseKey = "YOUR_ANON_KEY";
-
-    const supabase = createClient(supabaseUrl, supabaseKey);
-
-    let allListings = [];
-    let currentTab = "pending";
-
-    // -------------------------
-    // LOGIN (simple admin gate)
-    // -------------------------
-    const ADMIN_PASSWORD = "1234";
-
-    window.login = function () {
-      const input = document.getElementById("password").value;
-
-      if (input !== ADMIN_PASSWORD) {
-        alert("Wrong password");
-        return;
-      }
-
-      document.getElementById("loginBox").style.display = "none";
-      document.getElementById("adminPanel").style.display = "block";
-
-      loadListings();
-    };
-
-    // -------------------------
-    // LOAD DATA
-    // -------------------------
-    async function loadListings() {
-      const { data, error } = await supabase
-        .from("properties")
-        .select("*")
-        .order("created_at", { ascending: false });
-
-      if (error) {
-        console.error("Load error:", error);
-        return;
-      }
-
-      allListings = data || [];
-      render();
-    }
-
-    // -------------------------
-    // TAB SWITCHING
-    // -------------------------
-    window.setTab = function (tab) {
-      currentTab = tab;
-      render();
-    };
-
-    // -------------------------
-    // FILTER LOGIC
-    // -------------------------
-    function getFilteredData() {
-      const search = document.getElementById("search").value.toLowerCase();
-      const location = document.getElementById("locationFilter").value.toLowerCase();
-      const maxPrice = document.getElementById("maxPrice").value;
-
-      return allListings.filter(p => {
-        // status filter
-        if (currentTab !== "all" && p.approval_status !== currentTab) {
-          return false;
-        }
-
-        // search filter
-        if (search && !p.title?.toLowerCase().includes(search)) {
-          return false;
-        }
-
-        // location filter
-        if (location && !p.location?.toLowerCase().includes(location)) {
-          return false;
-        }
-
-        // price filter
-        if (maxPrice && Number(p.price) > Number(maxPrice)) {
-          return false;
-        }
-
-        return true;
-      });
-    }
-
-    // -------------------------
-    // RENDER UI
-    // -------------------------
-    function render() {
-      const container = document.getElementById("listings");
-      container.innerHTML = "";
-
-      const data = getFilteredData();
-
-      if (data.length === 0) {
-        container.innerHTML = "<p>No listings found.</p>";
-        return;
-      }
-
-      data.forEach(p => {
-        const card = document.createElement("div");
-
-        card.style = `
-          background:white;
-          padding:12px;
-          margin:10px 0;
-          border-radius:10px;
-          border-left:5px solid ${
-            p.approval_status === "approved"
-              ? "green"
-              : p.approval_status === "rejected"
-              ? "red"
-              : "orange"
-          };
-        `;
-
-        const price = p.price ? `KES ${Number(p.price).toLocaleString()}` : "N/A";
-
-        card.innerHTML = `
-          <h3>${p.title}</h3>
-          <p>${p.location}</p>
-          <p><b>${price}</b></p>
-          <p>Status: <b>${p.approval_status}</b></p>
-
-          <small>Agent: ${p.agent_id || "unknown"}</small>
-          <br><br>
-
-          <button onclick="approve('${p.id}')">Approve</button>
-          <button onclick="reject('${p.id}')">Reject</button>
-        `;
-
-        container.appendChild(card);
-      });
-    }
-
-    // -------------------------
-    // APPROVE (WITH AUDIT)
-    // -------------------------
-    window.approve = async function (id) {
-      await supabase
-        .from("properties")
-        .update({
-          approval_status: "approved",
-          approved_at: new Date().toISOString()
-        })
-        .eq("id", id);
-
-      loadListings();
-    };
-
-    // -------------------------
-    // REJECT (WITH AUDIT)
-    // -------------------------
-    window.reject = async function (id) {
-      await supabase
-        .from("properties")
-        .update({
-          approval_status: "rejected",
-          rejected_at: new Date().toISOString()
-        })
-        .eq("id", id);
-
-      loadListings();
-    };
-
-    // live filter updates
-    window.addEventListener("input", render);
-  </script>
+  <title>Admin Dashboard</title>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
   <style>
     body {
       font-family: Arial;
       background: #f4f4f4;
+      margin: 0;
       padding: 20px;
+    }
+
+    .box {
+      background: white;
+      padding: 15px;
+      margin-bottom: 10px;
+      border-radius: 8px;
     }
 
     button {
@@ -189,13 +25,17 @@
       cursor: pointer;
     }
 
-    .tabs button {
-      margin-right: 8px;
-    }
-
     input {
       padding: 8px;
       margin: 5px;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    .tabs button {
+      margin-right: 8px;
     }
   </style>
 </head>
@@ -203,16 +43,21 @@
 <body>
 
 <!-- LOGIN -->
-<div id="loginBox">
+<div id="loginBox" class="box">
   <h2>Admin Login</h2>
-  <input id="password" type="password" placeholder="Enter password" />
+  <input id="email" placeholder="Email">
+  <input id="password" type="password" placeholder="Password">
   <button onclick="login()">Login</button>
 </div>
 
-<!-- ADMIN PANEL -->
-<div id="adminPanel" style="display:none;">
+<!-- ADMIN -->
+<div id="adminBox" class="hidden">
 
   <h2>Admin Control Room</h2>
+
+  <button onclick="logout()">Logout</button>
+
+  <hr>
 
   <!-- TABS -->
   <div class="tabs">
@@ -222,17 +67,159 @@
     <button onclick="setTab('all')">All</button>
   </div>
 
+  <br>
+
   <!-- FILTERS -->
-  <div>
-    <input id="search" placeholder="Search title..." />
-    <input id="locationFilter" placeholder="Location..." />
-    <input id="maxPrice" placeholder="Max price..." />
-  </div>
+  <input id="search" placeholder="Search title..." oninput="render()">
+  <input id="location" placeholder="Location..." oninput="render()">
 
-  <!-- LISTINGS -->
+  <hr>
+
   <div id="listings"></div>
-
 </div>
+
+<script>
+const supabaseUrl = "https://nqwvsmuvltbiekfnvovx.supabase.co";
+const supabaseKey = "PASTE_YOUR_ANON_KEY_HERE";
+
+const supabase = supabase.createClient(supabaseUrl, supabaseKey);
+
+let user = null;
+let profile = null;
+let listings = [];
+let tab = "pending";
+
+// ---------------- LOGIN ----------------
+async function login() {
+  const email = document.getElementById("email").value;
+  const password = document.getElementById("password").value;
+
+  const { data, error } = await supabase.auth.signInWithPassword({
+    email,
+    password
+  });
+
+  if (error) {
+    alert(error.message);
+    return;
+  }
+
+  user = data.user;
+
+  const { data: prof } = await supabase
+    .from("profiles")
+    .select("role")
+    .eq("id", user.id)
+    .single();
+
+  profile = prof;
+
+  if (!profile || profile.role !== "admin") {
+    alert("Access denied: not admin");
+    return;
+  }
+
+  document.getElementById("loginBox").classList.add("hidden");
+  document.getElementById("adminBox").classList.remove("hidden");
+
+  loadListings();
+}
+
+// ---------------- LOGOUT ----------------
+async function logout() {
+  await supabase.auth.signOut();
+  location.reload();
+}
+
+// ---------------- LOAD ----------------
+async function loadListings() {
+  const { data, error } = await supabase
+    .from("properties")
+    .select("*")
+    .order("created_at", { ascending: false });
+
+  if (error) {
+    console.log("Load error:", error);
+    return;
+  }
+
+  listings = data;
+  render();
+}
+
+// ---------------- TAB ----------------
+function setTab(t) {
+  tab = t;
+  render();
+}
+
+// ---------------- RENDER ----------------
+function render() {
+  const container = document.getElementById("listings");
+  container.innerHTML = "";
+
+  const search = document.getElementById("search").value?.toLowerCase() || "";
+  const location = document.getElementById("location").value?.toLowerCase() || "";
+
+  let filtered = listings.filter(p => {
+
+    if (tab !== "all" && p.approval_status !== tab) return false;
+
+    if (search && !p.title?.toLowerCase().includes(search)) return false;
+
+    if (location && !p.location?.toLowerCase().includes(location)) return false;
+
+    return true;
+  });
+
+  if (filtered.length === 0) {
+    container.innerHTML = "<p>No listings found</p>";
+    return;
+  }
+
+  filtered.forEach(p => {
+    const div = document.createElement("div");
+    div.className = "box";
+
+    div.innerHTML = `
+      <h3>${p.title}</h3>
+      <p>${p.location}</p>
+      <p>Status: <b>${p.approval_status}</b></p>
+
+      <button onclick="approve('${p.id}')">Approve</button>
+      <button onclick="reject('${p.id}')">Reject</button>
+    `;
+
+    container.appendChild(div);
+  });
+}
+
+// ---------------- APPROVE ----------------
+async function approve(id) {
+  await supabase
+    .from("properties")
+    .update({
+      approval_status: "approved",
+      approved_at: new Date().toISOString()
+    })
+    .eq("id", id);
+
+  loadListings();
+}
+
+// ---------------- REJECT ----------------
+async function reject(id) {
+  await supabase
+    .from("properties")
+    .update({
+      approval_status: "rejected",
+      rejected_at: new Date().toISOString()
+    })
+    .eq("id", id);
+
+  loadListings();
+}
+</script>
 
 </body>
 </html>
