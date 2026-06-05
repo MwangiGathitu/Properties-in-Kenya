@@ -17,48 +17,55 @@
       padding: 15px;
       margin-bottom: 10px;
       border-radius: 10px;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
     }
 
     button {
-      padding: 8px 12px;
-      margin-right: 8px;
+      padding: 8px 10px;
+      margin-right: 5px;
       cursor: pointer;
-      border: none;
-      border-radius: 5px;
     }
 
-    .approve { background: green; color: white; }
-    .reject { background: red; color: white; }
+    .approve { background: green; color: white; border: none; }
+    .reject { background: red; color: white; border: none; }
   </style>
 </head>
 
 <body>
 
-<h2>Admin Dashboard - Pending Properties</h2>
-
+<h2>Admin Dashboard</h2>
+<div id="status"></div>
 <div id="list"></div>
 
 <script>
-  // 🔥 YOUR SUPABASE DETAILS (FIXED)
+  // 🔥 SUPABASE CONFIG (YOUR PROJECT)
   const supabaseUrl = "https://nqwvsmuvltbiekfnvovx.supabase.co";
 
   const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5xd3ZzbXV2bHRiaWVrZm52b3Z4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA1NjU4MDAsImV4cCI6MjA5NjE0MTgwMH0.Xrc-bbAuWdvKSPnVhTaLiQphV61xeYtDepWePqsrdo";
 
   const client = supabase.createClient(supabaseUrl, supabaseKey);
 
-  // Load pending properties
+  const statusBox = document.getElementById("status");
+
+  function setStatus(msg) {
+    statusBox.innerHTML = `<p><b>${msg}</b></p>`;
+  }
+
+  // 🔥 LOAD PROPERTIES
   async function loadProperties() {
+    setStatus("Loading properties...");
+
     const { data, error } = await client
       .from('properties')
       .select('*')
       .eq('status', 'pending');
 
     if (error) {
-      console.error(error);
-      alert("Error loading properties");
+      console.log("ERROR:", error);
+      setStatus("ERROR: " + error.message);
       return;
     }
+
+    setStatus("Loaded " + data.length + " properties");
 
     const list = document.getElementById("list");
     list.innerHTML = "";
@@ -69,8 +76,8 @@
 
       div.innerHTML = `
         <h3>${prop.title}</h3>
-        <p><b>Location:</b> ${prop.location}</p>
-        <p><b>Price:</b> ${prop.price}</p>
+        <p>${prop.location}</p>
+        <p>${prop.price}</p>
 
         <button class="approve" onclick="updateStatus('${prop.id}', 'approved')">Approve</button>
         <button class="reject" onclick="updateStatus('${prop.id}', 'rejected')">Reject</button>
@@ -80,16 +87,16 @@
     });
   }
 
-  // Update status
+  // 🔥 UPDATE STATUS
   async function updateStatus(id, status) {
     const { error } = await client
       .from('properties')
-      .update({ status: status })
+      .update({ status })
       .eq('id', id);
 
     if (error) {
-      console.error(error);
-      alert("Update failed");
+      console.log("UPDATE ERROR:", error);
+      alert(error.message);
       return;
     }
 
