@@ -6,10 +6,10 @@
   <script type="module">
     import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
-    const supabase = createClient(
-      "https://nqwvsmuvltbiekfnvovx.supabase.co",
-      "YOUR_ANON_KEY"
-    );
+    const supabaseUrl = "https://nqwvsmuvltbiekfnvovx.supabase.co";
+    const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5xd3ZzbXV2bHRiaWVrZm52b3Z4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA1NjU4MDAsImV4cCI6MjA5NjE0MTgwMH0.Xrc-bbAuWdvKSPHnVhTaLiQphV61xeYtDepWePqsrdo";
+
+    const supabase = createClient(supabaseUrl, supabaseKey);
 
     window.login = async function () {
       const email = document.getElementById("email").value;
@@ -25,7 +25,6 @@
         return;
       }
 
-      // redirect after login
       window.location.href = "admin.html";
     };
   </script>
