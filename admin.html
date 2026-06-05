@@ -13,7 +13,10 @@
 
     const supabase = createClient(supabaseUrl, supabaseKey);
 
-    async function checkAdmin() {
+    // =========================
+    // AUTH + ADMIN CHECK
+    // =========================
+    async function init() {
       const {
         data: { user }
       } = await supabase.auth.getUser();
@@ -29,6 +32,10 @@
         .eq("id", user.id)
         .single();
 
+      console.log("USER:", user);
+      console.log("PROFILE:", profile);
+      console.log("ERROR:", error);
+
       if (error || !profile || profile.role !== "admin") {
         alert("Access denied");
         await supabase.auth.signOut();
@@ -37,11 +44,13 @@
       }
 
       document.getElementById("adminEmail").textContent = user.email;
-      document.getElementById("adminPanel").style.display = "block";
 
       loadListings();
     }
 
+    // =========================
+    // LOAD LISTINGS
+    // =========================
     async function loadListings() {
       const { data, error } = await supabase
         .from("properties")
@@ -63,153 +72,101 @@
       rejected.innerHTML = "";
 
       data.forEach((p) => {
-        const div = document.createElement("div");
-        div.className = "card";
+        const card = document.createElement("div");
+        card.className = "card";
 
-        div.innerHTML = `
-          <h3>${p.title || "Untitled Property"}</h3>
-          <p><strong>Location:</strong> ${p.location || "-"}</p>
-          <p><strong>Status:</strong> ${p.approval_status || "pending"}</p>
+        card.innerHTML = `
+          <h3>${p.title}</h3>
+          <p>${p.location}</p>
+          <p>Status: <b>${p.approval_status}</b></p>
 
-          <button onclick="approve('${p.id}')">
-            Approve
-          </button>
-
-          <button onclick="reject('${p.id}')">
-            Reject
-          </button>
+          <button onclick="approve('${p.id}')">Approve</button>
+          <button onclick="reject('${p.id}')">Reject</button>
         `;
 
         if (p.approval_status === "approved") {
-          approved.appendChild(div);
+          approved.appendChild(card);
         } else if (p.approval_status === "rejected") {
-          rejected.appendChild(div);
+          rejected.appendChild(card);
         } else {
-          pending.appendChild(div);
+          pending.appendChild(card);
         }
       });
     }
 
+    // =========================
+    // ACTIONS
+    // =========================
     window.approve = async function (id) {
-      const { error } = await supabase
+      await supabase
         .from("properties")
-        .update({
-          approval_status: "approved"
-        })
+        .update({ approval_status: "approved" })
         .eq("id", id);
-
-      if (error) {
-        alert(error.message);
-        return;
-      }
 
       loadListings();
     };
 
     window.reject = async function (id) {
-      const { error } = await supabase
+      await supabase
         .from("properties")
-        .update({
-          approval_status: "rejected"
-        })
+        .update({ approval_status: "rejected" })
         .eq("id", id);
-
-      if (error) {
-        alert(error.message);
-        return;
-      }
 
       loadListings();
     };
 
-    window.logout = async function () {
-      await supabase.auth.signOut();
-      window.location.href = "login.html";
-    };
-
-    window.addEventListener("load", () => {
-      checkAdmin();
-    });
+    // Start app
+    window.addEventListener("load", init);
   </script>
 
   <style>
     body {
-      font-family: Arial, sans-serif;
+      font-family: Arial;
       background: #f4f4f4;
       padding: 20px;
-      margin: 0;
     }
 
     .header {
       background: white;
+      padding: 15px;
       border-radius: 10px;
-      padding: 20px;
       margin-bottom: 20px;
-
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    .section {
-      margin-bottom: 30px;
     }
 
     .card {
       background: white;
-      border-radius: 10px;
-      padding: 15px;
-      margin-top: 10px;
-      box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+      padding: 12px;
+      margin: 10px 0;
+      border-radius: 8px;
     }
 
     button {
-      padding: 8px 12px;
-      margin-right: 8px;
-      cursor: pointer;
+      margin-right: 5px;
+      padding: 6px 10px;
       border: none;
       border-radius: 6px;
       background: #0070f3;
       color: white;
-    }
-
-    button:hover {
-      opacity: 0.9;
+      cursor: pointer;
     }
   </style>
 </head>
 
 <body>
 
-<div id="adminPanel" style="display:none;">
-
-  <div class="header">
-    <div>
-      <h2>Property Moderation</h2>
-      <div id="adminEmail"></div>
-    </div>
-
-    <button onclick="logout()">
-      Logout
-    </button>
-  </div>
-
-  <div class="section">
-    <h2>Pending Listings</h2>
-    <div id="pending"></div>
-  </div>
-
-  <div class="section">
-    <h2>Approved Listings</h2>
-    <div id="approved"></div>
-  </div>
-
-  <div class="section">
-    <h2>Rejected Listings</h2>
-    <div id="rejected"></div>
-  </div>
-
+<div class="header">
+  <h2>Property Moderation</h2>
+  <div id="adminEmail"></div>
 </div>
+
+<h3>Pending</h3>
+<div id="pending"></div>
+
+<h3>Approved</h3>
+<div id="approved"></div>
+
+<h3>Rejected</h3>
+<div id="rejected"></div>
 
 </body>
 </html>
