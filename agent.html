@@ -28,6 +28,7 @@
     }
     .btn-primary { background: #0070f3; color: white; }
     .btn-success { background: #10b981; color: white; }
+    .btn-warning { background: #f59e0b; color: white; }
     .btn-outline { background: transparent; border: 1px solid #0070f3; color: #0070f3; }
     .btn-logout { background: #6b7280; color: white; }
     .container { max-width: 900px; margin: 40px auto; padding: 0 20px; }
@@ -104,6 +105,21 @@
       flex-wrap: wrap;
     }
     .form-row > * { flex: 1 1 180px; }
+
+    /* Payment modal */
+    .modal-overlay {
+      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0,0,0,0.5);
+      display: none; justify-content: center; align-items: center;
+    }
+    .modal-content {
+      background: white; padding: 25px; border-radius: 10px;
+      width: 90%; max-width: 400px;
+    }
+    .modal-content h3 { margin-bottom: 15px; }
+    .modal-content input {
+      width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px; margin-bottom: 15px;
+    }
   </style>
 </head>
 <body>
@@ -134,6 +150,15 @@
 
   <!-- DASHBOARD (hidden until agent authenticated) -->
   <div id="dashboard" class="dashboard">
+    <!-- Subscription section -->
+    <div class="form-card">
+      <h3>Account</h3>
+      <p id="subscriptionStatus" style="font-size:14px; color:#555;"></p>
+      <button id="subscribeBtn" class="btn-warning" onclick="showSubscribeModal()" style="display:none;">
+        💎 Subscribe – KES 1,000 / month
+      </button>
+    </div>
+
     <!-- New listing form -->
     <div class="form-card">
       <h3>Submit a Property</h3>
@@ -159,6 +184,27 @@
     <h3 style="margin-bottom:15px;">My Listings</h3>
     <div id="myListings"></div>
   </div>
+
+  <!-- MODALS FOR PAYMENTS -->
+  <div id="featureModal" class="modal-overlay">
+    <div class="modal-content">
+      <h3>⭐ Feature this listing – KES 500</h3>
+      <input type="tel" id="featurePhone" placeholder="M‑Pesa number (0712 345678)">
+      <button class="btn-primary" id="featurePayBtn" onclick="handleFeaturePayment()">Send Payment Request</button>
+      <button class="btn-outline" onclick="closeFeatureModal()">Cancel</button>
+      <p id="featureMsg" style="font-size:13px; margin-top:10px;"></p>
+    </div>
+  </div>
+
+  <div id="subscribeModal" class="modal-overlay">
+    <div class="modal-content">
+      <h3>💎 Subscribe – KES 1,000 / month</h3>
+      <input type="tel" id="subscribePhone" placeholder="M‑Pesa number (0712 345678)">
+      <button class="btn-warning" id="subscribePayBtn" onclick="handleSubscribePayment()">Send Payment Request</button>
+      <button class="btn-outline" onclick="closeSubscribeModal()">Cancel</button>
+      <p id="subscribeMsg" style="font-size:13px; margin-top:10px;"></p>
+    </div>
+  </div>
 </div>
 
 <script>
@@ -169,6 +215,7 @@
   // ---------- State ----------
   let currentUser = null;
   let isSignUp = false; // toggle between login and signup
+  let currentFeaturePropertyId = null; // set when opening feature modal
 
   // DOM elements
   const authBox = document.getElementById("authBox");
@@ -182,6 +229,9 @@
   const agentEmailSpan = document.getElementById("agentEmail");
   const logoutBtn = document.getElementById("logoutBtn");
   const submitMsg = document.getElementById("submitMsg");
+
+  const featureModal = document.getElementById("featureModal");
+  const subscribeModal = document.getElementById("subscribeModal");
 
   // ---------- Toggle login/signup ----------
   window.toggleMode = function() {
@@ -279,7 +329,7 @@
     // fetch profile
     const { data: profile, error } = await supabaseClient
       .from("profiles")
-      .select("role, full_name")
+      .select("role, full_name, subscribed, subscribed_until")
       .eq("id", user.id)
       .single();
 
@@ -295,6 +345,19 @@
     dashboard.style.display = "block";
     logoutBtn.style.display = "inline-block";
     agentEmailSpan.textContent = user.email;
+
+    // Update subscription status display
+    const subStatus = document.getElementById("subscriptionStatus");
+    const subscribeBtn = document.getElementById("subscribeBtn");
+    if (profile.subscribed) {
+      const until = new Date(profile.subscribed_until);
+      subStatus.textContent = `✅ You are subscribed until ${until.toLocaleDateString()}.`;
+      subscribeBtn.style.display = "none";
+    } else {
+      subStatus.textContent = "⏳ You are not subscribed. Unlock unlimited listings and priority approval.";
+      subscribeBtn.style.display = "inline-block";
+    }
+
     loadMyListings();
   }
 
@@ -320,15 +383,23 @@
       return;
     }
 
-    container.innerHTML = data.map(p => `
-      <div class="card">
-        <div class="card-info">
-          <h3>${p.title || "Untitled"} <span class="status-badge status-${p.approval_status}">${p.approval_status}</span></h3>
-          <p>${p.location || ""} · KSh ${p.price ? Number(p.price).toLocaleString() : "—"}</p>
-          <p style="font-size:12px; color:#888;">Submitted ${new Date(p.created_at).toLocaleDateString()}</p>
+    container.innerHTML = data.map(p => {
+      const isApproved = p.approval_status === "approved";
+      const featureBtn = isApproved
+        ? `<button class="btn-primary" onclick="showFeatureModal('${p.id}')" style="margin-top:8px;">⭐ Feature – KES 500</button>`
+        : `<button class="btn-outline" disabled style="margin-top:8px;">⭐ Feature (available after approval)</button>`;
+
+      return `
+        <div class="card">
+          <div class="card-info">
+            <h3>${p.title || "Untitled"} <span class="status-badge status-${p.approval_status}">${p.approval_status}</span></h3>
+            <p>${p.location || ""} · KSh ${p.price ? Number(p.price).toLocaleString() : "—"}</p>
+            <p style="font-size:12px; color:#888;">Submitted ${new Date(p.created_at).toLocaleDateString()}</p>
+            ${featureBtn}
+          </div>
         </div>
-      </div>
-    `).join("");
+      `;
+    }).join("");
   }
 
   // ---------- Submit a new property ----------
@@ -377,6 +448,99 @@
     submitMsg.textContent = "Property submitted for approval!";
     submitMsg.style.color = "green";
     loadMyListings();
+  };
+
+  // ---------- PAYMENT FUNCTIONS ----------
+
+  // Generic M-Pesa STK push caller
+  async function initiateMpesaPayment(phone, amount, paymentType, propertyId = null) {
+    // Normalize phone to 254XXXXXXXXX
+    let formatted = phone.trim().replace(/\s+/g, '');
+    if (formatted.startsWith('0')) formatted = '254' + formatted.slice(1);
+    if (formatted.startsWith('+254')) formatted = formatted.slice(1);
+    if (!formatted.startsWith('254')) formatted = '254' + formatted;
+
+    const { data, error } = await supabaseClient.functions.invoke('mpesa-stk', {
+      body: {
+        phone: formatted,
+        amount,
+        payment_type: paymentType,
+        agent_id: currentUser.id,
+        property_id: propertyId || null
+      }
+    });
+
+    if (error) throw new Error(error.message);
+    return data;
+  }
+
+  // Feature listing modal
+  window.showFeatureModal = function(propertyId) {
+    currentFeaturePropertyId = propertyId;
+    document.getElementById("featurePhone").value = "";
+    document.getElementById("featureMsg").textContent = "";
+    featureModal.style.display = "flex";
+  };
+
+  window.closeFeatureModal = function() {
+    featureModal.style.display = "none";
+  };
+
+  window.handleFeaturePayment = async function() {
+    const phone = document.getElementById("featurePhone").value.trim();
+    if (!phone) {
+      document.getElementById("featureMsg").textContent = "Please enter your M-Pesa number.";
+      return;
+    }
+    const btn = document.getElementById("featurePayBtn");
+    btn.disabled = true;
+    btn.textContent = "Sending...";
+    document.getElementById("featureMsg").textContent = "";
+
+    try {
+      await initiateMpesaPayment(phone, 500, "featured", currentFeaturePropertyId);
+      document.getElementById("featureMsg").textContent = "✅ Request sent! Check your phone and enter your M-Pesa PIN.";
+      document.getElementById("featurePhone").value = "";
+    } catch (err) {
+      document.getElementById("featureMsg").textContent = "❌ " + (err.message || "Payment request failed.");
+    } finally {
+      btn.disabled = false;
+      btn.textContent = "Send Payment Request";
+    }
+  };
+
+  // Subscribe modal
+  window.showSubscribeModal = function() {
+    document.getElementById("subscribePhone").value = "";
+    document.getElementById("subscribeMsg").textContent = "";
+    subscribeModal.style.display = "flex";
+  };
+
+  window.closeSubscribeModal = function() {
+    subscribeModal.style.display = "none";
+  };
+
+  window.handleSubscribePayment = async function() {
+    const phone = document.getElementById("subscribePhone").value.trim();
+    if (!phone) {
+      document.getElementById("subscribeMsg").textContent = "Please enter your M-Pesa number.";
+      return;
+    }
+    const btn = document.getElementById("subscribePayBtn");
+    btn.disabled = true;
+    btn.textContent = "Sending...";
+    document.getElementById("subscribeMsg").textContent = "";
+
+    try {
+      await initiateMpesaPayment(phone, 1000, "subscription");
+      document.getElementById("subscribeMsg").textContent = "✅ Request sent! Check your phone and enter your M-Pesa PIN.";
+      document.getElementById("subscribePhone").value = "";
+    } catch (err) {
+      document.getElementById("subscribeMsg").textContent = "❌ " + (err.message || "Payment request failed.");
+    } finally {
+      btn.disabled = false;
+      btn.textContent = "Send Payment Request";
+    }
   };
 
   // ---------- On page load, check existing session ----------
