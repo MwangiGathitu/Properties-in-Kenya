@@ -31,6 +31,25 @@
       color: #0f172a;
       text-decoration: none;
     }
+
+    /* 👇 NEW: Agent portal link button */
+    .agent-link {
+      background: #0070f3;
+      color: white;
+      padding: 0.5rem 1rem;
+      border-radius: 6px;
+      text-decoration: none;
+      font-size: 0.9rem;
+      font-weight: 500;
+      transition: background 0.2s;
+      white-space: nowrap;
+      margin-right: auto;  /* pushes search section to the right */
+      margin-left: 1.5rem;
+    }
+    .agent-link:hover {
+      background: #005bb5;
+    }
+
     .search-section {
       display: flex;
       flex-wrap: wrap;
@@ -185,6 +204,11 @@
         flex-direction: column;
         align-items: flex-start;
       }
+      .agent-link {
+        margin-left: 0;  /* remove extra margin on small screens */
+        width: 100%;
+        text-align: center;
+      }
       .search-section {
         flex-direction: column;
         width: 100%;
@@ -206,6 +230,9 @@
 
 <header>
   <a href="/" class="logo">🏡 Properties in Kenya</a>
+  <!-- 👇 NEW: Agent portal entry point -->
+  <a href="/agent.html" class="agent-link">🏢 List Your Property</a>
+
   <div class="search-section">
     <input type="text" id="search" placeholder="Search by title or location" />
     <div class="filter-group">
@@ -265,15 +292,12 @@
     const maxPrice = parseFloat(document.getElementById("maxPrice").value) || Infinity;
 
     let filtered = allProperties.filter(p => {
-      // search title & location
       const titleMatch = p.title?.toLowerCase().includes(searchTerm);
       const locationMatch = p.location?.toLowerCase().includes(searchTerm);
       const matchesSearch = !searchTerm || titleMatch || locationMatch;
 
-      // type filter (assuming property_type holds "for sale"/"for rent")
       const matchesType = typeFilter === "all" || (p.property_type?.toLowerCase() === typeFilter);
 
-      // price range
       const price = parseFloat(p.price) || 0;
       const matchesPrice = price >= minPrice && price <= maxPrice;
 
