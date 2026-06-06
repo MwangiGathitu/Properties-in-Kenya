@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Agent Portal — Properties in Kenya</title>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: Arial, sans-serif; background: #f4f4f4; color: #111; }
+    header {
+      background: white;
+      padding: 20px;
+      border-bottom: 1px solid #ddd;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    h1 { font-size: 20px; }
+    button {
+      padding: 8px 14px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 14px;
+    }
+    .btn-primary { background: #0070f3; color: white; }
+    .btn-success { background: #10b981; color: white; }
+    .btn-outline { background: transparent; border: 1px solid #0070f3; color: #0070f3; }
+    .btn-logout { background: #6b7280; color: white; }
+    .container { max-width: 900px; margin: 40px auto; padding: 0 20px; }
+
+    /* Auth forms */
+    .auth-box {
+      background: white;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+      max-width: 400px;
+      margin: 0 auto;
+    }
+    .auth-box input {
+      width: 100%;
+      padding: 10px;
+      margin: 8px 0;
+      border: 1px solid #d1d5db;
+      border-radius: 6px;
+      font-size: 14px;
+    }
+    .auth-box h2 { margin-bottom: 20px; font-size: 18px; }
+    .toggle-link { color: #0070f3; cursor: pointer; font-size: 14px; }
+    .error { color: red; font-size: 13px; margin-top: 10px; }
+
+    /* Dashboard */
+    .dashboard { display: none; }
+    .status-badge {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 10px;
+      font-size: 12px;
+      font-weight: bold;
+      margin-left: 6px;
+    }
+    .status-pending { background: #fef3c7; color: #92400e; }
+    .status-approved { background: #d1fae5; color: #065f46; }
+    .status-rejected { background: #fee2e2; color: #991b1b; }
+
+    .card {
+      background: white;
+      padding: 15px;
+      border-radius: 10px;
+      margin-bottom: 10px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    .card-info { flex: 1; }
+    .card-info h3 { font-size: 16px; }
+    .card-info p { font-size: 13px; color: #666; margin: 4px 0; }
+
+    /* Submission form */
+    .form-card {
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+      margin-bottom: 20px;
+    }
+    .form-card input, .form-card textarea, .form-card select {
+      width: 100%;
+      padding: 10px;
+      margin: 8px 0;
+      border: 1px solid #d1d5db;
+      border-radius: 6px;
+      font-size: 14px;
+    }
+    .form-row {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .form-row > * { flex: 1 1 180px; }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>🏡 Agent Portal</h1>
+  <div>
+    <span id="agentEmail" style="margin-right: 15px; font-size:14px; color:#555;"></span>
+    <button id="logoutBtn" class="btn-logout" style="display:none;" onclick="logout()">Logout</button>
+  </div>
+</header>
+
+<div class="container">
+  <!-- LOGIN / SIGNUP BOX (hidden when logged in) -->
+  <div id="authBox" class="auth-box">
+    <h2 id="authTitle">Agent Login</h2>
+    <input type="email" id="email" placeholder="Email" autocomplete="email">
+    <input type="password" id="password" placeholder="Password" autocomplete="current-password">
+    <input type="text" id="fullName" placeholder="Full Name" style="display:none;">
+    <br>
+    <button class="btn-primary" id="authSubmitBtn" onclick="handleAuth()">Log in</button>
+    <p id="authError" class="error"></p>
+    <p style="margin-top:15px;">
+      <span id="toggleText">Don't have an account?</span>
+      <span class="toggle-link" id="toggleAuthMode" onclick="toggleMode()">Sign up</span>
+    </p>
+  </div>
+
+  <!-- DASHBOARD (hidden until agent authenticated) -->
+  <div id="dashboard" class="dashboard">
+    <!-- New listing form -->
+    <div class="form-card">
+      <h3>Submit a Property</h3>
+      <div class="form-row">
+        <input type="text" id="title" placeholder="Title" required>
+        <input type="number" id="price" placeholder="Price (KES)" required>
+      </div>
+      <input type="text" id="location" placeholder="Location" required>
+      <div class="form-row">
+        <select id="propertyType">
+          <option value="">Select Type</option>
+          <option value="for sale">For Sale</option>
+          <option value="for rent">For Rent</option>
+        </select>
+        <input type="text" id="imageUrl" placeholder="Image URL (optional)">
+      </div>
+      <textarea id="description" rows="3" placeholder="Description"></textarea>
+      <button class="btn-success" onclick="submitProperty()">Submit for Approval</button>
+      <p id="submitMsg" style="margin-top:8px; font-size:13px;"></p>
+    </div>
+
+    <!-- My listings -->
+    <h3 style="margin-bottom:15px;">My Listings</h3>
+    <div id="myListings"></div>
+  </div>
+</div>
+
+<script>
+  const supabaseUrl = "https://nqwvsmuvltbiekfnvovx.supabase.co";
+  const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5xd3ZzbXV2bHRiaWVrZm52b3Z4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA1NjU4MDAsImV4cCI6MjA5NjE0MTgwMH0.Xrc-bbAuWdvKSPHnVhTaLiQphV61xeYtDepWePqsrdo";
+  const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
+
+  // ---------- State ----------
+  let currentUser = null;
+  let isSignUp = false; // toggle between login and signup
+
+  // DOM elements
+  const authBox = document.getElementById("authBox");
+  const authTitle = document.getElementById("authTitle");
+  const fullNameInput = document.getElementById("fullName");
+  const authSubmitBtn = document.getElementById("authSubmitBtn");
+  const authError = document.getElementById("authError");
+  const toggleText = document.getElementById("toggleText");
+  const toggleAuthMode = document.getElementById("toggleAuthMode");
+  const dashboard = document.getElementById("dashboard");
+  const agentEmailSpan = document.getElementById("agentEmail");
+  const logoutBtn = document.getElementById("logoutBtn");
+  const submitMsg = document.getElementById("submitMsg");
+
+  // ---------- Toggle login/signup ----------
+  window.toggleMode = function() {
+    isSignUp = !isSignUp;
+    if (isSignUp) {
+      authTitle.textContent = "Agent Sign Up";
+      authSubmitBtn.textContent = "Create Account";
+      toggleText.textContent = "Already have an account?";
+      toggleAuthMode.textContent = "Log in";
+      fullNameInput.style.display = "block";
+    } else {
+      authTitle.textContent = "Agent Login";
+      authSubmitBtn.textContent = "Log in";
+      toggleText.textContent = "Don't have an account?";
+      toggleAuthMode.textContent = "Sign up";
+      fullNameInput.style.display = "none";
+    }
+    authError.textContent = "";
+  };
+
+  // ---------- Auth handler ----------
+  window.handleAuth = async function() {
+    authError.textContent = "";
+    const email = document.getElementById("email").value.trim();
+    const password = document.getElementById("password").value;
+    const fullName = fullNameInput.value.trim();
+
+    if (!email || !password) {
+      authError.textContent = "Email and password are required.";
+      return;
+    }
+
+    if (isSignUp) {
+      // Sign up
+      if (!fullName) {
+        authError.textContent = "Full name is required.";
+        return;
+      }
+      const { data, error } = await supabaseClient.auth.signUp({
+        email,
+        password,
+        options: {
+          data: {
+            full_name: fullName,
+            role: 'agent'   // <-- This tells the trigger to create role='agent'
+          }
+        }
+      });
+      if (error) {
+        authError.textContent = error.message;
+        return;
+      }
+      // If email confirmation is on, tell user to check email
+      if (data.user && data.user.identities?.length === 0) {
+        authError.textContent = "Account created! Check your email to confirm.";
+      } else {
+        // Auto-signed in; go straight to dashboard
+        await checkAgentAndShow();
+      }
+    } else {
+      // Login
+      const { error } = await supabaseClient.auth.signInWithPassword({ email, password });
+      if (error) {
+        authError.textContent = error.message;
+        return;
+      }
+      await checkAgentAndShow();
+    }
+  };
+
+  // ---------- Logout ----------
+  window.logout = async function() {
+    await supabaseClient.auth.signOut();
+    currentUser = null;
+    authBox.style.display = "block";
+    dashboard.style.display = "none";
+    logoutBtn.style.display = "none";
+    agentEmailSpan.textContent = "";
+    document.getElementById("email").value = "";
+    document.getElementById("password").value = "";
+    fullNameInput.value = "";
+    // reset to login mode
+    if (isSignUp) window.toggleMode();
+  };
+
+  // ---------- Check agent role and show dashboard ----------
+  async function checkAgentAndShow() {
+    const { data: { user } } = await supabaseClient.auth.getUser();
+    if (!user) {
+      authBox.style.display = "block";
+      dashboard.style.display = "none";
+      return;
+    }
+
+    // fetch profile
+    const { data: profile, error } = await supabaseClient
+      .from("profiles")
+      .select("role, full_name")
+      .eq("id", user.id)
+      .single();
+
+    if (error || !profile || profile.role !== "agent") {
+      await supabaseClient.auth.signOut();
+      authError.textContent = "Access denied. This portal is for agents only.";
+      return;
+    }
+
+    // Agent confirmed
+    currentUser = user;
+    authBox.style.display = "none";
+    dashboard.style.display = "block";
+    logoutBtn.style.display = "inline-block";
+    agentEmailSpan.textContent = user.email;
+    loadMyListings();
+  }
+
+  // ---------- Load agent's own properties ----------
+  async function loadMyListings() {
+    if (!currentUser) return;
+    const container = document.getElementById("myListings");
+    container.innerHTML = "Loading...";
+
+    const { data, error } = await supabaseClient
+      .from("properties")
+      .select("*")
+      .eq("agent_id", currentUser.id)
+      .order("created_at", { ascending: false });
+
+    if (error) {
+      container.innerHTML = `<p style="color:red;">Error: ${error.message}</p>`;
+      return;
+    }
+
+    if (!data || data.length === 0) {
+      container.innerHTML = "<p>You haven't submitted any properties yet.</p>";
+      return;
+    }
+
+    container.innerHTML = data.map(p => `
+      <div class="card">
+        <div class="card-info">
+          <h3>${p.title || "Untitled"} <span class="status-badge status-${p.approval_status}">${p.approval_status}</span></h3>
+          <p>${p.location || ""} · KSh ${p.price ? Number(p.price).toLocaleString() : "—"}</p>
+          <p style="font-size:12px; color:#888;">Submitted ${new Date(p.created_at).toLocaleDateString()}</p>
+        </div>
+      </div>
+    `).join("");
+  }
+
+  // ---------- Submit a new property ----------
+  window.submitProperty = async function() {
+    if (!currentUser) {
+      alert("You must be logged in.");
+      return;
+    }
+
+    const title = document.getElementById("title").value.trim();
+    const price = document.getElementById("price").value.trim();
+    const location = document.getElementById("location").value.trim();
+    const propertyType = document.getElementById("propertyType").value;
+    const imageUrl = document.getElementById("imageUrl").value.trim();
+    const description = document.getElementById("description").value.trim();
+
+    if (!title || !price || !location || !propertyType) {
+      submitMsg.textContent = "Please fill in Title, Price, Location, and Type.";
+      submitMsg.style.color = "red";
+      return;
+    }
+
+    const { error } = await supabaseClient
+      .from("properties")
+      .insert([{
+        title,
+        price,
+        location,
+        property_type: propertyType,
+        image_url: imageUrl || null,
+        description,
+        approval_status: "pending",
+        agent_id: currentUser.id
+      }]);
+
+    if (error) {
+      submitMsg.textContent = "Error: " + error.message;
+      submitMsg.style.color = "red";
+      return;
+    }
+
+    // Clear form
+    ["title","price","location","propertyType","imageUrl","description"].forEach(id => {
+      document.getElementById(id).value = "";
+    });
+    submitMsg.textContent = "Property submitted for approval!";
+    submitMsg.style.color = "green";
+    loadMyListings();
+  };
+
+  // ---------- On page load, check existing session ----------
+  (async () => {
+    const { data: { session } } = await supabaseClient.auth.getSession();
+    if (session?.user) {
+      await checkAgentAndShow();
+    } else {
+      authBox.style.display = "block";
+      dashboard.style.display = "none";
+    }
+  })();
+</script>
+</body>
+</html>
