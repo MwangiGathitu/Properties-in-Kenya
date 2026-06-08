@@ -9,14 +9,14 @@
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
       font-family: 'Segoe UI', system-ui, sans-serif;
-      background: #f8f4eb; /* Light gold */
+      background: #f8f4eb; /* light gold */
       color: #1e293b;
     }
 
-    /* Mount Kenya Hero */
+    /* Hero with KICC background and map box */
     .hero {
-      background: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.5)), 
-                  url('https://picsum.photos/id/1015/2000/900') center/cover no-repeat; /* Mount Kenya */
+      background: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.5)),
+                  url('https://images.unsplash.com/photo-1590083948915-1a9e8f5b7b6a?q=80&w=2070&auto=format&fit=crop') center/cover no-repeat; /* KICC */
       color: white;
       padding: 4rem 1rem 3rem;
       position: relative;
@@ -30,13 +30,13 @@
       content: '';
       position: absolute;
       bottom: 40px;
-      left: 60px;
-      width: 240px;
-      height: 280px;
+      right: 40px; /* box on the right side */
+      width: 200px;
+      height: 200px;
       background: rgba(255,255,255,0.95);
       border-radius: 16px;
       box-shadow: 0 15px 35px rgba(0,0,0,0.3);
-      background-image: url('https://upload.wikimedia.org/wikipedia/commons/thumb/4/4a/Kenya_%28orthographic_projection%29.svg/800px-Kenya_%28orthographic_projection%29.svg.png');
+      background-image: url('https://upload.wikimedia.org/wikipedia/commons/thumb/6/61/Kenya_location_map.svg/800px-Kenya_location_map.svg.png');
       background-size: contain;
       background-repeat: no-repeat;
       background-position: center;
@@ -129,15 +129,10 @@
       box-shadow: 0 4px 12px rgba(0,0,0,0.1);
     }
 
-    /* Tabs & Cards */
-    .tabs { display: flex; background: white; border-bottom: 1px solid #e2e8f0; max-width: 1200px; margin: 0 auto; }
-    .tab { padding: 1rem 1.6rem; cursor: pointer; font-weight: 500; }
-    .tab.active { border-bottom: 4px solid #6b21a8; color: #6b21a8; }
-
     .container { max-width: 1200px; margin: 2rem auto; padding: 0 1rem; }
     #listings { display: flex; flex-direction: column; gap: 1.8rem; }
     .card {
-      background: #e0f2fe; /* Light blue */
+      background: #e0f2fe; /* light blue */
       border-radius: 16px;
       overflow: hidden;
       box-shadow: 0 6px 20px rgba(0,0,0,0.1);
@@ -150,7 +145,7 @@
     .card-title { font-size: 1.3rem; font-weight: 600; margin-bottom: 0.6rem; }
     .card-price { font-size: 1.5rem; font-weight: 700; color: #1e40af; margin-bottom: 0.8rem; }
 
-    /* Modal additions */
+    /* Modal */
     .image-rotator {
       position: relative;
       max-width: 100%;
@@ -193,7 +188,7 @@
     Properties in Kenya — Verified • Trusted • Transparent
   </header>
 
-  <!-- Mount Kenya Hero -->
+  <!-- Hero with KICC + map -->
   <div class="hero">
     <a href="/" class="logo">🏡 Properties in Kenya</a>
     <p class="tagline">The No.1 platform for verified property in Eastlands</p>
@@ -245,15 +240,7 @@
     </div>
   </div>
 
-  <!-- Main Tabs -->
-  <div class="tabs" id="tabs">
-    <div class="tab active" data-type="all">All</div>
-    <div class="tab" data-type="for sale">For Sale</div>
-    <div class="tab" data-type="for rent">For Rent</div>
-    <div class="tab" data-type="for lease">For Lease</div>
-    <div class="tab" data-type="project">Projects</div>
-  </div>
-
+  <!-- Only one category nav: the hero nav. Tabs removed. -->
   <div class="container">
     <div id="listings"></div>
   </div>
@@ -292,11 +279,10 @@
   const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
 
   let allProperties = [];
-  let marketStats = {}; // cache: area -> avg_price
+  let marketStats = {};
   let currentImages = [];
   let currentImageIndex = 0;
 
-  // Fetch market stats (average price per area)
   async function loadMarketStats() {
     const { data } = await supabaseClient
       .from("market_stats")
@@ -308,11 +294,8 @@
     }
   }
 
-  // Fetch properties and build market stats
   async function loadProperties() {
-    // Load market stats first to use in rendering
     await loadMarketStats();
-
     const { data } = await supabaseClient
       .from("properties")
       .select("*")
@@ -330,7 +313,6 @@
       const card = document.createElement("div");
       card.className = "card";
       card.onclick = () => openDetail(p);
-
       const img = p.image_url || (Array.isArray(p.images) && p.images.length ? p.images[0] : `https://picsum.photos/seed/${p.id}/600/400`);
       const price = p.price ? `KSh ${Number(p.price).toLocaleString()}` : "Price on request";
 
@@ -347,7 +329,6 @@
     });
   }
 
-  // Image rotator functions
   window.prevImage = function() {
     if (currentImages.length > 1) {
       currentImageIndex = (currentImageIndex - 1 + currentImages.length) % currentImages.length;
@@ -362,9 +343,7 @@
     }
   };
 
-  // Open detail modal with dynamic intelligence and WhatsApp
   window.openDetail = function(p) {
-    // Set images array
     if (Array.isArray(p.images) && p.images.length) {
       currentImages = p.images;
     } else if (p.image_url) {
@@ -380,7 +359,6 @@
     document.getElementById("modalDescription").textContent = p.description || "No description available.";
     document.getElementById("mainImage").src = currentImages[0];
 
-    // Market intelligence
     const area = (p.location || "").toLowerCase().trim();
     const intelBlock = document.getElementById("intelBlock");
     if (p.price && marketStats[area]) {
@@ -401,16 +379,13 @@
       intelBlock.style.display = "none";
     }
 
-    // WhatsApp link
     const waBtn = document.getElementById("modalWA");
     const phone = p.agent_phone ? p.agent_phone.replace(/\D/g, '') : null;
     if (phone) {
-      // Format: international number without +
       waBtn.href = `https://wa.me/${phone}?text=Hi%2C+I'm+interested+in+${encodeURIComponent(p.title || 'this property')}`;
       waBtn.style.display = "inline-flex";
     } else {
       waBtn.style.display = "none";
-      console.warn("No agent_phone for property", p.id);
     }
 
     document.getElementById("detailModal").style.display = "flex";
@@ -418,7 +393,6 @@
 
   window.closeModal = () => document.getElementById("detailModal").style.display = "none";
 
-  // Apply filters (client-side)
   function applyFilters() {
     const term = document.getElementById("mainSearch").value.toLowerCase().trim();
     const location = document.getElementById("locationFilter").value.toLowerCase().trim();
@@ -435,18 +409,6 @@
     renderListings(filtered);
   }
 
-  // Tab switching
-  document.querySelectorAll('.tab').forEach(tab => {
-    tab.addEventListener('click', () => {
-      document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-      tab.classList.add('active');
-      const type = tab.dataset.type;
-      const filtered = type === 'all' ? allProperties : allProperties.filter(p => (p.property_type || "").toLowerCase().includes(type));
-      renderListings(filtered);
-    });
-  });
-
-  // Initial load
   loadProperties();
 </script>
 </body>
