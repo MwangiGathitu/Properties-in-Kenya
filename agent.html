@@ -7,10 +7,10 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: Arial, sans-serif; background: #f4f4f4; color: #111; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #f4f4f4; color: #111; }
     header {
       background: white;
-      padding: 20px;
+      padding: 16px 20px;
       border-bottom: 1px solid #ddd;
       display: flex;
       justify-content: space-between;
@@ -20,7 +20,7 @@
     }
     h1 { font-size: 20px; }
     button {
-      padding: 8px 14px;
+      padding: 10px 16px;
       border: none;
       border-radius: 6px;
       cursor: pointer;
@@ -31,59 +31,23 @@
     .btn-warning { background: #f59e0b; color: white; }
     .btn-outline { background: transparent; border: 1px solid #0070f3; color: #0070f3; }
     .btn-logout { background: #6b7280; color: white; }
-    .container { max-width: 900px; margin: 40px auto; padding: 0 20px; }
-
-    /* Auth forms */
+    .container { max-width: 900px; margin: 30px auto; padding: 0 20px; }
     .auth-box {
       background: white;
       padding: 30px;
       border-radius: 10px;
       box-shadow: 0 1px 4px rgba(0,0,0,0.08);
-      max-width: 400px;
+      max-width: 420px;
       margin: 0 auto;
     }
     .auth-box input {
       width: 100%;
-      padding: 10px;
+      padding: 12px;
       margin: 8px 0;
       border: 1px solid #d1d5db;
       border-radius: 6px;
-      font-size: 14px;
+      font-size: 16px;
     }
-    .auth-box h2 { margin-bottom: 20px; font-size: 18px; }
-    .toggle-link { color: #0070f3; cursor: pointer; font-size: 14px; }
-    .error { color: red; font-size: 13px; margin-top: 10px; }
-
-    /* Dashboard */
-    .dashboard { display: none; }
-    .status-badge {
-      display: inline-block;
-      padding: 2px 8px;
-      border-radius: 10px;
-      font-size: 12px;
-      font-weight: bold;
-      margin-left: 6px;
-    }
-    .status-pending { background: #fef3c7; color: #92400e; }
-    .status-approved { background: #d1fae5; color: #065f46; }
-    .status-rejected { background: #fee2e2; color: #991b1b; }
-
-    .card {
-      background: white;
-      padding: 15px;
-      border-radius: 10px;
-      margin-bottom: 10px;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.06);
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      flex-wrap: wrap;
-    }
-    .card-info { flex: 1; }
-    .card-info h3 { font-size: 16px; }
-    .card-info p { font-size: 13px; color: #666; margin: 4px 0; }
-
-    /* Submission form */
     .form-card {
       background: white;
       padding: 20px;
@@ -93,37 +57,44 @@
     }
     .form-card input, .form-card textarea, .form-card select {
       width: 100%;
-      padding: 10px;
+      padding: 12px;
       margin: 8px 0;
       border: 1px solid #d1d5db;
       border-radius: 6px;
-      font-size: 14px;
+      font-size: 16px;
     }
-    .form-row {
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
+    .form-row { display: flex; gap: 12px; flex-wrap: wrap; }
+    .form-row > * { flex: 1 1 220px; }
+    .card {
+      background: white;
+      padding: 16px;
+      border-radius: 10px;
+      margin-bottom: 12px;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.08);
     }
-    .form-row > * { flex: 1 1 180px; }
-
-    /* Payment modal */
+    .status-badge {
+      display: inline-block;
+      padding: 4px 10px;
+      border-radius: 9999px;
+      font-size: 13px;
+      font-weight: 600;
+    }
+    .status-pending { background: #fef3c7; color: #92400e; }
+    .status-approved { background: #d1fae5; color: #065f46; }
+    .status-rejected { background: #fee2e2; color: #991b1b; }
     .modal-overlay {
       position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-      background: rgba(0,0,0,0.5);
-      display: none; justify-content: center; align-items: center;
+      background: rgba(0,0,0,0.6); display: none; justify-content: center; align-items: center; z-index: 1000;
     }
     .modal-content {
       background: white; padding: 25px; border-radius: 10px;
-      width: 90%; max-width: 400px;
+      width: 90%; max-width: 420px;
     }
-    .modal-content h3 { margin-bottom: 15px; }
-    .modal-content input {
-      width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px; margin-bottom: 15px;
-    }
+    .error { color: #ef4444; margin-top: 8px; font-size: 14px; }
+    button:disabled { opacity: 0.7; cursor: not-allowed; }
   </style>
 </head>
 <body>
-
 <header>
   <h1>🏡 Agent Portal</h1>
   <div>
@@ -133,77 +104,63 @@
 </header>
 
 <div class="container">
-  <!-- LOGIN / SIGNUP BOX (hidden when logged in) -->
+  <!-- Auth -->
   <div id="authBox" class="auth-box">
     <h2 id="authTitle">Agent Login</h2>
     <input type="email" id="email" placeholder="Email" autocomplete="email">
     <input type="password" id="password" placeholder="Password" autocomplete="current-password">
     <input type="text" id="fullName" placeholder="Full Name" style="display:none;">
-    <br>
     <button class="btn-primary" id="authSubmitBtn" onclick="handleAuth()">Log in</button>
     <p id="authError" class="error"></p>
-    <p style="margin-top:15px;">
+    <p style="margin-top:15px; text-align:center;">
       <span id="toggleText">Don't have an account?</span>
-      <span class="toggle-link" id="toggleAuthMode" onclick="toggleMode()">Sign up</span>
+      <span class="toggle-link" id="toggleAuthMode" onclick="toggleMode()" style="color:#0070f3; cursor:pointer;">Sign up</span>
     </p>
   </div>
 
-  <!-- DASHBOARD (hidden until agent authenticated) -->
-  <div id="dashboard" class="dashboard">
-    <!-- Subscription section -->
+  <!-- Dashboard -->
+  <div id="dashboard" style="display:none;">
     <div class="form-card">
-      <h3>Account</h3>
-      <p id="subscriptionStatus" style="font-size:14px; color:#555;"></p>
-      <button id="subscribeBtn" class="btn-warning" onclick="showSubscribeModal()" style="display:none;">
-        💎 Subscribe – KES 1,000 / month
+      <h3>Account Status</h3>
+      <p id="subscriptionStatus" style="font-size:15px;"></p>
+      <button id="subscribeBtn" class="btn-warning" onclick="showSubscribeModal()" style="display:none; margin-top:10px;">
+        💎 Subscribe – KES 1,000/month
       </button>
     </div>
 
-    <!-- New listing form -->
     <div class="form-card">
-      <h3>Submit a Property</h3>
+      <h3>Submit New Property</h3>
       <div class="form-row">
-        <input type="text" id="title" placeholder="Title" required>
+        <input type="text" id="title" placeholder="Property Title" required>
         <input type="number" id="price" placeholder="Price (KES)" required>
       </div>
-      <input type="text" id="location" placeholder="Location" required>
+      <input type="text" id="location" placeholder="Location (e.g. Ruai Phase 5)" required>
       <div class="form-row">
         <select id="propertyType">
-          <option value="">Select Type</option>
+          <option value="">Property Type</option>
           <option value="for sale">For Sale</option>
           <option value="for rent">For Rent</option>
         </select>
-        <input type="text" id="imageUrl" placeholder="Image URL (optional)">
+        <input type="text" id="imageUrl" placeholder="Main Image URL (optional)">
       </div>
-      <textarea id="description" rows="3" placeholder="Description"></textarea>
-      <button class="btn-success" onclick="submitProperty()">Submit for Approval</button>
-      <p id="submitMsg" style="margin-top:8px; font-size:13px;"></p>
+      <textarea id="description" rows="4" placeholder="Description (optional)"></textarea>
+      <button class="btn-success" onclick="submitProperty()" style="width:100%; margin-top:10px;">Submit for Approval</button>
+      <p id="submitMsg" class="error"></p>
     </div>
 
-    <!-- My listings -->
-    <h3 style="margin-bottom:15px;">My Listings</h3>
+    <h3 style="margin: 20px 0 12px;">My Listings</h3>
     <div id="myListings"></div>
   </div>
+</div>
 
-  <!-- MODALS FOR PAYMENTS -->
-  <div id="featureModal" class="modal-overlay">
-    <div class="modal-content">
-      <h3>⭐ Feature this listing – KES 500</h3>
-      <input type="tel" id="featurePhone" placeholder="M‑Pesa number (0712 345678)">
-      <button class="btn-primary" id="featurePayBtn" onclick="handleFeaturePayment()">Send Payment Request</button>
-      <button class="btn-outline" onclick="closeFeatureModal()">Cancel</button>
-      <p id="featureMsg" style="font-size:13px; margin-top:10px;"></p>
-    </div>
-  </div>
-
-  <div id="subscribeModal" class="modal-overlay">
-    <div class="modal-content">
-      <h3>💎 Subscribe – KES 1,000 / month</h3>
-      <input type="tel" id="subscribePhone" placeholder="M‑Pesa number (0712 345678)">
-      <button class="btn-warning" id="subscribePayBtn" onclick="handleSubscribePayment()">Send Payment Request</button>
-      <button class="btn-outline" onclick="closeSubscribeModal()">Cancel</button>
-      <p id="subscribeMsg" style="font-size:13px; margin-top:10px;"></p>
-    </div>
+<!-- Modals -->
+<div id="subscribeModal" class="modal-overlay">
+  <div class="modal-content">
+    <h3>💎 Monthly Subscription – KES 1,000</h3>
+    <input type="tel" id="subscribePhone" placeholder="M-Pesa Number (0712345678)">
+    <button class="btn-warning" id="subscribePayBtn" onclick="handleSubscribePayment()" style="width:100%; margin:10px 0;">Send M-Pesa Request</button>
+    <button class="btn-outline" onclick="closeSubscribeModal()" style="width:100%;">Cancel</button>
+    <p id="subscribeMsg" class="error"></p>
   </div>
 </div>
 
@@ -212,39 +169,32 @@
   const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5xd3ZzbXV2bHRiaWVrZm52b3Z4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA1NjU4MDAsImV4cCI6MjA5NjE0MTgwMH0.Xrc-bbAuWdvKSPHnVhTaLiQphV61xeYtDepWePqsrdo";
   const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
 
-  // ---------- State ----------
   let currentUser = null;
-  let isSignUp = false; // toggle between login and signup
-  let currentFeaturePropertyId = null; // set when opening feature modal
+  let isSignUp = false;
 
-  // DOM elements
+  // DOM
   const authBox = document.getElementById("authBox");
+  const dashboard = document.getElementById("dashboard");
   const authTitle = document.getElementById("authTitle");
-  const fullNameInput = document.getElementById("fullName");
-  const authSubmitBtn = document.getElementById("authSubmitBtn");
   const authError = document.getElementById("authError");
   const toggleText = document.getElementById("toggleText");
   const toggleAuthMode = document.getElementById("toggleAuthMode");
-  const dashboard = document.getElementById("dashboard");
+  const fullNameInput = document.getElementById("fullName");
   const agentEmailSpan = document.getElementById("agentEmail");
   const logoutBtn = document.getElementById("logoutBtn");
   const submitMsg = document.getElementById("submitMsg");
 
-  const featureModal = document.getElementById("featureModal");
-  const subscribeModal = document.getElementById("subscribeModal");
-
-  // ---------- Toggle login/signup ----------
   window.toggleMode = function() {
     isSignUp = !isSignUp;
     if (isSignUp) {
       authTitle.textContent = "Agent Sign Up";
-      authSubmitBtn.textContent = "Create Account";
+      document.getElementById("authSubmitBtn").textContent = "Create Account";
       toggleText.textContent = "Already have an account?";
       toggleAuthMode.textContent = "Log in";
       fullNameInput.style.display = "block";
     } else {
       authTitle.textContent = "Agent Login";
-      authSubmitBtn.textContent = "Log in";
+      document.getElementById("authSubmitBtn").textContent = "Log in";
       toggleText.textContent = "Don't have an account?";
       toggleAuthMode.textContent = "Sign up";
       fullNameInput.style.display = "none";
@@ -252,120 +202,68 @@
     authError.textContent = "";
   };
 
-  // ---------- Auth handler ----------
   window.handleAuth = async function() {
     authError.textContent = "";
     const email = document.getElementById("email").value.trim();
     const password = document.getElementById("password").value;
     const fullName = fullNameInput.value.trim();
 
-    if (!email || !password) {
-      authError.textContent = "Email and password are required.";
-      return;
-    }
+    if (!email || !password) return authError.textContent = "Email and password required.";
 
     if (isSignUp) {
-      // Sign up
-      if (!fullName) {
-        authError.textContent = "Full name is required.";
-        return;
-      }
+      if (!fullName) return authError.textContent = "Full name required.";
       const { data, error } = await supabaseClient.auth.signUp({
-        email,
-        password,
-        options: {
-          data: {
-            full_name: fullName,
-            role: 'agent'   // <-- This tells the trigger to create role='agent'
-          }
-        }
+        email, password,
+        options: { data: { full_name: fullName, role: 'agent' } }
       });
-      if (error) {
-        authError.textContent = error.message;
-        return;
-      }
-      // If email confirmation is on, tell user to check email
-      if (data.user && data.user.identities?.length === 0) {
-        authError.textContent = "Account created! Check your email to confirm.";
-      } else {
-        // Auto-signed in; go straight to dashboard
-        await checkAgentAndShow();
-      }
+      if (error) return authError.textContent = error.message;
+      authError.style.color = "green";
+      authError.textContent = "Account created! Check email to confirm (if required).";
     } else {
-      // Login
       const { error } = await supabaseClient.auth.signInWithPassword({ email, password });
-      if (error) {
-        authError.textContent = error.message;
-        return;
-      }
+      if (error) return authError.textContent = error.message;
       await checkAgentAndShow();
     }
   };
 
-  // ---------- Logout ----------
-  window.logout = async function() {
-    await supabaseClient.auth.signOut();
-    currentUser = null;
-    authBox.style.display = "block";
-    dashboard.style.display = "none";
-    logoutBtn.style.display = "none";
-    agentEmailSpan.textContent = "";
-    document.getElementById("email").value = "";
-    document.getElementById("password").value = "";
-    fullNameInput.value = "";
-    // reset to login mode
-    if (isSignUp) window.toggleMode();
-  };
-
-  // ---------- Check agent role and show dashboard ----------
   async function checkAgentAndShow() {
     const { data: { user } } = await supabaseClient.auth.getUser();
-    if (!user) {
-      authBox.style.display = "block";
-      dashboard.style.display = "none";
-      return;
-    }
+    if (!user) return;
 
-    // fetch profile
-    const { data: profile, error } = await supabaseClient
+    const { data: profile } = await supabaseClient
       .from("profiles")
       .select("role, full_name, subscribed, subscribed_until")
       .eq("id", user.id)
       .single();
 
-    if (error || !profile || profile.role !== "agent") {
+    if (!profile || profile.role !== "agent") {
       await supabaseClient.auth.signOut();
-      authError.textContent = "Access denied. This portal is for agents only.";
+      authError.textContent = "Access denied.";
       return;
     }
 
-    // Agent confirmed
     currentUser = user;
     authBox.style.display = "none";
     dashboard.style.display = "block";
     logoutBtn.style.display = "inline-block";
     agentEmailSpan.textContent = user.email;
 
-    // Update subscription status display
     const subStatus = document.getElementById("subscriptionStatus");
-    const subscribeBtn = document.getElementById("subscribeBtn");
-    if (profile.subscribed) {
-      const until = new Date(profile.subscribed_until);
-      subStatus.textContent = `✅ You are subscribed until ${until.toLocaleDateString()}.`;
-      subscribeBtn.style.display = "none";
+    const subBtn = document.getElementById("subscribeBtn");
+    if (profile.subscribed && new Date(profile.subscribed_until) > new Date()) {
+      subStatus.innerHTML = `✅ Subscribed until <strong>${new Date(profile.subscribed_until).toLocaleDateString()}</strong>`;
+      subBtn.style.display = "none";
     } else {
-      subStatus.textContent = "⏳ You are not subscribed. Unlock unlimited listings and priority approval.";
-      subscribeBtn.style.display = "inline-block";
+      subStatus.textContent = "⏳ Not subscribed. Subscribe to list unlimited properties.";
+      subBtn.style.display = "inline-block";
     }
 
     loadMyListings();
   }
 
-  // ---------- Load agent's own properties ----------
   async function loadMyListings() {
-    if (!currentUser) return;
     const container = document.getElementById("myListings");
-    container.innerHTML = "Loading...";
+    container.innerHTML = "Loading your listings...";
 
     const { data, error } = await supabaseClient
       .from("properties")
@@ -373,185 +271,106 @@
       .eq("agent_id", currentUser.id)
       .order("created_at", { ascending: false });
 
-    if (error) {
-      container.innerHTML = `<p style="color:red;">Error: ${error.message}</p>`;
+    if (error || !data) return container.innerHTML = `<p style="color:red;">Error loading listings.</p>`;
+
+    if (data.length === 0) {
+      container.innerHTML = "<p>You have no listings yet. Submit one above.</p>";
       return;
     }
 
-    if (!data || data.length === 0) {
-      container.innerHTML = "<p>You haven't submitted any properties yet.</p>";
-      return;
-    }
-
-    container.innerHTML = data.map(p => {
-      const isApproved = p.approval_status === "approved";
-      const featureBtn = isApproved
-        ? `<button class="btn-primary" onclick="showFeatureModal('${p.id}')" style="margin-top:8px;">⭐ Feature – KES 500</button>`
-        : `<button class="btn-outline" disabled style="margin-top:8px;">⭐ Feature (available after approval)</button>`;
-
-      return `
-        <div class="card">
-          <div class="card-info">
-            <h3>${p.title || "Untitled"} <span class="status-badge status-${p.approval_status}">${p.approval_status}</span></h3>
-            <p>${p.location || ""} · KSh ${p.price ? Number(p.price).toLocaleString() : "—"}</p>
-            <p style="font-size:12px; color:#888;">Submitted ${new Date(p.created_at).toLocaleDateString()}</p>
-            ${featureBtn}
-          </div>
-        </div>
-      `;
-    }).join("");
+    container.innerHTML = data.map(p => `
+      <div class="card">
+        <h3>${p.title} <span class="status-badge status-${p.approval_status}">${p.approval_status.toUpperCase()}</span></h3>
+        <p>${p.location} • KSh ${Number(p.price).toLocaleString()}</p>
+        ${p.approval_status === 'approved' ? `<button class="btn-primary" onclick="alert('Feature coming soon - KES 500')">⭐ Feature Listing</button>` : ''}
+      </div>
+    `).join('');
   }
 
-  // ---------- Submit a new property ----------
   window.submitProperty = async function() {
-    if (!currentUser) {
-      alert("You must be logged in.");
-      return;
-    }
+    if (!currentUser) return alert("Please log in.");
+    submitMsg.textContent = "";
 
     const title = document.getElementById("title").value.trim();
-    const price = document.getElementById("price").value.trim();
+    const price = document.getElementById("price").value;
     const location = document.getElementById("location").value.trim();
     const propertyType = document.getElementById("propertyType").value;
     const imageUrl = document.getElementById("imageUrl").value.trim();
     const description = document.getElementById("description").value.trim();
 
     if (!title || !price || !location || !propertyType) {
-      submitMsg.textContent = "Please fill in Title, Price, Location, and Type.";
-      submitMsg.style.color = "red";
+      submitMsg.textContent = "Title, Price, Location and Type are required.";
       return;
     }
 
-    const { error } = await supabaseClient
-      .from("properties")
-      .insert([{
-        title,
-        price,
-        location,
-        property_type: propertyType,
-        image_url: imageUrl || null,
-        description,
-        approval_status: "pending",
-        agent_id: currentUser.id
-      }]);
+    const { error } = await supabaseClient.from("properties").insert([{
+      title, price: parseFloat(price), location, property_type: propertyType,
+      image_url: imageUrl || null, description,
+      approval_status: "pending", agent_id: currentUser.id
+    }]);
 
     if (error) {
       submitMsg.textContent = "Error: " + error.message;
-      submitMsg.style.color = "red";
       return;
     }
+
+    submitMsg.style.color = "green";
+    submitMsg.textContent = "✅ Property submitted for approval!";
+    loadMyListings();
 
     // Clear form
-    ["title","price","location","propertyType","imageUrl","description"].forEach(id => {
-      document.getElementById(id).value = "";
-    });
-    submitMsg.textContent = "Property submitted for approval!";
-    submitMsg.style.color = "green";
-    loadMyListings();
+    document.getElementById("title").value = "";
+    document.getElementById("price").value = "";
+    document.getElementById("location").value = "";
+    document.getElementById("propertyType").value = "";
+    document.getElementById("imageUrl").value = "";
+    document.getElementById("description").value = "";
   };
 
-  // ---------- PAYMENT FUNCTIONS ----------
-
-  // Generic M-Pesa STK push caller
-  async function initiateMpesaPayment(phone, amount, paymentType, propertyId = null) {
-    // Normalize phone to 254XXXXXXXXX
-    let formatted = phone.trim().replace(/\s+/g, '');
-    if (formatted.startsWith('0')) formatted = '254' + formatted.slice(1);
-    if (formatted.startsWith('+254')) formatted = formatted.slice(1);
-    if (!formatted.startsWith('254')) formatted = '254' + formatted;
-
-    const { data, error } = await supabaseClient.functions.invoke('mpesa-stk', {
-      body: {
-        phone: formatted,
-        amount,
-        payment_type: paymentType,
-        agent_id: currentUser.id,
-        property_id: propertyId || null
-      }
-    });
-
-    if (error) throw new Error(error.message);
-    return data;
-  }
-
-  // Feature listing modal
-  window.showFeatureModal = function(propertyId) {
-    currentFeaturePropertyId = propertyId;
-    document.getElementById("featurePhone").value = "";
-    document.getElementById("featureMsg").textContent = "";
-    featureModal.style.display = "flex";
-  };
-
-  window.closeFeatureModal = function() {
-    featureModal.style.display = "none";
-  };
-
-  window.handleFeaturePayment = async function() {
-    const phone = document.getElementById("featurePhone").value.trim();
-    if (!phone) {
-      document.getElementById("featureMsg").textContent = "Please enter your M-Pesa number.";
-      return;
-    }
-    const btn = document.getElementById("featurePayBtn");
-    btn.disabled = true;
-    btn.textContent = "Sending...";
-    document.getElementById("featureMsg").textContent = "";
-
-    try {
-      await initiateMpesaPayment(phone, 500, "featured", currentFeaturePropertyId);
-      document.getElementById("featureMsg").textContent = "✅ Request sent! Check your phone and enter your M-Pesa PIN.";
-      document.getElementById("featurePhone").value = "";
-    } catch (err) {
-      document.getElementById("featureMsg").textContent = "❌ " + (err.message || "Payment request failed.");
-    } finally {
-      btn.disabled = false;
-      btn.textContent = "Send Payment Request";
-    }
-  };
-
-  // Subscribe modal
-  window.showSubscribeModal = function() {
-    document.getElementById("subscribePhone").value = "";
-    document.getElementById("subscribeMsg").textContent = "";
-    subscribeModal.style.display = "flex";
-  };
-
-  window.closeSubscribeModal = function() {
-    subscribeModal.style.display = "none";
-  };
+  // M-Pesa (placeholder - needs working Edge Function)
+  window.showSubscribeModal = () => document.getElementById("subscribeModal").style.display = "flex";
+  window.closeSubscribeModal = () => document.getElementById("subscribeModal").style.display = "none";
 
   window.handleSubscribePayment = async function() {
     const phone = document.getElementById("subscribePhone").value.trim();
-    if (!phone) {
-      document.getElementById("subscribeMsg").textContent = "Please enter your M-Pesa number.";
-      return;
-    }
+    if (!phone) return document.getElementById("subscribeMsg").textContent = "Enter M-Pesa number";
+
+    const msgEl = document.getElementById("subscribeMsg");
     const btn = document.getElementById("subscribePayBtn");
     btn.disabled = true;
     btn.textContent = "Sending...";
-    document.getElementById("subscribeMsg").textContent = "";
 
     try {
-      await initiateMpesaPayment(phone, 1000, "subscription");
-      document.getElementById("subscribeMsg").textContent = "✅ Request sent! Check your phone and enter your M-Pesa PIN.";
-      document.getElementById("subscribePhone").value = "";
+      // This is where the critical Edge Function is called
+      const { data, error } = await supabaseClient.functions.invoke('mpesa-stk', {
+        body: { phone, amount: 1000, payment_type: "subscription", agent_id: currentUser.id }
+      });
+
+      if (error) throw error;
+      msgEl.style.color = "green";
+      msgEl.textContent = "✅ M-Pesa request sent! Check your phone.";
+      setTimeout(() => closeSubscribeModal(), 4000);
     } catch (err) {
-      document.getElementById("subscribeMsg").textContent = "❌ " + (err.message || "Payment request failed.");
+      msgEl.textContent = "❌ " + (err.message || "Failed to send request.");
     } finally {
       btn.disabled = false;
-      btn.textContent = "Send Payment Request";
+      btn.textContent = "Send M-Pesa Request";
     }
   };
 
-  // ---------- On page load, check existing session ----------
+  window.logout = async () => {
+    await supabaseClient.auth.signOut();
+    currentUser = null;
+    authBox.style.display = "block";
+    dashboard.style.display = "none";
+    logoutBtn.style.display = "none";
+  };
+
+  // Init
   (async () => {
     const { data: { session } } = await supabaseClient.auth.getSession();
-    if (session?.user) {
-      await checkAgentAndShow();
-    } else {
-      authBox.style.display = "block";
-      dashboard.style.display = "none";
-    }
+    if (session?.user) await checkAgentAndShow();
+    else authBox.style.display = "block";
   })();
 </script>
 </body>
