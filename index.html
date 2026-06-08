@@ -18,7 +18,7 @@
       background: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.5)),
                   url('https://picsum.photos/id/1015/2000/900') center/cover no-repeat; /* Mt Kenya landscape */
       color: white;
-      padding: 5rem 1rem 4rem; /* extra space for map box */
+      padding: 5rem 1rem 4rem;
       position: relative;
       text-align: center;
       min-height: 520px;
@@ -28,25 +28,8 @@
       align-items: center;
     }
 
-    /* Square Kenya map box (right side) */
-    .map-box {
-      position: absolute;
-      bottom: 30px;
-      right: 30px;
-      width: 180px;
-      height: 180px;
-      background: rgba(255,255,255,0.95);
-      border-radius: 16px;
-      box-shadow: 0 12px 30px rgba(0,0,0,0.3);
-      background-image: url('https://upload.wikimedia.org/wikipedia/commons/thumb/6/61/Kenya_location_map.svg/800px-Kenya_location_map.svg.png');
-      background-size: contain;
-      background-repeat: no-repeat;
-      background-position: center;
-      z-index: 2;
-    }
-
     .logo {
-      font-size: 3rem; /* made bigger for central focus */
+      font-size: 3rem;
       font-weight: 800;
       text-decoration: none;
       color: white;
@@ -150,7 +133,7 @@
     .card-title { font-size: 1.3rem; font-weight: 600; margin-bottom: 0.6rem; }
     .card-price { font-size: 1.5rem; font-weight: 700; color: #1e40af; margin-bottom: 0.8rem; }
 
-    /* Modal (unchanged from previous working version) */
+    /* Modal (unchanged) */
     .image-rotator {
       position: relative;
       max-width: 100%;
@@ -185,10 +168,8 @@
       margin: 10px 0;
     }
 
-    /* Responsive adjustments */
     @media (max-width: 700px) {
       .hero { min-height: 400px; padding: 3rem 1rem; }
-      .map-box { width: 120px; height: 120px; bottom: 15px; right: 15px; }
       .card { flex-direction: column; }
       .card img { width: 100%; height: 200px; }
     }
@@ -201,10 +182,8 @@
     Properties in Kenya — Verified • Trusted • Transparent
   </header>
 
-  <!-- Hero with Mt Kenya background, central heading, and map box -->
+  <!-- Hero with Mt Kenya background, no map box -->
   <div class="hero">
-    <div class="map-box" title="Map of Kenya"></div>
-
     <a href="/" class="logo">🏡 Properties in Kenya</a>
     <p class="tagline">The No.1 platform for verified property in Eastlands</p>
 
