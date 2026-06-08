@@ -63,20 +63,9 @@ body {
   transition: 0.2s;
 }
 .card:hover { transform: scale(1.02); }
-.card img {
-  width: 260px;
-  object-fit: cover;
-}
-.card-body {
-  padding: 1.2rem;
-  flex: 1;
-}
-.badges {
-  display: flex;
-  gap: 6px;
-  flex-wrap: wrap;
-  margin-bottom: 8px;
-}
+.card img { width: 260px; object-fit: cover; }
+.card-body { padding: 1.2rem; flex: 1; }
+.badges { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 8px; }
 .badge {
   font-size: 11px;
   padding: 4px 9px;
@@ -85,18 +74,9 @@ body {
   color: #3730a3;
   font-weight: 500;
 }
-.price {
-  font-size: 1.35rem;
-  font-weight: bold;
-  color: #1e40af;
-  margin: 6px 0;
-}
+.price { font-size: 1.35rem; font-weight: bold; color: #1e40af; margin: 6px 0; }
 .meta { font-size: 13px; color: #475569; margin: 6px 0; }
-.actions {
-  margin-top: 12px;
-  display: flex;
-  gap: 10px;
-}
+.actions { margin-top: 12px; display: flex; gap: 10px; }
 .btn {
   padding: 10px 14px;
   border-radius: 8px;
@@ -169,6 +149,7 @@ body {
   margin: 15px 0;
   font-size: 14px;
 }
+.close { cursor: pointer; font-size: 22px; }
 </style>
 </head>
 <body>
@@ -200,7 +181,6 @@ body {
 
         <h3 id="m-price" style="margin-top:12px; color:#1e40af;"></h3>
         <p id="m-desc" style="margin:12px 0; line-height:1.7;"></p>
-        
         <div class="intel" id="m-intel"></div>
       </div>
 
@@ -223,17 +203,17 @@ body {
 </div>
 
 <script>
-const supabase = supabase.createClient(
-  "https://nqwvsmuvltbiekfnvovx.supabase.co",
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5xd3ZzbXV2bHRiaWVrZm52b3Z4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA1NjU4MDAsImV4cCI6MjA5NjE0MTgwMH0.Xrc-bbAuWdvKSPHnVhTaLiQphV61xeYtDepWePqsrdo"
-);
+const supabaseUrl = "https://nqwvsmuvltbiekfnvovx.supabase.co";
+const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5xd3ZzbXV2bHRiaWVrZm52b3Z4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA1NjU4MDAsImV4cCI6MjA5NjE0MTgwMH0.Xrc-bbAuWdvKSPHnVhTaLiQphV61xeYtDepWePqsrdo";
+
+const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
 
 let properties = [];
 let savedProperties = JSON.parse(localStorage.getItem("savedProperties") || "[]");
 let currentId = null;
 
 async function load() {
-  const { data } = await supabase
+  const { data } = await supabaseClient
     .from("properties")
     .select("*")
     .eq("approval_status", "approved")
@@ -278,23 +258,14 @@ window.openModal = function(p) {
   document.getElementById("m-title").innerText = p.title;
   document.getElementById("m-img").src = p.image_url || 'https://picsum.photos/800';
   document.getElementById("m-price").innerText = "KES " + Number(p.price).toLocaleString();
-  document.getElementById("m-desc").innerText = p.description || "Prime verified property ready for immediate viewing.";
+  document.getElementById("m-desc").innerText = p.description || "Prime verified property in a high-demand location.";
 
-  // Multiple Image Gallery
   const gallery = document.getElementById("gallery");
   gallery.innerHTML = `
     <img src="${p.image_url}" class="thumb active" onclick="changeImage(this)">
     <img src="https://picsum.photos/id/${p.id}1/600" class="thumb" onclick="changeImage(this)">
     <img src="https://picsum.photos/id/${p.id}2/600" class="thumb" onclick="changeImage(this)">
     <img src="https://picsum.photos/id/${p.id}3/600" class="thumb" onclick="changeImage(this)">
-  `;
-
-  document.getElementById("m-intel").innerHTML = `
-    <b>Market Intelligence</b><br><br>
-    Avg price in area: KES 14.2M<br>
-    This listing: KES ${Number(p.price).toLocaleString()}<br>
-    <span style="color:#16a34a;">● 8% below market value</span><br><br>
-    Demand: High • 14 inquiries this week
   `;
 };
 
@@ -305,7 +276,7 @@ window.changeImage = function(img) {
 };
 
 window.requestLocation = function(id) {
-  alert(`✅ Location request sent for property #${id}!\nAgent will contact you shortly.`);
+  alert(`✅ Location request sent for property #${id}!`);
 };
 
 window.toggleSave = function(id) {
@@ -323,9 +294,9 @@ window.closeModal = function() {
 };
 
 function applyFilters() {
-  const term = document.getElementById("mainSearch").value.toLowerCase();
+  const term = document.getElementById("mainSearch").value.toLowerCase().trim();
   const filtered = properties.filter(p => 
-    !term || (p.title + " " + p.location).toLowerCase().includes(term)
+    !term || (p.title + " " + (p.location || "")).toLowerCase().includes(term)
   );
   render(filtered);
 }
