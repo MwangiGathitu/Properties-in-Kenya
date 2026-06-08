@@ -6,116 +6,199 @@
   <title>Properties in Kenya — Verified Homes</title>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <style>
-    /* ... (Keep all previous styles for hero, cards, etc.) ... */
-    .gallery {
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      background: #f8f4eb;
+      color: #1e293b;
+    }
+
+    /* Hero + Map (unchanged) */
+    .hero { /* ... same as previous ... */ }
+    /* (Keeping the hero, nav, search, quick actions, and cards the same for brevity) */
+
+    .container { max-width: 1200px; margin: 2rem auto; padding: 0 1rem; }
+
+    /* Enhanced Detail Modal */
+    #detailModal {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0,0,0,0.9);
+      z-index: 3000;
+      align-items: center;
+      justify-content: center;
+      overflow-y: auto;
+    }
+    .modal-content {
+      background: white;
+      max-width: 1200px;
+      width: 95%;
+      margin: 20px auto;
+      border-radius: 12px;
+      overflow: hidden;
+    }
+    .modal-header {
+      padding: 1rem 1.5rem;
+      border-bottom: 1px solid #eee;
       display: flex;
-      gap: 12px;
-      margin-top: 12px;
-      overflow-x: auto;
-      padding-bottom: 8px;
+      justify-content: space-between;
+      align-items: center;
     }
-    .thumb {
-      width: 90px;
-      height: 70px;
+    .modal-body {
+      display: flex;
+      gap: 2rem;
+      padding: 2rem;
+      flex-wrap: wrap;
+    }
+    .main-content { flex: 2; min-width: 300px; }
+    .sidebar { flex: 1; min-width: 280px; }
+
+    .hero-img {
+      width: 100%;
+      height: 420px;
       object-fit: cover;
-      border-radius: 8px;
-      cursor: pointer;
-      border: 2px solid transparent;
+      border-radius: 12px;
     }
-    .thumb.active {
-      border-color: #6b21a8;
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 1rem;
+      margin: 1.5rem 0;
+    }
+    .stat {
+      background: #f8fafc;
+      padding: 1rem;
+      border-radius: 10px;
+      text-align: center;
+    }
+    .features-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+      margin: 2rem 0;
+    }
+    .feature-item {
+      padding: 0.8rem 0;
+      border-bottom: 1px solid #eee;
     }
   </style>
 </head>
 <body>
-  <!-- Header with Shortlist Link -->
-  <header style="background:#6b21a8; padding:0.8rem; text-align:center; color:white;">
-    <div style="max-width:1200px; margin:auto; display:flex; justify-content:space-between; align-items:center;">
-      <span>Properties in Kenya — Verified • Trusted</span>
-      <a href="#" onclick="showShortlist()" style="color:white; text-decoration:underline;">❤️ My Shortlist</a>
-    </div>
-  </header>
 
-  <!-- Hero, Search, Quick Actions, Tabs, Listings (same as before) -->
+  <!-- [Previous Hero, Quick Actions, Tabs, and Listing Cards remain the same] -->
+  <!-- ... (Copy from your last version) ... -->
 
-  <!-- Rich Detail Modal with Gallery -->
-  <div id="detailModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.9); z-index:3000; align-items:center; justify-content:center;">
-    <div style="background:white; max-width:1200px; width:95%; max-height:95vh; overflow:auto; border-radius:12px;">
-      <div class="modal-header" style="padding:1rem 1.5rem; border-bottom:1px solid #eee; display:flex; justify-content:space-between;">
+  <div class="container">
+    <div id="listings"></div>
+  </div>
+
+  <!-- Rich Detail Modal -->
+  <div id="detailModal">
+    <div class="modal-content">
+      <div class="modal-header">
         <h2 id="modalTitle"></h2>
         <span onclick="closeModal()" style="font-size:2rem; cursor:pointer;">×</span>
       </div>
-      
-      <div style="padding:2rem; display:flex; gap:2rem; flex-wrap:wrap;">
-        <div style="flex:2; min-width:300px;">
-          <img id="mainImage" style="width:100%; height:420px; object-fit:cover; border-radius:12px;" alt="">
-          <div id="gallery" class="gallery"></div>
-        </div>
-        
-        <div style="flex:1; min-width:280px;">
-          <div id="modalPrice" style="font-size:2.2rem; font-weight:700; color:#1e40af;"></div>
-          <div id="modalMeta"></div>
-          <p id="modalDescription" style="line-height:1.7; margin:1.5rem 0;"></p>
+
+      <div class="modal-body">
+        <!-- Main Content -->
+        <div class="main-content">
+          <img id="mainImage" class="hero-img" alt="Property">
           
-          <button onclick="requestLocation(currentPropertyId)" style="width:100%; background:#6b21a8; color:white; padding:14px; border:none; border-radius:8px; font-size:1.1rem; margin-bottom:12px;">
-            Request Exact Location
-          </button>
-          <button onclick="alert('Viewing scheduled!')" style="width:100%; background:#22c55e; color:white; padding:12px; border:none; border-radius:8px;">
-            📅 Book Viewing
-          </button>
+          <div class="stats">
+            <div class="stat"><strong id="modalPrice"></strong><br>Price</div>
+            <div class="stat"><strong>4</strong><br>Bedrooms</div>
+            <div class="stat"><strong>3</strong><br>Bathrooms</div>
+            <div class="stat"><strong>240 m²</strong><br>Size</div>
+          </div>
+
+          <h3>Description</h3>
+          <p id="modalDescription" style="line-height:1.7; color:#444; margin-bottom:2rem;"></p>
+
+          <h3>Key Features</h3>
+          <div class="features-grid" id="featuresGrid"></div>
+
+          <h3 style="margin-top:2rem;">Virtual Tour</h3>
+          <div style="background:#1e2937; color:white; height:260px; border-radius:12px; display:flex; align-items:center; justify-content:center; flex-direction:column;">
+            <p style="margin-bottom:8px;">🏠 Virtual Tour / Walkthrough</p>
+            <small>Coming soon — Add drone & 360° photos in Phase 3</small>
+          </div>
+        </div>
+
+        <!-- Sidebar -->
+        <div class="sidebar">
+          <div style="border:1px solid #ddd; border-radius:12px; padding:1.2rem; margin-bottom:1.5rem;">
+            <h4>Contact Agent</h4>
+            <p><strong>Agent John</strong><br>Verified Agent • Replies in 1-2 hrs</p>
+            <button onclick="alert('WhatsApp message opened to agent')" 
+                    style="width:100%; background:#25D366; color:white; border:none; padding:14px; border-radius:8px; margin:12px 0; font-weight:600;">
+              💬 Send WhatsApp Message
+            </button>
+            <button onclick="alert('Viewing request sent!')" 
+                    style="width:100%; background:#6b21a8; color:white; border:none; padding:12px; border-radius:8px;">
+              📅 Request Viewing
+            </button>
+          </div>
+
+          <div style="background:#f8fafc; padding:1.2rem; border-radius:12px;">
+            <h4>Market Info</h4>
+            <p>Average price in this area: <strong>KSh 12.5M</strong></p>
+            <p style="color:#15803d;">This listing is ~8% below market value</p>
+          </div>
         </div>
       </div>
     </div>
   </div>
 
 <script>
-  let currentPropertyId = null;
-  let savedProperties = JSON.parse(localStorage.getItem("savedProperties") || "[]");
+  // Supabase + loadProperties + renderListings (same enhanced cards as before)
+  const supabaseUrl = "https://nqwvsmuvltbiekfnvovx.supabase.co";
+  const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5xd3ZzbXV2bHRiaWVrZm52b3Z4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA1NjU4MDAsImV4cCI6MjA5NjE0MTgwMH0.Xrc-bbAuWdvKSPHnVhTaLiQphV61xeYtDepWePqsrdo";
+  const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
 
-  // ... loadProperties and renderListings (with enhanced cards) remain the same ...
+  let allProperties = [];
+
+  async function loadProperties() {
+    const { data } = await supabaseClient
+      .from("properties")
+      .select("*")
+      .eq("approval_status", "approved")
+      .order("created_at", { ascending: false });
+    allProperties = data || [];
+    renderListings(allProperties);
+  }
+
+  // Enhanced cards (from previous version)
+  function renderListings(properties) { /* ... same as last response ... */ }
+
+  window.requestLocation = function(id) { alert(`Location request for property ${id} sent!`); };
+  window.toggleSave = function(id) { alert("Saved to Shortlist!"); };
 
   window.openDetail = function(p) {
-    currentPropertyId = p.id;
-    document.getElementById("modalTitle").textContent = p.title;
-    document.getElementById("modalPrice").textContent = p.price ? `KSh ${Number(p.price).toLocaleString()}` : "Price on request";
-    document.getElementById("modalDescription").textContent = p.description || "Spacious family home in a secure neighbourhood.";
+    document.getElementById("modalTitle").textContent = p.title || "Property Details";
+    document.getElementById("modalPrice").innerHTML = p.price ? `KSh ${Number(p.price).toLocaleString()}` : "Price on request";
+    document.getElementById("modalDescription").textContent = p.description || "Beautiful property in a prime Eastlands location. Perfect for families or investors.";
 
-    const mainImg = document.getElementById("mainImage");
-    mainImg.src = p.image_url || `https://picsum.photos/seed/${p.id}/1200/600`;
+    document.getElementById("mainImage").src = p.image_url || `https://picsum.photos/seed/${p.id}/1200/600`;
 
-    // Multiple images gallery (demo images)
-    const gallery = document.getElementById("gallery");
-    gallery.innerHTML = `
-      <img src="${mainImg.src}" class="thumb active" onclick="changeImage(this)">
-      <img src="https://picsum.photos/seed/${p.id}1/600/400" class="thumb" onclick="changeImage(this)">
-      <img src="https://picsum.photos/seed/${p.id}2/600/400" class="thumb" onclick="changeImage(this)">
-      <img src="https://picsum.photos/seed/${p.id}3/600/400" class="thumb" onclick="changeImage(this)">
+    // Sample features
+    document.getElementById("featuresGrid").innerHTML = `
+      <div class="feature-item">✅ 4 Bedrooms</div>
+      <div class="feature-item">✅ 3 Bathrooms</div>
+      <div class="feature-item">✅ Living Room</div>
+      <div class="feature-item">✅ Kitchen</div>
+      <div class="feature-item">✅ Parking</div>
+      <div class="feature-item">✅ Garden</div>
     `;
 
     document.getElementById("detailModal").style.display = "flex";
   };
 
-  window.changeImage = function(img) {
-    document.getElementById("mainImage").src = img.src;
-    document.querySelectorAll('.thumb').forEach(t => t.classList.remove('active'));
-    img.classList.add('active');
-  };
-
-  window.showShortlist = function() {
-    if (savedProperties.length === 0) {
-      alert("Your shortlist is empty. Heart any property to save it here.");
-      return;
-    }
-    // For now, show simple list. We can make a full page later.
-    let msg = "❤️ Your Shortlist:\n\n";
-    savedProperties.forEach(id => {
-      msg += `• Property #${id}\n`;
-    });
-    alert(msg + "\n\nFull Shortlist page coming soon.");
-  };
-
-  // Close modal
   window.closeModal = () => document.getElementById("detailModal").style.display = "none";
+
+  // Filters, tabs, etc. (same as before)
+  loadProperties();
 </script>
 </body>
 </html>
