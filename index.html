@@ -3,271 +3,185 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Properties in Kenya — Find Your Next Home</title>
+  <title>Properties in Kenya — Verified Homes & Land</title>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
-      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
-      background: #f8fafc;
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      background: #f8f4eb; /* Light gold */
       color: #1e293b;
     }
     header {
       background: white;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.08);
-      padding: 1rem 2rem;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+      padding: 1rem 1.5rem;
       position: sticky;
       top: 0;
       z-index: 100;
+    }
+    .nav {
       display: flex;
       flex-wrap: wrap;
-      align-items: center;
-      justify-content: space-between;
       gap: 1rem;
+      align-items: center;
+      max-width: 1200px;
+      margin: 0 auto;
     }
     .logo {
-      font-size: 1.4rem;
+      font-size: 1.5rem;
       font-weight: 700;
       color: #0f172a;
       text-decoration: none;
     }
-
-    /* 👇 NEW: Agent portal link button */
     .agent-link {
       background: #0070f3;
       color: white;
       padding: 0.5rem 1rem;
       border-radius: 6px;
       text-decoration: none;
-      font-size: 0.9rem;
       font-weight: 500;
-      transition: background 0.2s;
-      white-space: nowrap;
-      margin-right: auto;  /* pushes search section to the right */
-      margin-left: 1.5rem;
+      margin-left: auto;
     }
-    .agent-link:hover {
-      background: #005bb5;
-    }
-
-    .search-section {
+    .tabs {
       display: flex;
-      flex-wrap: wrap;
-      gap: 0.5rem;
-      align-items: center;
-    }
-    input, select {
-      padding: 0.6rem 0.9rem;
-      border: 1px solid #e2e8f0;
+      background: white;
       border-radius: 8px;
-      font-size: 0.9rem;
-      outline: none;
-      transition: 0.2s;
+      padding: 4px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+      margin: 1.5rem auto;
+      max-width: 1200px;
     }
-    input:focus, select:focus {
-      border-color: #3b82f6;
-      box-shadow: 0 0 0 2px rgba(59,130,246,0.2);
+    .tab {
+      padding: 0.6rem 1.2rem;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 500;
+      transition: all 0.2s;
     }
-    #search {
-      min-width: 220px;
+    .tab.active {
+      background: #0070f3;
+      color: white;
     }
-    .filter-group {
-      display: flex;
-      gap: 0.5rem;
-      align-items: center;
-    }
-    .price-inputs {
-      display: flex;
-      gap: 0.3rem;
-      align-items: center;
-    }
-    .price-inputs input {
-      width: 100px;
-    }
-
     .container {
       max-width: 1200px;
-      margin: 2rem auto;
+      margin: 0 auto;
       padding: 0 1rem;
     }
-    #resultsInfo {
-      margin-bottom: 1rem;
-      color: #64748b;
-      font-size: 0.9rem;
-    }
     #listings {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      display: flex;
+      flex-direction: column;
       gap: 1.5rem;
     }
     .card {
       background: white;
       border-radius: 12px;
       overflow: hidden;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.06);
-      transition: transform 0.2s, box-shadow 0.2s;
-      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+      display: flex;
+      flex-direction: column;
+      transition: transform 0.2s;
     }
     .card:hover {
-      transform: translateY(-4px);
-      box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+      transform: translateY(-6px);
+    }
+    .card-image-container {
+      position: relative;
+      height: 260px;
     }
     .card img {
       width: 100%;
-      height: 200px;
+      height: 100%;
       object-fit: cover;
     }
-    .card-content {
-      padding: 1rem;
-    }
-    .card-title {
-      font-weight: 600;
-      font-size: 1.05rem;
-      margin-bottom: 0.3rem;
-    }
-    .card-price {
-      font-weight: 700;
-      color: #2563eb;
-      font-size: 1.1rem;
-      margin-bottom: 0.4rem;
-    }
-    .card-meta {
-      font-size: 0.85rem;
-      color: #64748b;
+    .bookmark {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      background: white;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
       display: flex;
       align-items: center;
-      gap: 0.5rem;
-      flex-wrap: wrap;
-    }
-    .type-badge {
-      background: #e2e8f0;
-      color: #334155;
-      padding: 0.2rem 0.6rem;
-      border-radius: 20px;
-      font-size: 0.75rem;
-      font-weight: 500;
-      text-transform: capitalize;
-    }
-
-    /* Detail view */
-    #detailView {
-      display: none;
-      padding: 1.5rem;
-      max-width: 850px;
-      margin: 2rem auto;
-      background: white;
-      border-radius: 12px;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.08);
-    }
-    .back-btn {
-      background: #e2e8f0;
-      border: none;
-      padding: 0.5rem 1rem;
-      border-radius: 6px;
-      margin-bottom: 1rem;
+      justify-content: center;
       cursor: pointer;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+      font-size: 1.2rem;
     }
-    .detail-img {
-      width: 100%;
-      max-height: 400px;
-      object-fit: cover;
-      border-radius: 8px;
-      margin-bottom: 1rem;
+    .card-content {
+      padding: 1.2rem;
     }
-    .detail-price {
-      font-size: 1.5rem;
+    .card-title {
+      font-size: 1.2rem;
+      font-weight: 600;
+      margin-bottom: 0.4rem;
+    }
+    .card-price {
+      font-size: 1.35rem;
       font-weight: 700;
-      color: #2563eb;
-      margin: 0.5rem 0;
+      color: #1e40af;
+      margin-bottom: 0.5rem;
+    }
+    .card-meta {
+      color: #475569;
+      font-size: 0.95rem;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      margin-bottom: 1rem;
     }
     .wa-btn {
-      display: inline-block;
       background: #25D366;
       color: white;
-      padding: 0.8rem 1.5rem;
+      padding: 0.7rem 1.2rem;
       border-radius: 6px;
       text-decoration: none;
       font-weight: 600;
-      margin-top: 1rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 8px;
     }
-
-    #noResults {
-      text-align: center;
-      padding: 3rem;
-      color: #94a3b8;
-      grid-column: 1 / -1;
-      font-size: 1rem;
-    }
-
-    @media (max-width: 640px) {
-      header {
-        flex-direction: column;
-        align-items: flex-start;
+    @media (min-width: 768px) {
+      .card {
+        flex-direction: row;
       }
-      .agent-link {
-        margin-left: 0;  /* remove extra margin on small screens */
-        width: 100%;
-        text-align: center;
-      }
-      .search-section {
-        flex-direction: column;
-        width: 100%;
-      }
-      .filter-group, .price-inputs {
-        flex-wrap: wrap;
+      .card-image-container {
+        width: 380px;
+        flex-shrink: 0;
       }
     }
   </style>
-  <script type="importmap">
-{
-  "imports": {
-    "@supabase/supabase-js": "https://esm.sh/@supabase/supabase-js@2"
-  }
-}
-</script>
 </head>
 <body>
-
 <header>
-  <a href="/" class="logo">🏡 Properties in Kenya</a>
-  <!-- 👇 NEW: Agent portal entry point -->
-  <a href="/agent.html" class="agent-link">🏢 List Your Property</a>
-
-  <div class="search-section">
-    <input type="text" id="search" placeholder="Search by title or location" />
-    <div class="filter-group">
-      <select id="typeFilter">
-        <option value="all">All types</option>
-        <option value="for sale">For Sale</option>
-        <option value="for rent">For Rent</option>
-      </select>
-      <div class="price-inputs">
-        <input type="number" id="minPrice" placeholder="Min KSh" />
-        <span>-</span>
-        <input type="number" id="maxPrice" placeholder="Max KSh" />
-      </div>
-    </div>
+  <div class="nav">
+    <a href="/" class="logo">🏡 Properties in Kenya</a>
+    <a href="/agent.html" class="agent-link">🏢 List Your Property</a>
   </div>
 </header>
 
+<div class="tabs" id="tabs">
+  <div class="tab active" data-type="all">All</div>
+  <div class="tab" data-type="for sale">For Sale</div>
+  <div class="tab" data-type="for rent">For Rent</div>
+  <div class="tab" data-type="for lease">For Lease</div>
+  <div class="tab" data-type="project">Projects</div>
+</div>
+
 <div class="container">
-  <div id="resultsInfo"></div>
   <div id="listings"></div>
 </div>
 
-<!-- DETAIL VIEW (hidden) -->
-<div id="detailView"></div>
-
-<script type="module">
-  import { createClient } from '@supabase/supabase-js';
-
+<script>
   const supabaseUrl = "https://nqwvsmuvltbiekfnvovx.supabase.co";
   const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5xd3ZzbXV2bHRiaWVrZm52b3Z4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA1NjU4MDAsImV4cCI6MjA5NjE0MTgwMH0.Xrc-bbAuWdvKSPHnVhTaLiQphV61xeYtDepWePqsrdo";
-  const supabaseClient = createClient(supabaseUrl, supabaseKey);
+  const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
 
   let allProperties = [];
+  let savedProperties = JSON.parse(localStorage.getItem("savedProperties") || "[]");
 
-  // ---------- FETCH APPROVED LISTINGS ----------
   async function loadProperties() {
     const { data, error } = await supabaseClient
       .from("properties")
@@ -276,119 +190,78 @@
       .order("created_at", { ascending: false });
 
     if (error) {
-      console.error("Supabase error:", error);
+      console.error(error);
       return;
     }
-
     allProperties = data || [];
-    applyFilters();
+    renderListings(allProperties);
   }
 
-  // ---------- CLIENT-SIDE FILTERS ----------
-  function applyFilters() {
-    const searchTerm = document.getElementById("search").value.toLowerCase().trim();
-    const typeFilter = document.getElementById("typeFilter").value;
-    const minPrice = parseFloat(document.getElementById("minPrice").value) || 0;
-    const maxPrice = parseFloat(document.getElementById("maxPrice").value) || Infinity;
-
-    let filtered = allProperties.filter(p => {
-      const titleMatch = p.title?.toLowerCase().includes(searchTerm);
-      const locationMatch = p.location?.toLowerCase().includes(searchTerm);
-      const matchesSearch = !searchTerm || titleMatch || locationMatch;
-
-      const matchesType = typeFilter === "all" || (p.property_type?.toLowerCase() === typeFilter);
-
-      const price = parseFloat(p.price) || 0;
-      const matchesPrice = price >= minPrice && price <= maxPrice;
-
-      return matchesSearch && matchesType && matchesPrice;
-    });
-
-    renderListings(filtered);
-  }
-
-  // ---------- RENDER CARDS ----------
-  function renderListings(data) {
+  function renderListings(properties) {
     const container = document.getElementById("listings");
-    const resultsInfo = document.getElementById("resultsInfo");
     container.innerHTML = "";
 
-    resultsInfo.textContent = data.length
-      ? `Showing ${data.length} property${data.length > 1 ? 'ies' : 'y'}`
-      : "No properties match your filters.";
-
-    if (data.length === 0) {
-      container.innerHTML = `<div id="noResults">No properties found. Try adjusting your filters.</div>`;
+    if (properties.length === 0) {
+      container.innerHTML = `<p style="text-align:center; padding:3rem; color:#64748b;">No properties found.</p>`;
       return;
     }
 
-    data.forEach(p => {
+    properties.forEach(p => {
+      const isSaved = savedProperties.includes(p.id);
       const card = document.createElement("div");
       card.className = "card";
-      card.onclick = () => openProperty(p);
-
-      const image = p.image_url
-        ? p.image_url
-        : `https://picsum.photos/seed/${p.id}/400/300`;
-
-      const price = p.price
-        ? `KSh ${Number(p.price).toLocaleString()}`
-        : "Price on request";
+      
+      const image = p.image_url || `https://picsum.photos/seed/${p.id}/600/400`;
+      const price = p.price ? `KSh ${Number(p.price).toLocaleString()}` : "Price on request";
 
       card.innerHTML = `
-        <img src="${image}" alt="${p.title}" onerror="this.src='https://picsum.photos/seed/${p.id}/400/300'">
+        <div class="card-image-container">
+          <img src="${image}" alt="${p.title}" onerror="this.src='https://picsum.photos/seed/${p.id}/600/400'">
+          <div class="bookmark" onclick="toggleSave('${p.id}', event)">${isSaved ? '❤️' : '♡'}</div>
+        </div>
         <div class="card-content">
-          <div class="card-title">${p.title || "Untitled"}</div>
+          <div class="card-title">${p.title || "Untitled Property"}</div>
           <div class="card-price">${price}</div>
           <div class="card-meta">
             <span>📍 ${p.location || "N/A"}</span>
-            <span class="type-badge">${p.property_type || "N/A"}</span>
+            <span>${p.property_type ? p.property_type.toUpperCase() : ""}</span>
           </div>
+          <p style="font-size:0.95rem; color:#475569; line-height:1.5;">${(p.description || "").substring(0, 120)}${(p.description || "").length > 120 ? "..." : ""}</p>
+          <a href="https://wa.me/254700000000?text=${encodeURIComponent(`Hi, interested in ${p.title} in ${p.location}`)}" 
+             target="_blank" class="wa-btn">💬 WhatsApp Agent</a>
         </div>
       `;
       container.appendChild(card);
     });
   }
 
-  // ---------- DETAIL VIEW ----------
-  window.openProperty = function(p) {
-    document.getElementById("listings").parentElement.style.display = "none";
-    const detailView = document.getElementById("detailView");
-    detailView.style.display = "block";
-
-    const image = p.image_url
-      ? p.image_url
-      : `https://picsum.photos/seed/${p.id}/800/500`;
-    const price = p.price ? `KSh ${Number(p.price).toLocaleString()}` : "Price on request";
-    const whatsappMsg = encodeURIComponent(`Hello, I am interested in ${p.title} in ${p.location}.`);
-
-    detailView.innerHTML = `
-      <button class="back-btn" onclick="closeDetail()">← Back to listings</button>
-      <img class="detail-img" src="${image}" alt="${p.title}" onerror="this.src='https://picsum.photos/seed/${p.id}/800/500'">
-      <h2>${p.title || "Property"}</h2>
-      <div class="detail-price">${price}</div>
-      <p><strong>Location:</strong> ${p.location || "—"}</p>
-      <p><strong>Type:</strong> ${p.property_type || "—"}</p>
-      <p>${p.description || "No description provided."}</p>
-      <a class="wa-btn" href="https://wa.me/254700000000?text=${whatsappMsg}" target="_blank">
-        💬 Chat on WhatsApp
-      </a>
-    `;
-    window.scrollTo({ top: 0, behavior: "smooth" });
+  window.toggleSave = function(id, e) {
+    e.stopImmediatePropagation();
+    if (savedProperties.includes(id)) {
+      savedProperties = savedProperties.filter(s => s !== id);
+    } else {
+      savedProperties.push(id);
+    }
+    localStorage.setItem("savedProperties", JSON.stringify(savedProperties));
+    renderListings(allProperties); // Refresh hearts
   };
 
-  window.closeDetail = function() {
-    document.getElementById("detailView").style.display = "none";
-    document.getElementById("listings").parentElement.style.display = "block";
-  };
+  // Tab functionality
+  document.querySelectorAll('.tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+      document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+      
+      const type = tab.getAttribute('data-type');
+      const filtered = type === 'all' 
+        ? allProperties 
+        : allProperties.filter(p => (p.property_type || "").toLowerCase().includes(type));
+      
+      renderListings(filtered);
+    });
+  });
 
-  // ---------- EVENT LISTENERS ----------
-  document.getElementById("search").addEventListener("input", applyFilters);
-  document.getElementById("typeFilter").addEventListener("change", applyFilters);
-  document.getElementById("minPrice").addEventListener("input", applyFilters);
-  document.getElementById("maxPrice").addEventListener("input", applyFilters);
-
-  // ---------- INIT ----------
+  // Load on start
   loadProperties();
 </script>
 </body>
