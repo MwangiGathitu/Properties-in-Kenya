@@ -9,144 +9,203 @@
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
       font-family: 'Segoe UI', system-ui, sans-serif;
-      background: #f8f4eb;
+      background: #f8f4eb; /* Light gold */
       color: #1e293b;
     }
-    /* Blue Header */
-    .hero-header {
-      background: #0a2540;
+
+    /* Hero with Kenyan Landmark */
+    .hero {
+      background: linear-gradient(rgba(0,0,0,0.35), rgba(0,0,0,0.45)), 
+                  url('https://picsum.photos/id/1015/2000/800') center/cover no-repeat;
       color: white;
-      padding: 2rem 1rem 1.5rem;
+      padding: 3rem 1rem 2rem;
+      position: relative;
       text-align: center;
     }
+    .hero::after {
+      content: '';
+      position: absolute;
+      bottom: 20px;
+      left: 50px;
+      width: 220px;
+      height: 260px;
+      background: rgba(255,255,255,0.95);
+      border-radius: 12px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+      background-image: url('https://upload.wikimedia.org/wikipedia/commons/thumb/4/4a/Kenya_%28orthographic_projection%29.svg/800px-Kenya_%28orthographic_projection%29.svg.png');
+      background-size: contain;
+      background-repeat: no-repeat;
+      background-position: center;
+      opacity: 0.9;
+    }
+
     .logo {
-      font-size: 2rem;
+      font-size: 2.2rem;
       font-weight: 700;
       text-decoration: none;
       color: white;
-      display: flex;
+      display: inline-flex;
       align-items: center;
-      justify-content: center;
-      gap: 10px;
+      gap: 12px;
     }
     .tagline {
-      font-size: 1.1rem;
-      opacity: 0.9;
-      margin-top: 0.3rem;
+      font-size: 1.15rem;
+      margin-top: 0.5rem;
+      opacity: 0.95;
     }
+
     .nav {
       display: flex;
       justify-content: center;
       gap: 2rem;
-      margin: 1.5rem 0;
+      margin: 2rem 0 1.5rem;
       flex-wrap: wrap;
     }
     .nav a {
       color: white;
       text-decoration: none;
       font-weight: 500;
-      padding: 0.4rem 0;
-      border-bottom: 3px solid transparent;
+      padding: 0.5rem 0;
     }
-    .nav a:hover, .nav a.active {
-      border-bottom: 3px solid #60a5fa;
+
+    /* Purple Header Accent */
+    header {
+      background: #6b21a8;
+      padding: 0.8rem 1rem;
+      text-align: center;
+      color: white;
     }
+
     .search-container {
       max-width: 1100px;
-      margin: 0 auto;
+      margin: 1.5rem auto;
       background: white;
       border-radius: 50px;
       padding: 0.8rem 1rem;
       display: flex;
       align-items: center;
       gap: 0.8rem;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.15);
       flex-wrap: wrap;
+      box-shadow: 0 6px 25px rgba(0,0,0,0.2);
     }
     .search-container input, .search-container select {
       flex: 1;
-      min-width: 180px;
-      padding: 0.8rem 1rem;
+      min-width: 160px;
+      padding: 0.9rem 1.1rem;
       border: none;
       font-size: 1rem;
       outline: none;
+      border-radius: 50px;
     }
     .search-container button {
-      background: #ef4444;
+      background: #22c55e;
       color: white;
       border: none;
-      padding: 0.8rem 2rem;
+      padding: 0.9rem 2.2rem;
       border-radius: 50px;
       font-weight: 600;
       cursor: pointer;
-      white-space: nowrap;
     }
+
     .claim {
-      margin-top: 1rem;
-      font-size: 1rem;
-      background: rgba(255,255,255,0.1);
+      margin: 1rem auto;
+      font-size: 1.05rem;
+      background: rgba(255,255,255,0.15);
       display: inline-block;
-      padding: 0.4rem 1rem;
+      padding: 0.5rem 1.5rem;
       border-radius: 30px;
     }
 
-    /* Bottom Icons */
-    .actions {
+    /* Tabs */
+    .tabs {
       display: flex;
-      justify-content: center;
-      gap: 2.5rem;
-      margin: 2.5rem auto;
-      flex-wrap: wrap;
+      background: white;
+      border-bottom: 1px solid #e2e8f0;
+      max-width: 1200px;
+      margin: 0 auto;
     }
-    .action-item {
-      text-align: center;
+    .tab {
+      padding: 1rem 1.6rem;
       cursor: pointer;
-    }
-    .action-icon {
-      width: 60px;
-      height: 60px;
-      background: #f1f5f9;
-      border-radius: 16px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.8rem;
-      margin: 0 auto 0.5rem;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-    }
-    .action-item span {
-      font-size: 0.9rem;
       font-weight: 500;
     }
+    .tab.active {
+      border-bottom: 4px solid #6b21a8;
+      color: #6b21a8;
+    }
 
-    /* Rest of the page */
-    .tabs { display: flex; background: white; border-bottom: 1px solid #e2e8f0; max-width: 1200px; margin: 0 auto; }
-    .tab { padding: 1rem 1.5rem; cursor: pointer; font-weight: 500; }
-    .tab.active { border-bottom: 3px solid #0070f3; color: #0070f3; }
+    .container {
+      max-width: 1200px;
+      margin: 2rem auto;
+      padding: 0 1rem;
+    }
 
-    .container { max-width: 1200px; margin: 2rem auto; padding: 0 1rem; }
-    #listings { display: flex; flex-direction: column; gap: 1.8rem; }
-    /* Card & Modal styles (same as previous version) */
-    .card, .modal-content, .bookmark, .wa-btn { /* ... keep previous styles ... */ }
+    /* Light Blue Cards */
+    #listings {
+      display: flex;
+      flex-direction: column;
+      gap: 1.8rem;
+    }
+    .card {
+      background: #e0f2fe; /* Light blue */
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+      display: flex;
+      cursor: pointer;
+      transition: transform 0.2s;
+    }
+    .card:hover {
+      transform: translateY(-8px);
+    }
+    .card img {
+      width: 380px;
+      height: 260px;
+      object-fit: cover;
+      flex-shrink: 0;
+    }
+    .card-content {
+      padding: 1.6rem;
+      flex: 1;
+    }
+    .card-title {
+      font-size: 1.3rem;
+      font-weight: 600;
+      margin-bottom: 0.6rem;
+    }
+    .card-price {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #1e40af;
+      margin-bottom: 0.8rem;
+    }
   </style>
 </head>
 <body>
-  <!-- Premium Blue Header -->
-  <div class="hero-header">
+
+  <!-- Purple Top Bar -->
+  <header>
+    <div style="max-width:1200px; margin:auto; font-weight:500;">
+      Properties in Kenya — Verified • Trusted • Transparent
+    </div>
+  </header>
+
+  <!-- Hero Section with Landmark + Map -->
+  <div class="hero">
     <a href="/" class="logo">🏡 Properties in Kenya</a>
     <p class="tagline">The No.1 platform for verified property in Eastlands</p>
 
     <div class="nav">
-      <a href="#" class="active">Buy</a>
+      <a href="#">Buy</a>
       <a href="#">Rent</a>
       <a href="#">Lease</a>
       <a href="#">Projects</a>
-      <a href="#">Agents</a>
+      <a href="/agent.html">Agents</a>
     </div>
 
     <div class="search-container">
-      <input type="text" id="mainSearch" placeholder="Search by location or title (e.g. Ruai, Kayole)">
-      <input type="text" id="locationFilter" placeholder="Area / Estate">
+      <input type="text" id="mainSearch" placeholder="Search location or title (Ruai, Kayole, Embakasi...)">
+      <input type="text" id="locationFilter" placeholder="Estate / Area">
       <select id="typeFilter">
         <option value="all">All Types</option>
         <option value="for sale">For Sale</option>
@@ -154,38 +213,14 @@
         <option value="for lease">For Lease</option>
         <option value="project">Projects</option>
       </select>
-      <input type="number" id="minPrice" placeholder="Min Price">
-      <button onclick="applyFilters()">🔍 SEARCH</button>
+      <input type="number" id="minPrice" placeholder="Min Price (KES)">
+      <button onclick="applyFilters()">🔍 Find Property</button>
     </div>
 
     <div class="claim">🏆 Properties in Kenya is the No.1 verified property platform in Eastlands</div>
   </div>
 
-  <!-- Bottom Quick Actions -->
-  <div class="actions">
-    <div class="action-item" onclick="alert('AI Search coming in Phase 8 — Property Matchmaker')">
-      <div class="action-icon">✨</div>
-      <span>AI Search</span>
-    </div>
-    <div class="action-item" onclick="window.location.href='/agent.html'">
-      <div class="action-icon">📝</div>
-      <span>Publish Listing</span>
-    </div>
-    <div class="action-item" onclick="alert('Property valuation coming soon')">
-      <div class="action-icon">📊</div>
-      <span>Value My House</span>
-    </div>
-    <div class="action-item">
-      <div class="action-icon">💰</div>
-      <span>Market Prices</span>
-    </div>
-    <div class="action-item" onclick="window.location.href='/agent.html'">
-      <div class="action-icon">🏠</div>
-      <span>List Property</span>
-    </div>
-  </div>
-
-  <!-- Existing Tabs & Listings -->
+  <!-- Tabs -->
   <div class="tabs" id="tabs">
     <div class="tab active" data-type="all">All</div>
     <div class="tab" data-type="for sale">For Sale</div>
@@ -198,31 +233,28 @@
     <div id="listings"></div>
   </div>
 
-  <!-- Detail Modal (kept from previous version) -->
+  <!-- Detail Modal (same as before) -->
   <div id="detailModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.85); z-index:2000; align-items:center; justify-content:center;">
-    <!-- Same modal content as before -->
-    <div class="modal-content" style="background:white; max-width:1100px; width:95%; max-height:95vh; overflow:auto; border-radius:12px;">
-      <div style="padding:1rem 1.5rem; border-bottom:1px solid #eee; display:flex; justify-content:space-between; align-items:center;">
+    <div style="background:white; max-width:1100px; width:95%; max-height:95vh; overflow:auto; border-radius:16px;">
+      <div style="padding:1rem 1.5rem; border-bottom:1px solid #eee; display:flex; justify-content:space-between;">
         <h2 id="modalTitle"></h2>
-        <span onclick="closeModal()" style="font-size:2rem; cursor:pointer;">×</span>
+        <span onclick="closeModal()" style="font-size:2rem; cursor:pointer; color:#6b21a8;">×</span>
       </div>
       <div style="display:flex; gap:2rem; padding:1.5rem; flex-wrap:wrap;">
         <div style="flex:2;">
-          <img id="mainImage" style="width:100%; border-radius:8px; max-height:480px; object-fit:cover;">
-          <div id="thumbnails" style="display:flex; gap:8px; margin-top:12px; overflow-x:auto;"></div>
+          <img id="mainImage" style="width:100%; border-radius:12px; max-height:480px; object-fit:cover;">
         </div>
         <div style="flex:1;">
           <div id="modalPrice" style="font-size:2.2rem; font-weight:700; color:#1e40af;"></div>
-          <div id="modalMeta" style="margin:1rem 0; font-size:1.1rem;"></div>
-          <p id="modalDescription" style="line-height:1.7;"></p>
-          <a id="modalWA" href="#" target="_blank" style="background:#25D366; color:white; padding:0.9rem 1.6rem; border-radius:6px; text-decoration:none; display:inline-flex; align-items:center; gap:8px; margin-top:1.5rem; font-weight:600;">💬 Chat on WhatsApp</a>
+          <div id="modalMeta" style="margin:1rem 0;"></div>
+          <p id="modalDescription"></p>
+          <a id="modalWA" href="#" target="_blank" style="background:#25D366; color:white; padding:1rem 1.8rem; border-radius:8px; text-decoration:none; display:inline-flex; align-items:center; gap:8px; margin-top:1.5rem; font-weight:600;">💬 WhatsApp Agent</a>
         </div>
       </div>
     </div>
   </div>
 
 <script>
-  // Supabase setup + loadProperties, renderListings, openDetail, toggleSave, etc. (same as previous high-quality version)
   const supabaseUrl = "https://nqwvsmuvltbiekfnvovx.supabase.co";
   const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5xd3ZzbXV2bHRiaWVrZm52b3Z4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA1NjU4MDAsImV4cCI6MjA5NjE0MTgwMH0.Xrc-bbAuWdvKSPHnVhTaLiQphV61xeYtDepWePqsrdo";
   const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
@@ -231,79 +263,76 @@
   let savedProperties = JSON.parse(localStorage.getItem("savedProperties") || "[]");
 
   async function loadProperties() {
-    const { data } = await supabaseClient.from("properties").select("*").eq("approval_status", "approved").order("created_at", { ascending: false });
+    const { data } = await supabaseClient
+      .from("properties")
+      .select("*")
+      .eq("approval_status", "approved")
+      .order("created_at", { ascending: false });
     allProperties = data || [];
     renderListings(allProperties);
   }
 
   function renderListings(properties) {
     const container = document.getElementById("listings");
-    container.innerHTML = properties.length ? "" : "<p style='text-align:center; padding:4rem; color:#64748b;'>No properties found.</p>";
+    container.innerHTML = "";
 
     properties.forEach(p => {
-      const isSaved = savedProperties.includes(p.id);
       const card = document.createElement("div");
-      card.style.cssText = "background:white; border-radius:12px; overflow:hidden; box-shadow:0 4px 15px rgba(0,0,0,0.08); display:flex; cursor:pointer;";
+      card.className = "card";
       card.onclick = () => openDetail(p);
 
       const img = p.image_url || `https://picsum.photos/seed/${p.id}/600/400`;
       const price = p.price ? `KSh ${Number(p.price).toLocaleString()}` : "Price on request";
 
       card.innerHTML = `
-        <div style="position:relative; width:380px; flex-shrink:0;">
-          <img src="${img}" style="width:100%; height:260px; object-fit:cover;" alt="${p.title}">
-          <div onclick="event.stopImmediatePropagation(); toggleSave('${p.id}')" style="position:absolute; top:12px; right:12px; background:rgba(255,255,255,0.95); width:42px; height:42px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:1.4rem; cursor:pointer;">${isSaved ? '❤️' : '♡'}</div>
-        </div>
-        <div style="padding:1.5rem; flex:1;">
-          <div style="font-size:1.25rem; font-weight:600;">${p.title || "Untitled"}</div>
-          <div style="font-size:1.45rem; font-weight:700; color:#1e40af; margin:0.6rem 0;">${price}</div>
-          <div style="color:#475569;">📍 ${p.location || "N/A"} • ${p.property_type ? p.property_type.toUpperCase() : ""}</div>
+        <img src="${img}" alt="${p.title}">
+        <div class="card-content">
+          <div class="card-title">${p.title || "Untitled Property"}</div>
+          <div class="card-price">${price}</div>
+          <div style="color:#334155; font-size:1.05rem;">📍 ${p.location || "N/A"}</div>
+          <div style="margin-top:8px; color:#6b7280;">${p.property_type ? p.property_type.toUpperCase() : ""}</div>
         </div>
       `;
       container.appendChild(card);
     });
   }
 
-  window.toggleSave = function(id) {
-    if (savedProperties.includes(id)) savedProperties = savedProperties.filter(s => s !== id);
-    else savedProperties.push(id);
-    localStorage.setItem("savedProperties", JSON.stringify(savedProperties));
-    renderListings(allProperties);
-  };
-
-  window.openDetail = function(p) { /* Same rich modal logic as previous version */ 
+  window.openDetail = function(p) {
     document.getElementById("modalTitle").textContent = p.title;
     document.getElementById("modalPrice").textContent = p.price ? `KSh ${Number(p.price).toLocaleString()}` : "Price on request";
     document.getElementById("modalMeta").innerHTML = `📍 <strong>${p.location}</strong><br>Type: ${p.property_type || "—"}`;
-    document.getElementById("modalDescription").textContent = p.description || "No description.";
+    document.getElementById("modalDescription").textContent = p.description || "No description available.";
     document.getElementById("mainImage").src = p.image_url || `https://picsum.photos/seed/${p.id}/800/500`;
     document.getElementById("detailModal").style.display = "flex";
   };
 
   window.closeModal = () => document.getElementById("detailModal").style.display = "none";
 
-  // Filters & Tabs (same as before)
   function applyFilters() {
-    const term = (document.getElementById("mainSearch").value + " " + document.getElementById("locationFilter").value).toLowerCase().trim();
+    const term = document.getElementById("mainSearch").value.toLowerCase().trim();
+    const location = document.getElementById("locationFilter").value.toLowerCase().trim();
     const type = document.getElementById("typeFilter").value;
     const minPrice = parseFloat(document.getElementById("minPrice").value) || 0;
 
     const filtered = allProperties.filter(p => {
       const matchesSearch = !term || (p.title + " " + p.location).toLowerCase().includes(term);
+      const matchesLocation = !location || (p.location || "").toLowerCase().includes(location);
       const matchesType = type === "all" || (p.property_type || "").toLowerCase().includes(type);
-      const matchesPrice = !minPrice || (p.price || 0) >= minPrice;
-      return matchesSearch && matchesType && matchesPrice;
+      const matchesPrice = (p.price || 0) >= minPrice;
+      return matchesSearch && matchesLocation && matchesType && matchesPrice;
     });
     renderListings(filtered);
   }
 
-  // Tab clicks
+  // Tab functionality
   document.querySelectorAll('.tab').forEach(tab => {
     tab.addEventListener('click', () => {
       document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
       tab.classList.add('active');
       const type = tab.dataset.type;
-      const filtered = type === 'all' ? allProperties : allProperties.filter(p => (p.property_type || "").toLowerCase().includes(type));
+      const filtered = type === 'all' ? allProperties : allProperties.filter(p => 
+        (p.property_type || "").toLowerCase().includes(type)
+      );
       renderListings(filtered);
     });
   });
