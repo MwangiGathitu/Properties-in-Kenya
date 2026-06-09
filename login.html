@@ -25,24 +25,10 @@
       width: 100%;
       max-width: 420px;
     }
-    .logo {
-      text-align: center;
-      margin-bottom: 24px;
-    }
-    .logo i {
-      font-size: 48px;
-      color: #6b21a8;
-      margin-bottom: 8px;
-    }
-    .logo h1 {
-      font-size: 22px;
-      color: #111;
-      margin-bottom: 4px;
-    }
-    .logo p {
-      color: #6b7280;
-      font-size: 14px;
-    }
+    .logo { text-align: center; margin-bottom: 24px; }
+    .logo i { font-size: 48px; color: #6b21a8; margin-bottom: 8px; }
+    .logo h1 { font-size: 22px; color: #111; margin-bottom: 4px; }
+    .logo p { color: #6b7280; font-size: 14px; }
     .tabs {
       display: flex;
       background: #f3f4f6;
@@ -68,9 +54,7 @@
       color: #6b21a8;
       box-shadow: 0 1px 3px rgba(0,0,0,0.1);
     }
-    .form-group {
-      margin-bottom: 16px;
-    }
+    .form-group { margin-bottom: 16px; }
     .form-group label {
       display: block;
       font-size: 13px;
@@ -104,9 +88,7 @@
       border-color: #6b21a8;
       box-shadow: 0 0 0 3px rgba(107, 33, 168, 0.1);
     }
-    .form-group input.no-prefix {
-      padding-left: 12px;
-    }
+    .form-group input.no-prefix { padding-left: 12px; }
     button {
       width: 100%;
       padding: 14px;
@@ -137,6 +119,7 @@
       font-size: 13px;
       margin-top: 12px;
       display: none;
+      word-break: break-word;
     }
     .error.show { display: block; }
     .success {
@@ -163,23 +146,6 @@
     }
     .footer a:hover { text-decoration: underline; }
     .hidden { display: none !important; }
-    .divider {
-      text-align: center;
-      margin: 16px 0;
-      color: #9ca3af;
-      font-size: 12px;
-      position: relative;
-    }
-    .divider::before, .divider::after {
-      content: '';
-      position: absolute;
-      top: 50%;
-      width: 40%;
-      height: 1px;
-      background: #e5e7eb;
-    }
-    .divider::before { left: 0; }
-    .divider::after { right: 0; }
     .info-box {
       background: #eff6ff;
       border-left: 3px solid #3b82f6;
@@ -189,6 +155,18 @@
       color: #1e40af;
       margin-bottom: 16px;
     }
+    .debug-box {
+      background: #f3f4f6;
+      padding: 10px;
+      border-radius: 6px;
+      font-size: 11px;
+      color: #6b7280;
+      margin-top: 10px;
+      font-family: monospace;
+      word-break: break-all;
+      display: none;
+    }
+    .debug-box.show { display: block; }
   </style>
 </head>
 <body>
@@ -199,7 +177,6 @@
       <p>Properties in Kenya — Verified • Trusted</p>
     </div>
 
-    <!-- Tabs -->
     <div class="tabs">
       <button class="tab active" onclick="switchTab('login')">Log In</button>
       <button class="tab" onclick="switchTab('signup')">Sign Up</button>
@@ -225,6 +202,7 @@
         <i class="fas fa-sign-in-alt"></i> Log In
       </button>
       <div id="loginError" class="error"></div>
+      <div id="loginDebug" class="debug-box"></div>
       <div class="footer">
         <a onclick="switchTab('signup')">Don't have an account? Sign up</a>
       </div>
@@ -262,6 +240,7 @@
         <i class="fas fa-user-plus"></i> Create Agent Account
       </button>
       <div id="signupError" class="error"></div>
+      <div id="signupDebug" class="debug-box"></div>
       <div id="signupSuccess" class="success"></div>
       <div class="footer">
         <a onclick="switchTab('login')">Already have an account? Log in</a>
@@ -270,9 +249,18 @@
   </div>
 
   <script>
-    // ===== SUPABASE SETUP =====
+    // ===== CONFIGURATION =====
     const supabaseUrl = "https://nqwvsmuvltbiekfnvovx.supabase.co";
     const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5xd3ZzbXV2bHRiaWVrZm52b3Z4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA1NjU4MDAsImV4cCI6MjA5NjE0MTgwMH0.Xrc-bbAuWdvKSPHnVhTaLiQphV61xeYtDepWePqsrdo";
+    
+    // ⚠️ IMPORTANT: Change this to YOUR actual domain or use one of the alternatives below
+    // Option 1: Use your own domain (recommended)
+    const EMAIL_DOMAIN = "propdesk.co.ke";
+    
+    // Option 2: Use a generic domain (if you don't have one yet)
+    // const EMAIL_DOMAIN = "gmail.com";  // Not recommended for production
+    // const EMAIL_DOMAIN = "proton.me";  // Alternative
+    
     const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
 
     // ===== HELPERS =====
@@ -281,24 +269,30 @@
     function formatPhone(phone) {
       let cleaned = phone.replace(/[\s\-]/g, '');
       if (cleaned.startsWith('0')) cleaned = cleaned.substring(1);
-      if (cleaned.startsWith('254')) cleaned = cleaned.substring(3);
       if (cleaned.startsWith('+')) cleaned = cleaned.substring(1);
       if (cleaned.startsWith('254')) cleaned = cleaned.substring(3);
       return '+254' + cleaned;
     }
 
-    // Create virtual email from phone for Supabase auth
+    // Create virtual email from phone - FIXED VERSION
     function phoneToEmail(phone) {
       const formatted = formatPhone(phone);
-      // +254712345678 → 254712345678@agents.propdesk.co.ke
-      return formatted.substring(1) + '@agents.propdesk.co.ke';
+      // +254712345678 → agent_254712345678@propdesk.co.ke
+      const phoneDigits = formatted.substring(1); // Remove +
+      return `agent_${phoneDigits}@${EMAIL_DOMAIN}`;
     }
 
     // Validate Kenyan phone number
     function validatePhone(phone) {
       const cleaned = phone.replace(/[\s\-]/g, '');
-      // Accept: 07XXXXXXXX, 01XXXXXXXX, 7XXXXXXXX, 1XXXXXXXX, 2547XXXXXXXX
-      return /^(0?[17]\d{8}|254[17]\d{8})$/.test(cleaned);
+      return /^(0?[17]\d{8}|254[17]\d{8}|\+254[17]\d{8})$/.test(cleaned);
+    }
+
+    // Debug helper
+    function showDebug(elementId, message) {
+      const el = document.getElementById(elementId);
+      el.textContent = message;
+      el.classList.add('show');
     }
 
     // ===== TAB SWITCHING =====
@@ -313,8 +307,7 @@
         document.getElementById('loginForm').classList.add('hidden');
         document.getElementById('signupForm').classList.remove('hidden');
       }
-      // Clear errors
-      document.querySelectorAll('.error, .success').forEach(el => el.classList.remove('show'));
+      document.querySelectorAll('.error, .success, .debug-box').forEach(el => el.classList.remove('show'));
     };
 
     // ===== LOGIN =====
@@ -343,9 +336,12 @@
 
       try {
         const email = phoneToEmail(phone);
-        const { error } = await supabaseClient.auth.signInWithPassword({ email, password });
+        showDebug('loginDebug', `Attempting login with: ${email}`);
+        
+        const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
 
         if (error) {
+          console.error('Login error:', error);
           errorEl.textContent = error.message === 'Invalid login credentials'
             ? 'Invalid phone number or password.'
             : error.message;
@@ -354,11 +350,10 @@
         }
 
         // Get user role and redirect
-        const { data: { user } } = await supabaseClient.auth.getUser();
         const { data: profile } = await supabaseClient
           .from('profiles')
           .select('role')
-          .eq('id', user.id)
+          .eq('id', data.user.id)
           .single();
 
         if (profile?.role === 'admin') {
@@ -367,7 +362,8 @@
           window.location.href = 'agent.html';
         }
       } catch (err) {
-        errorEl.textContent = 'Login failed. Please try again.';
+        console.error('Login exception:', err);
+        errorEl.textContent = 'Login failed: ' + err.message;
         errorEl.classList.add('show');
       } finally {
         btn.disabled = false;
@@ -426,6 +422,8 @@
       try {
         const formattedPhone = formatPhone(phone);
         const virtualEmail = phoneToEmail(phone);
+        
+        showDebug('signupDebug', `Creating account with email: ${virtualEmail}`);
 
         // Check if phone already exists
         const { data: existing } = await supabaseClient
@@ -454,8 +452,11 @@
         });
 
         if (authError) {
+          console.error('Auth error:', authError);
           if (authError.message.includes('already registered')) {
             errorEl.textContent = 'This phone number is already registered.';
+          } else if (authError.message.includes('email')) {
+            errorEl.textContent = `Email format issue: ${authError.message}. Please contact support.`;
           } else {
             errorEl.textContent = authError.message;
           }
@@ -488,8 +489,8 @@
         }, 1500);
 
       } catch (err) {
-        console.error('Signup error:', err);
-        errorEl.textContent = 'Signup failed. Please try again.';
+        console.error('Signup exception:', err);
+        errorEl.textContent = 'Signup failed: ' + err.message;
         errorEl.classList.add('show');
       } finally {
         btn.disabled = false;
@@ -498,15 +499,12 @@
     };
 
     // ===== INPUT FORMATTING =====
-    
-    // Auto-format phone input - only allow digits
     document.querySelectorAll('input[type="tel"]').forEach(input => {
       input.addEventListener('input', (e) => {
         e.target.value = e.target.value.replace(/[^0-9]/g, '');
       });
     });
 
-    // Allow Enter key to submit
     document.getElementById('loginPassword').addEventListener('keypress', (e) => {
       if (e.key === 'Enter') handleLogin();
     });
@@ -517,7 +515,7 @@
       if (e.key === 'Enter') handleSignup();
     });
 
-    // ===== AUTO-LOGIN IF ALREADY AUTHENTICATED =====
+    // ===== AUTO-LOGIN CHECK =====
     (async () => {
       const { data: { session } } = await supabaseClient.auth.getSession();
       if (session?.user) {
