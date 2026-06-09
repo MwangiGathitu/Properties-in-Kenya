@@ -5,223 +5,1101 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Agent Portal — Properties in Kenya</title>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #f4f4f4; color: #111; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #f4f4f7; color: #111; min-height: 100vh; }
+
+    /* Header */
     header {
       background: white;
-      padding: 16px 20px;
-      border-bottom: 1px solid #ddd;
+      padding: 14px 24px;
+      border-bottom: 1px solid #e5e7eb;
       display: flex;
       justify-content: space-between;
       align-items: center;
       flex-wrap: wrap;
       gap: 10px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.04);
     }
-    h1 { font-size: 20px; }
+    .logo {
+      font-size: 18px;
+      font-weight: 700;
+      color: #6b21a8;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 14px;
+      color: #555;
+    }
+
+    /* Buttons */
     button {
       padding: 10px 16px;
       border: none;
-      border-radius: 6px;
+      border-radius: 8px;
       cursor: pointer;
       font-size: 14px;
+      font-weight: 500;
+      transition: all 0.2s;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
     }
-    .btn-primary { background: #0070f3; color: white; }
+    button:hover:not(:disabled) { transform: translateY(-1px); box-shadow: 0 2px 6px rgba(0,0,0,0.1); }
+    button:disabled { opacity: 0.5; cursor: not-allowed; }
+    .btn-primary { background: #6b21a8; color: white; }
     .btn-success { background: #10b981; color: white; }
     .btn-warning { background: #f59e0b; color: white; }
-    .btn-outline { background: transparent; border: 1px solid #0070f3; color: #0070f3; }
-    .btn-logout { background: #6b7280; color: white; }
-    .container { max-width: 900px; margin: 30px auto; padding: 0 20px; }
+    .btn-danger { background: #ef4444; color: white; }
+    .btn-ghost { background: #f3f4f6; color: #374151; }
+    .btn-ghost:hover { background: #e5e7eb; }
+    .btn-outline { background: transparent; border: 1px solid #6b21a8; color: #6b21a8; }
+    .btn-sm { padding: 6px 10px; font-size: 13px; }
+
+    /* Auth */
+    .auth-container {
+      min-height: calc(100vh - 60px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
     .auth-box {
       background: white;
-      padding: 30px;
-      border-radius: 10px;
-      box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+      padding: 32px;
+      border-radius: 12px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+      width: 100%;
       max-width: 420px;
-      margin: 0 auto;
+    }
+    .auth-box h2 {
+      color: #6b21a8;
+      margin-bottom: 20px;
+      text-align: center;
     }
     .auth-box input {
       width: 100%;
       padding: 12px;
       margin: 8px 0;
       border: 1px solid #d1d5db;
-      border-radius: 6px;
-      font-size: 16px;
+      border-radius: 8px;
+      font-size: 15px;
     }
-    .form-card {
+    .auth-box input:focus { outline: none; border-color: #6b21a8; }
+    .toggle-link { color: #6b21a8; cursor: pointer; font-weight: 600; }
+    .error { color: #ef4444; margin-top: 8px; font-size: 14px; text-align: center; }
+
+    /* Dashboard Container */
+    .dashboard {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 24px;
+    }
+
+    /* Tabs */
+    .tabs {
+      display: flex;
+      gap: 4px;
+      background: white;
+      padding: 6px;
+      border-radius: 12px;
+      margin-bottom: 24px;
+      overflow-x: auto;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+    }
+    .tab {
+      padding: 10px 18px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 500;
+      color: #6b7280;
+      white-space: nowrap;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s;
+      background: none;
+      border: none;
+    }
+    .tab:hover { background: #f3f4f6; color: #111; transform: none; box-shadow: none; }
+    .tab.active { background: #6b21a8; color: white; }
+    .tab-badge {
+      background: #ef4444;
+      color: white;
+      font-size: 11px;
+      padding: 2px 6px;
+      border-radius: 9999px;
+      font-weight: 700;
+    }
+    .tab.active .tab-badge { background: white; color: #6b21a8; }
+
+    /* Tab Content */
+    .tab-content { display: none; }
+    .tab-content.active { display: block; animation: fadeIn 0.3s; }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+    /* Stats */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+    .stat-card {
       background: white;
       padding: 20px;
-      border-radius: 10px;
-      box-shadow: 0 1px 4px rgba(0,0,0,0.08);
-      margin-bottom: 20px;
+      border-radius: 12px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+      border-left: 4px solid #6b21a8;
+      position: relative;
     }
-    .form-card input, .form-card textarea, .form-card select {
-      width: 100%;
-      padding: 12px;
-      margin: 8px 0;
-      border: 1px solid #d1d5db;
-      border-radius: 6px;
-      font-size: 16px;
-    }
-    .form-row { display: flex; gap: 12px; flex-wrap: wrap; }
-    .form-row > * { flex: 1 1 220px; }
+    .stat-card.views { border-left-color: #3b82f6; }
+    .stat-card.inquiries { border-left-color: #f59e0b; }
+    .stat-card.conversion { border-left-color: #10b981; }
+    .stat-card.deals { border-left-color: #ef4444; }
+    .stat-label { font-size: 12px; color: #6b7280; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px; }
+    .stat-value { font-size: 28px; font-weight: 700; color: #111; }
+    .stat-icon { float: right; font-size: 24px; opacity: 0.25; }
+
+    /* Cards */
     .card {
       background: white;
-      padding: 16px;
-      border-radius: 10px;
-      margin-bottom: 12px;
-      box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+      margin-bottom: 16px;
     }
+    .card h3 {
+      margin-bottom: 16px;
+      color: #111;
+      font-size: 18px;
+    }
+
+    /* Form */
+    .form-group { margin-bottom: 14px; }
+    .form-group label {
+      display: block;
+      font-size: 13px;
+      font-weight: 600;
+      color: #374151;
+      margin-bottom: 6px;
+    }
+    .form-group input, .form-group select, .form-group textarea {
+      width: 100%;
+      padding: 10px 12px;
+      border: 1px solid #d1d5db;
+      border-radius: 8px;
+      font-size: 14px;
+      font-family: inherit;
+    }
+    .form-group textarea { resize: vertical; min-height: 80px; }
+    .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+      outline: none;
+      border-color: #6b21a8;
+    }
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+    @media (max-width: 600px) { .form-row { grid-template-columns: 1fr; } }
+
+    /* Image Upload */
+    .image-upload-area {
+      border: 2px dashed #d1d5db;
+      border-radius: 12px;
+      padding: 24px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.2s;
+      background: #f9fafb;
+    }
+    .image-upload-area:hover { border-color: #6b21a8; background: #faf5ff; }
+    .image-upload-area i { font-size: 32px; color: #9ca3af; margin-bottom: 8px; }
+    .image-preview-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+      gap: 10px;
+      margin-top: 12px;
+    }
+    .image-preview-item {
+      position: relative;
+      aspect-ratio: 1;
+      border-radius: 8px;
+      overflow: hidden;
+      background: #f3f4f6;
+    }
+    .image-preview-item img { width: 100%; height: 100%; object-fit: cover; }
+    .image-preview-item .remove-img {
+      position: absolute;
+      top: 4px;
+      right: 4px;
+      background: rgba(239,68,68,0.9);
+      color: white;
+      border: none;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      cursor: pointer;
+      font-size: 12px;
+      padding: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* Status Badge */
     .status-badge {
       display: inline-block;
       padding: 4px 10px;
       border-radius: 9999px;
-      font-size: 13px;
-      font-weight: 600;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
     }
     .status-pending { background: #fef3c7; color: #92400e; }
     .status-approved { background: #d1fae5; color: #065f46; }
     .status-rejected { background: #fee2e2; color: #991b1b; }
+    .status-draft { background: #e5e7eb; color: #374151; }
+    .status-featured { background: linear-gradient(135deg, #fbbf24, #f59e0b); color: white; }
+
+    /* Listing Card */
+    .listing-card {
+      background: white;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+      margin-bottom: 16px;
+      display: grid;
+      grid-template-columns: 180px 1fr auto;
+      gap: 16px;
+      padding: 12px;
+      transition: all 0.2s;
+    }
+    .listing-card:hover { box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+    .listing-thumb {
+      width: 180px;
+      height: 130px;
+      border-radius: 8px;
+      object-fit: cover;
+      background: #f3f4f6;
+    }
+    .listing-info h4 { font-size: 16px; margin-bottom: 6px; }
+    .listing-info .meta { font-size: 13px; color: #6b7280; margin-bottom: 4px; }
+    .listing-info .price { font-size: 18px; font-weight: 700; color: #10b981; margin: 8px 0; }
+    .listing-actions {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      min-width: 120px;
+    }
+    @media (max-width: 768px) {
+      .listing-card { grid-template-columns: 1fr; }
+      .listing-thumb { width: 100%; height: 180px; }
+      .listing-actions { flex-direction: row; flex-wrap: wrap; }
+    }
+
+    /* Deal Pipeline (Kanban) */
+    .pipeline-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+    .pipeline-board {
+      display: grid;
+      grid-template-columns: repeat(7, minmax(220px, 1fr));
+      gap: 12px;
+      overflow-x: auto;
+      padding-bottom: 16px;
+    }
+    .pipeline-column {
+      background: #f9fafb;
+      border-radius: 12px;
+      padding: 12px;
+      min-height: 400px;
+      border-top: 3px solid #6b21a8;
+    }
+    .pipeline-column[data-stage="1"] { border-top-color: #3b82f6; }
+    .pipeline-column[data-stage="2"] { border-top-color: #8b5cf6; }
+    .pipeline-column[data-stage="3"] { border-top-color: #ec4899; }
+    .pipeline-column[data-stage="4"] { border-top-color: #f59e0b; }
+    .pipeline-column[data-stage="5"] { border-top-color: #f97316; }
+    .pipeline-column[data-stage="6"] { border-top-color: #10b981; }
+    .pipeline-column[data-stage="7"] { border-top-color: #059669; }
+    .pipeline-column-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid #e5e7eb;
+    }
+    .pipeline-column-title {
+      font-size: 13px;
+      font-weight: 700;
+      color: #374151;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .pipeline-count {
+      background: white;
+      color: #6b7280;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 9999px;
+    }
+    .deal-card {
+      background: white;
+      border-radius: 8px;
+      padding: 12px;
+      margin-bottom: 8px;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.06);
+      cursor: pointer;
+      transition: all 0.2s;
+      border-left: 3px solid transparent;
+    }
+    .deal-card:hover { transform: translateY(-2px); box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
+    .deal-card h5 { font-size: 14px; margin-bottom: 4px; color: #111; }
+    .deal-card .deal-meta { font-size: 12px; color: #6b7280; margin-bottom: 4px; }
+    .deal-card .deal-property { font-size: 12px; color: #6b21a8; font-weight: 500; }
+    .deal-card .deal-actions {
+      display: flex;
+      gap: 4px;
+      margin-top: 8px;
+    }
+    .deal-card .deal-actions button {
+      flex: 1;
+      padding: 4px;
+      font-size: 11px;
+    }
+
+    /* Inquiry Card */
+    .inquiry-card {
+      background: white;
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 12px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+      border-left: 4px solid #6b21a8;
+    }
+    .inquiry-card.unread { border-left-color: #ef4444; background: #fef2f2; }
+    .inquiry-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 8px;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .inquiry-buyer { font-weight: 600; color: #111; }
+    .inquiry-contact { font-size: 13px; color: #6b7280; margin-top: 2px; }
+    .inquiry-message {
+      background: #f9fafb;
+      padding: 10px;
+      border-radius: 8px;
+      font-size: 14px;
+      color: #374151;
+      margin: 10px 0;
+    }
+    .inquiry-actions {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    /* Modal */
     .modal-overlay {
-      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-      background: rgba(0,0,0,0.6); display: none; justify-content: center; align-items: center; z-index: 1000;
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.6);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
     }
-    .modal-content {
-      background: white; padding: 25px; border-radius: 10px;
-      width: 90%; max-width: 420px;
+    .modal-overlay.active { display: flex; }
+    .modal {
+      background: white;
+      border-radius: 16px;
+      max-width: 600px;
+      width: 100%;
+      max-height: 90vh;
+      overflow-y: auto;
+      animation: slideUp 0.3s;
     }
-    .error { color: #ef4444; margin-top: 8px; font-size: 14px; }
-    button:disabled { opacity: 0.7; cursor: not-allowed; }
+    @keyframes slideUp {
+      from { transform: translateY(30px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+    .modal-header {
+      padding: 20px 24px;
+      border-bottom: 1px solid #e5e7eb;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      background: white;
+      z-index: 10;
+      border-radius: 16px 16px 0 0;
+    }
+    .modal-header h3 { font-size: 18px; }
+    .modal-close {
+      background: none;
+      border: none;
+      font-size: 28px;
+      color: #9ca3af;
+      cursor: pointer;
+      padding: 0;
+      width: 32px;
+      height: 32px;
+    }
+    .modal-body { padding: 24px; }
+    .modal-footer {
+      padding: 16px 24px;
+      border-top: 1px solid #e5e7eb;
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+    }
+
+    /* Toast */
+    .toast-container {
+      position: fixed;
+      top: 80px;
+      right: 20px;
+      z-index: 2000;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      max-width: 360px;
+    }
+    .toast {
+      background: white;
+      padding: 14px 18px;
+      border-radius: 10px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      animation: slideInRight 0.3s;
+      border-left: 4px solid #6b7280;
+    }
+    @keyframes slideInRight {
+      from { transform: translateX(400px); opacity: 0; }
+      to { transform: translateX(0); opacity: 1; }
+    }
+    .toast.success { border-left-color: #10b981; }
+    .toast.error { border-left-color: #ef4444; }
+    .toast.warning { border-left-color: #f59e0b; }
+    .toast.info { border-left-color: #3b82f6; }
+    .toast-icon { font-size: 20px; }
+    .toast.success .toast-icon { color: #10b981; }
+    .toast.error .toast-icon { color: #ef4444; }
+    .toast.warning .toast-icon { color: #f59e0b; }
+    .toast.info .toast-icon { color: #3b82f6; }
+    .toast-content { flex: 1; font-size: 14px; }
+    .toast-title { font-weight: 600; margin-bottom: 2px; }
+    .toast-message { color: #6b7280; font-size: 13px; }
+
+    /* Empty State */
+    .empty-state {
+      text-align: center;
+      padding: 60px 20px;
+      color: #9ca3af;
+    }
+    .empty-state i { font-size: 48px; margin-bottom: 16px; }
+    .empty-state h3 { color: #6b7280; margin-bottom: 8px; }
+
+    /* Profile */
+    .profile-header {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      margin-bottom: 24px;
+      flex-wrap: wrap;
+    }
+    .profile-avatar {
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #6b21a8, #a855f7);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 36px;
+      font-weight: 700;
+      overflow: hidden;
+    }
+    .profile-avatar img { width: 100%; height: 100%; object-fit: cover; }
+
+    /* Subscription Banner */
+    .sub-banner {
+      background: linear-gradient(135deg, #fef3c7, #fde68a);
+      border: 1px solid #f59e0b;
+      padding: 16px 20px;
+      border-radius: 12px;
+      margin-bottom: 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .sub-banner.active {
+      background: linear-gradient(135deg, #d1fae5, #a7f3d0);
+      border-color: #10b981;
+    }
+    .sub-banner h4 { margin-bottom: 4px; }
+    .sub-banner p { font-size: 13px; color: #374151; }
+
+    /* Chart */
+    .chart-container {
+      background: white;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+      margin-bottom: 16px;
+    }
+    .chart-bar {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+    .chart-label {
+      width: 150px;
+      font-size: 13px;
+      color: #374151;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+    .chart-track {
+      flex: 1;
+      height: 24px;
+      background: #f3f4f6;
+      border-radius: 6px;
+      overflow: hidden;
+      position: relative;
+    }
+    .chart-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #6b21a8, #a855f7);
+      border-radius: 6px;
+      transition: width 0.5s;
+      display: flex;
+      align-items: center;
+      padding: 0 8px;
+      color: white;
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .dashboard { padding: 16px; }
+      .stats-grid { grid-template-columns: 1fr 1fr; }
+      .tab { padding: 8px 12px; font-size: 13px; }
+    }
   </style>
 </head>
 <body>
+
 <header>
-  <h1>🏡 Agent Portal</h1>
-  <div>
-    <span id="agentEmail" style="margin-right: 15px; font-size:14px; color:#555;"></span>
-    <button id="logoutBtn" class="btn-logout" style="display:none;" onclick="logout()">Logout</button>
+  <div class="logo">
+    <i class="fas fa-home"></i>
+    <span>Agent Portal</span>
+  </div>
+  <div class="header-right">
+    <span id="agentEmail"></span>
+    <button id="logoutBtn" class="btn-ghost" style="display:none;" onclick="logout()">
+      <i class="fas fa-sign-out-alt"></i> Logout
+    </button>
   </div>
 </header>
 
-<div class="container">
-  <!-- Auth -->
-  <div id="authBox" class="auth-box">
-    <h2 id="authTitle">Agent Login</h2>
+<!-- AUTH -->
+<div id="authContainer" class="auth-container">
+  <div class="auth-box">
+    <h2 id="authTitle"><i class="fas fa-lock"></i> Agent Login</h2>
     <input type="email" id="email" placeholder="Email" autocomplete="email">
     <input type="password" id="password" placeholder="Password" autocomplete="current-password">
     <input type="text" id="fullName" placeholder="Full Name" style="display:none;">
-    <button class="btn-primary" id="authSubmitBtn" onclick="handleAuth()">Log in</button>
+    <button class="btn-primary" id="authSubmitBtn" style="width:100%; margin-top:10px;" onclick="handleAuth()">
+      <i class="fas fa-sign-in-alt"></i> Log in
+    </button>
     <p id="authError" class="error"></p>
-    <p style="margin-top:15px; text-align:center;">
+    <p style="margin-top:15px; text-align:center; font-size:14px;">
       <span id="toggleText">Don't have an account?</span>
-      <span class="toggle-link" id="toggleAuthMode" onclick="toggleMode()" style="color:#0070f3; cursor:pointer;">Sign up</span>
+      <span class="toggle-link" id="toggleAuthMode" onclick="toggleMode()">Sign up</span>
     </p>
   </div>
+</div>
 
-  <!-- Dashboard -->
-  <div id="dashboard" style="display:none;">
-    <div class="form-card">
-      <h3>Account Status</h3>
-      <p id="subscriptionStatus" style="font-size:15px;"></p>
-      <button id="subscribeBtn" class="btn-warning" onclick="showSubscribeModal()" style="display:none; margin-top:10px;">
-        💎 Subscribe – KES 1,000/month
+<!-- DASHBOARD -->
+<div id="dashboard" class="dashboard" style="display:none;">
+
+  <!-- Subscription Banner -->
+  <div id="subBanner" class="sub-banner">
+    <div>
+      <h4 id="subBannerTitle">⏳ Free Plan Active</h4>
+      <p id="subBannerText">You can list up to 3 properties. Subscribe for unlimited listings.</p>
+    </div>
+    <button id="subscribeBtn" class="btn-warning" onclick="showSubscribeModal()">
+      💎 Subscribe – KES 1,000/mo
+    </button>
+  </div>
+
+  <!-- Tabs -->
+  <div class="tabs">
+    <button class="tab active" onclick="switchTab('analytics')">
+      <i class="fas fa-chart-line"></i> Analytics
+    </button>
+    <button class="tab" onclick="switchTab('listings')">
+      <i class="fas fa-building"></i> My Listings
+    </button>
+    <button class="tab" onclick="switchTab('deals')">
+      <i class="fas fa-handshake"></i> Deals Pipeline
+    </button>
+    <button class="tab" onclick="switchTab('inquiries')">
+      <i class="fas fa-envelope"></i> Inquiries
+      <span class="tab-badge" id="inquiryBadge" style="display:none;">0</span>
+    </button>
+    <button class="tab" onclick="switchTab('profile')">
+      <i class="fas fa-user"></i> Profile
+    </button>
+  </div>
+
+  <!-- ANALYTICS TAB -->
+  <div id="tab-analytics" class="tab-content active">
+    <div class="stats-grid">
+      <div class="stat-card views">
+        <i class="fas fa-eye stat-icon"></i>
+        <div class="stat-label">Total Views</div>
+        <div class="stat-value" id="statViews">0</div>
+      </div>
+      <div class="stat-card inquiries">
+        <i class="fas fa-envelope stat-icon"></i>
+        <div class="stat-label">Inquiries</div>
+        <div class="stat-value" id="statInquiries">0</div>
+      </div>
+      <div class="stat-card conversion">
+        <i class="fas fa-percentage stat-icon"></i>
+        <div class="stat-label">Conversion Rate</div>
+        <div class="stat-value" id="statConversion">0%</div>
+      </div>
+      <div class="stat-card deals">
+        <i class="fas fa-handshake stat-icon"></i>
+        <div class="stat-label">Active Deals</div>
+        <div class="stat-value" id="statDeals">0</div>
+      </div>
+    </div>
+
+    <div class="chart-container">
+      <h3 style="margin-bottom:16px;">📊 Top Performing Properties (by views)</h3>
+      <div id="topPropertiesChart"></div>
+    </div>
+
+    <div class="chart-container">
+      <h3 style="margin-bottom:16px;">💼 Deals by Stage</h3>
+      <div id="dealsByStageChart"></div>
+    </div>
+  </div>
+
+  <!-- LISTINGS TAB -->
+  <div id="tab-listings" class="tab-content">
+    <div class="card">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px; flex-wrap:wrap; gap:10px;">
+        <h3 style="margin:0;">Submit New Property</h3>
+        <button class="btn-ghost btn-sm" onclick="saveDraft()">
+          <i class="fas fa-save"></i> Save as Draft
+        </button>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>Property Title *</label>
+          <input type="text" id="propTitle" placeholder="e.g. 4 Bedroom House in Ruai">
+        </div>
+        <div class="form-group">
+          <label>Price (KES) *</label>
+          <input type="number" id="propPrice" placeholder="8500000">
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>Location *</label>
+          <input type="text" id="propLocation" placeholder="e.g. Ruai Phase 5">
+        </div>
+        <div class="form-group">
+          <label>Property Type *</label>
+          <select id="propType">
+            <option value="">Select type</option>
+            <option value="for sale">For Sale</option>
+            <option value="for rent">For Rent</option>
+            <option value="lease">Lease</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>Description</label>
+        <textarea id="propDescription" placeholder="Describe the property..."></textarea>
+      </div>
+
+      <div class="form-group">
+        <label>Property Images (up to 10)</label>
+        <div class="image-upload-area" onclick="document.getElementById('imageInput').click()">
+          <i class="fas fa-cloud-upload-alt"></i>
+          <p>Click to add image URLs</p>
+          <p style="font-size:12px; color:#9ca3af;">Add image URLs one at a time</p>
+        </div>
+        <input type="text" id="newImageUrl" placeholder="Paste image URL and click Add" style="margin-top:10px;">
+        <button type="button" class="btn-ghost btn-sm" onclick="addImageUrl()" style="margin-top:6px;">
+          <i class="fas fa-plus"></i> Add Image URL
+        </button>
+        <input type="file" id="imageInput" accept="image/*" multiple style="display:none;" onchange="handleImageUpload(event)">
+        <div class="image-preview-grid" id="imagePreviewGrid"></div>
+      </div>
+
+      <div style="display:flex; gap:10px; flex-wrap:wrap;">
+        <button class="btn-success" onclick="submitProperty('pending')" style="flex:1; min-width:200px;">
+          <i class="fas fa-paper-plane"></i> Submit for Approval
+        </button>
+        <button class="btn-ghost" onclick="submitProperty('draft')" style="flex:1; min-width:200px;">
+          <i class="fas fa-save"></i> Save as Draft
+        </button>
+      </div>
+    </div>
+
+    <h3 style="margin: 24px 0 12px;">My Listings</h3>
+    <div id="myListings"></div>
+  </div>
+
+  <!-- DEALS PIPELINE TAB -->
+  <div id="tab-deals" class="tab-content">
+    <div class="pipeline-header">
+      <h3>💼 Deal Pipeline</h3>
+      <button class="btn-primary" onclick="openNewDealModal()">
+        <i class="fas fa-plus"></i> New Deal
       </button>
     </div>
 
-    <div class="form-card">
-      <h3>Submit New Property</h3>
-      <div class="form-row">
-        <input type="text" id="title" placeholder="Property Title" required>
-        <input type="number" id="price" placeholder="Price (KES)" required>
+    <div class="pipeline-board" id="pipelineBoard"></div>
+  </div>
+
+  <!-- INQUIRIES TAB -->
+  <div id="tab-inquiries" class="tab-content">
+    <h3 style="margin-bottom:16px;">📬 Buyer Inquiries</h3>
+    <div id="inquiriesList"></div>
+  </div>
+
+  <!-- PROFILE TAB -->
+  <div id="tab-profile" class="tab-content">
+    <div class="card">
+      <div class="profile-header">
+        <div class="profile-avatar" id="profileAvatar">A</div>
+        <div>
+          <h3 id="profileName" style="margin-bottom:4px;">Agent Name</h3>
+          <p id="profileEmail" style="color:#6b7280; font-size:14px;">email@example.com</p>
+        </div>
       </div>
-      <input type="text" id="location" placeholder="Location (e.g. Ruai Phase 5)" required>
+
+      <h4 style="margin-bottom:12px;">Update Profile</h4>
       <div class="form-row">
-        <select id="propertyType">
-          <option value="">Property Type</option>
-          <option value="for sale">For Sale</option>
-          <option value="for rent">For Rent</option>
-        </select>
-        <input type="text" id="imageUrl" placeholder="Main Image URL (optional)">
+        <div class="form-group">
+          <label>Full Name</label>
+          <input type="text" id="profileFullName">
+        </div>
+        <div class="form-group">
+          <label>Phone Number</label>
+          <input type="tel" id="profilePhone" placeholder="0712345678">
+        </div>
       </div>
-      <textarea id="description" rows="4" placeholder="Description (optional)"></textarea>
-      <button class="btn-success" onclick="submitProperty()" style="width:100%; margin-top:10px;">Submit for Approval</button>
-      <p id="submitMsg" class="error"></p>
+      <div class="form-group">
+        <label>Company / Agency Name</label>
+        <input type="text" id="profileCompany" placeholder="e.g. Prime Realtors">
+      </div>
+      <div class="form-group">
+        <label>Bio / About</label>
+        <textarea id="profileBio" placeholder="Tell buyers about yourself..."></textarea>
+      </div>
+      <div class="form-group">
+        <label>Logo URL</label>
+        <input type="text" id="profileLogo" placeholder="https://...">
+      </div>
+      <button class="btn-primary" onclick="saveProfile()">
+        <i class="fas fa-save"></i> Save Profile
+      </button>
     </div>
-
-    <h3 style="margin: 20px 0 12px;">My Listings</h3>
-    <div id="myListings"></div>
   </div>
 </div>
 
-<!-- Modals -->
+<!-- SUBSCRIBE MODAL -->
 <div id="subscribeModal" class="modal-overlay">
-  <div class="modal-content">
-    <h3>💎 Monthly Subscription – KES 1,000</h3>
-    <input type="tel" id="subscribePhone" placeholder="M-Pesa Number (0712345678)">
-    <button class="btn-warning" id="subscribePayBtn" onclick="handleSubscribePayment()" style="width:100%; margin:10px 0;">Send M-Pesa Request</button>
-    <button class="btn-outline" onclick="closeSubscribeModal()" style="width:100%;">Cancel</button>
-    <p id="subscribeMsg" class="error"></p>
+  <div class="modal">
+    <div class="modal-header">
+      <h3>💎 Subscribe – KES 1,000/month</h3>
+      <button class="modal-close" onclick="closeSubscribeModal()">×</button>
+    </div>
+    <div class="modal-body">
+      <p style="margin-bottom:16px;">Unlock unlimited listings, featured placement, and priority support.</p>
+      <div class="form-group">
+        <label>M-Pesa Phone Number</label>
+        <input type="tel" id="subscribePhone" placeholder="0712345678">
+      </div>
+      <button class="btn-warning" id="subscribePayBtn" style="width:100%;" onclick="handleSubscribePayment()">
+        <i class="fas fa-mobile-alt"></i> Send M-Pesa Request
+      </button>
+      <p id="subscribeMsg" class="error"></p>
+    </div>
   </div>
 </div>
+
+<!-- NEW DEAL MODAL -->
+<div id="newDealModal" class="modal-overlay">
+  <div class="modal">
+    <div class="modal-header">
+      <h3>➕ New Deal</h3>
+      <button class="modal-close" onclick="closeNewDealModal()">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group">
+        <label>Buyer / Client Name *</label>
+        <input type="text" id="dealBuyerName" placeholder="John Doe">
+      </div>
+      <div class="form-group">
+        <label>Phone Number</label>
+        <input type="tel" id="dealBuyerPhone" placeholder="0712345678">
+      </div>
+      <div class="form-group">
+        <label>Related Property</label>
+        <select id="dealProperty">
+          <option value="">Select property (optional)</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Deal Value (KES)</label>
+        <input type="number" id="dealValue" placeholder="8500000">
+      </div>
+      <div class="form-group">
+        <label>Notes</label>
+        <textarea id="dealNotes" placeholder="Additional details..."></textarea>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-ghost" onclick="closeNewDealModal()">Cancel</button>
+      <button class="btn-primary" onclick="createDeal()">
+        <i class="fas fa-plus"></i> Create Deal
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- DEAL DETAIL MODAL -->
+<div id="dealDetailModal" class="modal-overlay">
+  <div class="modal">
+    <div class="modal-header">
+      <h3>Deal Details</h3>
+      <button class="modal-close" onclick="closeDealDetailModal()">×</button>
+    </div>
+    <div class="modal-body" id="dealDetailBody"></div>
+    <div class="modal-footer">
+      <button class="btn-danger btn-sm" onclick="deleteCurrentDeal()">
+        <i class="fas fa-trash"></i> Delete
+      </button>
+      <button class="btn-ghost" onclick="closeDealDetailModal()">Close</button>
+    </div>
+  </div>
+</div>
+
+<!-- INQUIRY REPLY MODAL -->
+<div id="replyModal" class="modal-overlay">
+  <div class="modal">
+    <div class="modal-header">
+      <h3>💬 Reply to Inquiry</h3>
+      <button class="modal-close" onclick="closeReplyModal()">×</button>
+    </div>
+    <div class="modal-body">
+      <div id="replyInquiryInfo" style="margin-bottom:16px;"></div>
+      <div class="form-group">
+        <label>Your Response</label>
+        <textarea id="replyMessage" rows="5" placeholder="Type your response..."></textarea>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-ghost" onclick="closeReplyModal()">Cancel</button>
+      <button class="btn-primary" onclick="sendReply()">
+        <i class="fas fa-paper-plane"></i> Send Reply
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- FEATURE MODAL -->
+<div id="featureModal" class="modal-overlay">
+  <div class="modal">
+    <div class="modal-header">
+      <h3>⭐ Feature This Listing</h3>
+      <button class="modal-close" onclick="closeFeatureModal()">×</button>
+    </div>
+    <div class="modal-body">
+      <p style="margin-bottom:16px;">Boost your property to the top of search results for 7 days.</p>
+      <div style="background:#fef3c7; padding:16px; border-radius:8px; text-align:center; margin-bottom:16px;">
+        <div style="font-size:24px; font-weight:700; color:#92400e;">KES 500</div>
+        <div style="font-size:13px; color:#92400e;">for 7 days featured placement</div>
+      </div>
+      <div class="form-group">
+        <label>M-Pesa Phone Number</label>
+        <input type="tel" id="featurePhone" placeholder="0712345678">
+      </div>
+      <button class="btn-warning" style="width:100%;" onclick="handleFeaturePayment()">
+        <i class="fas fa-mobile-alt"></i> Pay via M-Pesa
+      </button>
+      <p id="featureMsg" class="error"></p>
+    </div>
+  </div>
+</div>
+
+<!-- Toast Container -->
+<div id="toastContainer" class="toast-container"></div>
 
 <script>
+  // ===== SUPABASE =====
   const supabaseUrl = "https://nqwvsmuvltbiekfnvovx.supabase.co";
   const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5xd3ZzbXV2bHRiaWVrZm52b3Z4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA1NjU4MDAsImV4cCI6MjA5NjE0MTgwMH0.Xrc-bbAuWdvKSPHnVhTaLiQphV61xeYtDepWePqsrdo";
   const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
 
+  // ===== STATE =====
   let currentUser = null;
+  let currentProfile = null;
   let isSignUp = false;
+  let myListings = [];
+  let myDeals = [];
+  let myInquiries = [];
+  let currentImages = [];
+  let currentDealId = null;
+  let currentInquiryId = null;
+  let currentFeaturePropertyId = null;
 
-  // DOM
-  const authBox = document.getElementById("authBox");
-  const dashboard = document.getElementById("dashboard");
-  const authTitle = document.getElementById("authTitle");
-  const authError = document.getElementById("authError");
-  const toggleText = document.getElementById("toggleText");
-  const toggleAuthMode = document.getElementById("toggleAuthMode");
-  const fullNameInput = document.getElementById("fullName");
-  const agentEmailSpan = document.getElementById("agentEmail");
-  const logoutBtn = document.getElementById("logoutBtn");
-  const submitMsg = document.getElementById("submitMsg");
+  // Deal stages
+  const DEAL_STAGES = [
+    { id: 1, name: 'Lead Captured', desc: 'Inquiry received', color: '#3b82f6' },
+    { id: 2, name: 'Qualified', desc: 'Requirements verified', color: '#8b5cf6' },
+    { id: 3, name: 'Property Matched', desc: 'Suitable property identified', color: '#ec4899' },
+    { id: 4, name: 'Viewing Scheduled', desc: 'Site visit arranged', color: '#f59e0b' },
+    { id: 5, name: 'Negotiation', desc: 'Terms being discussed', color: '#f97316' },
+    { id: 6, name: 'Offer Accepted', desc: 'Agreement reached', color: '#10b981' },
+    { id: 7, name: 'Closed', desc: 'Deal completed', color: '#059669' }
+  ];
 
+  // ===== TOAST =====
+  function toast(type, title, message) {
+    const container = document.getElementById('toastContainer');
+    const icons = {
+      success: 'fa-check-circle',
+      error: 'fa-exclamation-circle',
+      warning: 'fa-exclamation-triangle',
+      info: 'fa-info-circle'
+    };
+    const t = document.createElement('div');
+    t.className = `toast ${type}`;
+    t.innerHTML = `
+      <i class="fas ${icons[type]} toast-icon"></i>
+      <div class="toast-content">
+        <div class="toast-title">${escapeHtml(title)}</div>
+        ${message ? `<div class="toast-message">${escapeHtml(message)}</div>` : ''}
+      </div>
+    `;
+    container.appendChild(t);
+    setTimeout(() => {
+      t.style.animation = 'slideInRight 0.3s reverse';
+      setTimeout(() => t.remove(), 300);
+    }, 3500);
+  }
+
+  function escapeHtml(text) {
+    if (!text) return '';
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+  }
+
+  // ===== AUTH =====
   window.toggleMode = function() {
     isSignUp = !isSignUp;
+    const authTitle = document.getElementById("authTitle");
+    const btn = document.getElementById("authSubmitBtn");
+    const toggleText = document.getElementById("toggleText");
+    const toggleLink = document.getElementById("toggleAuthMode");
+    const fullNameInput = document.getElementById("fullName");
+
     if (isSignUp) {
-      authTitle.textContent = "Agent Sign Up";
-      document.getElementById("authSubmitBtn").textContent = "Create Account";
+      authTitle.innerHTML = '<i class="fas fa-user-plus"></i> Agent Sign Up';
+      btn.innerHTML = '<i class="fas fa-user-plus"></i> Create Account';
       toggleText.textContent = "Already have an account?";
-      toggleAuthMode.textContent = "Log in";
+      toggleLink.textContent = "Log in";
       fullNameInput.style.display = "block";
     } else {
-      authTitle.textContent = "Agent Login";
-      document.getElementById("authSubmitBtn").textContent = "Log in";
+      authTitle.innerHTML = '<i class="fas fa-lock"></i> Agent Login';
+      btn.innerHTML = '<i class="fas fa-sign-in-alt"></i> Log in';
       toggleText.textContent = "Don't have an account?";
-      toggleAuthMode.textContent = "Sign up";
+      toggleLink.textContent = "Sign up";
       fullNameInput.style.display = "none";
     }
-    authError.textContent = "";
+    document.getElementById("authError").textContent = "";
   };
 
   window.handleAuth = async function() {
-    authError.textContent = "";
+    document.getElementById("authError").textContent = "";
     const email = document.getElementById("email").value.trim();
     const password = document.getElementById("password").value;
-    const fullName = fullNameInput.value.trim();
+    const fullName = document.getElementById("fullName").value.trim();
 
-    if (!email || !password) return authError.textContent = "Email and password required.";
+    if (!email || !password) {
+      document.getElementById("authError").textContent = "Email and password required.";
+      return;
+    }
 
     if (isSignUp) {
-      if (!fullName) return authError.textContent = "Full name required.";
-      const { data, error } = await supabaseClient.auth.signUp({
+      if (!fullName) {
+        document.getElementById("authError").textContent = "Full name required.";
+        return;
+      }
+      const { error } = await supabaseClient.auth.signUp({
         email, password,
         options: { data: { full_name: fullName, role: 'agent' } }
       });
-      if (error) return authError.textContent = error.message;
-      authError.style.color = "green";
-      authError.textContent = "Account created! Check email to confirm (if required).";
+      if (error) {
+        document.getElementById("authError").textContent = error.message;
+        return;
+      }
+      toast('success', 'Account Created', 'Please check your email to confirm.');
     } else {
       const { error } = await supabaseClient.auth.signInWithPassword({ email, password });
-      if (error) return authError.textContent = error.message;
+      if (error) {
+        document.getElementById("authError").textContent = error.message;
+        return;
+      }
       await checkAgentAndShow();
     }
   };
@@ -230,147 +1108,880 @@
     const { data: { user } } = await supabaseClient.auth.getUser();
     if (!user) return;
 
-    const { data: profile } = await supabaseClient
+    // Get or create profile
+    let { data: profile } = await supabaseClient
       .from("profiles")
-      .select("role, full_name, subscribed, subscribed_until")
+      .select("*")
       .eq("id", user.id)
       .single();
 
-    if (!profile || profile.role !== "agent") {
+    if (!profile) {
+      const meta = user.user_metadata || {};
+      const { data: newProfile } = await supabaseClient
+        .from("profiles")
+        .insert([{
+          id: user.id,
+          role: 'agent',
+          full_name: meta.full_name || user.email.split('@')[0],
+          email: user.email
+        }])
+        .select()
+        .single();
+      profile = newProfile;
+    }
+
+    if (profile.role !== "agent") {
       await supabaseClient.auth.signOut();
-      authError.textContent = "Access denied.";
+      toast('error', 'Access Denied', 'This account is not an agent.');
       return;
     }
 
     currentUser = user;
-    authBox.style.display = "none";
-    dashboard.style.display = "block";
-    logoutBtn.style.display = "inline-block";
-    agentEmailSpan.textContent = user.email;
+    currentProfile = profile;
 
-    const subStatus = document.getElementById("subscriptionStatus");
-    const subBtn = document.getElementById("subscribeBtn");
-    if (profile.subscribed && new Date(profile.subscribed_until) > new Date()) {
-      subStatus.innerHTML = `✅ Subscribed until <strong>${new Date(profile.subscribed_until).toLocaleDateString()}</strong>`;
-      subBtn.style.display = "none";
-    } else {
-      subStatus.textContent = "⏳ Not subscribed. Subscribe to list unlimited properties.";
-      subBtn.style.display = "inline-block";
-    }
+    document.getElementById("authContainer").style.display = "none";
+    document.getElementById("dashboard").style.display = "block";
+    document.getElementById("logoutBtn").style.display = "inline-flex";
+    document.getElementById("agentEmail").textContent = user.email;
 
-    loadMyListings();
+    updateSubscriptionUI();
+    loadAllData();
   }
 
-  async function loadMyListings() {
-    const container = document.getElementById("myListings");
-    container.innerHTML = "Loading your listings...";
+  function updateSubscriptionUI() {
+    const banner = document.getElementById('subBanner');
+    const title = document.getElementById('subBannerTitle');
+    const text = document.getElementById('subBannerText');
+    const btn = document.getElementById('subscribeBtn');
 
+    const isSubscribed = currentProfile.subscribed && new Date(currentProfile.subscribed_until) > new Date();
+
+    if (isSubscribed) {
+      banner.classList.add('active');
+      title.textContent = '✅ Premium Plan Active';
+      text.textContent = `Unlimited listings until ${new Date(currentProfile.subscribed_until).toLocaleDateString()}`;
+      btn.style.display = 'none';
+    } else {
+      banner.classList.remove('active');
+      title.textContent = '⏳ Free Plan Active';
+      const count = myListings.filter(l => l.approval_status !== 'draft').length;
+      text.textContent = `You have ${count}/3 listings. Subscribe for unlimited.`;
+      btn.style.display = 'inline-flex';
+    }
+  }
+
+  // ===== TABS =====
+  window.switchTab = function(tabName) {
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+    event.currentTarget.classList.add('active');
+    document.getElementById(`tab-${tabName}`).classList.add('active');
+
+    if (tabName === 'analytics') renderAnalytics();
+    if (tabName === 'deals') renderPipeline();
+    if (tabName === 'inquiries') renderInquiries();
+    if (tabName === 'profile') loadProfile();
+  };
+
+  // ===== LOAD ALL DATA =====
+  async function loadAllData() {
+    await Promise.all([
+      loadMyListings(),
+      loadMyDeals(),
+      loadMyInquiries()
+    ]);
+    renderAnalytics();
+  }
+
+  // ===== LISTINGS =====
+  async function loadMyListings() {
     const { data, error } = await supabaseClient
       .from("properties")
       .select("*")
       .eq("agent_id", currentUser.id)
       .order("created_at", { ascending: false });
 
-    if (error || !data) return container.innerHTML = `<p style="color:red;">Error loading listings.</p>`;
-
-    if (data.length === 0) {
-      container.innerHTML = "<p>You have no listings yet. Submit one above.</p>";
+    if (error) {
+      toast('error', 'Load Failed', error.message);
       return;
     }
 
-    container.innerHTML = data.map(p => `
-      <div class="card">
-        <h3>${p.title} <span class="status-badge status-${p.approval_status}">${p.approval_status.toUpperCase()}</span></h3>
-        <p>${p.location} • KSh ${Number(p.price).toLocaleString()}</p>
-        ${p.approval_status === 'approved' ? `<button class="btn-primary" onclick="alert('Feature coming soon - KES 500')">⭐ Feature Listing</button>` : ''}
+    myListings = data || [];
+    renderMyListings();
+    updateSubscriptionUI();
+  }
+
+  function renderMyListings() {
+    const container = document.getElementById("myListings");
+
+    if (myListings.length === 0) {
+      container.innerHTML = `
+        <div class="empty-state">
+          <i class="fas fa-building"></i>
+          <h3>No listings yet</h3>
+          <p>Submit your first property above.</p>
+        </div>
+      `;
+      return;
+    }
+
+    container.innerHTML = myListings.map(p => {
+      const thumb = p.images && p.images.length > 0 ? p.images[0] :
+                   p.image_url || `https://picsum.photos/seed/${p.id}/200/150`;
+      const isFeatured = p.is_featured && new Date(p.featured_until) > new Date();
+
+      return `
+        <div class="listing-card">
+          <img src="${thumb}" class="listing-thumb" alt="${escapeHtml(p.title)}" onerror="this.src='https://picsum.photos/seed/${p.id}/200/150'">
+          <div class="listing-info">
+            <h4>${escapeHtml(p.title || 'Untitled')}</h4>
+            <div class="meta">
+              <i class="fas fa-map-marker-alt"></i> ${escapeHtml(p.location || 'N/A')}
+              &nbsp;•&nbsp; <i class="fas fa-eye"></i> ${p.views_count || 0} views
+            </div>
+            <div class="price">KSh ${Number(p.price || 0).toLocaleString()}</div>
+            <div>
+              <span class="status-badge status-${p.approval_status || 'draft'}">${(p.approval_status || 'draft').toUpperCase()}</span>
+              ${isFeatured ? '<span class="status-badge status-featured">⭐ FEATURED</span>' : ''}
+            </div>
+          </div>
+          <div class="listing-actions">
+            <button class="btn-sm btn-primary" onclick="editListing('${p.id}')">
+              <i class="fas fa-edit"></i> Edit
+            </button>
+            ${p.approval_status === 'approved' && !isFeatured ? `
+              <button class="btn-sm btn-warning" onclick="openFeatureModal('${p.id}')">
+                <i class="fas fa-star"></i> Feature
+              </button>
+            ` : ''}
+            <button class="btn-sm btn-danger" onclick="deleteListing('${p.id}')">
+              <i class="fas fa-trash"></i> Delete
+            </button>
+          </div>
+        </div>
+      `;
+    }).join('');
+  }
+
+  // ===== IMAGE HANDLING =====
+  window.addImageUrl = function() {
+    const input = document.getElementById('newImageUrl');
+    const url = input.value.trim();
+    if (!url) return;
+    if (currentImages.length >= 10) {
+      toast('warning', 'Limit Reached', 'Maximum 10 images allowed.');
+      return;
+    }
+    currentImages.push(url);
+    input.value = '';
+    renderImagePreviews();
+  };
+
+  function handleImageUpload(event) {
+    const files = event.target.files;
+    if (!files.length) return;
+
+    // For demo, we'll use object URLs. In production, upload to Supabase Storage.
+    Array.from(files).forEach(file => {
+      if (currentImages.length >= 10) return;
+      const url = URL.createObjectURL(file);
+      currentImages.push(url);
+    });
+    renderImagePreviews();
+    toast('info', 'Images Added', 'Note: In production, upload to Supabase Storage.');
+  }
+
+  function renderImagePreviews() {
+    const grid = document.getElementById('imagePreviewGrid');
+    grid.innerHTML = currentImages.map((url, i) => `
+      <div class="image-preview-item">
+        <img src="${url}" alt="Preview" onerror="this.src='https://picsum.photos/seed/${i}/100'">
+        <button class="remove-img" onclick="removeImage(${i})">×</button>
       </div>
     `).join('');
   }
 
-  window.submitProperty = async function() {
-    if (!currentUser) return alert("Please log in.");
-    submitMsg.textContent = "";
+  window.removeImage = function(index) {
+    currentImages.splice(index, 1);
+    renderImagePreviews();
+  };
 
-    const title = document.getElementById("title").value.trim();
-    const price = document.getElementById("price").value;
-    const location = document.getElementById("location").value.trim();
-    const propertyType = document.getElementById("propertyType").value;
-    const imageUrl = document.getElementById("imageUrl").value.trim();
-    const description = document.getElementById("description").value.trim();
+  // ===== SUBMIT PROPERTY =====
+  window.submitProperty = async function(status = 'pending') {
+    if (!currentUser) return toast('error', 'Login Required');
+
+    const title = document.getElementById("propTitle").value.trim();
+    const price = document.getElementById("propPrice").value;
+    const location = document.getElementById("propLocation").value.trim();
+    const propertyType = document.getElementById("propType").value;
+    const description = document.getElementById("propDescription").value.trim();
 
     if (!title || !price || !location || !propertyType) {
-      submitMsg.textContent = "Title, Price, Location and Type are required.";
+      toast('error', 'Missing Fields', 'Title, price, location, and type are required.');
       return;
+    }
+
+    // Check limits for non-draft
+    if (status !== 'draft') {
+      const isSubscribed = currentProfile.subscribed && new Date(currentProfile.subscribed_until) > new Date();
+      const activeCount = myListings.filter(l => l.approval_status !== 'draft').length;
+      if (!isSubscribed && activeCount >= 3) {
+        toast('warning', 'Limit Reached', 'Free plan allows only 3 listings. Please subscribe.');
+        showSubscribeModal();
+        return;
+      }
     }
 
     const { error } = await supabaseClient.from("properties").insert([{
-      title, price: parseFloat(price), location, property_type: propertyType,
-      image_url: imageUrl || null, description,
-      approval_status: "pending", agent_id: currentUser.id
+      title,
+      price: parseFloat(price),
+      location,
+      property_type: propertyType,
+      description,
+      images: currentImages,
+      approval_status: status,
+      agent_id: currentUser.id,
+      views_count: 0,
+      is_featured: false
     }]);
 
     if (error) {
-      submitMsg.textContent = "Error: " + error.message;
+      toast('error', 'Submission Failed', error.message);
       return;
     }
 
-    submitMsg.style.color = "green";
-    submitMsg.textContent = "✅ Property submitted for approval!";
-    loadMyListings();
+    toast('success', status === 'draft' ? 'Draft Saved' : 'Property Submitted',
+          status === 'draft' ? 'You can continue editing later.' : 'Awaiting admin approval.');
 
     // Clear form
-    document.getElementById("title").value = "";
-    document.getElementById("price").value = "";
-    document.getElementById("location").value = "";
-    document.getElementById("propertyType").value = "";
-    document.getElementById("imageUrl").value = "";
-    document.getElementById("description").value = "";
+    document.getElementById("propTitle").value = "";
+    document.getElementById("propPrice").value = "";
+    document.getElementById("propLocation").value = "";
+    document.getElementById("propType").value = "";
+    document.getElementById("propDescription").value = "";
+    currentImages = [];
+    renderImagePreviews();
+
+    await loadMyListings();
   };
 
-  // M-Pesa (placeholder - needs working Edge Function)
-  window.showSubscribeModal = () => document.getElementById("subscribeModal").style.display = "flex";
-  window.closeSubscribeModal = () => document.getElementById("subscribeModal").style.display = "none";
+  window.saveDraft = function() {
+    submitProperty('draft');
+  };
 
-  window.handleSubscribePayment = async function() {
-    const phone = document.getElementById("subscribePhone").value.trim();
-    if (!phone) return document.getElementById("subscribeMsg").textContent = "Enter M-Pesa number";
+  window.editListing = function(id) {
+    const p = myListings.find(l => l.id === id);
+    if (!p) return;
 
-    const msgEl = document.getElementById("subscribeMsg");
-    const btn = document.getElementById("subscribePayBtn");
-    btn.disabled = true;
-    btn.textContent = "Sending...";
+    document.getElementById("propTitle").value = p.title || '';
+    document.getElementById("propPrice").value = p.price || '';
+    document.getElementById("propLocation").value = p.location || '';
+    document.getElementById("propType").value = p.property_type || '';
+    document.getElementById("propDescription").value = p.description || '';
+    currentImages = p.images ? [...p.images] : (p.image_url ? [p.image_url] : []);
+    renderImagePreviews();
+
+    // Delete old and re-submit pattern (simpler than update for this demo)
+    toast('info', 'Editing', 'Make changes and resubmit. The old listing will be replaced.');
+
+    // Store ID for replacement
+    window.editingPropertyId = id;
+
+    // Override submit to update instead of insert
+    const originalSubmit = window.submitProperty;
+    window.submitProperty = async function(status) {
+      const title = document.getElementById("propTitle").value.trim();
+      const price = document.getElementById("propPrice").value;
+      const location = document.getElementById("propLocation").value.trim();
+      const propertyType = document.getElementById("propType").value;
+      const description = document.getElementById("propDescription").value.trim();
+
+      const { error } = await supabaseClient
+        .from("properties")
+        .update({
+          title, price: parseFloat(price), location,
+          property_type: propertyType, description,
+          images: currentImages, approval_status: status
+        })
+        .eq("id", window.editingPropertyId);
+
+      if (error) {
+        toast('error', 'Update Failed', error.message);
+        return;
+      }
+
+      toast('success', 'Updated', 'Property updated successfully.');
+      window.submitProperty = originalSubmit;
+      window.editingPropertyId = null;
+
+      document.getElementById("propTitle").value = "";
+      document.getElementById("propPrice").value = "";
+      document.getElementById("propLocation").value = "";
+      document.getElementById("propType").value = "";
+      document.getElementById("propDescription").value = "";
+      currentImages = [];
+      renderImagePreviews();
+
+      await loadMyListings();
+    };
+
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  window.deleteListing = async function(id) {
+    if (!confirm("Delete this listing permanently?")) return;
+
+    const { error } = await supabaseClient
+      .from("properties")
+      .delete()
+      .eq("id", id);
+
+    if (error) {
+      toast('error', 'Delete Failed', error.message);
+      return;
+    }
+
+    toast('success', 'Deleted', 'Listing removed.');
+    await loadMyListings();
+  };
+
+  // ===== FEATURE LISTING =====
+  window.openFeatureModal = function(propertyId) {
+    currentFeaturePropertyId = propertyId;
+    document.getElementById('featureModal').classList.add('active');
+  };
+  window.closeFeatureModal = function() {
+    document.getElementById('featureModal').classList.remove('active');
+  };
+
+  window.handleFeaturePayment = async function() {
+    const phone = document.getElementById('featurePhone').value.trim();
+    if (!phone) {
+      toast('error', 'Phone Required', 'Enter M-Pesa number.');
+      return;
+    }
+
+    const msgEl = document.getElementById('featureMsg');
+    msgEl.textContent = '';
 
     try {
-      // This is where the critical Edge Function is called
-      const { data, error } = await supabaseClient.functions.invoke('mpesa-stk', {
-        body: { phone, amount: 1000, payment_type: "subscription", agent_id: currentUser.id }
+      const { error } = await supabaseClient.functions.invoke('mpesa-stk', {
+        body: {
+          phone, amount: 500,
+          payment_type: "feature_listing",
+          property_id: currentFeaturePropertyId,
+          agent_id: currentUser.id
+        }
       });
-
       if (error) throw error;
-      msgEl.style.color = "green";
-      msgEl.textContent = "✅ M-Pesa request sent! Check your phone.";
-      setTimeout(() => closeSubscribeModal(), 4000);
+
+      msgEl.style.color = 'green';
+      msgEl.textContent = '✅ M-Pesa request sent! Check your phone.';
+      setTimeout(() => closeFeatureModal(), 3000);
     } catch (err) {
-      msgEl.textContent = "❌ " + (err.message || "Failed to send request.");
-    } finally {
-      btn.disabled = false;
-      btn.textContent = "Send M-Pesa Request";
+      msgEl.textContent = '❌ ' + (err.message || 'Payment failed.');
     }
   };
 
-  window.logout = async () => {
-    await supabaseClient.auth.signOut();
-    currentUser = null;
-    authBox.style.display = "block";
-    dashboard.style.display = "none";
-    logoutBtn.style.display = "none";
+  // ===== DEALS PIPELINE =====
+  async function loadMyDeals() {
+    const { data, error } = await supabaseClient
+      .from("deals")
+      .select("*")
+      .eq("agent_id", currentUser.id)
+      .order("created_at", { ascending: false });
+
+    if (error) {
+      toast('error', 'Load Failed', error.message);
+      return;
+    }
+    myDeals = data || [];
+  }
+
+  function renderPipeline() {
+    const board = document.getElementById('pipelineBoard');
+    board.innerHTML = DEAL_STAGES.map(stage => {
+      const stageDeals = myDeals.filter(d => d.stage === stage.id);
+      return `
+        <div class="pipeline-column" data-stage="${stage.id}">
+          <div class="pipeline-column-header">
+            <div class="pipeline-column-title">${stage.name}</div>
+            <div class="pipeline-count">${stageDeals.length}</div>
+          </div>
+          <div style="font-size:11px; color:#6b7280; margin-bottom:10px;">${stage.desc}</div>
+          ${stageDeals.map(deal => `
+            <div class="deal-card" onclick="openDealDetail('${deal.id}')">
+              <h5>${escapeHtml(deal.buyer_name || 'Unnamed')}</h5>
+              <div class="deal-meta">
+                ${deal.buyer_phone ? `<i class="fas fa-phone"></i> ${escapeHtml(deal.buyer_phone)}` : ''}
+              </div>
+              ${deal.deal_value ? `<div class="deal-meta"><strong>KSh ${Number(deal.deal_value).toLocaleString()}</strong></div>` : ''}
+              ${deal.property_name ? `<div class="deal-property"><i class="fas fa-home"></i> ${escapeHtml(deal.property_name)}</div>` : ''}
+              <div class="deal-actions">
+                ${stage.id > 1 ? `<button class="btn-ghost btn-sm" onclick="event.stopPropagation(); moveDeal('${deal.id}', ${stage.id - 1})">← Back</button>` : ''}
+                ${stage.id < 7 ? `<button class="btn-primary btn-sm" onclick="event.stopPropagation(); moveDeal('${deal.id}', ${stage.id + 1})">Next →</button>` : ''}
+              </div>
+            </div>
+          `).join('')}
+        </div>
+      `;
+    }).join('');
+  }
+
+  window.moveDeal = async function(dealId, newStage) {
+    const { error } = await supabaseClient
+      .from("deals")
+      .update({ stage: newStage, updated_at: new Date().toISOString() })
+      .eq("id", dealId);
+
+    if (error) {
+      toast('error', 'Move Failed', error.message);
+      return;
+    }
+
+    const stageName = DEAL_STAGES.find(s => s.id === newStage).name;
+    toast('success', 'Deal Moved', `Moved to "${stageName}"`);
+    await loadMyDeals();
+    renderPipeline();
+    renderAnalytics();
   };
 
-  // Init
+  window.openNewDealModal = function() {
+    const select = document.getElementById('dealProperty');
+    select.innerHTML = '<option value="">Select property (optional)</option>' +
+      myListings.map(p => `<option value="${p.id}">${escapeHtml(p.title)}</option>`).join('');
+    document.getElementById('newDealModal').classList.add('active');
+  };
+  window.closeNewDealModal = function() {
+    document.getElementById('newDealModal').classList.remove('active');
+  };
+
+  window.createDeal = async function() {
+    const buyerName = document.getElementById('dealBuyerName').value.trim();
+    const buyerPhone = document.getElementById('dealBuyerPhone').value.trim();
+    const propertyId = document.getElementById('dealProperty').value;
+    const dealValue = document.getElementById('dealValue').value;
+    const notes = document.getElementById('dealNotes').value.trim();
+
+    if (!buyerName) {
+      toast('error', 'Name Required', 'Buyer name is required.');
+      return;
+    }
+
+    const property = myListings.find(p => p.id === propertyId);
+
+    const { error } = await supabaseClient.from("deals").insert([{
+      agent_id: currentUser.id,
+      property_id: propertyId || null,
+      property_name: property ? property.title : null,
+      buyer_name: buyerName,
+      buyer_phone: buyerPhone,
+      deal_value: dealValue ? parseFloat(dealValue) : null,
+      notes,
+      stage: 1
+    }]);
+
+    if (error) {
+      toast('error', 'Create Failed', error.message);
+      return;
+    }
+
+    toast('success', 'Deal Created', 'New deal added to pipeline.');
+    closeNewDealModal();
+
+    document.getElementById('dealBuyerName').value = '';
+    document.getElementById('dealBuyerPhone').value = '';
+    document.getElementById('dealValue').value = '';
+    document.getElementById('dealNotes').value = '';
+
+    await loadMyDeals();
+    renderPipeline();
+    renderAnalytics();
+  };
+
+  window.openDealDetail = function(dealId) {
+    const deal = myDeals.find(d => d.id === dealId);
+    if (!deal) return;
+    currentDealId = dealId;
+
+    const stage = DEAL_STAGES.find(s => s.id === deal.stage);
+    const stageIndex = DEAL_STAGES.findIndex(s => s.id === deal.stage);
+
+    const body = document.getElementById('dealDetailBody');
+    body.innerHTML = `
+      <div style="margin-bottom:20px;">
+        <h4 style="margin-bottom:8px;">${escapeHtml(deal.buyer_name)}</h4>
+        ${deal.buyer_phone ? `<p><i class="fas fa-phone"></i> ${escapeHtml(deal.buyer_phone)}</p>` : ''}
+        ${deal.property_name ? `<p><i class="fas fa-home"></i> ${escapeHtml(deal.property_name)}</p>` : ''}
+        ${deal.deal_value ? `<p><strong>KSh ${Number(deal.deal_value).toLocaleString()}</strong></p>` : ''}
+        ${deal.notes ? `<p style="margin-top:10px; color:#6b7280;">${escapeHtml(deal.notes)}</p>` : ''}
+      </div>
+
+      <div style="margin-bottom:16px;">
+        <label style="font-size:13px; font-weight:600; display:block; margin-bottom:8px;">Current Stage</label>
+        <div style="background:${stage.color}; color:white; padding:10px; border-radius:8px; font-weight:600;">
+          Stage ${stage.id}: ${stage.name}
+        </div>
+      </div>
+
+      <div style="margin-bottom:16px;">
+        <label style="font-size:13px; font-weight:600; display:block; margin-bottom:8px;">Progress</label>
+        <div style="display:flex; gap:4px;">
+          ${DEAL_STAGES.map((s, i) => `
+            <div style="flex:1; height:8px; background:${i <= stageIndex ? s.color : '#e5e7eb'}; border-radius:4px;"></div>
+          `).join('')}
+        </div>
+      </div>
+
+      <div style="margin-bottom:16px;">
+        <label style="font-size:13px; font-weight:600; display:block; margin-bottom:8px;">Move to Stage</label>
+        <select id="dealStageSelect" style="width:100%; padding:10px; border:1px solid #d1d5db; border-radius:8px;">
+          ${DEAL_STAGES.map(s => `<option value="${s.id}" ${s.id === deal.stage ? 'selected' : ''}>Stage ${s.id}: ${s.name}</option>`).join('')}
+        </select>
+        <button class="btn-primary" style="width:100%; margin-top:8px;" onclick="updateDealStage()">
+          Update Stage
+        </button>
+      </div>
+    `;
+
+    document.getElementById('dealDetailModal').classList.add('active');
+  };
+
+  window.updateDealStage = async function() {
+    const newStage = parseInt(document.getElementById('dealStageSelect').value);
+    await moveDeal(currentDealId, newStage);
+    closeDealDetailModal();
+  };
+
+  window.closeDealDetailModal = function() {
+    document.getElementById('dealDetailModal').classList.remove('active');
+  };
+
+  window.deleteCurrentDeal = async function() {
+    if (!confirm('Delete this deal permanently?')) return;
+
+    const { error } = await supabaseClient
+      .from("deals")
+      .delete()
+      .eq("id", currentDealId);
+
+    if (error) {
+      toast('error', 'Delete Failed', error.message);
+      return;
+    }
+
+    toast('success', 'Deleted', 'Deal removed.');
+    closeDealDetailModal();
+    await loadMyDeals();
+    renderPipeline();
+    renderAnalytics();
+  };
+
+  // ===== INQUIRIES =====
+  async function loadMyInquiries() {
+    // Get all properties owned by this agent
+    const propertyIds = myListings.map(p => p.id);
+    if (propertyIds.length === 0) {
+      myInquiries = [];
+      renderInquiries();
+      return;
+    }
+
+    const { data, error } = await supabaseClient
+      .from("inquiries")
+      .select("*")
+      .in("property_id", propertyIds)
+      .order("created_at", { ascending: false });
+
+    if (error) {
+      toast('error', 'Load Failed', error.message);
+      return;
+    }
+
+    myInquiries = data || [];
+    renderInquiries();
+    updateInquiryBadge();
+  }
+
+  function updateInquiryBadge() {
+    const unread = myInquiries.filter(i => !i.read).length;
+    const badge = document.getElementById('inquiryBadge');
+    if (unread > 0) {
+      badge.textContent = unread;
+      badge.style.display = 'inline-block';
+    } else {
+      badge.style.display = 'none';
+    }
+  }
+
+  function renderInquiries() {
+    const container = document.getElementById('inquiriesList');
+
+    if (myInquiries.length === 0) {
+      container.innerHTML = `
+        <div class="empty-state">
+          <i class="fas fa-envelope-open"></i>
+          <h3>No inquiries yet</h3>
+          <p>When buyers contact you about your listings, they'll appear here.</p>
+        </div>
+      `;
+      return;
+    }
+
+    container.innerHTML = myInquiries.map(inq => {
+      const property = myListings.find(p => p.id === inq.property_id);
+      const isUnread = !inq.read;
+
+      return `
+        <div class="inquiry-card ${isUnread ? 'unread' : ''}">
+          <div class="inquiry-header">
+            <div>
+              <div class="inquiry-buyer">${escapeHtml(inq.buyer_name || 'Anonymous')}</div>
+              <div class="inquiry-contact">
+                ${inq.buyer_email ? `<i class="fas fa-envelope"></i> ${escapeHtml(inq.buyer_email)}` : ''}
+                ${inq.buyer_phone ? ` &nbsp; <i class="fas fa-phone"></i> ${escapeHtml(inq.buyer_phone)}` : ''}
+              </div>
+            </div>
+            <div style="font-size:12px; color:#6b7280;">
+              ${new Date(inq.created_at).toLocaleDateString()}
+            </div>
+          </div>
+          ${property ? `<div style="font-size:12px; color:#6b21a8; margin-bottom:6px;"><i class="fas fa-home"></i> ${escapeHtml(property.title)}</div>` : ''}
+          <div class="inquiry-message">${escapeHtml(inq.message || 'No message')}</div>
+          <div class="inquiry-actions">
+            <button class="btn-sm btn-primary" onclick="openReplyModal('${inq.id}')">
+              <i class="fas fa-reply"></i> Reply
+            </button>
+            ${inq.buyer_phone ? `
+              <a href="https://wa.me/${inq.buyer_phone.replace(/[^0-9]/g, '')}" target="_blank" class="btn-sm btn-success" style="text-decoration:none;">
+                <i class="fab fa-whatsapp"></i> WhatsApp
+              </a>
+            ` : ''}
+            ${isUnread ? `
+              <button class="btn-sm btn-ghost" onclick="markRead('${inq.id}')">
+                <i class="fas fa-check"></i> Mark Read
+              </button>
+            ` : ''}
+            <button class="btn-sm btn-danger" onclick="deleteInquiry('${inq.id}')">
+              <i class="fas fa-trash"></i>
+            </button>
+          </div>
+        </div>
+      `;
+    }).join('');
+  }
+
+  window.markRead = async function(id) {
+    await supabaseClient.from("inquiries").update({ read: true }).eq("id", id);
+    await loadMyInquiries();
+  };
+
+  window.deleteInquiry = async function(id) {
+    if (!confirm('Delete this inquiry?')) return;
+    await supabaseClient.from("inquiries").delete().eq("id", id);
+    toast('success', 'Deleted', 'Inquiry removed.');
+    await loadMyInquiries();
+  };
+
+  window.openReplyModal = function(id) {
+    currentInquiryId = id;
+    const inq = myInquiries.find(i => i.id === id);
+    document.getElementById('replyInquiryInfo').innerHTML = `
+      <strong>To:</strong> ${escapeHtml(inq.buyer_name)}<br>
+      <strong>Message:</strong> ${escapeHtml(inq.message)}
+    `;
+    document.getElementById('replyMessage').value = '';
+    document.getElementById('replyModal').classList.add('active');
+  };
+  window.closeReplyModal = function() {
+    document.getElementById('replyModal').classList.remove('active');
+  };
+
+  window.sendReply = async function() {
+    const message = document.getElementById('replyMessage').value.trim();
+    if (!message) {
+      toast('error', 'Empty Reply', 'Please type a response.');
+      return;
+    }
+
+    const inq = myInquiries.find(i => i.id === currentInquiryId);
+
+    // Save reply to inquiries table
+    const { error } = await supabaseClient
+      .from("inquiries")
+      .update({
+        agent_response: message,
+        responded_at: new Date().toISOString(),
+        read: true
+      })
+      .eq("id", currentInquiryId);
+
+    if (error) {
+      toast('error', 'Send Failed', error.message);
+      return;
+    }
+
+    toast('success', 'Reply Sent', 'Your response has been saved.');
+    closeReplyModal();
+    await loadMyInquiries();
+  };
+
+  // ===== ANALYTICS =====
+  function renderAnalytics() {
+    const totalViews = myListings.reduce((sum, p) => sum + (p.views_count || 0), 0);
+    const totalInquiries = myInquiries.length;
+    const conversionRate = totalViews > 0 ? Math.round((totalInquiries / totalViews) * 100) : 0;
+    const activeDeals = myDeals.filter(d => d.stage < 7).length;
+
+    document.getElementById('statViews').textContent = totalViews.toLocaleString();
+    document.getElementById('statInquiries').textContent = totalInquiries;
+    document.getElementById('statConversion').textContent = conversionRate + '%';
+    document.getElementById('statDeals').textContent = activeDeals;
+
+    // Top properties chart
+    const topChart = document.getElementById('topPropertiesChart');
+    const sorted = [...myListings].sort((a, b) => (b.views_count || 0) - (a.views_count || 0)).slice(0, 5);
+    const maxViews = Math.max(...sorted.map(p => p.views_count || 0), 1);
+
+    if (sorted.length === 0) {
+      topChart.innerHTML = '<p style="color:#9ca3af; text-align:center;">No data yet.</p>';
+    } else {
+      topChart.innerHTML = sorted.map(p => {
+        const pct = ((p.views_count || 0) / maxViews) * 100;
+        return `
+          <div class="chart-bar">
+            <div class="chart-label" title="${escapeHtml(p.title)}">${escapeHtml(p.title)}</div>
+            <div class="chart-track">
+              <div class="chart-fill" style="width:${pct}%">${p.views_count || 0}</div>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    // Deals by stage chart
+    const dealsChart = document.getElementById('dealsByStageChart');
+    const maxDeals = Math.max(...DEAL_STAGES.map(s => myDeals.filter(d => d.stage === s.id).length), 1);
+    dealsChart.innerHTML = DEAL_STAGES.map(stage => {
+      const count = myDeals.filter(d => d.stage === stage.id).length;
+      const pct = (count / maxDeals) * 100;
+      return `
+        <div class="chart-bar">
+          <div class="chart-label">${stage.name}</div>
+          <div class="chart-track">
+            <div class="chart-fill" style="width:${pct}%; background:${stage.color};">${count}</div>
+          </div>
+        </div>
+      `;
+    }).join('');
+  }
+
+  // ===== PROFILE =====
+  function loadProfile() {
+    document.getElementById('profileFullName').value = currentProfile.full_name || '';
+    document.getElementById('profilePhone').value = currentProfile.phone || '';
+    document.getElementById('profileCompany').value = currentProfile.company || '';
+    document.getElementById('profileBio').value = currentProfile.bio || '';
+    document.getElementById('profileLogo').value = currentProfile.logo_url || '';
+    document.getElementById('profileName').textContent = currentProfile.full_name || 'Agent';
+    document.getElementById('profileEmail').textContent = currentUser.email;
+
+    const avatar = document.getElementById('profileAvatar');
+    if (currentProfile.logo_url) {
+      avatar.innerHTML = `<img src="${currentProfile.logo_url}" alt="Logo">`;
+    } else {
+      avatar.textContent = (currentProfile.full_name || 'A').charAt(0).toUpperCase();
+    }
+  }
+
+  window.saveProfile = async function() {
+    const updates = {
+      full_name: document.getElementById('profileFullName').value.trim(),
+      phone: document.getElementById('profilePhone').value.trim(),
+      company: document.getElementById('profileCompany').value.trim(),
+      bio: document.getElementById('profileBio').value.trim(),
+      logo_url: document.getElementById('profileLogo').value.trim()
+    };
+
+    const { error } = await supabaseClient
+      .from("profiles")
+      .update(updates)
+      .eq("id", currentUser.id);
+
+    if (error) {
+      toast('error', 'Save Failed', error.message);
+      return;
+    }
+
+    currentProfile = { ...currentProfile, ...updates };
+    toast('success', 'Profile Updated', 'Your profile has been saved.');
+    loadProfile();
+  };
+
+  // ===== SUBSCRIPTION =====
+  window.showSubscribeModal = function() {
+    document.getElementById('subscribeModal').classList.add('active');
+  };
+  window.closeSubscribeModal = function() {
+    document.getElementById('subscribeModal').classList.remove('active');
+    document.getElementById('subscribeMsg').textContent = '';
+  };
+
+  window.handleSubscribePayment = async function() {
+    const phone = document.getElementById('subscribePhone').value.trim();
+    if (!phone) {
+      toast('error', 'Phone Required', 'Enter M-Pesa number.');
+      return;
+    }
+
+    const msgEl = document.getElementById('subscribeMsg');
+    const btn = document.getElementById('subscribePayBtn');
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
+
+    try {
+      const { error } = await supabaseClient.functions.invoke('mpesa-stk', {
+        body: { phone, amount: 1000, payment_type: "subscription", agent_id: currentUser.id }
+      });
+      if (error) throw error;
+
+      msgEl.style.color = 'green';
+      msgEl.textContent = '✅ M-Pesa request sent! Check your phone.';
+      setTimeout(() => closeSubscribeModal(), 3000);
+    } catch (err) {
+      msgEl.textContent = '❌ ' + (err.message || 'Payment failed.');
+    } finally {
+      btn.disabled = false;
+      btn.innerHTML = '<i class="fas fa-mobile-alt"></i> Send M-Pesa Request';
+    }
+  };
+
+  // ===== LOGOUT =====
+  window.logout = async function() {
+    await supabaseClient.auth.signOut();
+    currentUser = null;
+    currentProfile = null;
+    document.getElementById("authContainer").style.display = "flex";
+    document.getElementById("dashboard").style.display = "none";
+    document.getElementById("logoutBtn").style.display = "none";
+    toast('info', 'Logged Out', 'You have been signed out.');
+  };
+
+  // Close modals on overlay click
+  document.querySelectorAll('.modal-overlay').forEach(overlay => {
+    overlay.addEventListener('click', (e) => {
+      if (e.target === overlay) overlay.classList.remove('active');
+    });
+  });
+
+  // ===== INIT =====
   (async () => {
     const { data: { session } } = await supabaseClient.auth.getSession();
-    if (session?.user) await checkAgentAndShow();
-    else authBox.style.display = "block";
+    if (session?.user) {
+      await checkAgentAndShow();
+    } else {
+      document.getElementById("authContainer").style.display = "flex";
+    }
   })();
 </script>
 </body>
