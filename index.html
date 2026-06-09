@@ -11,7 +11,7 @@
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Playfair+Display:wght@700&display=swap');
         body { font-family: 'Inter', system_ui, sans-serif; }
         .hero-bg {
-            background: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.5)),
+            background: linear-gradient(rgba(0,0,0,0.45), rgba(0,0,0,0.55)),
                         url('https://picsum.photos/id/1015/2000/1200') center/cover no-repeat;
         }
         .property-card {
@@ -23,6 +23,8 @@
             transform: translateY(-8px);
             box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1);
         }
+        h1 { font-size: 2.75rem; } /* Reduced from previous */
+        h2 { font-size: 2rem; }
     </style>
 </head>
 <body class="bg-[#f8f7f4]">
@@ -35,10 +37,10 @@
     <!-- Navbar -->
     <nav class="bg-white shadow sticky top-0 z-50">
         <div class="max-w-7xl mx-auto px-6 py-5 flex items-center justify-between">
-            <a href="#" class="flex items-center gap-3 text-3xl font-bold text-[#6b21a8]">
+            <a href="#" class="flex items-center gap-3 text-2xl font-bold text-[#6b21a8]">
                 🏡 <span>Properties in Kenya</span>
             </a>
-            <div class="hidden md:flex gap-8 font-medium">
+            <div class="hidden md:flex gap-8 font-medium text-base">
                 <a href="#" class="hover:text-[#6b21a8]">Buy</a>
                 <a href="#" class="hover:text-[#6b21a8]">Rent</a>
                 <a href="#" class="hover:text-[#6b21a8]">Lease</a>
@@ -46,16 +48,16 @@
                 <a href="#" class="hover:text-[#6b21a8]">Agents</a>
             </div>
             <button onclick="alert('List your property coming soon!')" 
-                    class="bg-emerald-500 hover:bg-emerald-600 text-white px-6 py-3 rounded-full font-semibold flex items-center gap-2">
+                    class="bg-emerald-500 hover:bg-emerald-600 text-white px-6 py-3 rounded-full font-semibold flex items-center gap-2 text-base">
                 <i class="fas fa-plus"></i> List Property
             </button>
         </div>
     </nav>
 
     <!-- Hero -->
-    <section class="hero-bg min-h-[85vh] flex items-center text-white relative">
+    <section class="hero-bg min-h-[82vh] flex items-center text-white relative">
         <div class="max-w-5xl mx-auto px-6 text-center z-10">
-            <h1 class="text-5xl md:text-6xl font-bold leading-tight mb-4">
+            <h1 class="font-bold leading-tight mb-6 text-white">
                 Your next home in Kenya<br><span class="text-emerald-300">starts here.</span>
             </h1>
             <p class="text-lg max-w-xl mx-auto mb-10">
@@ -65,26 +67,52 @@
             <div class="bg-white/95 backdrop-blur-md rounded-3xl p-2 max-w-3xl mx-auto">
                 <div class="flex flex-col md:flex-row gap-3 p-2">
                     <input id="mainSearch" placeholder="Search location or title (Ruai, Kayole...)" 
-                           class="flex-1 px-6 py-4 rounded-2xl focus:outline-none text-gray-700" oninput="applyFilters()">
-                    <select id="typeFilter" onchange="applyFilters()" class="px-6 py-4 rounded-2xl focus:outline-none">
+                           class="flex-1 px-6 py-4 rounded-2xl focus:outline-none text-base" oninput="applyFilters()">
+                    <select id="typeFilter" onchange="applyFilters()" class="px-6 py-4 rounded-2xl focus:outline-none text-base">
                         <option value="all">All Types</option>
                         <option value="for sale">For Sale</option>
                         <option value="for rent">For Rent</option>
                     </select>
                     <input id="minPrice" type="number" placeholder="Min Price (KES)" 
-                           class="px-6 py-4 rounded-2xl focus:outline-none w-52" oninput="applyFilters()">
+                           class="px-6 py-4 rounded-2xl focus:outline-none w-52 text-base" oninput="applyFilters()">
                     <button onclick="applyFilters()" 
-                            class="bg-emerald-500 hover:bg-emerald-600 px-8 py-4 rounded-2xl font-semibold text-white">Find</button>
+                            class="bg-emerald-500 hover:bg-emerald-600 px-8 py-4 rounded-2xl font-semibold text-white text-base">Find</button>
                 </div>
             </div>
         </div>
     </section>
 
+    <!-- Quick Actions -->
+    <div class="max-w-6xl mx-auto px-6 -mt-8 relative z-10 pb-12">
+        <div class="grid grid-cols-2 md:grid-cols-5 gap-6 bg-white rounded-3xl shadow-xl p-8">
+            <div onclick="alert('AI Property Matchmaker — Coming soon')" class="text-center cursor-pointer hover:scale-105 transition">
+                <div class="w-14 h-14 mx-auto bg-orange-100 rounded-2xl flex items-center justify-center text-4xl mb-3">✨</div>
+                <p class="font-medium text-sm">AI Search</p>
+            </div>
+            <div onclick="alert('Property Valuation Tool — Coming soon')" class="text-center cursor-pointer hover:scale-105 transition">
+                <div class="w-14 h-14 mx-auto bg-blue-100 rounded-2xl flex items-center justify-center text-4xl mb-3">📊</div>
+                <p class="font-medium text-sm">Valuation</p>
+            </div>
+            <div onclick="alert('Market Prices & Trends')" class="text-center cursor-pointer hover:scale-105 transition">
+                <div class="w-14 h-14 mx-auto bg-amber-100 rounded-2xl flex items-center justify-center text-4xl mb-3">💰</div>
+                <p class="font-medium text-sm">Pricing</p>
+            </div>
+            <div onclick="alert('Hot Deals & Offers')" class="text-center cursor-pointer hover:scale-105 transition">
+                <div class="w-14 h-14 mx-auto bg-red-100 rounded-2xl flex items-center justify-center text-4xl mb-3">🔥</div>
+                <p class="font-medium text-sm">Deals</p>
+            </div>
+            <div onclick="alert('Buyer Inquiries')" class="text-center cursor-pointer hover:scale-105 transition">
+                <div class="w-14 h-14 mx-auto bg-emerald-100 rounded-2xl flex items-center justify-center text-4xl mb-3">📥</div>
+                <p class="font-medium text-sm">Inquiries</p>
+            </div>
+        </div>
+    </div>
+
     <!-- Verified Properties -->
     <section class="max-w-7xl mx-auto px-6 py-16">
         <div class="flex justify-between items-baseline mb-10">
             <h2 class="text-3xl font-semibold">Verified Properties</h2>
-            <p class="text-gray-500" id="count">Showing 0 properties</p>
+            <p class="text-gray-500 text-sm" id="count">Showing 0 properties</p>
         </div>
 
         <div id="listings" class="grid md:grid-cols-2 lg:grid-cols-3 gap-8"></div>
@@ -101,15 +129,15 @@
                 <div class="md:col-span-3">
                     <div class="relative rounded-2xl overflow-hidden">
                         <img id="mainImage" class="w-full" alt="Property">
-                        <button onclick="prevImage()" class="absolute left-4 top-1/2 bg-black/60 text-white w-11 h-11 rounded-full">‹</button>
-                        <button onclick="nextImage()" class="absolute right-4 top-1/2 bg-black/60 text-white w-11 h-11 rounded-full">›</button>
+                        <button onclick="prevImage()" class="absolute left-4 top-1/2 bg-black/60 text-white w-11 h-11 rounded-full text-3xl">‹</button>
+                        <button onclick="nextImage()" class="absolute right-4 top-1/2 bg-black/60 text-white w-11 h-11 rounded-full text-3xl">›</button>
                     </div>
                 </div>
                 <div class="md:col-span-2 space-y-6">
                     <div id="modalPrice" class="text-4xl font-bold text-emerald-700"></div>
-                    <div id="modalMeta" class="text-lg"></div>
+                    <div id="modalMeta" class="text-base"></div>
                     <p id="modalDescription" class="text-gray-600"></p>
-                    <a id="modalWA" href="#" target="_blank" class="block bg-[#25D366] text-white text-center py-5 rounded-2xl font-semibold">💬 WhatsApp Agent</a>
+                    <a id="modalWA" href="#" target="_blank" class="block bg-[#25D366] text-white text-center py-5 rounded-2xl font-semibold text-lg">💬 WhatsApp Agent</a>
                 </div>
             </div>
         </div>
@@ -121,7 +149,6 @@
     </footer>
 
     <script>
-        // Supabase config (same)
         const supabaseClient = supabase.createClient(
             "https://nqwvsmuvltbiekfnvovx.supabase.co",
             "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5xd3ZzbXV2bHRiaWVrZm52b3Z4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA1NjU4MDAsImV4cCI6MjA5NjE0MTgwMH0.Xrc-bbAuWdvKSPHnVhTaLiQphV61xeYtDepWePqsrdo"
@@ -137,7 +164,6 @@
                 {id:1, title:"Apartment Kilimani", price:8500000, location:"Kilimani", property_type:"for sale", images:["https://picsum.photos/id/1015/800/500"]},
                 {id:2, title:"Test House in Njiru", price:5000000, location:"Njiru", property_type:"for sale", images:["https://picsum.photos/id/133/800/500"]},
                 {id:3, title:"4 Bedroom House Kileleshwa", price:12000000, location:"Kileleshwa", property_type:"for sale", images:["https://picsum.photos/id/201/800/500"]},
-                {id:4, title:"3 Bedroom Townhouse", price:7500000, location:"Ruai", property_type:"for sale", images:["https://picsum.photos/id/1016/800/500"]},
             ];
             renderListings(allProperties);
         }
@@ -149,7 +175,7 @@
 
             properties.forEach(p => {
                 const card = document.createElement("div");
-                card.className = "property-card bg-white cursor-pointer";
+                card.className = "property-card bg-white cursor-pointer border border-gray-100";
                 card.innerHTML = `
                     <div class="relative">
                         <img src="${p.images ? p.images[0] : 'https://picsum.photos/id/1015/600/400'}" class="w-full h-64 object-cover">
@@ -177,7 +203,7 @@
             document.getElementById("modalTitle").textContent = p.title;
             document.getElementById("modalPrice").textContent = `KSh ${Number(p.price).toLocaleString()}`;
             document.getElementById("modalMeta").innerHTML = `📍 ${p.location} <br> ${p.property_type ? p.property_type.toUpperCase() : ''}`;
-            document.getElementById("modalDescription").textContent = p.description || "Beautiful verified property in a great location.";
+            document.getElementById("modalDescription").textContent = p.description || "Beautiful verified property.";
             document.getElementById("detailModal").classList.remove("hidden");
         }
 
