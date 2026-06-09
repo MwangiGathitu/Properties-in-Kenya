@@ -5,115 +5,678 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>PropDesk Admin — Properties in Kenya</title>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   <style>
-    * { box-sizing: border-box; }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
       font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-      margin: 0;
-      background: #f4f4f4;
+      background: #f4f4f7;
       color: #111;
+      min-height: 100vh;
     }
+
+    /* Header */
     header {
-      padding: 16px 20px;
+      padding: 14px 24px;
       background: white;
-      border-bottom: 1px solid #ddd;
+      border-bottom: 1px solid #e5e7eb;
       display: flex;
       justify-content: space-between;
       align-items: center;
       flex-wrap: wrap;
       gap: 10px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.04);
     }
-    h1 { font-size: 20px; margin: 0; }
-    .actions button {
+    .logo {
+      font-size: 18px;
+      font-weight: 700;
+      color: #6b21a8;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 14px;
+      color: #555;
+    }
+
+    /* Buttons */
+    button {
       padding: 8px 14px;
       border: none;
-      border-radius: 6px;
+      border-radius: 8px;
       cursor: pointer;
       font-size: 14px;
-      margin-left: 6px;
+      font-weight: 500;
+      transition: all 0.2s;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
     }
-    .btn-primary { background: #0070f3; color: white; }
+    button:hover:not(:disabled) { transform: translateY(-1px); box-shadow: 0 2px 6px rgba(0,0,0,0.1); }
+    button:disabled { opacity: 0.5; cursor: not-allowed; }
+    .btn-primary { background: #6b21a8; color: white; }
     .btn-success { background: #10b981; color: white; }
     .btn-danger { background: #ef4444; color: white; }
-    .btn-logout { background: #6b7280; color: white; }
-    .login-box, .dashboard {
-      max-width: 1000px;
-      margin: 30px auto;
-      padding: 20px;
+    .btn-warn { background: #f59e0b; color: white; }
+    .btn-ghost { background: #f3f4f6; color: #374151; }
+    .btn-ghost:hover { background: #e5e7eb; }
+    .btn-sm { padding: 6px 10px; font-size: 13px; }
+
+    /* Login */
+    .login-box {
+      max-width: 420px;
+      margin: 80px auto;
+      padding: 32px;
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.08);
     }
+    .login-box h2 { margin-bottom: 20px; color: #6b21a8; }
     .login-box input {
       padding: 12px;
       margin: 8px 0;
       width: 100%;
       border: 1px solid #d1d5db;
-      border-radius: 6px;
-      font-size: 16px;
+      border-radius: 8px;
+      font-size: 15px;
     }
+    .login-box input:focus { outline: none; border-color: #6b21a8; }
+    .error { color: #ef4444; margin-top: 10px; font-size: 14px; }
+
+    /* Dashboard */
+    .dashboard {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 24px;
+    }
+
+    /* Stats */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+    .stat-card {
+      background: white;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+      border-left: 4px solid #6b21a8;
+    }
+    .stat-card.pending { border-left-color: #f59e0b; }
+    .stat-card.approved { border-left-color: #10b981; }
+    .stat-card.rejected { border-left-color: #ef4444; }
+    .stat-card.rate { border-left-color: #3b82f6; }
+    .stat-label { font-size: 13px; color: #6b7280; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px; }
+    .stat-value { font-size: 28px; font-weight: 700; color: #111; }
+    .stat-icon { float: right; font-size: 24px; opacity: 0.3; }
+
+    /* Filters */
+    .filter-bar {
+      background: white;
+      padding: 16px;
+      border-radius: 12px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+      margin-bottom: 16px;
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr 1fr 1fr auto;
+      gap: 10px;
+      align-items: center;
+    }
+    .filter-bar input, .filter-bar select {
+      padding: 10px 12px;
+      border: 1px solid #d1d5db;
+      border-radius: 8px;
+      font-size: 14px;
+      width: 100%;
+    }
+    .filter-bar input:focus, .filter-bar select:focus {
+      outline: none;
+      border-color: #6b21a8;
+    }
+    @media (max-width: 900px) {
+      .filter-bar { grid-template-columns: 1fr 1fr; }
+    }
+    @media (max-width: 500px) {
+      .filter-bar { grid-template-columns: 1fr; }
+    }
+
+    /* Bulk Actions */
+    .bulk-bar {
+      background: #6b21a8;
+      color: white;
+      padding: 12px 20px;
+      border-radius: 12px;
+      margin-bottom: 16px;
+      display: none;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 10px;
+      animation: slideDown 0.3s ease;
+    }
+    .bulk-bar.active { display: flex; }
+    .bulk-bar .bulk-info { font-weight: 500; }
+    .bulk-bar button { background: rgba(255,255,255,0.2); color: white; }
+    .bulk-bar button:hover { background: rgba(255,255,255,0.3); }
+    @keyframes slideDown {
+      from { opacity: 0; transform: translateY(-10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Property Card */
     .card {
       background: white;
       padding: 16px;
       margin-bottom: 12px;
-      border-radius: 10px;
-      box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+      border-radius: 12px;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+      display: grid;
+      grid-template-columns: auto 100px 1fr auto;
+      gap: 16px;
+      align-items: center;
+      transition: all 0.2s;
+    }
+    .card:hover { box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
+    .card.selected { background: #f5f3ff; border: 1px solid #c4b5fd; }
+    .card-checkbox {
+      width: 20px;
+      height: 20px;
+      cursor: pointer;
+      accent-color: #6b21a8;
+    }
+    .card-thumb {
+      width: 100px;
+      height: 75px;
+      border-radius: 8px;
+      object-fit: cover;
+      cursor: pointer;
+      background: #f3f4f6;
+    }
+    .property-info strong {
+      font-size: 16px;
+      display: block;
+      margin-bottom: 4px;
+      color: #111;
+    }
+    .property-info .meta {
+      font-size: 13px;
+      color: #6b7280;
+      margin-bottom: 6px;
       display: flex;
       flex-wrap: wrap;
-      gap: 12px;
-      align-items: center;
+      gap: 10px;
     }
-    .property-info { flex: 1; min-width: 280px; }
-    .property-info strong { font-size: 16px; display: block; }
-    .property-info span { font-size: 14px; color: #666; }
+    .property-info .desc {
+      font-size: 13px;
+      color: #555;
+      margin-top: 6px;
+      line-height: 1.4;
+    }
     .status-badge {
       display: inline-block;
-      padding: 4px 10px;
+      padding: 3px 10px;
       border-radius: 9999px;
-      font-size: 13px;
-      font-weight: 600;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
     }
     .status-approved { background: #d1fae5; color: #065f46; }
     .status-pending { background: #fef3c7; color: #92400e; }
     .status-rejected { background: #fee2e2; color: #991b1b; }
-    .error { color: #ef4444; margin-top: 10px; }
-    button:disabled { opacity: 0.6; cursor: not-allowed; }
+    .card-actions {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    @media (max-width: 768px) {
+      .card {
+        grid-template-columns: auto 1fr;
+        grid-template-areas:
+          "check info"
+          "thumb info"
+          "actions actions";
+      }
+      .card-checkbox { grid-area: check; }
+      .card-thumb { grid-area: thumb; width: 100%; height: 150px; }
+      .property-info { grid-area: info; }
+      .card-actions { grid-area: actions; flex-direction: row; flex-wrap: wrap; }
+    }
+
+    /* Pagination */
+    .pagination {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 6px;
+      margin-top: 24px;
+      flex-wrap: wrap;
+    }
+    .pagination button {
+      min-width: 36px;
+      height: 36px;
+      padding: 0 10px;
+      background: white;
+      color: #374151;
+      border: 1px solid #d1d5db;
+    }
+    .pagination button.active {
+      background: #6b21a8;
+      color: white;
+      border-color: #6b21a8;
+    }
+    .pagination button:disabled { opacity: 0.4; }
+    .page-info { font-size: 14px; color: #6b7280; margin: 0 10px; }
+
+    /* Modal */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.6);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      animation: fadeIn 0.2s;
+    }
+    .modal-overlay.active { display: flex; }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    .modal {
+      background: white;
+      border-radius: 16px;
+      max-width: 700px;
+      width: 100%;
+      max-height: 90vh;
+      overflow-y: auto;
+      animation: slideUp 0.3s;
+    }
+    @keyframes slideUp {
+      from { transform: translateY(30px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+    .modal-header {
+      padding: 20px 24px;
+      border-bottom: 1px solid #e5e7eb;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      background: white;
+      z-index: 10;
+    }
+    .modal-header h3 { font-size: 20px; color: #111; }
+    .modal-close {
+      background: none;
+      border: none;
+      font-size: 28px;
+      color: #9ca3af;
+      cursor: pointer;
+      padding: 0;
+      width: 32px;
+      height: 32px;
+    }
+    .modal-close:hover { color: #111; transform: none; box-shadow: none; }
+    .modal-body { padding: 24px; }
+    .modal-footer {
+      padding: 16px 24px;
+      border-top: 1px solid #e5e7eb;
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+    }
+
+    /* Form */
+    .form-group { margin-bottom: 16px; }
+    .form-group label {
+      display: block;
+      font-size: 13px;
+      font-weight: 600;
+      color: #374151;
+      margin-bottom: 6px;
+    }
+    .form-group input, .form-group select, .form-group textarea {
+      width: 100%;
+      padding: 10px 12px;
+      border: 1px solid #d1d5db;
+      border-radius: 8px;
+      font-size: 14px;
+      font-family: inherit;
+    }
+    .form-group textarea { resize: vertical; min-height: 80px; }
+    .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+      outline: none;
+      border-color: #6b21a8;
+    }
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+    @media (max-width: 500px) { .form-row { grid-template-columns: 1fr; } }
+
+    /* Image Preview */
+    .image-preview {
+      max-width: 100%;
+      max-height: 70vh;
+      border-radius: 8px;
+      display: block;
+      margin: 0 auto;
+    }
+    .image-nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 16px;
+    }
+    .image-counter { font-size: 14px; color: #6b7280; }
+
+    /* Toast */
+    .toast-container {
+      position: fixed;
+      top: 80px;
+      right: 20px;
+      z-index: 2000;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      max-width: 360px;
+    }
+    .toast {
+      background: white;
+      padding: 14px 18px;
+      border-radius: 10px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      animation: slideInRight 0.3s;
+      border-left: 4px solid #6b7280;
+    }
+    @keyframes slideInRight {
+      from { transform: translateX(400px); opacity: 0; }
+      to { transform: translateX(0); opacity: 1; }
+    }
+    .toast.success { border-left-color: #10b981; }
+    .toast.error { border-left-color: #ef4444; }
+    .toast.warning { border-left-color: #f59e0b; }
+    .toast.info { border-left-color: #3b82f6; }
+    .toast-icon { font-size: 20px; }
+    .toast.success .toast-icon { color: #10b981; }
+    .toast.error .toast-icon { color: #ef4444; }
+    .toast.warning .toast-icon { color: #f59e0b; }
+    .toast.info .toast-icon { color: #3b82f6; }
+    .toast-content { flex: 1; font-size: 14px; }
+    .toast-title { font-weight: 600; margin-bottom: 2px; }
+    .toast-message { color: #6b7280; font-size: 13px; }
+
+    /* Empty State */
+    .empty-state {
+      text-align: center;
+      padding: 60px 20px;
+      color: #9ca3af;
+    }
+    .empty-state i { font-size: 48px; margin-bottom: 16px; }
+    .empty-state h3 { color: #6b7280; margin-bottom: 8px; }
+
+    /* Loading */
+    .loading {
+      text-align: center;
+      padding: 40px;
+      color: #6b7280;
+    }
+    .spinner {
+      border: 3px solid #f3f4f6;
+      border-top: 3px solid #6b21a8;
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      animation: spin 1s linear infinite;
+      margin: 0 auto 16px;
+    }
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
   </style>
 </head>
 <body>
+
 <header>
-  <h1>🏠 Properties in Kenya — Admin</h1>
-  <span id="adminEmail" style="font-size:14px; color:#555;"></span>
-  <button id="logoutBtn" class="btn-logout" style="display:none;" onclick="logout()">Logout</button>
+  <div class="logo">
+    <i class="fas fa-home"></i>
+    <span>PropDesk Admin</span>
+  </div>
+  <div class="header-right">
+    <span id="adminEmail"></span>
+    <button id="logoutBtn" class="btn-ghost" style="display:none;" onclick="logout()">
+      <i class="fas fa-sign-out-alt"></i> Logout
+    </button>
+  </div>
 </header>
 
 <!-- LOGIN -->
 <div id="loginBox" class="login-box">
-  <h2>Admin Login</h2>
+  <h2><i class="fas fa-lock"></i> Admin Login</h2>
   <input type="email" id="email" placeholder="Email" autocomplete="email">
   <input type="password" id="password" placeholder="Password" autocomplete="current-password">
   <br><br>
-  <button class="btn-primary" onclick="login()">Log in</button>
+  <button class="btn-primary" style="width:100%;" onclick="login()">
+    <i class="fas fa-sign-in-alt"></i> Log in
+  </button>
   <p id="loginError" class="error"></p>
 </div>
 
 <!-- DASHBOARD -->
 <div id="dashboard" class="dashboard" style="display:none;">
-  <div id="statusMsg">Loading properties...</div>
+
+  <!-- Stats -->
+  <div class="stats-grid">
+    <div class="stat-card">
+      <i class="fas fa-building stat-icon"></i>
+      <div class="stat-label">Total Properties</div>
+      <div class="stat-value" id="statTotal">0</div>
+    </div>
+    <div class="stat-card pending">
+      <i class="fas fa-clock stat-icon"></i>
+      <div class="stat-label">Pending Review</div>
+      <div class="stat-value" id="statPending">0</div>
+    </div>
+    <div class="stat-card approved">
+      <i class="fas fa-check-circle stat-icon"></i>
+      <div class="stat-label">Approved</div>
+      <div class="stat-value" id="statApproved">0</div>
+    </div>
+    <div class="stat-card rejected">
+      <i class="fas fa-times-circle stat-icon"></i>
+      <div class="stat-label">Rejected</div>
+      <div class="stat-value" id="statRejected">0</div>
+    </div>
+    <div class="stat-card rate">
+      <i class="fas fa-chart-line stat-icon"></i>
+      <div class="stat-label">Approval Rate</div>
+      <div class="stat-value" id="statRate">0%</div>
+    </div>
+  </div>
+
+  <!-- Filters -->
+  <div class="filter-bar">
+    <input type="text" id="searchInput" placeholder="🔍 Search title or location..." oninput="debounceFilter()">
+    <select id="statusFilter" onchange="applyFilters()">
+      <option value="all">All Status</option>
+      <option value="pending">Pending</option>
+      <option value="approved">Approved</option>
+      <option value="rejected">Rejected</option>
+    </select>
+    <select id="locationFilter" onchange="applyFilters()">
+      <option value="all">All Locations</option>
+    </select>
+    <input type="number" id="minPrice" placeholder="Min Price" oninput="debounceFilter()">
+    <input type="number" id="maxPrice" placeholder="Max Price" oninput="debounceFilter()">
+    <button class="btn-ghost" onclick="resetFilters()">
+      <i class="fas fa-redo"></i> Reset
+    </button>
+  </div>
+
+  <!-- Bulk Actions -->
+  <div id="bulkBar" class="bulk-bar">
+    <div class="bulk-info">
+      <i class="fas fa-check-square"></i>
+      <span id="selectedCount">0</span> properties selected
+    </div>
+    <div style="display:flex; gap:8px; flex-wrap:wrap;">
+      <button onclick="bulkAction('approved')"><i class="fas fa-check"></i> Approve</button>
+      <button onclick="bulkAction('rejected')"><i class="fas fa-times"></i> Reject</button>
+      <button onclick="bulkDelete()"><i class="fas fa-trash"></i> Delete</button>
+      <button onclick="clearSelection()"><i class="fas fa-times"></i> Clear</button>
+    </div>
+  </div>
+
+  <!-- List -->
   <div id="list"></div>
+
+  <!-- Pagination -->
+  <div id="pagination" class="pagination"></div>
 </div>
+
+<!-- Edit Modal -->
+<div id="editModal" class="modal-overlay">
+  <div class="modal">
+    <div class="modal-header">
+      <h3><i class="fas fa-edit"></i> Edit Property</h3>
+      <button class="modal-close" onclick="closeEditModal()">×</button>
+    </div>
+    <div class="modal-body">
+      <input type="hidden" id="editId">
+      <div class="form-group">
+        <label>Title</label>
+        <input type="text" id="editTitle">
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Price (KES)</label>
+          <input type="number" id="editPrice">
+        </div>
+        <div class="form-group">
+          <label>Location</label>
+          <input type="text" id="editLocation">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Property Type</label>
+          <select id="editType">
+            <option value="for sale">For Sale</option>
+            <option value="for rent">For Rent</option>
+            <option value="lease">Lease</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Status</label>
+          <select id="editStatus">
+            <option value="pending">Pending</option>
+            <option value="approved">Approved</option>
+            <option value="rejected">Rejected</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Description</label>
+        <textarea id="editDescription"></textarea>
+      </div>
+      <div class="form-group">
+        <label>Images (comma-separated URLs)</label>
+        <textarea id="editImages" style="min-height:60px;"></textarea>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-ghost" onclick="closeEditModal()">Cancel</button>
+      <button class="btn-primary" onclick="saveEdit()"><i class="fas fa-save"></i> Save Changes</button>
+    </div>
+  </div>
+</div>
+
+<!-- Image Preview Modal -->
+<div id="imageModal" class="modal-overlay">
+  <div class="modal" style="max-width:900px;">
+    <div class="modal-header">
+      <h3>Property Images</h3>
+      <button class="modal-close" onclick="closeImageModal()">×</button>
+    </div>
+    <div class="modal-body" style="text-align:center;">
+      <img id="previewImage" class="image-preview" src="" alt="Property">
+      <div class="image-nav">
+        <button class="btn-ghost" onclick="prevImage()"><i class="fas fa-chevron-left"></i> Previous</button>
+        <span class="image-counter" id="imageCounter">1 / 1</span>
+        <button class="btn-ghost" onclick="nextImage()">Next <i class="fas fa-chevron-right"></i></button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Toast Container -->
+<div id="toastContainer" class="toast-container"></div>
 
 <script>
   const supabaseUrl = "https://nqwvsmuvltbiekfnvovx.supabase.co";
   const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5xd3ZzbXV2bHRiaWVrZm52b3Z4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA1NjU4MDAsImV4cCI6MjA5NjE0MTgwMH0.Xrc-bbAuWdvKSPHnVhTaLiQphV61xeYtDepWePqsrdo";
-  
+
   const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
 
+  // State
+  let allProperties = [];
+  let filteredProperties = [];
+  let selectedIds = new Set();
+  let currentPage = 1;
+  const pageSize = 10;
+  let currentImages = [];
+  let currentImageIndex = 0;
+  let filterTimeout = null;
+
+  // DOM Elements
   const loginBox = document.getElementById("loginBox");
   const dashboard = document.getElementById("dashboard");
   const loginError = document.getElementById("loginError");
   const adminEmailSpan = document.getElementById("adminEmail");
   const logoutBtn = document.getElementById("logoutBtn");
-  const statusMsg = document.getElementById("statusMsg");
   const listContainer = document.getElementById("list");
 
+  // ===== TOAST SYSTEM =====
+  function toast(type, title, message) {
+    const container = document.getElementById('toastContainer');
+    const icons = {
+      success: 'fa-check-circle',
+      error: 'fa-exclamation-circle',
+      warning: 'fa-exclamation-triangle',
+      info: 'fa-info-circle'
+    };
+    const toast = document.createElement('div');
+    toast.className = `toast ${type}`;
+    toast.innerHTML = `
+      <i class="fas ${icons[type]} toast-icon"></i>
+      <div class="toast-content">
+        <div class="toast-title">${title}</div>
+        ${message ? `<div class="toast-message">${message}</div>` : ''}
+      </div>
+    `;
+    container.appendChild(toast);
+    setTimeout(() => {
+      toast.style.animation = 'slideInRight 0.3s reverse';
+      setTimeout(() => toast.remove(), 300);
+    }, 3500);
+  }
+
+  // ===== AUTH =====
   async function login() {
     loginError.textContent = "";
     const email = document.getElementById("email").value.trim();
@@ -122,6 +685,7 @@
     const { error } = await supabaseClient.auth.signInWithPassword({ email, password });
     if (error) {
       loginError.textContent = error.message;
+      toast('error', 'Login Failed', error.message);
       return;
     }
     checkAndShowAdmin();
@@ -130,6 +694,7 @@
   async function logout() {
     await supabaseClient.auth.signOut();
     resetUI();
+    toast('info', 'Logged Out', 'You have been signed out.');
   }
 
   function resetUI() {
@@ -153,20 +718,26 @@
       await supabaseClient.auth.signOut();
       loginError.textContent = "Access denied. Not an admin account.";
       resetUI();
+      toast('error', 'Access Denied', 'Your account is not authorized.');
       return;
     }
 
     loginBox.style.display = "none";
     dashboard.style.display = "block";
-    logoutBtn.style.display = "inline-block";
+    logoutBtn.style.display = "inline-flex";
     adminEmailSpan.textContent = user.email || "";
-    
-    loadAllProperties();
+
+    await loadAllProperties();
   }
 
+  // ===== LOAD PROPERTIES =====
   async function loadAllProperties() {
-    statusMsg.textContent = "Loading properties...";
-    listContainer.innerHTML = "";
+    listContainer.innerHTML = `
+      <div class="loading">
+        <div class="spinner"></div>
+        <p>Loading properties...</p>
+      </div>
+    `;
 
     const { data, error } = await supabaseClient
       .from("properties")
@@ -174,52 +745,397 @@
       .order("created_at", { ascending: false });
 
     if (error) {
-      statusMsg.textContent = "Error loading properties: " + error.message;
+      listContainer.innerHTML = `<div class="empty-state"><i class="fas fa-exclamation-triangle"></i><h3>Error</h3><p>${error.message}</p></div>`;
+      toast('error', 'Load Failed', error.message);
       return;
     }
 
-    statusMsg.textContent = `${data.length} properties loaded`;
+    allProperties = data || [];
+    populateLocationFilter();
+    applyFilters();
+    updateStats();
+  }
 
-    data.forEach(prop => {
-      const div = document.createElement("div");
-      div.className = "card";
-      div.innerHTML = `
-        <div class="property-info">
-          <strong>${prop.title || "Untitled Property"}</strong>
-          <span>${prop.location || "No location"} • KSh ${prop.price ? Number(prop.price).toLocaleString() : "—"}</span>
-          <span class="status-badge status-${prop.approval_status || 'pending'}">${(prop.approval_status || 'pending').toUpperCase()}</span>
-          ${prop.description ? `<p style="margin:8px 0 0 0; font-size:14px; color:#555;">${prop.description.substring(0,120)}...</p>` : ''}
-        </div>
-        <div class="actions">
-          <button class="btn-success" onclick="updateStatus('${prop.id}', 'approved')">Approve</button>
-          <button class="btn-danger" onclick="confirmReject('${prop.id}')">Reject</button>
-        </div>
-      `;
-      listContainer.appendChild(div);
+  function populateLocationFilter() {
+    const locations = [...new Set(allProperties.map(p => p.location).filter(Boolean))].sort();
+    const select = document.getElementById('locationFilter');
+    select.innerHTML = '<option value="all">All Locations</option>';
+    locations.forEach(loc => {
+      select.innerHTML += `<option value="${escapeHtml(loc)}">${escapeHtml(loc)}</option>`;
     });
   }
 
-  window.updateStatus = async function(propertyId, newStatus) {
-    const btns = document.querySelectorAll(`button[onclick*="('${propertyId}'"]`);
-    btns.forEach(b => b.disabled = true);
+  function updateStats() {
+    const total = allProperties.length;
+    const pending = allProperties.filter(p => p.approval_status === 'pending').length;
+    const approved = allProperties.filter(p => p.approval_status === 'approved').length;
+    const rejected = allProperties.filter(p => p.approval_status === 'rejected').length;
+    const rate = total > 0 ? Math.round((approved / total) * 100) : 0;
 
+    document.getElementById('statTotal').textContent = total;
+    document.getElementById('statPending').textContent = pending;
+    document.getElementById('statApproved').textContent = approved;
+    document.getElementById('statRejected').textContent = rejected;
+    document.getElementById('statRate').textContent = rate + '%';
+  }
+
+  // ===== FILTERS =====
+  function debounceFilter() {
+    clearTimeout(filterTimeout);
+    filterTimeout = setTimeout(applyFilters, 300);
+  }
+
+  function applyFilters() {
+    const search = document.getElementById('searchInput').value.toLowerCase().trim();
+    const status = document.getElementById('statusFilter').value;
+    const location = document.getElementById('locationFilter').value;
+    const minPrice = parseFloat(document.getElementById('minPrice').value) || 0;
+    const maxPrice = parseFloat(document.getElementById('maxPrice').value) || Infinity;
+
+    filteredProperties = allProperties.filter(p => {
+      if (search && !((p.title || '').toLowerCase().includes(search) ||
+                      (p.location || '').toLowerCase().includes(search))) return false;
+      if (status !== 'all' && p.approval_status !== status) return false;
+      if (location !== 'all' && p.location !== location) return false;
+      if (p.price && (p.price < minPrice || p.price > maxPrice)) return false;
+      return true;
+    });
+
+    currentPage = 1;
+    renderList();
+  }
+
+  function resetFilters() {
+    document.getElementById('searchInput').value = '';
+    document.getElementById('statusFilter').value = 'all';
+    document.getElementById('locationFilter').value = 'all';
+    document.getElementById('minPrice').value = '';
+    document.getElementById('maxPrice').value = '';
+    applyFilters();
+    toast('info', 'Filters Reset', 'Showing all properties.');
+  }
+
+  // ===== RENDER =====
+  function escapeHtml(text) {
+    if (!text) return '';
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+  }
+
+  function renderList() {
+    const start = (currentPage - 1) * pageSize;
+    const end = start + pageSize;
+    const pageItems = filteredProperties.slice(start, end);
+
+    if (filteredProperties.length === 0) {
+      listContainer.innerHTML = `
+        <div class="empty-state">
+          <i class="fas fa-search"></i>
+          <h3>No properties found</h3>
+          <p>Try adjusting your filters or search terms.</p>
+        </div>
+      `;
+      document.getElementById('pagination').innerHTML = '';
+      return;
+    }
+
+    listContainer.innerHTML = '';
+    pageItems.forEach(prop => {
+      const card = document.createElement('div');
+      card.className = 'card' + (selectedIds.has(prop.id) ? ' selected' : '');
+      card.dataset.id = prop.id;
+
+      const thumb = prop.images && prop.images.length > 0
+        ? prop.images[0]
+        : 'https://picsum.photos/seed/' + prop.id + '/200/150';
+
+      const desc = prop.description ? prop.description.substring(0, 120) + (prop.description.length > 120 ? '...' : '') : '';
+
+      card.innerHTML = `
+        <input type="checkbox" class="card-checkbox" ${selectedIds.has(prop.id) ? 'checked' : ''} onchange="toggleSelect('${prop.id}')">
+        <img src="${thumb}" class="card-thumb" onclick="openImagePreview('${prop.id}')" alt="Property" onerror="this.src='https://picsum.photos/seed/${prop.id}/200/150'">
+        <div class="property-info">
+          <strong>${escapeHtml(prop.title || 'Untitled Property')}</strong>
+          <div class="meta">
+            <span><i class="fas fa-map-marker-alt"></i> ${escapeHtml(prop.location || 'No location')}</span>
+            <span><i class="fas fa-tag"></i> KSh ${prop.price ? Number(prop.price).toLocaleString() : '—'}</span>
+            <span class="status-badge status-${prop.approval_status || 'pending'}">${(prop.approval_status || 'pending').toUpperCase()}</span>
+          </div>
+          ${desc ? `<div class="desc">${escapeHtml(desc)}</div>` : ''}
+          ${prop.user_id ? `<div class="meta" style="margin-top:6px;"><span><i class="fas fa-user"></i> Submitter: ${escapeHtml(prop.user_id.substring(0,8))}...</span></div>` : ''}
+        </div>
+        <div class="card-actions">
+          <button class="btn-sm btn-primary" onclick="openEditModal('${prop.id}')"><i class="fas fa-edit"></i> Edit</button>
+          ${prop.approval_status !== 'approved' ? `<button class="btn-sm btn-success" onclick="updateStatus('${prop.id}', 'approved')"><i class="fas fa-check"></i> Approve</button>` : ''}
+          ${prop.approval_status !== 'rejected' ? `<button class="btn-sm btn-warn" onclick="updateStatus('${prop.id}', 'rejected')"><i class="fas fa-times"></i> Reject</button>` : ''}
+          <button class="btn-sm btn-danger" onclick="confirmDelete('${prop.id}')"><i class="fas fa-trash"></i> Delete</button>
+        </div>
+      `;
+      listContainer.appendChild(card);
+    });
+
+    renderPagination();
+  }
+
+  function renderPagination() {
+    const totalPages = Math.ceil(filteredProperties.length / pageSize);
+    const pagination = document.getElementById('pagination');
+
+    if (totalPages <= 1) {
+      pagination.innerHTML = `<span class="page-info">Showing ${filteredProperties.length} of ${filteredProperties.length} properties</span>`;
+      return;
+    }
+
+    let html = `<button onclick="goToPage(${currentPage - 1})" ${currentPage === 1 ? 'disabled' : ''}><i class="fas fa-chevron-left"></i></button>`;
+
+    const maxVisible = 5;
+    let startPage = Math.max(1, currentPage - Math.floor(maxVisible / 2));
+    let endPage = Math.min(totalPages, startPage + maxVisible - 1);
+    if (endPage - startPage < maxVisible - 1) {
+      startPage = Math.max(1, endPage - maxVisible + 1);
+    }
+
+    if (startPage > 1) {
+      html += `<button onclick="goToPage(1)">1</button>`;
+      if (startPage > 2) html += `<span class="page-info">...</span>`;
+    }
+
+    for (let i = startPage; i <= endPage; i++) {
+      html += `<button class="${i === currentPage ? 'active' : ''}" onclick="goToPage(${i})">${i}</button>`;
+    }
+
+    if (endPage < totalPages) {
+      if (endPage < totalPages - 1) html += `<span class="page-info">...</span>`;
+      html += `<button onclick="goToPage(${totalPages})">${totalPages}</button>`;
+    }
+
+    html += `<button onclick="goToPage(${currentPage + 1})" ${currentPage === totalPages ? 'disabled' : ''}><i class="fas fa-chevron-right"></i></button>`;
+    html += `<span class="page-info">Page ${currentPage} of ${totalPages}</span>`;
+
+    pagination.innerHTML = html;
+  }
+
+  function goToPage(page) {
+    const totalPages = Math.ceil(filteredProperties.length / pageSize);
+    if (page < 1 || page > totalPages) return;
+    currentPage = page;
+    renderList();
+    window.scrollTo({ top: 300, behavior: 'smooth' });
+  }
+
+  // ===== SELECTION =====
+  function toggleSelect(id) {
+    if (selectedIds.has(id)) selectedIds.delete(id);
+    else selectedIds.add(id);
+    updateBulkBar();
+    renderList();
+  }
+
+  function clearSelection() {
+    selectedIds.clear();
+    updateBulkBar();
+    renderList();
+  }
+
+  function updateBulkBar() {
+    const bar = document.getElementById('bulkBar');
+    if (selectedIds.size > 0) {
+      bar.classList.add('active');
+      document.getElementById('selectedCount').textContent = selectedIds.size;
+    } else {
+      bar.classList.remove('active');
+    }
+  }
+
+  async function bulkAction(newStatus) {
+    if (selectedIds.size === 0) return;
+    if (!confirm(`Are you sure you want to ${newStatus} ${selectedIds.size} properties?`)) return;
+
+    const ids = Array.from(selectedIds);
+    let successCount = 0;
+    let errorCount = 0;
+
+    for (const id of ids) {
+      const { error } = await supabaseClient
+        .from("properties")
+        .update({ approval_status: newStatus })
+        .eq("id", id);
+      if (error) errorCount++;
+      else successCount++;
+    }
+
+    selectedIds.clear();
+    updateBulkBar();
+    await loadAllProperties();
+
+    if (successCount > 0) {
+      toast('success', 'Bulk Update', `${successCount} properties ${newStatus}.`);
+    }
+    if (errorCount > 0) {
+      toast('error', 'Partial Failure', `${errorCount} properties failed to update.`);
+    }
+  }
+
+  async function bulkDelete() {
+    if (selectedIds.size === 0) return;
+    if (!confirm(`⚠️ Permanently delete ${selectedIds.size} properties? This cannot be undone.`)) return;
+
+    const ids = Array.from(selectedIds);
+    let successCount = 0;
+    let errorCount = 0;
+
+    for (const id of ids) {
+      const { error } = await supabaseClient
+        .from("properties")
+        .delete()
+        .eq("id", id);
+      if (error) errorCount++;
+      else successCount++;
+    }
+
+    selectedIds.clear();
+    updateBulkBar();
+    await loadAllProperties();
+
+    if (successCount > 0) toast('success', 'Deleted', `${successCount} properties permanently deleted.`);
+    if (errorCount > 0) toast('error', 'Partial Failure', `${errorCount} properties failed to delete.`);
+  }
+
+  // ===== STATUS UPDATE =====
+  async function updateStatus(propertyId, newStatus) {
     const { error } = await supabaseClient
       .from("properties")
       .update({ approval_status: newStatus })
       .eq("id", propertyId);
 
     if (error) {
-      alert("Update failed: " + error.message);
+      toast('error', 'Update Failed', error.message);
     } else {
-      loadAllProperties(); // Refresh
+      toast('success', 'Updated', `Property ${newStatus} successfully.`);
+      await loadAllProperties();
     }
-  };
+  }
 
-  window.confirmReject = function(propertyId) {
-    if (confirm("Reject this property? This cannot be undone easily.")) {
-      updateStatus(propertyId, 'rejected');
+  // ===== DELETE =====
+  async function confirmDelete(propertyId) {
+    if (!confirm("⚠️ Permanently delete this property? This cannot be undone.")) return;
+
+    const { error } = await supabaseClient
+      .from("properties")
+      .delete()
+      .eq("id", propertyId);
+
+    if (error) {
+      toast('error', 'Delete Failed', error.message);
+    } else {
+      toast('success', 'Deleted', 'Property permanently removed.');
+      await loadAllProperties();
     }
-  };
+  }
+
+  // ===== EDIT MODAL =====
+  function openEditModal(propertyId) {
+    const prop = allProperties.find(p => p.id === propertyId);
+    if (!prop) return;
+
+    document.getElementById('editId').value = prop.id;
+    document.getElementById('editTitle').value = prop.title || '';
+    document.getElementById('editPrice').value = prop.price || '';
+    document.getElementById('editLocation').value = prop.location || '';
+    document.getElementById('editType').value = prop.property_type || 'for sale';
+    document.getElementById('editStatus').value = prop.approval_status || 'pending';
+    document.getElementById('editDescription').value = prop.description || '';
+    document.getElementById('editImages').value = (prop.images || []).join(', ');
+
+    document.getElementById('editModal').classList.add('active');
+  }
+
+  function closeEditModal() {
+    document.getElementById('editModal').classList.remove('active');
+  }
+
+  async function saveEdit() {
+    const id = document.getElementById('editId').value;
+    const imagesText = document.getElementById('editImages').value.trim();
+    const images = imagesText ? imagesText.split(',').map(s => s.trim()).filter(Boolean) : [];
+
+    const updates = {
+      title: document.getElementById('editTitle').value.trim(),
+      price: parseFloat(document.getElementById('editPrice').value) || null,
+      location: document.getElementById('editLocation').value.trim(),
+      property_type: document.getElementById('editType').value,
+      approval_status: document.getElementById('editStatus').value,
+      description: document.getElementById('editDescription').value.trim(),
+      images: images
+    };
+
+    const { error } = await supabaseClient
+      .from("properties")
+      .update(updates)
+      .eq("id", id);
+
+    if (error) {
+      toast('error', 'Save Failed', error.message);
+    } else {
+      toast('success', 'Saved', 'Property updated successfully.');
+      closeEditModal();
+      await loadAllProperties();
+    }
+  }
+
+  // ===== IMAGE PREVIEW =====
+  function openImagePreview(propertyId) {
+    const prop = allProperties.find(p => p.id === propertyId);
+    if (!prop) return;
+
+    currentImages = prop.images && prop.images.length > 0
+      ? prop.images
+      : [`https://picsum.photos/seed/${prop.id}/800/600`];
+    currentImageIndex = 0;
+
+    updateImagePreview();
+    document.getElementById('imageModal').classList.add('active');
+  }
+
+  function updateImagePreview() {
+    document.getElementById('previewImage').src = currentImages[currentImageIndex];
+    document.getElementById('imageCounter').textContent = `${currentImageIndex + 1} / ${currentImages.length}`;
+  }
+
+  function prevImage() {
+    currentImageIndex = (currentImageIndex - 1 + currentImages.length) % currentImages.length;
+    updateImagePreview();
+  }
+
+  function nextImage() {
+    currentImageIndex = (currentImageIndex + 1) % currentImages.length;
+    updateImagePreview();
+  }
+
+  function closeImageModal() {
+    document.getElementById('imageModal').classList.remove('active');
+  }
+
+  // Close modals on overlay click
+  document.getElementById('editModal').addEventListener('click', (e) => {
+    if (e.target.id === 'editModal') closeEditModal();
+  });
+  document.getElementById('imageModal').addEventListener('click', (e) => {
+    if (e.target.id === 'imageModal') closeImageModal();
+  });
+
+  // Keyboard shortcuts
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+      closeEditModal();
+      closeImageModal();
+    }
+    if (document.getElementById('imageModal').classList.contains('active')) {
+      if (e.key === 'ArrowLeft') prevImage();
+      if (e.key === 'ArrowRight') nextImage();
+    }
+  });
 
   // Auto-check session on load
   (async () => {
