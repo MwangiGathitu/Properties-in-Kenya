@@ -1,407 +1,238 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Properties in Kenya — Verified Homes</title>
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body {
-      font-family: 'Segoe UI', system-ui, sans-serif;
-      background: #f8f4eb; /* light gold */
-      color: #1e293b;
-    }
-
-    /* Hero with Mt Kenya background */
-    .hero {
-      background: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.5)),
-                  url('https://picsum.photos/id/1015/2000/900') center/cover no-repeat; /* Mt Kenya landscape */
-      color: white;
-      padding: 5rem 1rem 4rem;
-      position: relative;
-      text-align: center;
-      min-height: 520px;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-    }
-
-    .logo {
-      font-size: 3rem;
-      font-weight: 800;
-      text-decoration: none;
-      color: white;
-      display: block;
-      margin-bottom: 0.5rem;
-      text-shadow: 2px 2px 8px rgba(0,0,0,0.5);
-    }
-
-    .tagline {
-      font-size: 1.3rem;
-      margin-bottom: 2rem;
-      opacity: 0.95;
-    }
-
-    .nav {
-      display: flex;
-      justify-content: center;
-      gap: 2.2rem;
-      margin-bottom: 2rem;
-      flex-wrap: wrap;
-    }
-    .nav a {
-      color: white;
-      text-decoration: none;
-      font-weight: 500;
-      font-size: 1.1rem;
-    }
-
-    .search-container {
-      max-width: 1100px;
-      margin: 0 auto;
-      background: white;
-      border-radius: 50px;
-      padding: 0.9rem 1.2rem;
-      display: flex;
-      align-items: center;
-      gap: 1rem;
-      flex-wrap: wrap;
-      box-shadow: 0 8px 30px rgba(0,0,0,0.25);
-      width: 90%;
-    }
-    .search-container input, .search-container select {
-      flex: 1;
-      min-width: 170px;
-      padding: 0.95rem 1.2rem;
-      border: none;
-      font-size: 1.05rem;
-      outline: none;
-      border-radius: 50px;
-    }
-    .search-container button {
-      background: #22c55e;
-      color: white;
-      border: none;
-      padding: 0.95rem 2.4rem;
-      border-radius: 50px;
-      font-weight: 600;
-      cursor: pointer;
-    }
-
-    /* Quick Action Tabs */
-    .quick-actions {
-      display: flex;
-      justify-content: center;
-      gap: 2.5rem;
-      margin: 3rem auto;
-      flex-wrap: wrap;
-    }
-    .action-item {
-      text-align: center;
-      cursor: pointer;
-      transition: transform 0.2s;
-    }
-    .action-item:hover { transform: scale(1.08); }
-    .action-icon {
-      width: 68px;
-      height: 68px;
-      background: #f1f5f9;
-      border-radius: 18px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 2rem;
-      margin: 0 auto 0.6rem;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-    }
-
-    .container { max-width: 1200px; margin: 2rem auto; padding: 0 1rem; }
-    #listings { display: flex; flex-direction: column; gap: 1.8rem; }
-    .card {
-      background: #e0f2fe; /* light blue */
-      border-radius: 16px;
-      overflow: hidden;
-      box-shadow: 0 6px 20px rgba(0,0,0,0.1);
-      display: flex;
-      cursor: pointer;
-    }
-    .card:hover { transform: translateY(-8px); }
-    .card img { width: 380px; height: 260px; object-fit: cover; flex-shrink: 0; }
-    .card-content { padding: 1.6rem; flex: 1; }
-    .card-title { font-size: 1.3rem; font-weight: 600; margin-bottom: 0.6rem; }
-    .card-price { font-size: 1.5rem; font-weight: 700; color: #1e40af; margin-bottom: 0.8rem; }
-
-    /* Modal (unchanged) */
-    .image-rotator {
-      position: relative;
-      max-width: 100%;
-      max-height: 480px;
-      border-radius: 12px;
-      overflow: hidden;
-    }
-    .image-rotator img {
-      width: 100%;
-      height: 480px;
-      object-fit: cover;
-    }
-    .rotator-nav {
-      position: absolute;
-      top: 50%;
-      transform: translateY(-50%);
-      background: rgba(0,0,0,0.5);
-      color: white;
-      border: none;
-      font-size: 2rem;
-      padding: 0.2rem 0.8rem;
-      cursor: pointer;
-      border-radius: 50%;
-    }
-    .rotator-nav.prev { left: 10px; }
-    .rotator-nav.next { right: 10px; }
-    .intel-box {
-      background: #f0fdf4;
-      border: 1px solid #86efac;
-      border-radius: 8px;
-      padding: 10px;
-      margin: 10px 0;
-    }
-
-    @media (max-width: 700px) {
-      .hero { min-height: 400px; padding: 3rem 1rem; }
-      .card { flex-direction: column; }
-      .card img { width: 100%; height: 200px; }
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Properties in Kenya — Verified Homes</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Playfair+Display:wght@700&display=swap');
+        body { font-family: 'Inter', system_ui, sans-serif; }
+        .hero-bg {
+            background: linear-gradient(rgba(0,0,0,0.45), rgba(0,0,0,0.55)),
+                      url('https://picsum.photos/id/1015/2000/900') center/cover no-repeat;
+        }
+        .property-card {
+            transition: all 0.3s ease;
+        }
+        .property-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+        }
+    </style>
 </head>
-<body>
+<body class="bg-[#f8f4eb] text-gray-800">
 
-  <!-- Purple Top Bar -->
-  <header style="background:#6b21a8; padding:0.8rem; text-align:center; color:white; font-weight:500;">
-    Properties in Kenya — Verified • Trusted • Transparent
-  </header>
+    <!-- Top Purple Bar -->
+    <header class="bg-[#6b21a8] py-3 text-white text-center text-sm font-medium">
+        Properties in Kenya — Verified • Trusted • Transparent
+    </header>
 
-  <!-- Hero with Mt Kenya background, no map box -->
-  <div class="hero">
-    <a href="/" class="logo">🏡 Properties in Kenya</a>
-    <p class="tagline">The No.1 platform for verified property in Eastlands</p>
-
-    <div class="nav">
-      <a href="#">Buy</a>
-      <a href="#">Rent</a>
-      <a href="#">Lease</a>
-      <a href="#">Projects</a>
-      <a href="/agent.html">Agents</a>
-    </div>
-
-    <div class="search-container">
-      <input type="text" id="mainSearch" placeholder="Search location or title (Ruai, Kayole...)" oninput="applyFilters()">
-      <input type="text" id="locationFilter" placeholder="Estate / Area" oninput="applyFilters()">
-      <select id="typeFilter" onchange="applyFilters()">
-        <option value="all">All Types</option>
-        <option value="for sale">For Sale</option>
-        <option value="for rent">For Rent</option>
-        <option value="for lease">For Lease</option>
-        <option value="project">Projects</option>
-      </select>
-      <input type="number" id="minPrice" placeholder="Min Price (KES)" oninput="applyFilters()">
-      <button onclick="applyFilters()">🔍 Find Property</button>
-    </div>
-  </div>
-
-  <!-- Quick Actions -->
-  <div class="quick-actions">
-    <div class="action-item" onclick="alert('AI Property Matchmaker — Coming in Phase 8')">
-      <div class="action-icon">✨</div>
-      <span>AI Search</span>
-    </div>
-    <div class="action-item" onclick="alert('Property Valuation Tool — Coming Soon')">
-      <div class="action-icon">📊</div>
-      <span>Valuation</span>
-    </div>
-    <div class="action-item" onclick="alert('Market Prices & Trends')">
-      <div class="action-icon">💰</div>
-      <span>Pricing</span>
-    </div>
-    <div class="action-item" onclick="alert('Hot Deals & Offers')">
-      <div class="action-icon">🔥</div>
-      <span>Deals</span>
-    </div>
-    <div class="action-item" onclick="window.location.href='/agent.html'">
-      <div class="action-icon">📥</div>
-      <span>Buyer Inquiries</span>
-    </div>
-  </div>
-
-  <!-- Property Listings Container -->
-  <div class="container">
-    <div id="listings"></div>
-  </div>
-
-  <!-- Detail Modal (image rotator, market intel, WhatsApp) -->
-  <div id="detailModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.85); z-index:2000; align-items:center; justify-content:center;">
-    <div style="background:white; max-width:1100px; width:95%; max-height:95vh; overflow:auto; border-radius:16px;">
-      <div style="padding:1rem 1.5rem; border-bottom:1px solid #eee; display:flex; justify-content:space-between; align-items:center;">
-        <h2 id="modalTitle"></h2>
-        <span onclick="closeModal()" style="font-size:2rem; cursor:pointer; color:#6b21a8;">×</span>
-      </div>
-      <div style="display:flex; gap:2rem; padding:1.5rem; flex-wrap:wrap;">
-        <div style="flex:2;">
-          <div class="image-rotator" id="imageRotator">
-            <img id="mainImage" src="" alt="Property image" />
-            <button class="rotator-nav prev" onclick="prevImage()">‹</button>
-            <button class="rotator-nav next" onclick="nextImage()">›</button>
-          </div>
+    <!-- Navbar -->
+    <nav class="bg-white shadow-sm sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+            <a href="#" class="flex items-center gap-3 text-3xl font-bold text-[#6b21a8]">
+                🏡 <span class="text-2xl">Properties in Kenya</span>
+            </a>
+            <div class="hidden md:flex gap-8 text-lg">
+                <a href="#" class="hover:text-[#6b21a8]">Buy</a>
+                <a href="#" class="hover:text-[#6b21a8]">Rent</a>
+                <a href="#" class="hover:text-[#6b21a8]">Lease</a>
+                <a href="#" class="hover:text-[#6b21a8]">Projects</a>
+                <a href="#" class="hover:text-[#6b21a8]">Agents</a>
+            </div>
+            <button onclick="alert('List your property — Coming soon!')" 
+                    class="bg-[#22c55e] text-white px-6 py-3 rounded-2xl font-semibold flex items-center gap-2">
+                <i class="fas fa-plus"></i> List Property
+            </button>
         </div>
-        <div style="flex:1;">
-          <div id="modalPrice" style="font-size:2.2rem; font-weight:700; color:#1e40af;"></div>
-          <div id="modalMeta" style="margin:1rem 0; font-size:1.1rem;"></div>
-          <p id="modalDescription"></p>
-          <div class="intel-box" id="intelBlock" style="display:none;"></div>
-          <a id="modalWA" href="#" target="_blank" style="background:#25D366; color:white; padding:1rem 1.8rem; border-radius:8px; text-decoration:none; display:inline-flex; align-items:center; gap:8px; margin-top:1.5rem; font-weight:600;">💬 WhatsApp Agent</a>
+    </nav>
+
+    <!-- Hero -->
+    <section class="hero-bg min-h-[85vh] flex items-center text-white">
+        <div class="max-w-5xl mx-auto px-6 text-center">
+            <h1 class="text-6xl md:text-7xl font-bold leading-none mb-6">
+                Your next home in Kenya<br>starts here.
+            </h1>
+            <p class="text-xl max-w-2xl mx-auto mb-10">
+                Verified properties in Eastlands, Ruai, Kayole, Embakasi &amp; across Kenya.
+            </p>
+
+            <!-- Search -->
+            <div class="bg-white rounded-3xl p-2 shadow-2xl max-w-4xl mx-auto">
+                <div class="flex flex-wrap gap-3 bg-gray-100 rounded-3xl p-3">
+                    <input id="mainSearch" type="text" placeholder="Search location or title (Ruai, Kayole...)" 
+                           class="flex-1 px-6 py-4 bg-white rounded-2xl outline-none text-lg" oninput="applyFilters()">
+                    <select id="typeFilter" onchange="applyFilters()" class="px-6 py-4 bg-white rounded-2xl outline-none">
+                        <option value="all">All Types</option>
+                        <option value="for sale">For Sale</option>
+                        <option value="for rent">For Rent</option>
+                        <option value="for lease">For Lease</option>
+                    </select>
+                    <input id="minPrice" type="number" placeholder="Min Price (KES)" 
+                           class="px-6 py-4 bg-white rounded-2xl outline-none w-48" oninput="applyFilters()">
+                    <button onclick="applyFilters()" 
+                            class="bg-[#22c55e] hover:bg-green-600 px-10 py-4 rounded-2xl font-semibold text-white flex items-center gap-2">
+                        <i class="fas fa-search"></i> Find
+                    </button>
+                </div>
+            </div>
         </div>
-      </div>
+    </section>
+
+    <!-- Quick Actions -->
+    <div class="max-w-6xl mx-auto px-6 -mt-8 relative z-10">
+        <div class="grid grid-cols-2 md:grid-cols-5 gap-4 bg-white rounded-3xl shadow-xl p-8">
+            <div onclick="alert('AI Matchmaker — Coming soon')" class="text-center cursor-pointer hover:scale-105 transition">
+                <div class="w-16 h-16 mx-auto bg-orange-100 rounded-2xl flex items-center justify-center text-4xl mb-3">✨</div>
+                <p class="font-medium">AI Search</p>
+            </div>
+            <div onclick="alert('Valuation Tool — Coming soon')" class="text-center cursor-pointer hover:scale-105 transition">
+                <div class="w-16 h-16 mx-auto bg-blue-100 rounded-2xl flex items-center justify-center text-4xl mb-3">📊</div>
+                <p class="font-medium">Valuation</p>
+            </div>
+            <div onclick="alert('Market Trends')" class="text-center cursor-pointer hover:scale-105 transition">
+                <div class="w-16 h-16 mx-auto bg-amber-100 rounded-2xl flex items-center justify-center text-4xl mb-3">💰</div>
+                <p class="font-medium">Pricing</p>
+            </div>
+            <div onclick="alert('Hot Deals')" class="text-center cursor-pointer hover:scale-105 transition">
+                <div class="w-16 h-16 mx-auto bg-red-100 rounded-2xl flex items-center justify-center text-4xl mb-3">🔥</div>
+                <p class="font-medium">Deals</p>
+            </div>
+            <div onclick="alert('Contact Agents')" class="text-center cursor-pointer hover:scale-105 transition">
+                <div class="w-16 h-16 mx-auto bg-emerald-100 rounded-2xl flex items-center justify-center text-4xl mb-3">📥</div>
+                <p class="font-medium">Buyer Inquiries</p>
+            </div>
+        </div>
     </div>
-  </div>
 
-<script>
-  const supabaseUrl = "https://nqwvsmuvltbiekfnvovx.supabase.co";
-  const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5xd3ZzbXV2bHRiaWVrZm52b3Z4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA1NjU4MDAsImV4cCI6MjA5NjE0MTgwMH0.Xrc-bbAuWdvKSPHnVhTaLiQphV61xeYtDepWePqsrdo";
-  const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
+    <!-- Listings -->
+    <section class="max-w-7xl mx-auto px-6 py-20">
+        <h2 class="text-4xl font-bold mb-8">Latest Verified Properties</h2>
+        <div id="listings" class="grid md:grid-cols-2 lg:grid-cols-3 gap-8"></div>
+    </section>
 
-  let allProperties = [];
-  let marketStats = {};
-  let currentImages = [];
-  let currentImageIndex = 0;
-
-  async function loadMarketStats() {
-    const { data } = await supabaseClient
-      .from("market_stats")
-      .select("area, avg_price");
-    if (data) {
-      data.forEach(row => {
-        marketStats[row.area.toLowerCase()] = row.avg_price;
-      });
-    }
-  }
-
-  async function loadProperties() {
-    await loadMarketStats();
-    const { data } = await supabaseClient
-      .from("properties")
-      .select("*")
-      .eq("approval_status", "approved")
-      .order("created_at", { ascending: false });
-    allProperties = data || [];
-    renderListings(allProperties);
-  }
-
-  function renderListings(properties) {
-    const container = document.getElementById("listings");
-    container.innerHTML = properties.length ? "" : "<p style='text-align:center; padding:4rem; color:#64748b;'>No properties found yet.</p>";
-
-    properties.forEach(p => {
-      const card = document.createElement("div");
-      card.className = "card";
-      card.onclick = () => openDetail(p);
-      const img = p.image_url || (Array.isArray(p.images) && p.images.length ? p.images[0] : `https://picsum.photos/seed/${p.id}/600/400`);
-      const price = p.price ? `KSh ${Number(p.price).toLocaleString()}` : "Price on request";
-
-      card.innerHTML = `
-        <img src="${img}" alt="${p.title}">
-        <div class="card-content">
-          <div class="card-title">${p.title || "Untitled Property"}</div>
-          <div class="card-price">${price}</div>
-          <div style="color:#334155;">📍 ${p.location || "N/A"}</div>
-          <div style="margin-top:8px; color:#6b7280;">${p.property_type ? p.property_type.toUpperCase() : ""}</div>
+    <!-- Detail Modal -->
+    <div id="detailModal" class="hidden fixed inset-0 bg-black/80 z-[2000] flex items-center justify-center">
+        <div class="bg-white max-w-5xl w-full mx-4 rounded-3xl max-h-[95vh] overflow-auto">
+            <div class="p-6 border-b flex justify-between items-center">
+                <h2 id="modalTitle" class="text-2xl font-bold"></h2>
+                <button onclick="closeModal()" class="text-4xl text-gray-400 hover:text-gray-600">×</button>
+            </div>
+            <div class="p-6 grid md:grid-cols-5 gap-8">
+                <div class="md:col-span-3">
+                    <div class="relative">
+                        <img id="mainImage" class="w-full rounded-2xl" alt="Property">
+                        <button onclick="prevImage()" class="absolute left-4 top-1/2 -translate-y-1/2 bg-black/60 text-white px-4 py-3 rounded-full text-2xl">‹</button>
+                        <button onclick="nextImage()" class="absolute right-4 top-1/2 -translate-y-1/2 bg-black/60 text-white px-4 py-3 rounded-full text-2xl">›</button>
+                    </div>
+                </div>
+                <div class="md:col-span-2 space-y-6">
+                    <div id="modalPrice" class="text-4xl font-bold text-[#1e40af]"></div>
+                    <div id="modalMeta" class="text-lg"></div>
+                    <p id="modalDescription" class="text-gray-600"></p>
+                    <div id="intelBlock" class="hidden bg-emerald-50 border border-emerald-200 p-4 rounded-2xl"></div>
+                    <a id="modalWA" href="#" target="_blank"
+                       class="block bg-[#25D366] text-white text-center py-5 rounded-2xl font-semibold text-lg flex items-center justify-center gap-3">
+                        💬 Chat on WhatsApp
+                    </a>
+                </div>
+            </div>
         </div>
-      `;
-      container.appendChild(card);
-    });
-  }
+    </div>
 
-  window.prevImage = function() {
-    if (currentImages.length > 1) {
-      currentImageIndex = (currentImageIndex - 1 + currentImages.length) % currentImages.length;
-      document.getElementById("mainImage").src = currentImages[currentImageIndex];
-    }
-  };
+    <!-- Footer -->
+    <footer class="bg-[#0f172a] text-white py-16">
+        <div class="max-w-7xl mx-auto px-6 text-center">
+            <p class="text-2xl font-bold mb-2">Properties in Kenya</p>
+            <p class="text-gray-400">Verified homes across Eastlands and beyond.</p>
+            <div class="mt-10 text-sm text-gray-400">
+                © 2026 • Made with ❤️ for Kenyan home seekers
+            </div>
+        </div>
+    </footer>
 
-  window.nextImage = function() {
-    if (currentImages.length > 1) {
-      currentImageIndex = (currentImageIndex + 1) % currentImages.length;
-      document.getElementById("mainImage").src = currentImages[currentImageIndex];
-    }
-  };
+    <script>
+        // Supabase (replace with your keys if needed)
+        const supabaseUrl = "https://nqwvsmuvltbiekfnvovx.supabase.co";
+        const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5xd3ZzbXV2bHRiaWVrZm52b3Z4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA1NjU4MDAsImV4cCI6MjA5NjE0MTgwMH0.Xrc-bbAuWdvKSPHnVhTaLiQphV61xeYtDepWePqsrdo";
+        const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
 
-  window.openDetail = function(p) {
-    if (Array.isArray(p.images) && p.images.length) {
-      currentImages = p.images;
-    } else if (p.image_url) {
-      currentImages = [p.image_url];
-    } else {
-      currentImages = [`https://picsum.photos/seed/${p.id}/800/500`];
-    }
-    currentImageIndex = 0;
+        let allProperties = [];
+        let currentImages = [];
+        let currentImageIndex = 0;
 
-    document.getElementById("modalTitle").textContent = p.title || "Untitled";
-    document.getElementById("modalPrice").textContent = p.price ? `KSh ${Number(p.price).toLocaleString()}` : "Price on request";
-    document.getElementById("modalMeta").innerHTML = `📍 <strong>${p.location || "N/A"}</strong><br>Type: ${p.property_type || "—"}`;
-    document.getElementById("modalDescription").textContent = p.description || "No description available.";
-    document.getElementById("mainImage").src = currentImages[0];
+        async function loadProperties() {
+            const { data } = await supabaseClient.from("properties").select("*").eq("approval_status", "approved").order("created_at", { ascending: false });
+            allProperties = data || [
+                // Demo data if Supabase fails
+                { id:1, title:"4 Bedroom Maisonette in Ruai", price:8500000, location:"Ruai", property_type:"for sale", images:["https://picsum.photos/id/1015/800/500","https://picsum.photos/id/133/800/500"], description:"Spacious family home with garden." },
+                { id:2, title:"2 Bedroom Apartment Kayole", price:3200000, location:"Kayole", property_type:"for rent", images:["https://picsum.photos/id/201/800/500"], description:"Modern unit near main road." }
+            ];
+            renderListings(allProperties);
+        }
 
-    const area = (p.location || "").toLowerCase().trim();
-    const intelBlock = document.getElementById("intelBlock");
-    if (p.price && marketStats[area]) {
-      const avg = marketStats[area];
-      const diff = p.price - avg;
-      const percent = avg ? ((diff / avg) * 100).toFixed(0) : 0;
-      let insight = `Average price in ${p.location}: KSh ${Number(avg).toLocaleString()}<br>`;
-      if (diff < 0) {
-        insight += `<span style="color:green;">This listing is ${Math.abs(percent)}% below market average</span>`;
-      } else if (diff > 0) {
-        insight += `<span style="color:#b45309;">This listing is ${percent}% above market average</span>`;
-      } else {
-        insight += "This listing is at the market average.";
-      }
-      intelBlock.innerHTML = `<strong>📊 Market Insight</strong><br>${insight}`;
-      intelBlock.style.display = "block";
-    } else {
-      intelBlock.style.display = "none";
-    }
+        function renderListings(properties) {
+            const container = document.getElementById("listings");
+            container.innerHTML = "";
+            properties.forEach(p => {
+                const card = document.createElement("div");
+                card.className = "property-card bg-white rounded-3xl overflow-hidden cursor-pointer";
+                card.innerHTML = `
+                    <img src="${p.images ? p.images[0] : 'https://picsum.photos/id/1015/600/400'}" class="w-full h-56 object-cover">
+                    <div class="p-6">
+                        <h3 class="font-semibold text-xl mb-2">${p.title}</h3>
+                        <p class="text-2xl font-bold text-blue-700">KSh ${Number(p.price).toLocaleString()}</p>
+                        <p class="text-gray-500 mt-2">📍 ${p.location}</p>
+                    </div>
+                `;
+                card.onclick = () => openDetail(p);
+                container.appendChild(card);
+            });
+        }
 
-    const waBtn = document.getElementById("modalWA");
-    const phone = p.agent_phone ? p.agent_phone.replace(/\D/g, '') : null;
-    if (phone) {
-      waBtn.href = `https://wa.me/${phone}?text=Hi%2C+I'm+interested+in+${encodeURIComponent(p.title || 'this property')}`;
-      waBtn.style.display = "inline-flex";
-    } else {
-      waBtn.style.display = "none";
-    }
+        function openDetail(p) {
+            currentImages = p.images || [p.image_url || `https://picsum.photos/id/${p.id}/800/500`];
+            currentImageIndex = 0;
+            document.getElementById("mainImage").src = currentImages[0];
+            document.getElementById("modalTitle").textContent = p.title;
+            document.getElementById("modalPrice").textContent = `KSh ${Number(p.price).toLocaleString()}`;
+            document.getElementById("modalMeta").innerHTML = `📍 <strong>${p.location}</strong><br>Type: ${p.property_type}`;
+            document.getElementById("modalDescription").textContent = p.description || "Beautiful verified property.";
+            document.getElementById("detailModal").classList.remove("hidden");
+            document.getElementById("detailModal").classList.add("flex");
+        }
 
-    document.getElementById("detailModal").style.display = "flex";
-  };
+        window.prevImage = () => {
+            currentImageIndex = (currentImageIndex - 1 + currentImages.length) % currentImages.length;
+            document.getElementById("mainImage").src = currentImages[currentImageIndex];
+        };
+        window.nextImage = () => {
+            currentImageIndex = (currentImageIndex + 1) % currentImages.length;
+            document.getElementById("mainImage").src = currentImages[currentImageIndex];
+        };
+        window.closeModal = () => {
+            document.getElementById("detailModal").classList.add("hidden");
+            document.getElementById("detailModal").classList.remove("flex");
+        };
 
-  window.closeModal = () => document.getElementById("detailModal").style.display = "none";
+        function applyFilters() {
+            const term = document.getElementById("mainSearch").value.toLowerCase();
+            const type = document.getElementById("typeFilter").value;
+            const minPrice = parseFloat(document.getElementById("minPrice").value) || 0;
 
-  function applyFilters() {
-    const term = document.getElementById("mainSearch").value.toLowerCase().trim();
-    const location = document.getElementById("locationFilter").value.toLowerCase().trim();
-    const type = document.getElementById("typeFilter").value;
-    const minPrice = parseFloat(document.getElementById("minPrice").value) || 0;
+            const filtered = allProperties.filter(p => {
+                return (!term || (p.title + p.location).toLowerCase().includes(term)) &&
+                       (type === "all" || (p.property_type || "").includes(type)) &&
+                       (p.price >= minPrice);
+            });
+            renderListings(filtered);
+        }
 
-    const filtered = allProperties.filter(p => {
-      const matchesSearch = !term || (p.title + " " + p.location).toLowerCase().includes(term);
-      const matchesLocation = !location || (p.location || "").toLowerCase().includes(location);
-      const matchesType = type === "all" || (p.property_type || "").toLowerCase().includes(type);
-      const matchesPrice = (p.price || 0) >= minPrice;
-      return matchesSearch && matchesLocation && matchesType && matchesPrice;
-    });
-    renderListings(filtered);
-  }
-
-  loadProperties();
-</script>
+        // Initialize
+        loadProperties();
+    </script>
 </body>
 </html>
