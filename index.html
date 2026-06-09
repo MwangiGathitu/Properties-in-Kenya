@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Properties in Kenya — Verified Homes</title>
+    <title>Properties in Kenya — AI Powered</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -14,6 +14,8 @@
             background: linear-gradient(rgba(0,0,0,0.45), rgba(0,0,0,0.55)),
                         url('https://picsum.photos/id/1015/2000/1200') center/cover no-repeat;
         }
+        h1 { font-size: 2.5rem; }
+        .ai-chat-input { transition: all 0.3s; }
         .property-card {
             transition: all 0.4s ease;
             border-radius: 16px;
@@ -23,8 +25,28 @@
             transform: translateY(-8px);
             box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1);
         }
-        h1 { font-size: 2.75rem; } /* Reduced from previous */
-        h2 { font-size: 2rem; }
+        .chat-message {
+            animation: slideIn 0.3s ease;
+        }
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .typing-indicator span {
+            animation: blink 1.4s infinite;
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: #10b981;
+            margin: 0 2px;
+        }
+        .typing-indicator span:nth-child(2) { animation-delay: 0.2s; }
+        .typing-indicator span:nth-child(3) { animation-delay: 0.4s; }
+        @keyframes blink {
+            0%, 60%, 100% { opacity: 0.3; }
+            30% { opacity: 1; }
+        }
     </style>
 </head>
 <body class="bg-[#f8f7f4]">
@@ -54,54 +76,62 @@
         </div>
     </nav>
 
-    <!-- Hero -->
-    <section class="hero-bg min-h-[82vh] flex items-center text-white relative">
-        <div class="max-w-5xl mx-auto px-6 text-center z-10">
-            <h1 class="font-bold leading-tight mb-6 text-white">
-                YOUR NEXT HOME IN KENYA<br><span class="text-emerald-300">starts here.</span>
+    <!-- AI Hero -->
+    <section class="hero-bg min-h-[85vh] flex items-center text-white relative">
+        <div class="max-w-4xl mx-auto px-6 text-center z-10">
+            <h1 class="font-bold leading-tight mb-6">
+                Your next home in Kenya<br><span class="text-emerald-300">starts here.</span>
             </h1>
-            <p class="text-lg max-w-xl mx-auto mb-10">
-                Verified properties across all of Kenya.
-            </p>
+            <p class="text-lg mb-8">Talk to <span class="font-semibold text-emerald-300">Mali</span> — our AI assistant</p>
 
-            <div class="bg-white/95 backdrop-blur-md rounded-3xl p-2 max-w-3xl mx-auto">
-                <div class="flex flex-col md:flex-row gap-3 p-2">
-                    <input id="mainSearch" placeholder="Search location or title (Ruai, Kayole...)" 
-                           class="flex-1 px-6 py-4 rounded-2xl focus:outline-none text-base" oninput="applyFilters()">
-                    <select id="typeFilter" onchange="applyFilters()" class="px-6 py-4 rounded-2xl focus:outline-none text-base">
-                        <option value="all">All Types</option>
-                        <option value="for sale">For Sale</option>
-                        <option value="for rent">For Rent</option>
-                    </select>
-                    <input id="minPrice" type="number" placeholder="Min Price (KES)" 
-                           class="px-6 py-4 rounded-2xl focus:outline-none w-52 text-base" oninput="applyFilters()">
-                    <button onclick="applyFilters()" 
-                            class="bg-emerald-500 hover:bg-emerald-600 px-8 py-4 rounded-2xl font-semibold text-white text-base">Find</button>
+            <!-- AI Chat Interface -->
+            <div class="bg-white/95 backdrop-blur-md rounded-3xl p-4 max-w-2xl mx-auto shadow-2xl">
+                <!-- Chat Messages -->
+                <div id="chatMessages" class="max-h-64 overflow-y-auto mb-4 space-y-3 text-left">
+                    <div class="chat-message flex gap-3">
+                        <div class="w-10 h-10 bg-emerald-500 rounded-full flex items-center justify-center text-white font-bold flex-shrink-0">M</div>
+                        <div class="bg-gray-100 rounded-2xl rounded-tl-none px-4 py-3 text-gray-800 text-sm">
+                            👋 Hi! I'm Mali, your AI property assistant. Tell me what you're looking for in natural language.
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Chat Input -->
+                <div class="flex gap-3">
+                    <input id="aiQuery" placeholder="e.g. I have 8 million, want 4 bedroom in Ruai..." 
+                           class="ai-chat-input flex-1 px-6 py-4 rounded-2xl focus:outline-none text-gray-800 text-base border border-gray-200" 
+                           onkeypress="if(event.key === 'Enter') askAI()">
+                    <button onclick="askAI()" 
+                            class="bg-emerald-600 hover:bg-emerald-700 px-8 py-4 rounded-2xl font-semibold text-white flex items-center gap-2 transition">
+                        <i class="fas fa-paper-plane"></i>
+                    </button>
                 </div>
             </div>
+
+            <p class="text-xs text-white/70 mt-4">Try: "Show me houses under 10M in Embakasi" or "3 bedroom apartment for rent in Kilimani"</p>
         </div>
     </section>
 
     <!-- Quick Actions -->
     <div class="max-w-6xl mx-auto px-6 -mt-8 relative z-10 pb-12">
         <div class="grid grid-cols-2 md:grid-cols-5 gap-6 bg-white rounded-3xl shadow-xl p-8">
-            <div onclick="alert('AI Property Matchmaker — Coming soon')" class="text-center cursor-pointer hover:scale-105 transition">
+            <div onclick="setQuickSearch('AI Matchmaker — Coming soon')" class="text-center cursor-pointer hover:scale-105 transition">
                 <div class="w-14 h-14 mx-auto bg-orange-100 rounded-2xl flex items-center justify-center text-4xl mb-3">✨</div>
                 <p class="font-medium text-sm">AI Search</p>
             </div>
-            <div onclick="alert('Property Valuation Tool — Coming soon')" class="text-center cursor-pointer hover:scale-105 transition">
+            <div onclick="setQuickSearch('Valuation Tool — Coming soon')" class="text-center cursor-pointer hover:scale-105 transition">
                 <div class="w-14 h-14 mx-auto bg-blue-100 rounded-2xl flex items-center justify-center text-4xl mb-3">📊</div>
                 <p class="font-medium text-sm">Valuation</p>
             </div>
-            <div onclick="alert('Market Prices & Trends')" class="text-center cursor-pointer hover:scale-105 transition">
+            <div onclick="setQuickSearch('Market Trends')" class="text-center cursor-pointer hover:scale-105 transition">
                 <div class="w-14 h-14 mx-auto bg-amber-100 rounded-2xl flex items-center justify-center text-4xl mb-3">💰</div>
                 <p class="font-medium text-sm">Pricing</p>
             </div>
-            <div onclick="alert('Hot Deals & Offers')" class="text-center cursor-pointer hover:scale-105 transition">
+            <div onclick="setQuickSearch('Hot Deals')" class="text-center cursor-pointer hover:scale-105 transition">
                 <div class="w-14 h-14 mx-auto bg-red-100 rounded-2xl flex items-center justify-center text-4xl mb-3">🔥</div>
                 <p class="font-medium text-sm">Deals</p>
             </div>
-            <div onclick="alert('Buyer Inquiries')" class="text-center cursor-pointer hover:scale-105 transition">
+            <div onclick="setQuickSearch('Buyer Inquiries')" class="text-center cursor-pointer hover:scale-105 transition">
                 <div class="w-14 h-14 mx-auto bg-emerald-100 rounded-2xl flex items-center justify-center text-4xl mb-3">📥</div>
                 <p class="font-medium text-sm">Inquiries</p>
             </div>
@@ -115,7 +145,12 @@
             <p class="text-gray-500 text-sm" id="count">Showing 0 properties</p>
         </div>
 
-        <div id="listings" class="grid md:grid-cols-2 lg:grid-cols-3 gap-8"></div>
+        <div id="listings" class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <div class="col-span-full text-center py-12 text-gray-400">
+                <i class="fas fa-spinner fa-spin text-4xl mb-4"></i>
+                <p>Loading properties...</p>
+            </div>
+        </div>
     </section>
 
     <!-- Detail Modal -->
@@ -149,6 +184,7 @@
     </footer>
 
     <script>
+        // Supabase Client
         const supabaseClient = supabase.createClient(
             "https://nqwvsmuvltbiekfnvovx.supabase.co",
             "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5xd3ZzbXV2bHRiaWVrZm52b3Z4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA1NjU4MDAsImV4cCI6MjA5NjE0MTgwMH0.Xrc-bbAuWdvKSPHnVhTaLiQphV61xeYtDepWePqsrdo"
@@ -158,20 +194,51 @@
         let currentImages = [];
         let currentImageIndex = 0;
 
+        // Load Properties from Supabase
         async function loadProperties() {
-            const { data } = await supabaseClient.from("properties").select("*").eq("approval_status", "approved");
-            allProperties = data || [
-                {id:1, title:"Apartment Kilimani", price:8500000, location:"Kilimani", property_type:"for sale", images:["https://picsum.photos/id/1015/800/500"]},
-                {id:2, title:"Test House in Njiru", price:5000000, location:"Njiru", property_type:"for sale", images:["https://picsum.photos/id/133/800/500"]},
-                {id:3, title:"4 Bedroom House Kileleshwa", price:12000000, location:"Kileleshwa", property_type:"for sale", images:["https://picsum.photos/id/201/800/500"]},
-            ];
-            renderListings(allProperties);
+            try {
+                const { data, error } = await supabaseClient
+                    .from("properties")
+                    .select("*")
+                    .eq("approval_status", "approved");
+
+                if (error) throw error;
+
+                allProperties = data || [
+                    {id:1, title:"Apartment Kilimani", price:8500000, location:"Kilimani", property_type:"for sale", bedrooms:3, images:["https://picsum.photos/id/1015/800/500"]},
+                    {id:2, title:"4 Bedroom House Ruai", price:7500000, location:"Ruai", property_type:"for sale", bedrooms:4, images:["https://picsum.photos/id/133/800/500"]},
+                    {id:3, title:"3 Bedroom Apartment Embakasi", price:9000000, location:"Embakasi", property_type:"for sale", bedrooms:3, images:["https://picsum.photos/id/201/800/500"]},
+                    {id:4, title:"Land for Sale Nairobi", price:5000000, location:"Nairobi", property_type:"for sale", property_category:"land", images:["https://picsum.photos/id/164/800/500"]},
+                    {id:5, title:"2 Bedroom House Kayole", price:4500000, location:"Kayole", property_type:"for sale", bedrooms:2, images:["https://picsum.photos/id/174/800/500"]},
+                ];
+                
+                renderListings(allProperties);
+            } catch (error) {
+                console.error('Error loading properties:', error);
+                document.getElementById('listings').innerHTML = `
+                    <div class="col-span-full text-center py-12 text-red-500">
+                        <i class="fas fa-exclamation-triangle text-4xl mb-4"></i>
+                        <p>Failed to load properties. Please refresh the page.</p>
+                    </div>
+                `;
+            }
         }
 
+        // Render Property Listings
         function renderListings(properties) {
             const container = document.getElementById("listings");
             container.innerHTML = "";
             document.getElementById("count").textContent = `Showing ${properties.length} properties`;
+
+            if (properties.length === 0) {
+                container.innerHTML = `
+                    <div class="col-span-full text-center py-12 text-gray-400">
+                        <i class="fas fa-search text-4xl mb-4"></i>
+                        <p>No properties found matching your criteria.</p>
+                    </div>
+                `;
+                return;
+            }
 
             properties.forEach(p => {
                 const card = document.createElement("div");
@@ -179,51 +246,243 @@
                 card.innerHTML = `
                     <div class="relative">
                         <img src="${p.images ? p.images[0] : 'https://picsum.photos/id/1015/600/400'}" class="w-full h-64 object-cover">
-                        <div class="absolute top-4 left-4 bg-white text-xs font-bold px-3 py-1 rounded-full shadow">FOR SALE</div>
+                        <div class="absolute top-4 left-4 bg-white text-xs font-bold px-3 py-1 rounded-full shadow">
+                            ${(p.property_type || 'FOR SALE').toUpperCase()}
+                        </div>
                     </div>
                     <div class="p-6">
                         <h3 class="font-semibold text-lg leading-tight mb-2">${p.title}</h3>
                         <p class="text-gray-500 text-sm mb-4">📍 ${p.location}</p>
                         <div class="flex justify-between items-end">
                             <p class="text-2xl font-bold text-emerald-700">KSh ${Number(p.price).toLocaleString()}</p>
-                            <button onclick="event.stopImmediatePropagation(); openDetail(${JSON.stringify(p).replace(/"/g, '&quot;')});" 
+                            <button onclick="event.stopImmediatePropagation(); openDetail(${p.id});" 
                                     class="text-sm border border-gray-300 hover:bg-gray-50 px-5 py-2 rounded-xl">View details</button>
                         </div>
                     </div>
                 `;
-                card.onclick = () => openDetail(p);
+                card.onclick = () => openDetail(p.id);
                 container.appendChild(card);
             });
         }
 
-        function openDetail(p) {
+        // Open Property Detail Modal
+        function openDetail(propertyId) {
+            const p = allProperties.find(prop => prop.id === propertyId);
+            if (!p) return;
+
             currentImages = p.images || [`https://picsum.photos/id/${p.id}/800/500`];
             currentImageIndex = 0;
             document.getElementById("mainImage").src = currentImages[0];
             document.getElementById("modalTitle").textContent = p.title;
             document.getElementById("modalPrice").textContent = `KSh ${Number(p.price).toLocaleString()}`;
-            document.getElementById("modalMeta").innerHTML = `📍 ${p.location} <br> ${p.property_type ? p.property_type.toUpperCase() : ''}`;
-            document.getElementById("modalDescription").textContent = p.description || "Beautiful verified property.";
+            document.getElementById("modalMeta").innerHTML = `
+                📍 ${p.location} <br>
+                ${p.property_type ? p.property_type.toUpperCase() : ''}
+                ${p.bedrooms ? `<br>🛏️ ${p.bedrooms} Bedrooms` : ''}
+            `;
+            document.getElementById("modalDescription").textContent = p.description || "Beautiful verified property in a prime location.";
+            document.getElementById("modalWA").href = `https://wa.me/?text=I'm interested in ${p.title}`;
             document.getElementById("detailModal").classList.remove("hidden");
         }
 
-        window.prevImage = () => { currentImageIndex = (currentImageIndex - 1 + currentImages.length) % currentImages.length; document.getElementById("mainImage").src = currentImages[currentImageIndex]; };
-        window.nextImage = () => { currentImageIndex = (currentImageIndex + 1) % currentImages.length; document.getElementById("mainImage").src = currentImages[currentImageIndex]; };
+        // Modal Navigation
+        window.prevImage = () => { 
+            currentImageIndex = (currentImageIndex - 1 + currentImages.length) % currentImages.length; 
+            document.getElementById("mainImage").src = currentImages[currentImageIndex]; 
+        };
+        window.nextImage = () => { 
+            currentImageIndex = (currentImageIndex + 1) % currentImages.length; 
+            document.getElementById("mainImage").src = currentImages[currentImageIndex]; 
+        };
         window.closeModal = () => document.getElementById("detailModal").classList.add("hidden");
 
-        function applyFilters() {
-            const term = document.getElementById("mainSearch").value.toLowerCase();
-            const type = document.getElementById("typeFilter").value;
-            const minPrice = parseFloat(document.getElementById("minPrice").value) || 0;
+        // Natural Language Query Parser
+        function parsePropertyQuery(query) {
+            const queryLower = query.toLowerCase();
+            const filters = {};
 
-            const filtered = allProperties.filter(p => 
-                (!term || (p.title + p.location).toLowerCase().includes(term)) &&
-                (type === "all" || (p.property_type || "").includes(type)) &&
-                (!minPrice || p.price >= minPrice)
-            );
-            renderListings(filtered);
+            // Extract price/budget
+            const pricePatterns = [
+                { regex: /(\d+)\s*million/i, multiplier: 1000000 },
+                { regex: /(\d+)\s*m\b/i, multiplier: 1000000 },
+                { regex: /under\s+(\d+)\s*million/i, multiplier: 1000000, type: 'max' },
+                { regex: /below\s+(\d+)\s*million/i, multiplier: 1000000, type: 'max' },
+                { regex: /budget\s+(\d+)\s*million/i, multiplier: 1000000, type: 'max' },
+                { regex: /(\d+),(\d+),(\d+)/, multiplier: 1, direct: true }
+            ];
+
+            for (const pattern of pricePatterns) {
+                const match = queryLower.match(pattern.regex);
+                if (match) {
+                    let price;
+                    if (pattern.direct) {
+                        price = parseInt(match[1] + match[2] + match[3]);
+                    } else {
+                        price = parseInt(match[1]) * pattern.multiplier;
+                    }
+                    
+                    if (pattern.type === 'max' || queryLower.includes('under') || queryLower.includes('below') || queryLower.includes('budget')) {
+                        filters.max_price = price;
+                    } else {
+                        filters.max_price = price;
+                    }
+                    break;
+                }
+            }
+
+            // Extract location
+            const kenyaLocations = ['ruai', 'kayole', 'kilimani', 'kileleshwa', 'embakasi', 'nairobi', 'njiru', 'kasarani', 'rongai', 'syokimau', 'kitengela', 'thika', 'kiambu', 'kikuyu', 'limuru'];
+            for (const loc of kenyaLocations) {
+                if (queryLower.includes(loc)) {
+                    filters.location = loc.charAt(0).toUpperCase() + loc.slice(1);
+                    break;
+                }
+            }
+
+            // Extract property type
+            if (queryLower.includes('land') || queryLower.includes('plot')) {
+                filters.property_category = 'land';
+            } else if (queryLower.includes('apartment') || queryLower.includes('flat')) {
+                filters.property_type = 'apartment';
+            } else if (queryLower.includes('house') || queryLower.includes('home')) {
+                filters.property_type = 'house';
+            }
+
+            // Extract bedrooms
+            const bedroomMatch = queryLower.match(/(\d+)\s*bedroom/i);
+            if (bedroomMatch) {
+                filters.bedrooms = parseInt(bedroomMatch[1]);
+            }
+
+            // Extract transaction type
+            if (queryLower.includes('rent')) {
+                filters.transaction = 'for rent';
+            } else if (queryLower.includes('sale') || queryLower.includes('buy')) {
+                filters.transaction = 'for sale';
+            }
+
+            return filters;
         }
 
+        // Apply AI Filters to Properties
+        function applyAIFilters(filters) {
+            return allProperties.filter(p => {
+                if (filters.max_price && p.price > filters.max_price) return false;
+                if (filters.location && !p.location.toLowerCase().includes(filters.location.toLowerCase())) return false;
+                if (filters.property_category && p.property_category !== filters.property_category) return false;
+                if (filters.property_type && p.property_type !== filters.property_type) return false;
+                if (filters.bedrooms && p.bedrooms !== filters.bedrooms) return false;
+                if (filters.transaction && p.property_type !== filters.transaction) return false;
+                return true;
+            });
+        }
+
+        // Add Chat Message
+        function addChatMessage(message, isUser = false) {
+            const chatMessages = document.getElementById('chatMessages');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = 'chat-message flex gap-3 ' + (isUser ? 'flex-row-reverse' : '');
+            
+            const avatar = isUser ? 
+                '<div class="w-10 h-10 bg-purple-500 rounded-full flex items-center justify-center text-white font-bold flex-shrink-0">You</div>' :
+                '<div class="w-10 h-10 bg-emerald-500 rounded-full flex items-center justify-center text-white font-bold flex-shrink-0">M</div>';
+            
+            const bubbleClass = isUser ? 
+                'bg-emerald-500 text-white rounded-2xl rounded-tr-none' :
+                'bg-gray-100 text-gray-800 rounded-2xl rounded-tl-none';
+            
+            messageDiv.innerHTML = `
+                ${avatar}
+                <div class="${bubbleClass} px-4 py-3 text-sm max-w-md">
+                    ${message}
+                </div>
+            `;
+            
+            chatMessages.appendChild(messageDiv);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        // Show Typing Indicator
+        function showTypingIndicator() {
+            const chatMessages = document.getElementById('chatMessages');
+            const typingDiv = document.createElement('div');
+            typingDiv.id = 'typingIndicator';
+            typingDiv.className = 'chat-message flex gap-3';
+            typingDiv.innerHTML = `
+                <div class="w-10 h-10 bg-emerald-500 rounded-full flex items-center justify-center text-white font-bold flex-shrink-0">M</div>
+                <div class="bg-gray-100 rounded-2xl rounded-tl-none px-4 py-3">
+                    <div class="typing-indicator">
+                        <span></span><span></span><span></span>
+                    </div>
+                </div>
+            `;
+            chatMessages.appendChild(typingDiv);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        // Remove Typing Indicator
+        function removeTypingIndicator() {
+            const typing = document.getElementById('typingIndicator');
+            if (typing) typing.remove();
+        }
+
+        // AI Query Handler
+        async function askAI() {
+            const input = document.getElementById('aiQuery');
+            const query = input.value.trim();
+            if (!query) return;
+
+            // Add user message
+            addChatMessage(query, true);
+            input.value = '';
+
+            // Show typing indicator
+            showTypingIndicator();
+
+            // Simulate AI processing delay
+            await new Promise(resolve => setTimeout(resolve, 1000));
+
+            // Parse query and filter properties
+            const filters = parsePropertyQuery(query);
+            const filtered = applyAIFilters(filters);
+
+            removeTypingIndicator();
+
+            // Generate AI response
+            let response = '';
+            if (filtered.length === 0) {
+                response = `😔 I couldn't find any properties matching your criteria. Try adjusting your search or browse all properties below.`;
+            } else {
+                const filterSummary = [];
+                if (filters.max_price) filterSummary.push(`under KSh ${(filters.max_price / 1000000).toFixed(0)}M`);
+                if (filters.location) filterSummary.push(`in ${filters.location}`);
+                if (filters.bedrooms) filterSummary.push(`${filters.bedrooms} bedroom`);
+                if (filters.property_type) filterSummary.push(filters.property_type);
+                
+                response = `✨ Found <strong>${filtered.length} ${filtered.length === 1 ? 'property' : 'properties'}</strong>`;
+                if (filterSummary.length > 0) {
+                    response += ` ${filterSummary.join(', ')}`;
+                }
+                response += `! Check them out below 👇`;
+            }
+
+            addChatMessage(response);
+
+            // Update listings with filtered results
+            renderListings(filtered);
+
+            // Scroll to listings
+            setTimeout(() => {
+                document.querySelector('section.max-w-7xl').scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }, 500);
+        }
+
+        // Quick Search Helper
+        function setQuickSearch(message) {
+            alert(message);
+        }
+
+        // Initialize
         loadProperties();
     </script>
 </body>
