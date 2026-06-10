@@ -115,6 +115,7 @@
             color: #6B7280;
             text-decoration: none;
             transition: color 0.2s;
+            cursor: pointer;
         }
         .nav-link:hover { color: #D4AF37; }
         .nav-cta {
@@ -131,6 +132,177 @@
         .nav-cta:hover {
             border-color: #D4AF37;
             color: #B8922E;
+        }
+        
+        /* ===== HAMBURGER BUTTON ===== */
+        .hamburger-btn {
+            display: none;
+            background: none;
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            cursor: pointer;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 5px;
+            transition: all 0.2s;
+        }
+        .hamburger-btn:hover {
+            background: #F9FAFB;
+        }
+        .hamburger-line {
+            width: 20px;
+            height: 2px;
+            background: #374151;
+            border-radius: 2px;
+            transition: all 0.3s;
+        }
+        .hamburger-btn.active .hamburger-line:nth-child(1) {
+            transform: translateY(7px) rotate(45deg);
+        }
+        .hamburger-btn.active .hamburger-line:nth-child(2) {
+            opacity: 0;
+        }
+        .hamburger-btn.active .hamburger-line:nth-child(3) {
+            transform: translateY(-7px) rotate(-45deg);
+        }
+
+        /* ===== MOBILE MENU DRAWER ===== */
+        .mobile-menu-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(4px);
+            z-index: 198;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s;
+        }
+        .mobile-menu-overlay.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+        
+        .mobile-menu-drawer {
+            position: fixed;
+            top: 0;
+            right: -100%;
+            width: 85%;
+            max-width: 360px;
+            height: 100vh;
+            background: white;
+            z-index: 199;
+            transition: right 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            overflow-y: auto;
+            box-shadow: -10px 0 40px rgba(0, 0, 0, 0.1);
+        }
+        .mobile-menu-drawer.active {
+            right: 0;
+        }
+        
+        .mobile-menu-header {
+            padding: 20px 24px;
+            border-bottom: 1px solid #F3F4F6;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .mobile-menu-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #111827;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .mobile-menu-close {
+            background: #F9FAFB;
+            border: none;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #6B7280;
+            transition: all 0.2s;
+        }
+        .mobile-menu-close:hover {
+            background: #F3F4F6;
+            color: #111827;
+        }
+        
+        .mobile-menu-content {
+            padding: 16px;
+        }
+        
+        .mobile-menu-section {
+            margin-bottom: 24px;
+        }
+        .mobile-menu-section-title {
+            font-size: 11px;
+            font-weight: 600;
+            color: #9CA3AF;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            padding: 0 12px;
+            margin-bottom: 8px;
+        }
+        
+        .mobile-menu-link {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 14px 12px;
+            border-radius: 10px;
+            color: #374151;
+            text-decoration: none;
+            font-size: 15px;
+            font-weight: 500;
+            transition: all 0.2s;
+            cursor: pointer;
+        }
+        .mobile-menu-link:hover {
+            background: #F9FAFB;
+            color: #D4AF37;
+        }
+        .mobile-menu-link i {
+            width: 20px;
+            text-align: center;
+            color: #9CA3AF;
+        }
+        .mobile-menu-link:hover i {
+            color: #D4AF37;
+        }
+        
+        .mobile-menu-divider {
+            height: 1px;
+            background: #F3F4F6;
+            margin: 16px 0;
+        }
+        
+        .mobile-menu-cta {
+            display: block;
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #D4AF37, #E6C86B);
+            color: #111827;
+            border: none;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 600;
+            text-align: center;
+            text-decoration: none;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-top: 16px;
+        }
+        .mobile-menu-cta:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(212, 175, 55, 0.3);
         }
 
         /* ===== MAIN CONTENT ===== */
@@ -1233,6 +1405,8 @@
         @media (max-width: 768px) {
             .nav-fixed, .main-content, .footer { padding-left: 20px; padding-right: 20px; }
             .nav-center { display: none; }
+            .nav-cta.desktop-only { display: none; }
+            .hamburger-btn { display: flex; }
             .ai-intelligence-section { padding: 48px 0 40px; }
             .ai-title { font-size: 24px; }
             .ai-subtitle { font-size: 14px; }
@@ -1271,17 +1445,81 @@
             </a>
             
             <div class="nav-center">
-                <a href="#buy" class="nav-link">Buy</a>
-                <a href="#rent" class="nav-link">Rent</a>
-                <a href="#lease" class="nav-link">For Lease</a>
-                <a href="#featured" class="nav-link">All Listings</a>
+                <a class="nav-link" onclick="navigateToCategory('for sale')">Buy</a>
+                <a class="nav-link" onclick="navigateToCategory('for rent')">Rent</a>
+                <a class="nav-link" onclick="navigateToCategory('lease')">For Lease</a>
+                <a class="nav-link" onclick="navigateToCategory('all')">All Listings</a>
             </div>
             
-            <button class="nav-cta" onclick="window.location.href='agent.html'">
-                List Property
-            </button>
+            <div style="display: flex; align-items: center; gap: 12px;">
+                <button class="nav-cta desktop-only" onclick="window.location.href='agent.html'">
+                    List Property
+                </button>
+                <button class="hamburger-btn" id="hamburgerBtn" onclick="toggleMobileMenu()" aria-label="Open menu" aria-expanded="false">
+                    <span class="hamburger-line"></span>
+                    <span class="hamburger-line"></span>
+                    <span class="hamburger-line"></span>
+                </button>
+            </div>
         </div>
     </nav>
+
+    <!-- Mobile Menu Overlay -->
+    <div class="mobile-menu-overlay" id="mobileMenuOverlay" onclick="toggleMobileMenu()"></div>
+
+    <!-- Mobile Menu Drawer -->
+    <div class="mobile-menu-drawer" id="mobileMenuDrawer" role="dialog" aria-label="Navigation menu">
+        <div class="mobile-menu-header">
+            <div class="mobile-menu-title">
+                <div class="nav-logo-icon" style="width:24px; height:24px; font-size:11px;"><i class="fas fa-home"></i></div>
+                Menu
+            </div>
+            <button class="mobile-menu-close" onclick="toggleMobileMenu()" aria-label="Close menu">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        
+        <div class="mobile-menu-content">
+            <div class="mobile-menu-section">
+                <div class="mobile-menu-section-title">Browse</div>
+                <a class="mobile-menu-link" onclick="navigateToCategory('for sale')">
+                    <i class="fas fa-home"></i>
+                    Buy Property
+                </a>
+                <a class="mobile-menu-link" onclick="navigateToCategory('for rent')">
+                    <i class="fas fa-key"></i>
+                    Rent Property
+                </a>
+                <a class="mobile-menu-link" onclick="navigateToCategory('lease')">
+                    <i class="fas fa-file-contract"></i>
+                    For Lease
+                </a>
+                <a class="mobile-menu-link" onclick="navigateToCategory('all')">
+                    <i class="fas fa-th-large"></i>
+                    All Listings
+                </a>
+            </div>
+            
+            <div class="mobile-menu-divider"></div>
+            
+            <div class="mobile-menu-section">
+                <div class="mobile-menu-section-title">Account</div>
+                <a href="agent.html" class="mobile-menu-link">
+                    <i class="fas fa-user"></i>
+                    Agent Portal
+                </a>
+                <a href="login.html" class="mobile-menu-link">
+                    <i class="fas fa-sign-in-alt"></i>
+                    Login
+                </a>
+            </div>
+            
+            <a href="agent.html" class="mobile-menu-cta">
+                <i class="fas fa-plus" style="margin-right: 6px;"></i>
+                List Your Property
+            </a>
+        </div>
+    </div>
 
     <!-- Main Content -->
     <div class="main-content">
@@ -1349,22 +1587,22 @@
             </div>
             
             <div class="category-grid">
-                <div class="category-card active" onclick="filterCategory('all', this)">
+                <div class="category-card active" data-category="all" onclick="filterCategory('all', this)">
                     <div class="category-icon"><i class="fas fa-th-large"></i></div>
                     <div class="category-name">All Listings</div>
                     <div class="category-count" id="count-all">0 properties</div>
                 </div>
-                <div class="category-card" onclick="filterCategory('for sale', this)">
+                <div class="category-card" data-category="for sale" onclick="filterCategory('for sale', this)">
                     <div class="category-icon"><i class="fas fa-home"></i></div>
                     <div class="category-name">Buy Properties</div>
                     <div class="category-count" id="count-sale">0 properties</div>
                 </div>
-                <div class="category-card" onclick="filterCategory('for rent', this)">
+                <div class="category-card" data-category="for rent" onclick="filterCategory('for rent', this)">
                     <div class="category-icon"><i class="fas fa-key"></i></div>
                     <div class="category-name">Rent Properties</div>
                     <div class="category-count" id="count-rent">0 properties</div>
                 </div>
-                <div class="category-card" onclick="filterCategory('lease', this)">
+                <div class="category-card" data-category="lease" onclick="filterCategory('lease', this)">
                     <div class="category-icon"><i class="fas fa-file-contract"></i></div>
                     <div class="category-name">For Lease</div>
                     <div class="category-count" id="count-lease">0 properties</div>
@@ -1468,10 +1706,10 @@
                 <div>
                     <div class="footer-col-title">Explore</div>
                     <div class="footer-links">
-                        <a href="#buy" class="footer-link">Buy Property</a>
-                        <a href="#rent" class="footer-link">Rent Property</a>
-                        <a href="#lease" class="footer-link">For Lease</a>
-                        <a href="#featured" class="footer-link">All Listings</a>
+                        <a class="footer-link" onclick="navigateToCategory('for sale')">Buy Property</a>
+                        <a class="footer-link" onclick="navigateToCategory('for rent')">Rent Property</a>
+                        <a class="footer-link" onclick="navigateToCategory('lease')">For Lease</a>
+                        <a class="footer-link" onclick="navigateToCategory('all')">All Listings</a>
                     </div>
                 </div>
                 <div>
@@ -1637,6 +1875,44 @@
         let currentImages = [];
         let currentImageIndex = 0;
 
+        // ===== MOBILE MENU FUNCTIONS =====
+        function toggleMobileMenu() {
+            const overlay = document.getElementById('mobileMenuOverlay');
+            const drawer = document.getElementById('mobileMenuDrawer');
+            const btn = document.getElementById('hamburgerBtn');
+            const isActive = drawer.classList.contains('active');
+            
+            if (isActive) {
+                overlay.classList.remove('active');
+                drawer.classList.remove('active');
+                btn.classList.remove('active');
+                btn.setAttribute('aria-expanded', 'false');
+                document.body.style.overflow = '';
+            } else {
+                overlay.classList.add('active');
+                drawer.classList.add('active');
+                btn.classList.add('active');
+                btn.setAttribute('aria-expanded', 'true');
+                document.body.style.overflow = 'hidden';
+            }
+        }
+
+        // ===== NAVIGATION FUNCTION =====
+        function navigateToCategory(category) {
+            // Close mobile menu if open
+            const drawer = document.getElementById('mobileMenuDrawer');
+            if (drawer.classList.contains('active')) {
+                toggleMobileMenu();
+            }
+            
+            // Find the category card
+            const categoryCard = document.querySelector(`.category-card[data-category="${category}"]`);
+            if (categoryCard) {
+                // Trigger the filter
+                filterCategory(category, categoryCard);
+            }
+        }
+
         async function loadProperties() {
             try {
                 const { data, error } = await supabaseClient
@@ -1728,7 +2004,10 @@
             let filtered = category === 'all' ? allProperties : allProperties.filter(p => p.property_type === category);
             renderFeatured(filtered);
             
-            document.getElementById('featured').scrollIntoView({ behavior: 'smooth', block: 'start' });
+            // Scroll to featured section
+            setTimeout(() => {
+                document.getElementById('featured').scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }, 100);
         };
 
         function renderAIResults(properties) {
@@ -1765,29 +2044,24 @@
             currentImages = p.images?.length > 0 ? p.images : [p.image_url || 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=800&q=80'];
             currentImageIndex = 0;
             
-            // Update main image
             document.getElementById('propertyMainImage').src = currentImages[0];
             
-            // Update thumbnails
             const thumbnailsHTML = currentImages.map((img, idx) => 
                 `<img src="${img}" class="property-thumbnail ${idx === 0 ? 'active' : ''}" onclick="changeImage(${idx})" alt="Thumbnail ${idx + 1}">`
             ).join('');
             document.getElementById('propertyThumbnails').innerHTML = thumbnailsHTML;
             
-            // Update info
             document.getElementById('propertyTitle').textContent = p.title;
             document.getElementById('propertyLocation').textContent = p.location || 'Kenya';
             document.getElementById('propertyPrice').textContent = `KES ${Number(p.price).toLocaleString()}`;
             document.getElementById('propertyDescription').textContent = p.description || 'Beautiful verified property in a prime location with modern amenities and excellent access to major roads and amenities.';
             
-            // Update badges
             const badgesHTML = `
                 <div class="property-badge for-sale">${(p.property_type || 'FOR SALE').toUpperCase()}</div>
                 <div class="property-badge verified"><i class="fas fa-check-circle"></i> VERIFIED LISTING</div>
             `;
             document.getElementById('propertyBadges').innerHTML = badgesHTML;
             
-            // Update CTAs
             const agentPhone = p.agent_phone || '+254700000000';
             const cleanPhone = agentPhone.replace(/[^0-9]/g, '');
             const waMessage = encodeURIComponent(`Hi, I'm interested in: ${p.title} (KES ${Number(p.price).toLocaleString()})`);
@@ -1797,7 +2071,6 @@
             document.getElementById('mobileWhatsApp').href = `https://wa.me/${cleanPhone}?text=${waMessage}`;
             document.getElementById('mobileCall').href = `tel:${agentPhone}`;
             
-            // Update details grid
             const detailsHTML = `
                 ${p.bedrooms ? `
                 <div class="property-detail-item">
@@ -1847,23 +2120,19 @@
             `;
             document.getElementById('propertyDetailsGrid').innerHTML = detailsHTML;
             
-            // Update features
             const features = ['Garden', 'Security System', 'Borehole', 'Gated Community', 'Fiber Internet', 'Backup Generator'];
             const featuresHTML = features.map(f => 
                 `<div class="property-feature-chip"><i class="fas fa-check"></i> ${f}</div>`
             ).join('');
             document.getElementById('propertyFeatures').innerHTML = featuresHTML;
             
-            // Update agent
             document.getElementById('agentAvatar').textContent = (p.agent_name || 'A').charAt(0).toUpperCase();
             document.getElementById('agentName').textContent = p.agent_name || 'Verified Agent';
             
-            // Similar properties
             const similar = allProperties.filter(sp => sp.id !== propertyId && sp.location === p.location).slice(0, 6);
             const similarHTML = similar.map(sp => createFeaturedCard(sp)).join('');
             document.getElementById('similarPropertiesCarousel').innerHTML = similarHTML || '<p style="color:#9CA3AF;">No similar properties found</p>';
             
-            // Show modal
             document.getElementById('propertyModal').classList.add('active');
             document.body.style.overflow = 'hidden';
         }
@@ -1970,7 +2239,14 @@
 
         // Close modal on Escape
         document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape') closePropertyModal();
+            if (e.key === 'Escape') {
+                closePropertyModal();
+                // Also close mobile menu if open
+                const drawer = document.getElementById('mobileMenuDrawer');
+                if (drawer.classList.contains('active')) {
+                    toggleMobileMenu();
+                }
+            }
         });
 
         loadProperties();
