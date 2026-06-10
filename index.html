@@ -4,57 +4,28 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     
-    <!-- ===== SEO META TAGS ===== -->
+    <!-- SEO META TAGS -->
     <title>Properties in Kenya | Houses, Apartments, Land for Sale & Rent in Nairobi</title>
     <meta name="description" content="Browse verified houses, apartments, land and commercial properties for sale and rent across Kenya. Talk to The Caretaker — our AI property assistant — to find your ideal home in Nairobi, Kilimani, Ruai, Westlands and beyond.">
-    <meta name="keywords" content="properties in Kenya, houses for sale Nairobi, apartments for rent Kenya, land for sale Ruai, Kilimani properties, Westlands apartments, Kenyan real estate, property listings Kenya, buy house Nairobi, rent apartment Kenya">
+    <meta name="keywords" content="properties in Kenya, houses for sale Nairobi, apartments for rent Kenya, land for sale Ruai, Kilimani properties, Westlands apartments, Kenyan real estate, property listings Kenya">
     <meta name="robots" content="index, follow, max-image-preview:large">
-    <meta name="author" content="Properties in Kenya">
-    <meta name="geo.region" content="KE">
-    <meta name="geo.placename" content="Nairobi, Kenya">
     <link rel="canonical" href="https://propertiesinkenya.co.ke/">
     
-    <!-- ===== OPEN GRAPH ===== -->
+    <!-- OPEN GRAPH -->
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://propertiesinkenya.co.ke/">
     <meta property="og:title" content="Properties in Kenya — Verified Houses, Apartments & Land">
     <meta property="og:description" content="Find your next home in Kenya. Verified listings with AI-powered search by The Caretaker.">
     <meta property="og:image" content="https://images.unsplash.com/photo-1611348524140-53c9a25263d6?w=1200&q=80">
-    <meta property="og:locale" content="en_KE">
-    <meta property="og:site_name" content="Properties in Kenya">
     
-    <!-- ===== TWITTER CARD ===== -->
-    <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="Properties in Kenya — Verified Listings">
-    <meta name="twitter:description" content="AI-powered property search in Kenya. Find houses, apartments, land for sale & rent.">
-    <meta name="twitter:image" content="https://images.unsplash.com/photo-1611348524140-53c9a25263d6?w=1200&q=80">
-    
-    <!-- ===== SCHEMA.ORG ===== -->
+    <!-- SCHEMA.ORG -->
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
       "@type": "WebSite",
       "name": "Properties in Kenya",
       "url": "https://propertiesinkenya.co.ke/",
-      "description": "Verified houses, apartments, land and commercial properties for sale and rent across Kenya.",
-      "potentialAction": {
-        "@type": "SearchAction",
-        "target": "https://propertiesinkenya.co.ke/?q={search_term_string}",
-        "query-input": "required name=search_term_string"
-      }
-    }
-    </script>
-    
-    <script type="application/ld+json">
-    {
-      "@context": "https://schema.org",
-      "@type": "RealEstateAgent",
-      "name": "Properties in Kenya",
-      "url": "https://propertiesinkenya.co.ke/",
-      "areaServed": {
-        "@type": "Country",
-        "name": "Kenya"
-      }
+      "description": "Verified houses, apartments, land and commercial properties for sale and rent across Kenya."
     }
     </script>
 
@@ -63,756 +34,963 @@
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@600;700&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
         
         body { 
-            font-family: 'Inter', system_ui, sans-serif;
-            background: #faf5e4;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'SF Pro', sans-serif;
+            background: #F8F7FF;
+            color: #1F2937;
+            font-size: 14px;
+            line-height: 1.5;
+            overflow-x: hidden;
+        }
+
+        /* Layered Background System */
+        .bg-layers {
+            position: fixed;
+            inset: 0;
+            z-index: -1;
+            pointer-events: none;
         }
         
-        /* ===== ENHANCED HERO WITH Lively NAIROBI BACKGROUND ===== */
-        .hero-bg {
-            background: linear-gradient(135deg, rgba(107, 33, 168, 0.7) 0%, rgba(147, 51, 234, 0.6) 50%, rgba(16, 185, 129, 0.5) 100%),
-                        url('https://images.unsplash.com/photo-1611348524140-53c9a25263d6?w=2000&q=80') center/cover no-repeat;
-            background-color: #1e293b;
-            background-blend-mode: overlay;
-            position: relative;
-            overflow: hidden;
-        }
-        .hero-bg::before {
-            content: '';
+        .bg-layer-1 {
             position: absolute;
+            inset: 0;
+            background: linear-gradient(180deg, #F8F7FF 0%, #F1EEFF 100%);
+        }
+        
+        .bg-layer-2 {
+            position: absolute;
+            inset: 0;
+            background-image: url('https://images.unsplash.com/photo-1611348524140-53c9a25263d6?w=2000&q=80');
+            background-size: cover;
+            background-position: center;
+            opacity: 0.05;
+            filter: blur(2px);
+        }
+        
+        .bg-layer-3 {
+            position: absolute;
+            inset: 0;
+            background: 
+                radial-gradient(circle at 20% 30%, rgba(167, 139, 250, 0.08) 0%, transparent 50%),
+                radial-gradient(circle at 80% 70%, rgba(196, 181, 253, 0.06) 0%, transparent 50%);
+        }
+
+        /* Navigation */
+        .nav-fixed {
+            position: fixed;
             top: 0;
             left: 0;
             right: 0;
-            bottom: 0;
-            background: radial-gradient(circle at 50% 50%, rgba(255,255,255,0.1) 0%, transparent 70%);
-            pointer-events: none;
-        }
-        h1 { font-size: 2.5rem; }
-        .ai-chat-input { transition: all 0.3s; }
-        
-        .property-card {
-            transition: all 0.4s ease;
-            border-radius: 16px;
-            overflow: hidden;
-        }
-        .property-card:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.15);
+            height: 72px;
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            padding: 0 80px;
         }
         
-        .chat-message { animation: slideIn 0.3s ease; }
+        .nav-content {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 100%;
+            max-width: 1440px;
+            margin: 0 auto;
+        }
+        
+        .nav-logo {
+            font-size: 18px;
+            font-weight: 600;
+            color: #1F2937;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .nav-center {
+            display: flex;
+            gap: 32px;
+            align-items: center;
+        }
+        
+        .nav-link {
+            font-size: 14px;
+            font-weight: 500;
+            color: #6B7280;
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+        
+        .nav-link:hover {
+            color: #A78BFA;
+        }
+        
+        .nav-cta {
+            padding: 8px 16px;
+            border: 1px solid #E5E7EB;
+            border-radius: 10px;
+            background: rgba(255, 255, 255, 0.8);
+            font-size: 13px;
+            font-weight: 500;
+            color: #374151;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .nav-cta:hover {
+            border-color: #A78BFA;
+            color: #A78BFA;
+            background: rgba(167, 139, 250, 0.05);
+        }
+
+        /* Main Content */
+        .main-content {
+            padding-top: 72px;
+            max-width: 1440px;
+            margin: 0 auto;
+            padding-left: 80px;
+            padding-right: 80px;
+        }
+
+        /* Hero / AI Section */
+        .hero-section {
+            padding: 48px 0 32px;
+            text-align: center;
+        }
+        
+        .hero-title {
+            font-size: 18px;
+            font-weight: 500;
+            color: #374151;
+            margin-bottom: 8px;
+        }
+        
+        .hero-subtitle {
+            font-size: 14px;
+            color: #6B7280;
+            line-height: 1.4;
+            margin-bottom: 24px;
+        }
+        
+        .chat-container {
+            max-width: 80%;
+            margin: 0 auto;
+            position: relative;
+        }
+        
+        .chat-input-wrapper {
+            background: white;
+            border-radius: 14px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+            padding: 4px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .chat-input {
+            flex: 1;
+            padding: 14px 20px;
+            border: none;
+            outline: none;
+            font-size: 14px;
+            color: #1F2937;
+            background: transparent;
+        }
+        
+        .chat-input::placeholder {
+            color: #9CA3AF;
+        }
+        
+        .chat-send-btn {
+            padding: 12px 20px;
+            background: #A78BFA;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        
+        .chat-send-btn:hover {
+            background: #8B7AF8;
+            transform: translateY(-1px);
+        }
+        
+        .chat-send-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* Chat Messages */
+        .chat-messages {
+            max-height: 200px;
+            overflow-y: auto;
+            margin-bottom: 16px;
+            padding: 16px;
+            background: rgba(255, 255, 255, 0.6);
+            border-radius: 14px;
+            backdrop-filter: blur(10px);
+        }
+        
+        .chat-message {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 12px;
+            animation: slideIn 0.3s ease;
+        }
+        
         @keyframes slideIn {
             from { opacity: 0; transform: translateY(10px); }
             to { opacity: 1; transform: translateY(0); }
         }
-        .typing-indicator span {
-            animation: blink 1.4s infinite;
-            display: inline-block;
-            width: 8px; height: 8px;
-            border-radius: 50%;
-            background: #10b981;
-            margin: 0 2px;
-        }
-        .typing-indicator span:nth-child(2) { animation-delay: 0.2s; }
-        .typing-indicator span:nth-child(3) { animation-delay: 0.4s; }
-        @keyframes blink {
-            0%, 60%, 100% { opacity: 0.3; }
-            30% { opacity: 1; }
-        }
         
-        /* ===== MODERN AI RESULTS SECTION (LIGHT PURPLE) ===== */
-        .ai-results-section {
-            background: linear-gradient(180deg, #f3e8ff 0%, #e9d5ff 100%);
-            padding: 60px 0;
-            margin-top: -1px;
-            position: relative;
-        }
-        .ai-results-section::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 4px;
-            background: linear-gradient(90deg, #a855f7 0%, #6b21a8 50%, #a855f7 100%);
-        }
-        .ai-results-header {
-            text-align: center;
-            margin-bottom: 40px;
-        }
-        .ai-results-header h2 {
-            font-size: 1.5rem;
-            font-weight: 600;
-            color: #6b21a8;
-            margin-bottom: 8px;
+        .chat-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 10px;
-        }
-        .ai-results-header p {
-            font-size: 1rem;
-            color: #7c3aed;
-            font-weight: 500;
+            font-size: 14px;
+            font-weight: 600;
+            flex-shrink: 0;
         }
         
-        /* ===== MODERN SLIDE CAROUSEL ===== */
-        .modern-slide {
-            position: relative;
+        .chat-avatar.ai {
+            background: #A78BFA;
+            color: white;
+        }
+        
+        .chat-avatar.user {
+            background: #E5E7EB;
+            color: #374151;
+        }
+        
+        .chat-bubble {
+            padding: 10px 14px;
+            border-radius: 12px;
+            font-size: 14px;
+            line-height: 1.5;
+            max-width: 70%;
+        }
+        
+        .chat-bubble.ai {
             background: white;
+            color: #374151;
+            border: 1px solid rgba(0, 0, 0, 0.05);
+        }
+        
+        .chat-bubble.user {
+            background: #A78BFA;
+            color: white;
+            margin-left: auto;
+        }
+
+        /* AI Results Section */
+        .ai-results-section {
+            background: linear-gradient(180deg, #F6F5FF 0%, #ECE9FF 100%);
             border-radius: 24px;
-            padding: 24px 64px;
-            box-shadow: 0 10px 40px rgba(107, 33, 168, 0.08);
-            overflow: hidden;
+            padding: 48px 0;
+            margin: 32px 0;
+            display: none;
         }
-        .modern-slide::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 4px;
-            background: linear-gradient(90deg, #a855f7 0%, #6b21a8 100%);
+        
+        .ai-results-section.active {
+            display: block;
         }
-        .slide-container {
+        
+        .ai-results-header {
+            text-align: center;
+            margin-bottom: 32px;
+            padding: 0 48px;
+        }
+        
+        .ai-results-label {
+            font-size: 13px;
+            color: #6B7280;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 8px;
+        }
+        
+        .ai-results-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: #1F2937;
+            margin-bottom: 8px;
+        }
+        
+        .ai-results-count {
+            font-size: 14px;
+            color: #6B7280;
+        }
+
+        /* Carousel Slider */
+        .carousel-wrapper {
+            position: relative;
+            padding: 0 48px;
+        }
+        
+        .carousel-container {
             display: flex;
+            gap: 24px;
             overflow-x: auto;
             scroll-snap-type: x mandatory;
             scroll-behavior: smooth;
-            gap: 20px;
-            padding: 12px 4px 20px;
+            padding: 20px 0;
             -webkit-overflow-scrolling: touch;
             scrollbar-width: none;
         }
-        .slide-container::-webkit-scrollbar { display: none; }
-        .slide-item {
-            flex: 0 0 320px;
-            scroll-snap-align: start;
-        }
-        @media (max-width: 640px) {
-            .slide-item { flex: 0 0 280px; }
-            .modern-slide { padding: 20px 48px; }
+        
+        .carousel-container::-webkit-scrollbar {
+            display: none;
         }
         
-        .slide-arrow {
+        .property-card {
+            flex: 0 0 300px;
+            scroll-snap-align: start;
+            background: white;
+            border-radius: 18px;
+            overflow: hidden;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.06);
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .property-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.12);
+        }
+        
+        .property-image {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+        }
+        
+        .property-info {
+            padding: 20px;
+        }
+        
+        .property-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #1F2937;
+            margin-bottom: 6px;
+            line-height: 1.3;
+        }
+        
+        .property-location {
+            font-size: 13px;
+            color: #6B7280;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        
+        .property-price {
+            font-size: 18px;
+            font-weight: 700;
+            color: #A78BFA;
+            margin-bottom: 12px;
+        }
+        
+        .property-tags {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+        
+        .property-tag {
+            padding: 4px 10px;
+            background: #F3F4F6;
+            border-radius: 6px;
+            font-size: 12px;
+            color: #6B7280;
+        }
+
+        /* Carousel Navigation */
+        .carousel-arrow {
             position: absolute;
             top: 50%;
             transform: translateY(-50%);
-            width: 48px;
-            height: 48px;
+            width: 44px;
+            height: 44px;
             border-radius: 50%;
             background: white;
-            color: #6b21a8;
-            border: 2px solid #e9d5ff;
+            border: 1px solid #E5E7EB;
+            color: #374151;
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
             font-size: 16px;
-            box-shadow: 0 4px 16px rgba(107, 33, 168, 0.15);
-            transition: all 0.3s;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            transition: all 0.2s;
             z-index: 10;
         }
-        .slide-arrow:hover {
-            background: #6b21a8;
-            color: white;
-            transform: translateY(-50%) scale(1.1);
-        }
-        .slide-arrow.prev { left: 8px; }
-        .slide-arrow.next { right: 8px; }
         
-        /* ===== CATEGORY PILLS ===== */
-        .category-pills {
-            display: flex;
-            gap: 12px;
-            flex-wrap: wrap;
-            justify-content: center;
-            margin-top: 24px;
+        .carousel-arrow:hover {
+            background: #A78BFA;
+            color: white;
+            border-color: #A78BFA;
         }
-        .category-pill {
-            padding: 12px 24px;
-            background: white;
-            border: 2px solid #e9d5a8;
-            border-radius: 9999px;
-            cursor: pointer;
+        
+        .carousel-arrow.prev {
+            left: 0;
+        }
+        
+        .carousel-arrow.next {
+            right: 0;
+        }
+
+        /* Blog Section */
+        .blog-section {
+            padding: 64px 0;
+        }
+        
+        .blog-header {
+            margin-bottom: 32px;
+        }
+        
+        .blog-title {
+            font-size: 20px;
             font-weight: 600;
+            color: #1F2937;
+            margin-bottom: 8px;
+        }
+        
+        .blog-subtitle {
             font-size: 14px;
-            color: #374151;
-            transition: all 0.3s;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-        }
-        .category-pill:hover {
-            border-color: #6b21a8;
-            color: #6b21a8;
-            transform: translateY(-3px);
-            box-shadow: 0 8px 20px rgba(107, 33, 168, 0.15);
-        }
-        .category-pill.active {
-            background: #6b21a8;
-            border-color: #6b21a8;
-            color: white;
+            color: #6B7280;
         }
         
-        /* ===== MODERN NAVBAR ===== */
-        .navbar {
-            background: rgba(255, 255, 255, 0.98);
-            backdrop-filter: blur(10px);
-        }
-        .logo-modern {
+        .blog-carousel {
             display: flex;
-            align-items: center;
-            gap: 12px;
-            font-family: 'Playfair Display', serif;
-            font-weight: 700;
-            font-size: 1.75rem;
-            color: #6b21a8;
-            text-decoration: none;
-            transition: all 0.3s;
+            gap: 24px;
+            overflow-x: auto;
+            scroll-snap-type: x mandatory;
+            scroll-behavior: smooth;
+            padding: 20px 0;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: none;
         }
-        .logo-modern:hover {
-            transform: scale(1.02);
+        
+        .blog-carousel::-webkit-scrollbar {
+            display: none;
         }
-        .logo-icon {
-            width: 48px;
-            height: 48px;
-            background: linear-gradient(135deg, #6b21a8 0%, #9333ea 100%);
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 28px;
-            box-shadow: 0 4px 12px rgba(107, 33, 168, 0.3);
-        }
-        .nav-link {
-            color: #374151;
-            font-weight: 500;
-            font-size: 15px;
-            text-decoration: none;
-            padding: 8px 16px;
-            border-radius: 8px;
-            transition: all 0.3s;
-            position: relative;
-        }
-        .nav-link::after {
-            content: '';
-            position: absolute;
-            bottom: 4px;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 0;
-            height: 2px;
-            background: #6b21a8;
-            transition: width 0.3s;
-        }
-        .nav-link:hover {
-            color: #6b21a8;
-        }
-        .nav-link:hover::after {
-            width: 80%;
-        }
-        .list-property-btn {
-            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
-            color: white;
-            padding: 10px 20px;
-            border-radius: 9999px;
-            font-weight: 600;
-            font-size: 13px;
-            border: none;
+        
+        .blog-card {
+            flex: 0 0 360px;
+            scroll-snap-align: start;
+            background: white;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
             cursor: pointer;
             transition: all 0.3s;
-            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
-        }
-        .list-property-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4);
         }
         
-        .mobile-menu {
-            position: fixed;
-            top: 0; right: -100%;
-            width: 80%; max-width: 320px;
-            height: 100vh;
-            background: white;
-            box-shadow: -5px 0 25px rgba(0,0,0,0.15);
-            transition: right 0.3s ease;
-            z-index: 200;
-            padding: 24px;
+        .blog-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 12px 32px rgba(0, 0, 0, 0.1);
         }
-        .mobile-menu.open { right: 0; }
-        .mobile-overlay {
+        
+        .blog-image {
+            width: 100%;
+            height: 240px;
+            object-fit: cover;
+            transition: transform 0.3s;
+        }
+        
+        .blog-card:hover .blog-image {
+            transform: scale(1.05);
+        }
+        
+        .blog-content {
+            padding: 20px;
+        }
+        
+        .blog-category {
+            font-size: 12px;
+            color: #A78BFA;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 8px;
+        }
+        
+        .blog-card-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #1F2937;
+            margin-bottom: 8px;
+            line-height: 1.4;
+        }
+        
+        .blog-preview {
+            font-size: 13px;
+            color: #6B7280;
+            line-height: 1.5;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        /* Footer */
+        .footer {
+            background: white;
+            border-top: 1px solid rgba(0, 0, 0, 0.05);
+            padding: 48px 80px;
+            margin-top: 64px;
+        }
+        
+        .footer-content {
+            max-width: 1440px;
+            margin: 0 auto;
+            text-align: center;
+        }
+        
+        .footer-logo {
+            font-size: 18px;
+            font-weight: 600;
+            color: #1F2937;
+            margin-bottom: 8px;
+        }
+        
+        .footer-tagline {
+            font-size: 13px;
+            color: #6B7280;
+            margin-bottom: 24px;
+        }
+        
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 24px;
+            margin-bottom: 24px;
+        }
+        
+        .footer-link {
+            font-size: 13px;
+            color: #6B7280;
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+        
+        .footer-link:hover {
+            color: #A78BFA;
+        }
+        
+        .footer-copyright {
+            font-size: 12px;
+            color: #9CA3AF;
+        }
+
+        /* Modal */
+        .modal-overlay {
+            display: none;
             position: fixed;
             inset: 0;
-            background: rgba(0,0,0,0.5);
-            z-index: 199;
-            opacity: 0;
-            pointer-events: none;
-            transition: opacity 0.3s;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(4px);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
         }
-        .mobile-overlay.open { opacity: 1; pointer-events: auto; }
         
-        .section-header {
+        .modal-overlay.active {
+            display: flex;
+        }
+        
+        .modal {
+            background: white;
+            border-radius: 20px;
+            max-width: 900px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            animation: modalSlide 0.3s ease;
+        }
+        
+        @keyframes modalSlide {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .modal-header {
+            padding: 24px;
+            border-bottom: 1px solid #F3F4F6;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 20px;
-            flex-wrap: wrap;
-            gap: 10px;
-        }
-        .section-header h2 {
-            font-size: 1.75rem;
-            font-weight: 600;
-            color: #111;
-        }
-        .view-all-link {
-            color: #6b21a8;
-            font-weight: 600;
-            font-size: 14px;
-            text-decoration: none;
-            display: flex;
-            align-items: center;
-            gap: 4px;
-            transition: all 0.3s;
-        }
-        .view-all-link:hover { 
-            text-decoration: underline;
-            transform: translateX(4px);
+            position: sticky;
+            top: 0;
+            background: white;
+            z-index: 10;
+            border-radius: 20px 20px 0 0;
         }
         
-        .seo-content {
-            background: white;
-            padding: 40px;
-            border-radius: 20px;
-            margin: 32px 0;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.05);
-        }
-        .seo-content h2 {
-            color: #6b21a8;
-            margin-bottom: 16px;
-            font-size: 1.75rem;
-            font-family: 'Playfair Display', serif;
-        }
-        .seo-content h3 {
-            color: #111;
-            margin: 24px 0 12px;
-            font-size: 1.25rem;
+        .modal-title {
+            font-size: 20px;
             font-weight: 600;
+            color: #1F2937;
         }
-        .seo-content p {
-            color: #374151;
-            line-height: 1.8;
-            margin-bottom: 16px;
+        
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 28px;
+            color: #9CA3AF;
+            cursor: pointer;
+            padding: 0;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
-        .seo-content ul {
-            list-style: none;
-            margin-left: 0;
-            color: #374151;
-            margin-bottom: 16px;
+        
+        .modal-close:hover {
+            color: #1F2937;
         }
-        .seo-content ul li {
-            padding: 8px 0;
-            padding-left: 28px;
+        
+        .modal-body {
+            padding: 24px;
+            display: grid;
+            grid-template-columns: 1.5fr 1fr;
+            gap: 32px;
+        }
+        
+        .modal-image-container {
             position: relative;
+            border-radius: 16px;
+            overflow: hidden;
         }
-        .seo-content ul li::before {
-            content: '✓';
+        
+        .modal-image {
+            width: 100%;
+            height: 400px;
+            object-fit: cover;
+        }
+        
+        .modal-nav-btn {
             position: absolute;
-            left: 0;
-            color: #10b981;
-            font-weight: bold;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: rgba(0, 0, 0, 0.6);
+            color: white;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             font-size: 18px;
         }
         
-        /* ===== BLOG MODERN SLIDE ===== */
-        .blog-slide-container {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
-            gap: 24px;
+        .modal-nav-btn.prev {
+            left: 16px;
         }
-        @media (max-width: 768px) {
-            .blog-slide-container {
-                grid-template-columns: 1fr;
+        
+        .modal-nav-btn.next {
+            right: 16px;
+        }
+        
+        .modal-details {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        
+        .modal-price {
+            font-size: 32px;
+            font-weight: 700;
+            color: #A78BFA;
+        }
+        
+        .modal-meta {
+            font-size: 14px;
+            color: #6B7280;
+            line-height: 1.6;
+        }
+        
+        .modal-description {
+            font-size: 14px;
+            color: #374151;
+            line-height: 1.6;
+        }
+        
+        .modal-cta {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        
+        .modal-btn {
+            padding: 14px 20px;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 600;
+            text-align: center;
+            text-decoration: none;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        
+        .modal-btn.whatsapp {
+            background: #25D366;
+            color: white;
+        }
+        
+        .modal-btn.whatsapp:hover {
+            background: #1ebe5d;
+        }
+        
+        .modal-btn.call {
+            background: #1F2937;
+            color: white;
+        }
+        
+        .modal-btn.call:hover {
+            background: #111827;
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .nav-fixed {
+                padding: 0 40px;
+            }
+            .main-content {
+                padding-left: 40px;
+                padding-right: 40px;
+            }
+            .footer {
+                padding: 48px 40px;
             }
         }
-        .blog-card {
-            background: white;
-            border-radius: 20px;
-            overflow: hidden;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
-            transition: all 0.3s;
-        }
-        .blog-card:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 12px 40px rgba(107, 33, 168, 0.15);
-        }
-        .blog-card img {
-            width: 100%;
-            height: 220px;
-            object-fit: cover;
-        }
-        .blog-card .content {
-            padding: 24px;
-        }
-        .blog-card .tag {
-            display: inline-block;
-            padding: 6px 14px;
-            background: #f3e8ff;
-            color: #6b21a8;
-            border-radius: 9999px;
-            font-size: 12px;
-            font-weight: 600;
-            margin-bottom: 12px;
-        }
-        .blog-card h3 {
-            font-size: 1.125rem;
-            font-weight: 600;
-            color: #111;
-            margin-bottom: 12px;
-            line-height: 1.4;
-        }
-        .blog-card p {
-            color: #6b7280;
-            font-size: 14px;
-            line-height: 1.6;
-            margin-bottom: 16px;
-        }
-        .blog-card .read-more {
-            color: #6b21a8;
-            font-weight: 600;
-            font-size: 14px;
-            text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            transition: all 0.3s;
-        }
-        .blog-card .read-more:hover {
-            gap: 10px;
+        
+        @media (max-width: 768px) {
+            .nav-fixed {
+                padding: 0 20px;
+            }
+            .nav-center {
+                display: none;
+            }
+            .main-content {
+                padding-left: 20px;
+                padding-right: 20px;
+            }
+            .chat-container {
+                max-width: 100%;
+            }
+            .modal-body {
+                grid-template-columns: 1fr;
+            }
+            .footer {
+                padding: 48px 20px;
+            }
+            .footer-links {
+                flex-wrap: wrap;
+            }
         }
     </style>
 </head>
 <body>
 
-    <header class="bg-[#6b21a8] py-3 text-white text-center text-sm font-medium">
-        PROPERTIES IN KENYA — Verified • Trusted • Transparent
-    </header>
+    <!-- Layered Background -->
+    <div class="bg-layers">
+        <div class="bg-layer-1"></div>
+        <div class="bg-layer-2"></div>
+        <div class="bg-layer-3"></div>
+    </div>
 
-    <nav class="navbar shadow sticky top-0 z-50">
-        <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
-            <a href="/" class="logo-modern">
-                <div class="logo-icon">🏡</div>
-                <span>PROPERTIES IN KENYA</span>
-            </a>
+    <!-- Navigation -->
+    <nav class="nav-fixed">
+        <div class="nav-content">
+            <div class="nav-logo">
+                🏡 PROPERTIES IN KENYA
+            </div>
             
-            <div class="hidden md:flex gap-2 items-center">
+            <div class="nav-center">
                 <a href="#for-sale" class="nav-link">Buy</a>
                 <a href="#for-rent" class="nav-link">Rent</a>
                 <a href="#for-lease" class="nav-link">For Lease</a>
                 <a href="#all-listings" class="nav-link">All Listings</a>
-                <button onclick="window.location.href='agent.html'" class="list-property-btn">
-                    <i class="fas fa-plus mr-2"></i>List Property
-                </button>
             </div>
             
-            <button onclick="toggleMobileMenu()" class="md:hidden text-2xl text-gray-700">
-                <i class="fas fa-bars"></i>
+            <button class="nav-cta" onclick="window.location.href='agent.html'">
+                List Property
             </button>
         </div>
     </nav>
 
-    <div id="mobileOverlay" class="mobile-overlay" onclick="toggleMobileMenu()"></div>
-    <div id="mobileMenu" class="mobile-menu">
-        <div class="flex justify-between items-center mb-8">
-            <span class="text-xl font-bold text-[#6b21a8]">🏡 Menu</span>
-            <button onclick="toggleMobileMenu()" class="text-2xl text-gray-600">
-                <i class="fas fa-times"></i>
-            </button>
-        </div>
-        <div class="flex flex-col gap-4">
-            <a href="#for-sale" onclick="toggleMobileMenu()" class="py-3 px-4 rounded-lg hover:bg-gray-100 font-medium"><i class="fas fa-home mr-3 text-[#6b21a8]"></i>Buy Property</a>
-            <a href="#for-rent" onclick="toggleMobileMenu()" class="py-3 px-4 rounded-lg hover:bg-gray-100 font-medium"><i class="fas fa-key mr-3 text-[#6b21a8]"></i>Rent Property</a>
-            <a href="#for-lease" onclick="toggleMobileMenu()" class="py-3 px-4 rounded-lg hover:bg-gray-100 font-medium"><i class="fas fa-file-contract mr-3 text-[#6b21a8]"></i>For Lease</a>
-            <a href="#all-listings" onclick="toggleMobileMenu()" class="py-3 px-4 rounded-lg hover:bg-gray-100 font-medium"><i class="fas fa-th-large mr-3 text-[#6b21a8]"></i>All Listings</a>
-            <a href="#blog" onclick="toggleMobileMenu()" class="py-3 px-4 rounded-lg hover:bg-gray-100 font-medium"><i class="fas fa-blog mr-3 text-[#6b21a8]"></i>Blog</a>
-            <a href="agent.html" class="py-3 px-4 rounded-lg hover:bg-gray-100 font-medium"><i class="fas fa-user mr-3 text-[#6b21a8]"></i>Agent Portal</a>
-            <a href="login.html" class="py-3 px-4 rounded-lg hover:bg-gray-100 font-medium"><i class="fas fa-sign-in-alt mr-3 text-[#6b21a8]"></i>Login</a>
-        </div>
-    </div>
-
-    <!-- AI Hero -->
-    <section class="hero-bg min-h-[85vh] flex items-center text-white relative">
-        <div class="max-w-4xl mx-auto px-6 text-center z-10">
-            <h1 class="font-bold leading-tight mb-6" style="font-family: 'Playfair Display', serif;">
-                YOUR NEXT HOME IN KENYA<br><span class="text-emerald-300">starts here.</span>
-            </h1>
-            <p class="text-lg mb-8">Talk to <span class="font-semibold text-emerald-300">The Caretaker</span> — our AI assistant</p>
-
-            <div class="bg-white/95 backdrop-blur-md rounded-3xl p-4 max-w-2xl mx-auto shadow-2xl">
-                <div id="chatMessages" class="max-h-64 overflow-y-auto mb-4 space-y-3 text-left">
-                    <div class="chat-message flex gap-3">
-                        <div class="w-10 h-10 bg-emerald-500 rounded-full flex items-center justify-center text-white font-bold flex-shrink-0">
-                            <i class="fas fa-user-tie text-sm"></i>
-                        </div>
-                        <div class="bg-gray-100 rounded-2xl rounded-tl-none px-4 py-3 text-gray-800 text-sm">
-                            👋 Hi! I'm <strong>The Caretaker</strong>. Tell me what you're looking for in English — e.g. <em>"3 bedroom in Ruai under 8 million"</em>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="flex gap-3">
-                    <input id="aiQuery" placeholder="e.g. 4 bedroom house in Kilimani, budget 15M..." 
-                           class="ai-chat-input flex-1 px-6 py-4 rounded-2xl focus:outline-none text-gray-800 text-base border border-gray-200" 
-                           onkeypress="if(event.key === 'Enter') askAI()">
-                    <button onclick="askAI()" id="askBtn"
-                            class="bg-emerald-600 hover:bg-emerald-700 px-8 py-4 rounded-2xl font-semibold text-white flex items-center gap-2 transition">
+    <!-- Main Content -->
+    <div class="main-content">
+        
+        <!-- Hero / AI Section -->
+        <section class="hero-section">
+            <h1 class="hero-title">The Caretaker Found Properties For You</h1>
+            <p class="hero-subtitle">
+                Hi, I am The Caretaker. Tell me what you are looking for in English — e.g. "3 bedroom in Ruai under 8 million"
+            </p>
+            
+            <div class="chat-container">
+                <div id="chatMessages" class="chat-messages" style="display:none;"></div>
+                
+                <div class="chat-input-wrapper">
+                    <input 
+                        type="text" 
+                        id="aiQuery" 
+                        class="chat-input" 
+                        placeholder="Search properties in plain English..."
+                        onkeypress="if(event.key === 'Enter') askAI()"
+                    >
+                    <button id="askBtn" class="chat-send-btn" onclick="askAI()">
                         <i class="fas fa-paper-plane"></i>
+                        <span>Search</span>
                     </button>
                 </div>
             </div>
+        </section>
 
-            <p class="text-xs text-white/70 mt-4">Try: "Quiet house near school in Ruai, 6.5M" or "Modern apartment for rent in Kilimani"</p>
-        </div>
-    </section>
-
-    <!-- ===== AI RESULTS SECTION (LIGHT PURPLE) ===== -->
-    <section id="aiResultsSection" class="ai-results-section" style="display:none;">
-        <div class="max-w-7xl mx-auto px-6">
+        <!-- AI Results Section -->
+        <section id="aiResultsSection" class="ai-results-section">
             <div class="ai-results-header">
-                <h2>
-                    <i class="fas fa-magic"></i>
-                    The Caretaker Found Properties For You
-                </h2>
-                <p id="aiResultsCount">Found 0 properties matching the description provided</p>
+                <div class="ai-results-label">AI Property Matches</div>
+                <h2 class="ai-results-title">The Caretaker Found Properties For You</h2>
+                <p class="ai-results-count" id="aiResultsCount">Found 0 properties matching the description provided</p>
             </div>
-            <div id="aiResultsGrid" class="ai-results-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 24px;"></div>
-        </div>
-    </section>
+            
+            <div class="carousel-wrapper">
+                <button class="carousel-arrow prev" onclick="scrollCarousel('aiResultsCarousel', -1)">
+                    <i class="fas fa-chevron-left"></i>
+                </button>
+                
+                <div id="aiResultsCarousel" class="carousel-container"></div>
+                
+                <button class="carousel-arrow next" onclick="scrollCarousel('aiResultsCarousel', 1)">
+                    <i class="fas fa-chevron-right"></i>
+                </button>
+            </div>
+        </section>
 
-    <!-- Quick Actions -->
-    <div class="max-w-6xl mx-auto px-6 py-12">
-        <div class="grid grid-cols-2 md:grid-cols-5 gap-6 bg-white rounded-3xl shadow-xl p-8">
-            <a href="#all-listings" class="text-center cursor-pointer hover:scale-105 transition block">
-                <div class="w-14 h-14 mx-auto bg-purple-100 rounded-2xl flex items-center justify-center text-3xl mb-3">🏘️</div>
-                <p class="font-medium text-sm">Property Listings</p>
-            </a>
-            <a href="#inquiries-section" class="text-center cursor-pointer hover:scale-105 transition block">
-                <div class="w-14 h-14 mx-auto bg-blue-100 rounded-2xl flex items-center justify-center text-3xl mb-3">📥</div>
-                <p class="font-medium text-sm">Inquiries</p>
-            </a>
-            <a href="#all-listings" class="text-center cursor-pointer hover:scale-105 transition block">
-                <div class="w-14 h-14 mx-auto bg-amber-100 rounded-2xl flex items-center justify-center text-3xl mb-3">💰</div>
-                <p class="font-medium text-sm">Pricing</p>
-            </a>
-            <a href="#for-sale" class="text-center cursor-pointer hover:scale-105 transition block">
-                <div class="w-14 h-14 mx-auto bg-red-100 rounded-2xl flex items-center justify-center text-3xl mb-3">🔥</div>
-                <p class="font-medium text-sm">Hot Deals</p>
-            </a>
-            <a href="#blog" class="text-center cursor-pointer hover:scale-105 transition block">
-                <div class="w-14 h-14 mx-auto bg-emerald-100 rounded-2xl flex items-center justify-center text-3xl mb-3">📝</div>
-                <p class="font-medium text-sm">Blog</p>
-            </a>
-        </div>
-        
-        <div class="category-pills">
-            <button class="category-pill active" onclick="filterByCategory('all', this)">
-                <i class="fas fa-th"></i> All
-            </button>
-            <button class="category-pill" onclick="filterByCategory('apartment', this)">
-                <i class="fas fa-building"></i> Apartments
-            </button>
-            <button class="category-pill" onclick="filterByCategory('house', this)">
-                <i class="fas fa-home"></i> Houses
-            </button>
-            <button class="category-pill" onclick="filterByCategory('commercial', this)">
-                <i class="fas fa-store"></i> Commercial
-            </button>
-            <button class="category-pill" onclick="filterByCategory('land', this)">
-                <i class="fas fa-mountain"></i> Land
-            </button>
-        </div>
+        <!-- Blog Section -->
+        <section class="blog-section">
+            <div class="blog-header">
+                <h2 class="blog-title">Real Estate Insights</h2>
+                <p class="blog-subtitle">Expert guides and market analysis for Kenyan property</p>
+            </div>
+            
+            <div class="blog-carousel">
+                <article class="blog-card">
+                    <img src="https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=600&q=80" alt="Buying land in Kenya" class="blog-image">
+                    <div class="blog-content">
+                        <div class="blog-category">Guide</div>
+                        <h3 class="blog-card-title">How to Buy Land in Kenya Without Getting Scammed</h3>
+                        <p class="blog-preview">A step-by-step guide to verifying titles, doing due diligence, and completing land purchases safely.</p>
+                    </div>
+                </article>
+                
+                <article class="blog-card">
+                    <img src="https://images.unsplash.com/photo-1582407947304-fd86f028f716?w=600&q=80" alt="Nairobi apartments" class="blog-image">
+                    <div class="blog-content">
+                        <div class="blog-category">Market</div>
+                        <h3 class="blog-card-title">Best Nairobi Neighborhoods for Families in 2026</h3>
+                        <p class="blog-preview">From Kilimani to Ruai — discover the top estates for families based on schools, security, and amenities.</p>
+                    </div>
+                </article>
+                
+                <article class="blog-card">
+                    <img src="https://images.unsplash.com/photo-1551833227-8e3512960a83?w=600&q=80" alt="Property investment" class="blog-image">
+                    <div class="blog-content">
+                        <div class="blog-category">Investment</div>
+                        <h3 class="blog-card-title">Ruai Property Investment Guide: Why Prices Are Rising</h3>
+                        <p class="blog-preview">Analysis of Ruai's rapid growth and why it's becoming one of Nairobi's hottest investment areas.</p>
+                    </div>
+                </article>
+            </div>
+        </section>
+
     </div>
 
-    <!-- FOR SALE CAROUSEL -->
-    <section id="for-sale" class="max-w-7xl mx-auto px-6 py-8">
-        <div class="section-header">
-            <h2>🏡 Properties For Sale</h2>
-            <a href="#all-listings" class="view-all-link">View all <i class="fas fa-arrow-right"></i></a>
-        </div>
-        <div class="modern-slide">
-            <button class="slide-arrow prev" onclick="scrollCarousel('forSaleCarousel', -1)"><i class="fas fa-chevron-left"></i></button>
-            <div id="forSaleCarousel" class="slide-container">
-                <div class="text-gray-400 py-8 w-full text-center"><i class="fas fa-spinner fa-spin mr-2"></i>Loading...</div>
-            </div>
-            <button class="slide-arrow next" onclick="scrollCarousel('forSaleCarousel', 1)"><i class="fas fa-chevron-right"></i></button>
-        </div>
-    </section>
-
-    <!-- FOR RENT CAROUSEL -->
-    <section id="for-rent" class="max-w-7xl mx-auto px-6 py-8">
-        <div class="section-header">
-            <h2>🔑 Properties For Rent</h2>
-            <a href="#all-listings" class="view-all-link">View all <i class="fas fa-arrow-right"></i></a>
-        </div>
-        <div class="modern-slide">
-            <button class="slide-arrow prev" onclick="scrollCarousel('forRentCarousel', -1)"><i class="fas fa-chevron-left"></i></button>
-            <div id="forRentCarousel" class="slide-container">
-                <div class="text-gray-400 py-8 w-full text-center"><i class="fas fa-spinner fa-spin mr-2"></i>Loading...</div>
-            </div>
-            <button class="slide-arrow next" onclick="scrollCarousel('forRentCarousel', 1)"><i class="fas fa-chevron-right"></i></button>
-        </div>
-    </section>
-
-    <!-- FOR LEASE CAROUSEL -->
-    <section id="for-lease" class="max-w-7xl mx-auto px-6 py-8">
-        <div class="section-header">
-            <h2>📄 Properties For Lease</h2>
-            <a href="#all-listings" class="view-all-link">View all <i class="fas fa-arrow-right"></i></a>
-        </div>
-        <div class="modern-slide">
-            <button class="slide-arrow prev" onclick="scrollCarousel('forLeaseCarousel', -1)"><i class="fas fa-chevron-left"></i></button>
-            <div id="forLeaseCarousel" class="slide-container">
-                <div class="text-gray-400 py-8 w-full text-center"><i class="fas fa-spinner fa-spin mr-2"></i>Loading...</div>
-            </div>
-            <button class="slide-arrow next" onclick="scrollCarousel('forLeaseCarousel', 1)"><i class="fas fa-chevron-right"></i></button>
-        </div>
-    </section>
-
-    <!-- ALL LISTINGS GRID -->
-    <section id="all-listings" class="max-w-7xl mx-auto px-6 py-12">
-        <div class="section-header">
-            <h2>🔍 All Verified Properties</h2>
-            <p class="text-gray-500 text-sm" id="count">Showing 0 properties</p>
-        </div>
-        <div id="listings" class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-            <div class="col-span-full text-center py-12 text-gray-400">
-                <i class="fas fa-spinner fa-spin text-4xl mb-4"></i>
-                <p>Loading properties...</p>
-            </div>
-        </div>
-    </section>
-
-    <!-- SEO CONTENT (MOVED BEFORE INQUIRIES) -->
-    <section class="max-w-5xl mx-auto px-6 py-8">
-        <div class="seo-content">
-            <h2>Properties in Kenya — Your Trusted Real Estate Platform</h2>
-            <p>
-                Welcome to <strong>Properties in Kenya</strong>, the AI-powered real estate platform connecting buyers, renters, and investors with verified properties across Kenya. Whether you're searching for a <strong>house for sale in Nairobi</strong>, an <strong>apartment for rent in Kilimani</strong>, or <strong>land for sale in Ruai</strong>, our platform makes finding your next property simple, transparent, and secure.
-            </p>
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-logo">🏡 Properties in Kenya</div>
+            <p class="footer-tagline">Verified • Trusted • Transparent</p>
             
-            <h3>Why Choose Properties in Kenya?</h3>
-            <ul>
-                <li><strong>Verified Listings</strong> — Every property is vetted by our team before going live</li>
-                <li><strong>AI-Powered Search</strong> — Chat with "The Caretaker" to find properties matching your exact needs</li>
-                <li><strong>Nationwide Coverage</strong> — From Nairobi's upscale neighborhoods to emerging areas like Ruai, Syokimau, and Kitengela</li>
-                <li><strong>Direct Agent Contact</strong> — Connect instantly with verified agents via WhatsApp or phone</li>
-                <li><strong>Free for Buyers</strong> — Browse thousands of properties at no cost</li>
-            </ul>
+            <div class="footer-links">
+                <a href="#" class="footer-link">About</a>
+                <a href="#" class="footer-link">Terms</a>
+                <a href="#" class="footer-link">Privacy</a>
+                <a href="#" class="footer-link">Contact</a>
+            </div>
             
-            <h3>Explore Properties by Category</h3>
-            <p>
-                Browse our extensive collection of <strong>houses for sale in Kenya</strong>, modern <strong>apartments in Nairobi</strong>, commercial properties for business owners, and prime <strong>land for sale</strong> across the country. Our listings cover popular areas including Kilimani, Kileleshwa, Westlands, Karen, Langata, Ruai, Kayole, Embakasi, Kasarani, Rongai, Syokimau, Kitengela, Thika, Kiambu, and Kikuyu.
-            </p>
+            <p class="footer-copyright">© 2026 Properties in Kenya. All rights reserved.</p>
         </div>
-    </section>
+    </footer>
 
-    <!-- INQUIRIES SECTION (MOVED AFTER SEO CONTENT) -->
-    <section id="inquiries-section" class="max-w-5xl mx-auto px-6 py-12">
-        <div class="bg-white rounded-3xl shadow-xl p-8 md:p-12 text-center">
-            <div class="w-20 h-20 mx-auto bg-blue-100 rounded-full flex items-center justify-center text-4xl mb-4">📥</div>
-            <h2 class="text-3xl font-bold mb-4 text-[#6b21a8]">Have an Inquiry?</h2>
-            <p class="text-gray-600 mb-6 max-w-xl mx-auto">
-                Interested in a property? Have questions about buying, renting, or leasing in Kenya? 
-                Send us a message and our team will get back to you within 24 hours.
-            </p>
-            <div class="flex flex-col sm:flex-row gap-4 justify-center">
-                <a href="https://wa.me/254700000000" target="_blank" class="bg-[#25D366] hover:bg-[#1ebe5d] text-white px-8 py-4 rounded-full font-semibold inline-flex items-center justify-center gap-2">
-                    <i class="fab fa-whatsapp"></i> WhatsApp Us
-                </a>
-                <a href="mailto:info@propertiesinkenya.co.ke" class="bg-[#6b21a8] hover:bg-[#581c87] text-white px-8 py-4 rounded-full font-semibold inline-flex items-center justify-center gap-2">
-                    <i class="fas fa-envelope"></i> Email Us
-                </a>
+    <!-- Property Detail Modal -->
+    <div id="detailModal" class="modal-overlay">
+        <div class="modal">
+            <div class="modal-header">
+                <h2 id="modalTitle" class="modal-title"></h2>
+                <button class="modal-close" onclick="closeModal()">×</button>
             </div>
-        </div>
-    </section>
-
-    <!-- BLOG SECTION (MODERN SLIDE FORMAT) -->
-    <section id="blog" class="max-w-7xl mx-auto px-6 py-12">
-        <div class="section-header">
-            <h2>📝 Real Estate Blog</h2>
-            <a href="#" class="view-all-link">All articles <i class="fas fa-arrow-right"></i></a>
-        </div>
-        <div class="blog-slide-container">
-            <article class="blog-card">
-                <img src="https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=600&q=80" alt="Buying land in Kenya" loading="lazy">
-                <div class="content">
-                    <span class="tag">Guide</span>
-                    <h3>How to Buy Land in Kenya Without Getting Scammed</h3>
-                    <p>A step-by-step guide to verifying titles, doing due diligence, and completing land purchases safely.</p>
-                    <a href="#" class="read-more">Read more <i class="fas fa-arrow-right"></i></a>
+            <div class="modal-body">
+                <div class="modal-image-container">
+                    <img id="mainImage" class="modal-image" alt="Property">
+                    <button class="modal-nav-btn prev" onclick="prevImage()">
+                        <i class="fas fa-chevron-left"></i>
+                    </button>
+                    <button class="modal-nav-btn next" onclick="nextImage()">
+                        <i class="fas fa-chevron-right"></i>
+                    </button>
                 </div>
-            </article>
-            <article class="blog-card">
-                <img src="https://images.unsplash.com/photo-1582407947304-fd86f028f716?w=600&q=80" alt="Nairobi apartments" loading="lazy">
-                <div class="content">
-                    <span class="tag">Market</span>
-                    <h3>Best Nairobi Neighborhoods for Families in 2026</h3>
-                    <p>From Kilimani to Ruai — discover the top estates for families based on schools, security, and amenities.</p>
-                    <a href="#" class="read-more">Read more <i class="fas fa-arrow-right"></i></a>
-                </div>
-            </article>
-            <article class="blog-card">
-                <img src="https://images.unsplash.com/photo-1551833227-8e3512960a83?w=600&q=80" alt="Property investment" loading="lazy">
-                <div class="content">
-                    <span class="tag">Investment</span>
-                    <h3>Ruai Property Investment Guide: Why Prices Are Rising</h3>
-                    <p>Analysis of Ruai's rapid growth and why it's becoming one of Nairobi's hottest investment areas.</p>
-                    <a href="#" class="read-more">Read more <i class="fas fa-arrow-right"></i></a>
-                </div>
-            </article>
-        </div>
-    </section>
-
-    <!-- Detail Modal -->
-    <div id="detailModal" class="hidden fixed inset-0 bg-black/80 z-[2000] flex items-center justify-center p-4">
-        <div class="bg-white max-w-5xl w-full rounded-3xl overflow-hidden max-h-[95vh]">
-            <div class="p-6 border-b flex justify-between items-center bg-white sticky top-0 z-10">
-                <h2 id="modalTitle" class="text-2xl font-bold"></h2>
-                <button onclick="closeModal()" class="text-4xl text-gray-400 hover:text-gray-600">×</button>
-            </div>
-            <div class="p-8 grid md:grid-cols-5 gap-8">
-                <div class="md:col-span-3">
-                    <div class="relative rounded-2xl overflow-hidden">
-                        <img id="mainImage" class="w-full" alt="Property">
-                        <button onclick="prevImage()" class="absolute left-4 top-1/2 bg-black/60 text-white w-11 h-11 rounded-full text-3xl">‹</button>
-                        <button onclick="nextImage()" class="absolute right-4 top-1/2 bg-black/60 text-white w-11 h-11 rounded-full text-3xl">›</button>
+                <div class="modal-details">
+                    <div id="modalPrice" class="modal-price"></div>
+                    <div id="modalMeta" class="modal-meta"></div>
+                    <p id="modalDescription" class="modal-description"></p>
+                    <div class="modal-cta">
+                        <a id="modalWA" href="#" target="_blank" class="modal-btn whatsapp">
+                            <i class="fab fa-whatsapp"></i>
+                            WhatsApp Agent
+                        </a>
+                        <a id="modalCall" href="tel:" class="modal-btn call">
+                            <i class="fas fa-phone"></i>
+                            Call Agent
+                        </a>
                     </div>
                 </div>
-                <div class="md:col-span-2 space-y-6">
-                    <div id="modalPrice" class="text-4xl font-bold text-emerald-700"></div>
-                    <div id="modalMeta" class="text-base"></div>
-                    <p id="modalDescription" class="text-gray-600"></p>
-                    <a id="modalWA" href="#" target="_blank" class="block bg-[#25D366] text-white text-center py-5 rounded-2xl font-semibold text-lg">💬 WhatsApp Agent</a>
-                    <a id="modalCall" href="tel:" class="block bg-gray-800 text-white text-center py-4 rounded-2xl font-semibold"><i class="fas fa-phone mr-2"></i>Call Agent</a>
-                </div>
             </div>
         </div>
     </div>
-
-    <footer class="bg-[#0f172a] text-white py-12 text-center">
-        <p class="text-2xl font-bold" style="font-family: 'Playfair Display', serif;">Properties in Kenya</p>
-        <p class="text-gray-400 mt-2">Verified • Trusted • Transparent</p>
-        <div class="flex justify-center gap-6 mt-6 text-gray-400 text-sm">
-            <a href="#" class="hover:text-white">About</a>
-            <a href="#blog" class="hover:text-white">Blog</a>
-            <a href="#" class="hover:text-white">Terms</a>
-            <a href="#" class="hover:text-white">Privacy</a>
-            <a href="#inquiries-section" class="hover:text-white">Contact</a>
-        </div>
-        <p class="text-gray-500 text-sm mt-6">© 2026 Properties in Kenya. All rights reserved.</p>
-    </footer>
 
     <script>
         const supabaseClient = supabase.createClient(
@@ -823,12 +1001,6 @@
         let allProperties = [];
         let currentImages = [];
         let currentImageIndex = 0;
-        let activeCategory = 'all';
-
-        window.toggleMobileMenu = function() {
-            document.getElementById('mobileMenu').classList.toggle('open');
-            document.getElementById('mobileOverlay').classList.toggle('open');
-        };
 
         async function loadProperties() {
             try {
@@ -840,174 +1012,60 @@
 
                 if (error) throw error;
                 allProperties = data || [];
-                
-                if (allProperties.length === 0) {
-                    document.getElementById('listings').innerHTML = `
-                        <div class="col-span-full text-center py-12 text-gray-500">
-                            <i class="fas fa-inbox text-4xl mb-4"></i>
-                            <p>No properties available yet. Check back soon!</p>
-                        </div>`;
-                    ['forSaleCarousel','forRentCarousel','forLeaseCarousel'].forEach(id => {
-                        document.getElementById(id).innerHTML = '<p class="text-gray-400 py-8 w-full text-center">No properties yet.</p>';
-                    });
-                    return;
-                }
-
-                renderListings(allProperties);
-                renderCarousels();
-                injectPropertySchema();
             } catch (error) {
                 console.error('Error loading properties:', error);
-                document.getElementById('listings').innerHTML = `
-                    <div class="col-span-full text-center py-12 text-red-500">
-                        <i class="fas fa-exclamation-triangle text-4xl mb-4"></i>
-                        <p>Unable to load properties. Please refresh.</p>
-                    </div>`;
             }
         }
 
-        function renderCarousels() {
-            const forSale = allProperties.filter(p => p.property_type === 'for sale').slice(0, 15);
-            const forRent = allProperties.filter(p => p.property_type === 'for rent').slice(0, 15);
-            const forLease = allProperties.filter(p => p.property_type === 'lease').slice(0, 15);
-
-            document.getElementById('forSaleCarousel').innerHTML = forSale.length 
-                ? forSale.map(p => carouselCard(p)).join('')
-                : '<p class="text-gray-400 py-8 w-full text-center">No properties for sale yet.</p>';
-
-            document.getElementById('forRentCarousel').innerHTML = forRent.length
-                ? forRent.map(p => carouselCard(p)).join('')
-                : '<p class="text-gray-400 py-8 w-full text-center">No properties for rent yet.</p>';
-
-            document.getElementById('forLeaseCarousel').innerHTML = forLease.length
-                ? forLease.map(p => carouselCard(p)).join('')
-                : '<p class="text-gray-400 py-8 w-full text-center">No properties for lease yet.</p>';
-        }
-
-        function carouselCard(p) {
-            const img = p.images?.[0] || p.image_url || 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=400&q=80';
-            return `
-                <div class="slide-item">
-                    <div class="property-card bg-white cursor-pointer border border-gray-100" onclick="openDetail('${p.id}')">
-                        <div class="relative">
-                            <img src="${img}" class="w-full h-48 object-cover" loading="lazy" alt="${escapeHtml(p.title)} in ${escapeHtml(p.location)}" onerror="this.src='https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=400&q=80'">
-                            <div class="absolute top-3 left-3 bg-white text-xs font-bold px-3 py-1 rounded-full shadow">
-                                ${(p.property_type || 'FOR SALE').toUpperCase()}
-                            </div>
-                            ${p.is_featured ? '<div class="absolute top-3 right-3 bg-amber-500 text-white text-xs font-bold px-3 py-1 rounded-full">⭐ FEATURED</div>' : ''}
-                        </div>
-                        <div class="p-5">
-                            <h3 class="font-semibold text-base leading-tight mb-2">${escapeHtml(p.title)}</h3>
-                            <p class="text-gray-500 text-sm mb-3">📍 ${escapeHtml(p.location)}</p>
-                            <p class="text-xl font-bold text-emerald-700">KSh ${Number(p.price).toLocaleString()}</p>
-                        </div>
-                    </div>
-                </div>`;
-        }
-
-        window.scrollCarousel = function(id, direction) {
-            const container = document.getElementById(id);
-            const scrollAmount = 340;
-            container.scrollBy({ left: direction * scrollAmount, behavior: 'smooth' });
-        };
-
-        window.filterByCategory = function(category, btn) {
-            activeCategory = category;
-            document.querySelectorAll('.category-pill').forEach(p => p.classList.remove('active'));
-            btn.classList.add('active');
-            
-            let filtered = allProperties;
-            if (category !== 'all') {
-                filtered = allProperties.filter(p => {
-                    const type = (p.property_category || p.property_type || '').toLowerCase();
-                    const title = (p.title || '').toLowerCase();
-                    return type.includes(category) || title.includes(category);
-                });
-            }
-            renderListings(filtered);
-        };
-
-        function renderListings(properties) {
-            const container = document.getElementById("listings");
-            container.innerHTML = "";
-            document.getElementById("count").textContent = `Showing ${properties.length} properties`;
-
-            if (properties.length === 0) {
-                container.innerHTML = `
-                    <div class="col-span-full text-center py-12 text-gray-400">
-                        <i class="fas fa-search text-4xl mb-4"></i>
-                        <p>No properties found matching your criteria.</p>
-                    </div>`;
-                return;
-            }
-
-            properties.forEach(p => {
-                const card = document.createElement("article");
-                card.className = "property-card bg-white cursor-pointer border border-gray-100";
-                const img = p.images?.[0] || p.image_url || 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=600&q=80';
-                card.innerHTML = `
-                    <div class="relative">
-                        <img src="${img}" class="w-full h-64 object-cover" loading="lazy" alt="${escapeHtml(p.title)} in ${escapeHtml(p.location)}" onerror="this.src='https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=600&q=80'">
-                        <div class="absolute top-4 left-4 bg-white text-xs font-bold px-3 py-1 rounded-full shadow">
-                            ${(p.property_type || 'FOR SALE').toUpperCase()}
-                        </div>
-                        ${p.is_featured ? '<div class="absolute top-4 right-4 bg-amber-500 text-white text-xs font-bold px-3 py-1 rounded-full">⭐ FEATURED</div>' : ''}
-                    </div>
-                    <div class="p-6">
-                        <h3 class="font-semibold text-lg leading-tight mb-2">${escapeHtml(p.title)}</h3>
-                        <p class="text-gray-500 text-sm mb-4">📍 ${escapeHtml(p.location)}</p>
-                        <div class="flex justify-between items-end">
-                            <p class="text-2xl font-bold text-emerald-700">KSh ${Number(p.price).toLocaleString()}</p>
-                            <button onclick="event.stopImmediatePropagation(); openDetail('${p.id}');" 
-                                    class="text-sm border border-gray-300 hover:bg-gray-50 px-5 py-2 rounded-xl">View details</button>
-                        </div>
-                    </div>`;
-                card.onclick = () => openDetail(p.id);
-                container.appendChild(card);
-            });
-        }
-
-        // ===== RENDER AI RESULTS =====
         function renderAIResults(properties) {
             const section = document.getElementById('aiResultsSection');
-            const grid = document.getElementById('aiResultsGrid');
+            const carousel = document.getElementById('aiResultsCarousel');
             const countText = document.getElementById('aiResultsCount');
             
             if (properties.length === 0) {
-                section.style.display = 'none';
+                section.classList.remove('active');
                 return;
             }
             
             countText.textContent = `Found ${properties.length} ${properties.length === 1 ? 'property' : 'properties'} matching the description provided`;
-            grid.innerHTML = properties.map(p => {
+            
+            carousel.innerHTML = properties.map(p => {
                 const img = p.images?.[0] || p.image_url || 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=600&q=80';
+                const tags = [];
+                if (p.bedrooms) tags.push(`${p.bedrooms} Bedroom`);
+                if (p.location) tags.push(p.location);
+                if (p.price && p.price < 10000000) tags.push('Under 10M');
+                
                 return `
-                    <div class="property-card bg-white cursor-pointer border border-gray-100" onclick="openDetail('${p.id}')" style="box-shadow: 0 8px 24px rgba(107, 33, 168, 0.1);">
-                        <div class="relative">
-                            <img src="${img}" class="w-full h-56 object-cover" loading="lazy" alt="${escapeHtml(p.title)}" onerror="this.src='https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=600&q=80'">
-                            <div class="absolute top-4 left-4 bg-white text-xs font-bold px-3 py-1 rounded-full shadow">
-                                ${(p.property_type || 'FOR SALE').toUpperCase()}
+                    <div class="property-card" onclick="openDetail('${p.id}')">
+                        <img src="${img}" class="property-image" alt="${escapeHtml(p.title)}" loading="lazy">
+                        <div class="property-info">
+                            <h3 class="property-title">${escapeHtml(p.title)}</h3>
+                            <div class="property-location">
+                                <i class="fas fa-map-marker-alt"></i>
+                                ${escapeHtml(p.location)}
                             </div>
-                            ${p.is_featured ? '<div class="absolute top-4 right-4 bg-amber-500 text-white text-xs font-bold px-3 py-1 rounded-full">⭐ FEATURED</div>' : ''}
-                        </div>
-                        <div class="p-6">
-                            <h3 class="font-bold text-lg leading-tight mb-2 text-gray-900">${escapeHtml(p.title)}</h3>
-                            <p class="text-gray-600 text-sm mb-3">📍 ${escapeHtml(p.location)}</p>
-                            <div class="flex justify-between items-end">
-                                <p class="text-2xl font-bold text-emerald-700">KSh ${Number(p.price).toLocaleString()}</p>
-                                <button onclick="event.stopImmediatePropagation(); openDetail('${p.id}');" 
-                                        class="text-sm bg-[#6b21a8] hover:bg-[#581c87] text-white px-4 py-2 rounded-lg font-semibold">View Details</button>
+                            <div class="property-price">KSh ${Number(p.price).toLocaleString()}</div>
+                            <div class="property-tags">
+                                ${tags.map(tag => `<span class="property-tag">${tag}</span>`).join('')}
                             </div>
                         </div>
-                    </div>`;
+                    </div>
+                `;
             }).join('');
             
-            section.style.display = 'block';
+            section.classList.add('active');
             
             setTimeout(() => {
                 section.scrollIntoView({ behavior: 'smooth', block: 'start' });
             }, 300);
         }
+
+        window.scrollCarousel = function(id, direction) {
+            const container = document.getElementById(id);
+            const scrollAmount = 324;
+            container.scrollBy({ left: direction * scrollAmount, behavior: 'smooth' });
+        };
 
         function openDetail(propertyId) {
             const p = allProperties.find(prop => prop.id === propertyId);
@@ -1016,14 +1074,15 @@
             currentImages = p.images && p.images.length > 0 ? p.images : 
                            (p.image_url ? [p.image_url] : ['https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=800&q=80']);
             currentImageIndex = 0;
+            
             document.getElementById("mainImage").src = currentImages[0];
-            document.getElementById("mainImage").alt = `${p.title} in ${p.location}`;
             document.getElementById("modalTitle").textContent = p.title;
             document.getElementById("modalPrice").textContent = `KSh ${Number(p.price).toLocaleString()}`;
             document.getElementById("modalMeta").innerHTML = `
-                📍 ${escapeHtml(p.location)} <br>
+                📍 ${escapeHtml(p.location)}<br>
                 ${p.property_type ? p.property_type.toUpperCase() : ''}
-                ${p.bedrooms ? `<br>🛏️ ${p.bedrooms} Bedrooms` : ''}`;
+                ${p.bedrooms ? `<br>🛏️ ${p.bedrooms} Bedrooms` : ''}
+            `;
             document.getElementById("modalDescription").textContent = p.description || "Beautiful verified property in a prime location.";
             
             const agentPhone = p.agent_phone || '+254700000000';
@@ -1032,32 +1091,36 @@
             
             document.getElementById("modalWA").href = `https://wa.me/${cleanPhone}?text=${waMessage}`;
             document.getElementById("modalCall").href = `tel:${agentPhone}`;
-            document.getElementById("detailModal").classList.remove("hidden");
+            document.getElementById("detailModal").classList.add("active");
         }
 
         window.prevImage = () => { 
             currentImageIndex = (currentImageIndex - 1 + currentImages.length) % currentImages.length; 
             document.getElementById("mainImage").src = currentImages[currentImageIndex]; 
         };
+        
         window.nextImage = () => { 
             currentImageIndex = (currentImageIndex + 1) % currentImages.length; 
             document.getElementById("mainImage").src = currentImages[currentImageIndex]; 
         };
-        window.closeModal = () => document.getElementById("detailModal").classList.add("hidden");
+        
+        window.closeModal = () => document.getElementById("detailModal").classList.remove("active");
 
-        // ===== AI FUNCTION =====
         async function askAI() {
             const input = document.getElementById('aiQuery');
             const query = input.value.trim();
             if (!query) return;
 
             const btn = document.getElementById('askBtn');
+            const messagesDiv = document.getElementById('chatMessages');
+            
             btn.disabled = true;
             btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
 
+            // Show chat messages
+            messagesDiv.style.display = 'block';
             addChatMessage(query, true);
             input.value = '';
-            showTypingIndicator();
 
             try {
                 const response = await fetch('/api/ai-assistant', {
@@ -1065,40 +1128,30 @@
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ query: query })
                 });
+                
                 const result = await response.json();
                 if (!response.ok) throw new Error(result.error || 'Failed to connect to AI');
 
                 const filters = result.filters;
                 const filteredProperties = applyAIFilters(filters);
-                removeTypingIndicator();
 
                 let aiResponseText = "";
                 if (filteredProperties.length === 0) {
-                    aiResponseText = `😔 I couldn't find any properties matching "<em>${escapeHtml(query)}</em>". Try adjusting your budget or location.`;
-                    document.getElementById('aiResultsSection').style.display = 'none';
+                    aiResponseText = `I couldn't find any properties matching "${query}". Try adjusting your budget or location.`;
+                    document.getElementById('aiResultsSection').classList.remove('active');
                 } else {
-                    const filterSummary = [];
-                    if (filters.max_price) filterSummary.push(`under KSh ${(filters.max_price / 1000000).toFixed(1)}M`);
-                    if (filters.location) filterSummary.push(`in ${filters.location}`);
-                    if (filters.bedrooms) filterSummary.push(`${filters.bedrooms} bedroom`);
-                    if (filters.property_type) filterSummary.push(filters.property_type);
-                    
-                    aiResponseText = `✨ Found <strong>${filteredProperties.length} ${filteredProperties.length === 1 ? 'property' : 'properties'}</strong>`;
-                    if (filterSummary.length > 0) aiResponseText += ` ${filterSummary.join(', ')}`;
-                    aiResponseText += `! Check them out below 👇`;
-                    
+                    aiResponseText = `✨ Found ${filteredProperties.length} ${filteredProperties.length === 1 ? 'property' : 'properties'}! Scroll down to see them.`;
                     renderAIResults(filteredProperties);
                 }
 
-                addChatMessage(aiResponseText);
+                addChatMessage(aiResponseText, false);
 
             } catch (error) {
-                removeTypingIndicator();
                 console.error('AI Error:', error);
-                addChatMessage("⚠️ Sorry, The Caretaker is having trouble connecting. Please try again.");
+                addChatMessage("Sorry, I'm having trouble connecting. Please try again.", false);
             } finally {
                 btn.disabled = false;
-                btn.innerHTML = '<i class="fas fa-paper-plane"></i>';
+                btn.innerHTML = '<i class="fas fa-paper-plane"></i><span>Search</span>';
             }
         }
 
@@ -1115,72 +1168,27 @@
             });
         }
 
-        function addChatMessage(message, isUser = false) {
-            const chatMessages = document.getElementById('chatMessages');
+        function addChatMessage(message, isUser) {
+            const messagesDiv = document.getElementById('chatMessages');
             const messageDiv = document.createElement('div');
-            messageDiv.className = 'chat-message flex gap-3 ' + (isUser ? 'flex-row-reverse' : '');
-            const avatar = isUser ? 
-                '<div class="w-10 h-10 bg-purple-500 rounded-full flex items-center justify-center text-white font-bold flex-shrink-0">You</div>' :
-                '<div class="w-10 h-10 bg-emerald-500 rounded-full flex items-center justify-center text-white font-bold flex-shrink-0"><i class="fas fa-user-tie text-sm"></i></div>';
-            const bubbleClass = isUser ? 
-                'bg-emerald-500 text-white rounded-2xl rounded-tr-none' :
-                'bg-gray-100 text-gray-800 rounded-2xl rounded-tl-none';
-            messageDiv.innerHTML = `${avatar}<div class="${bubbleClass} px-4 py-3 text-sm max-w-md">${message}</div>`;
-            chatMessages.appendChild(messageDiv);
-            chatMessages.scrollTop = chatMessages.scrollHeight;
-        }
-
-        function showTypingIndicator() {
-            const chatMessages = document.getElementById('chatMessages');
-            const typingDiv = document.createElement('div');
-            typingDiv.id = 'typingIndicator';
-            typingDiv.className = 'chat-message flex gap-3';
-            typingDiv.innerHTML = `
-                <div class="w-10 h-10 bg-emerald-500 rounded-full flex items-center justify-center text-white font-bold flex-shrink-0"><i class="fas fa-user-tie text-sm"></i></div>
-                <div class="bg-gray-100 rounded-2xl rounded-tl-none px-4 py-3">
-                    <div class="typing-indicator"><span></span><span></span><span></span></div>
-                </div>`;
-            chatMessages.appendChild(typingDiv);
-            chatMessages.scrollTop = chatMessages.scrollHeight;
-        }
-
-        function removeTypingIndicator() {
-            const typing = document.getElementById('typingIndicator');
-            if (typing) typing.remove();
-        }
-
-        function injectPropertySchema() {
-            const existing = document.getElementById('property-schema-container');
-            if (existing) existing.remove();
+            messageDiv.className = 'chat-message';
             
-            const container = document.createElement('div');
-            container.id = 'property-schema-container';
-            container.style.display = 'none';
+            if (isUser) {
+                messageDiv.innerHTML = `
+                    <div class="chat-bubble user">${escapeHtml(message)}</div>
+                    <div class="chat-avatar user">You</div>
+                `;
+            } else {
+                messageDiv.innerHTML = `
+                    <div class="chat-avatar ai">
+                        <i class="fas fa-user-tie"></i>
+                    </div>
+                    <div class="chat-bubble ai">${message}</div>
+                `;
+            }
             
-            const schemas = allProperties.slice(0, 20).map(p => ({
-                "@context": "https://schema.org",
-                "@type": "Product",
-                "name": p.title,
-                "description": p.description || `${p.title} in ${p.location}, Kenya`,
-                "image": p.images?.[0] || p.image_url || '',
-                "offers": {
-                    "@type": "Offer",
-                    "price": p.price,
-                    "priceCurrency": "KES",
-                    "availability": "https://schema.org/InStock",
-                    "url": `https://propertiesinkenya.co.ke/property/${p.id}`
-                },
-                "address": {
-                    "@type": "PostalAddress",
-                    "addressLocality": p.location,
-                    "addressCountry": "KE"
-                }
-            }));
-            
-            container.innerHTML = schemas.map(s => 
-                `<script type="application/ld+json">${JSON.stringify(s)}<\/script>`
-            ).join('');
-            document.body.appendChild(container);
+            messagesDiv.appendChild(messageDiv);
+            messagesDiv.scrollTop = messagesDiv.scrollHeight;
         }
 
         function escapeHtml(text) {
@@ -1190,6 +1198,12 @@
             return div.innerHTML;
         }
 
+        // Close modal on overlay click
+        document.getElementById('detailModal').addEventListener('click', (e) => {
+            if (e.target.id === 'detailModal') closeModal();
+        });
+
+        // Initialize
         loadProperties();
     </script>
 </body>
