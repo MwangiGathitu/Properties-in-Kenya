@@ -1,21 +1,25 @@
 // api/ai-assistant.js
 export default async function handler(req, res) {
-  // Only allow POST requests
+  // Handle CORS preflight
+  if (req.method === 'OPTIONS') {
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+    return res.status(200).end();
+  }
+
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
   try {
     const { query } = req.body;
-    
-    // This reads the key securely from Vercel. It is NEVER sent to the browser.
     const GROQ_API_KEY = process.env.GROQ_API_KEY;
 
     if (!GROQ_API_KEY) {
-      return res.status(500).json({ error: 'API key not configured' });
+      return res.status(500).json({ error: 'AI not configured' });
     }
 
-    // Call Groq API from the secure server
     const groqResponse = await fetch('https://api.groq.com/openai/v1/chat/completions', {
       method: 'POST',
       headers: {
@@ -23,24 +27,29 @@ export default async function handler(req, res) {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'llama3-8b-8192', // Ultra-fast model
+        model: 'llama-3.3-70b-versatile',
         messages: [
           {
             role: 'system',
-            content: `You are Mali, a Kenyan real estate AI assistant. 
-            Extract search criteria from the user's query and return ONLY a valid JSON object. 
-            Do not include markdown formatting (like \`\`\`json) or explanations.
-            
-            Valid JSON keys:
-            - "location": string (lowercase, e.g., "ruai", "kilimani")
-            - "max_price": number (in KES, e.g., 10000000)
-            - "property_type": string ("house", "apartment", "land", or null)
-            - "bedrooms": number (or null)
-            - "transaction": string ("sale" or "rent", or null)`
+            content: `You are "The Caretaker", a Kenyan real estate AI assistant. Extract search criteria from the user's query and return ONLY a valid JSON object. No markdown, no explanations.
+
+Valid JSON keys (omit if not mentioned):
+- "location": string (lowercase Kenyan area, e.g., "ruai", "kilimani", "kileleshwa", "embakasi", "kayole", "kasarani", "rongai", "syokimau", "kitengela", "thika", "kiambu", "kikuyu", "limuru", "nairobi", "westlands", "karen", "langata")
+- "max_price": number (in KES, e.g., 10000000 for 10 million. Convert "6.5M", "6.5 million", "6.5 bob" to 6500000)
+- "min_price": number (in KES)
+- "property_type": string ("house", "apartment", "land", "flat", "plot", or null)
+- "bedrooms": number (or null)
+- "transaction": string ("sale" or "rent", or null)
+
+Examples:
+- "4 bedroom house in Ruai under 10 million" → {"location":"ruai","max_price":10000000,"property_type":"house","bedrooms":4,"transaction":"sale"}
+- "quiet apartment for rent in Kilimani, 80k" → {"location":"kilimani","property_type":"apartment","transaction":"rent","max_price":80000}
+- "land in Kiambu around 2M" → {"location":"kiambu","property_type":"land","max_price":2000000,"transaction":"sale"}`
           },
           { role: 'user', content: query }
         ],
-        temperature: 0.1, // Keep it strict for reliable JSON
+        temperature: 0.1,
+        response_format: { type: 'json_object' }
       }),
     });
 
@@ -50,23 +59,21 @@ export default async function handler(req, res) {
       throw new Error(data.error?.message || 'Groq API failed');
     }
 
-    // Clean up the AI response to ensure it's valid JSON
-    let rawText = data.choices[0].message.content;
-    let cleanJson = rawText.replace(/```json/g, '').replace(/```/g, '').trim();
-    
     let filters = {};
     try {
-      filters = JSON.parse(cleanJson);
+      const raw = data.choices[0].message.content;
+      filters = JSON.parse(raw);
     } catch (e) {
-      console.error('JSON Parse Error:', cleanJson);
-      filters = { error: 'AI returned invalid format' };
+      console.error('Parse error:', e);
+      filters = {};
     }
 
-    // Send the extracted filters back to your frontend
+    res.setHeader('Access-Control-Allow-Origin', '*');
     return res.status(200).json({ filters });
 
   } catch (error) {
-    console.error('Vercel API Error:', error);
-    return res.status(500).json({ error: 'Internal server error' });
+    console.error('API Error:', error);
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    return res.status(500).json({ error: error.message });
   }
 }
