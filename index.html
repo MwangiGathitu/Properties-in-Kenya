@@ -1316,6 +1316,24 @@
             color: #B8922E;
         }
         
+        /* ===== NEW: Empty State for Features ===== */
+        .property-features-empty {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 14px 18px;
+            background: #F9FAFB;
+            border: 1px dashed #D1D5DB;
+            border-radius: 8px;
+            font-size: 13px;
+            color: #6B7280;
+            width: 100%;
+        }
+        .property-features-empty i {
+            color: #9CA3AF;
+            font-size: 14px;
+        }
+        
         .property-description {
             margin-bottom: 32px;
         }
@@ -1800,7 +1818,7 @@
                 </div>
             </div>
             
-            <!-- ===== HONEST AI INSIGHTS PANEL (REPLACED FAKE VALUES) ===== -->
+            <!-- ===== HONEST AI INSIGHTS PANEL ===== -->
             <div class="ai-insights-panel">
                 <div class="ai-insights-header">
                     <div class="ai-insights-icon">
@@ -2134,10 +2152,24 @@
             `;
             document.getElementById('propertyDetailsGrid').innerHTML = detailsHTML;
             
-            const features = ['Garden', 'Security System', 'Borehole', 'Gated Community', 'Fiber Internet', 'Backup Generator'];
-            const featuresHTML = features.map(f => 
-                `<div class="property-feature-chip"><i class="fas fa-check"></i> ${f}</div>`
-            ).join('');
+            // ===== DYNAMIC FEATURES WITH SAFE FALLBACK =====
+            const features = Array.isArray(p.features) ? p.features : [];
+            let featuresHTML = '';
+            
+            if (features.length > 0) {
+                // Display actual features from database
+                featuresHTML = features.map(f => 
+                    `<div class="property-feature-chip"><i class="fas fa-check"></i> ${escapeHtml(f)}</div>`
+                ).join('');
+            } else {
+                // Honest empty state - no fake features
+                featuresHTML = `
+                    <div class="property-features-empty">
+                        <i class="fas fa-info-circle"></i>
+                        <span>Features not yet specified</span>
+                    </div>
+                `;
+            }
             document.getElementById('propertyFeatures').innerHTML = featuresHTML;
             
             document.getElementById('agentAvatar').textContent = (p.agent_name || 'A').charAt(0).toUpperCase();
