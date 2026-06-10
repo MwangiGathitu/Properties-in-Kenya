@@ -14,7 +14,7 @@
     <meta name="geo.placename" content="Nairobi, Kenya">
     <link rel="canonical" href="https://propertiesinkenya.co.ke/">
     
-    <!-- ===== OPEN GRAPH (Facebook/WhatsApp) ===== -->
+    <!-- ===== OPEN GRAPH ===== -->
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://propertiesinkenya.co.ke/">
     <meta property="og:title" content="Properties in Kenya — Verified Houses, Apartments & Land">
@@ -29,7 +29,7 @@
     <meta name="twitter:description" content="AI-powered property search in Kenya. Find houses, apartments, land for sale & rent.">
     <meta name="twitter:image" content="https://images.unsplash.com/photo-1611348524140-53c9a25263d6?w=1200&q=80">
     
-    <!-- ===== SCHEMA.ORG STRUCTURED DATA ===== -->
+    <!-- ===== SCHEMA.ORG ===== -->
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
@@ -41,14 +41,6 @@
         "@type": "SearchAction",
         "target": "https://propertiesinkenya.co.ke/?q={search_term_string}",
         "query-input": "required name=search_term_string"
-      },
-      "publisher": {
-        "@type": "Organization",
-        "name": "Properties in Kenya",
-        "logo": {
-          "@type": "ImageObject",
-          "url": "https://propertiesinkenya.co.ke/logo.png"
-        }
       }
     }
     </script>
@@ -62,12 +54,10 @@
       "areaServed": {
         "@type": "Country",
         "name": "Kenya"
-      },
-      "description": "AI-powered real estate platform connecting buyers, renters and verified agents across Kenya."
+      }
     }
     </script>
 
-    <!-- ===== EXTERNAL RESOURCES ===== -->
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -77,10 +67,9 @@
         
         body { 
             font-family: 'Inter', system_ui, sans-serif;
-            background: #faf5e4; /* Light gold background */
+            background: #faf5e4;
         }
         
-        /* Hero with Nairobi skyline */
         .hero-bg {
             background: linear-gradient(rgba(0,0,0,0.55), rgba(0,0,0,0.65)),
                         url('https://images.unsplash.com/photo-1611348524140-53c9a25263d6?w=2000&q=80') center/cover no-repeat;
@@ -99,7 +88,6 @@
             box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.15);
         }
         
-        /* Chat animations */
         .chat-message { animation: slideIn 0.3s ease; }
         @keyframes slideIn {
             from { opacity: 0; transform: translateY(10px); }
@@ -120,7 +108,57 @@
             30% { opacity: 1; }
         }
         
-        /* ===== CAROUSEL RECTANGULAR FRAME ===== */
+        /* ===== AI RESULTS SECTION ===== */
+        .ai-results-section {
+            background: linear-gradient(135deg, #6b21a8 0%, #9333ea 100%);
+            padding: 40px 0;
+            margin-top: -1px;
+        }
+        .ai-results-header {
+            text-align: center;
+            color: white;
+            margin-bottom: 32px;
+        }
+        .ai-results-header h2 {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+        }
+        .ai-results-header p {
+            font-size: 1.1rem;
+            opacity: 0.95;
+        }
+        .ai-results-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 24px;
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+        @media (max-width: 768px) {
+            .ai-results-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        .ai-result-card {
+            background: white;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+        .ai-result-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+        }
+        
+        /* ===== CAROUSEL ===== */
         .carousel-frame {
             position: relative;
             background: white;
@@ -150,7 +188,6 @@
             .carousel-frame { padding: 16px 44px; }
         }
         
-        /* Carousel nav arrows */
         .carousel-arrow {
             position: absolute;
             top: 50%;
@@ -176,9 +213,6 @@
         }
         .carousel-arrow.prev { left: 8px; }
         .carousel-arrow.next { right: 8px; }
-        @media (max-width: 640px) {
-            .carousel-arrow { width: 36px; height: 36px; font-size: 14px; }
-        }
         
         /* ===== CATEGORY PILLS ===== */
         .category-pills {
@@ -206,7 +240,6 @@
             border-color: #6b21a8;
             color: #6b21a8;
             transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(107, 33, 168, 0.15);
         }
         .category-pill.active {
             background: #6b21a8;
@@ -214,7 +247,6 @@
             color: white;
         }
         
-        /* Mobile nav */
         .mobile-menu {
             position: fixed;
             top: 0; right: -100%;
@@ -238,7 +270,6 @@
         }
         .mobile-overlay.open { opacity: 1; pointer-events: auto; }
         
-        /* Section header */
         .section-header {
             display: flex;
             justify-content: space-between;
@@ -263,7 +294,6 @@
         }
         .view-all-link:hover { text-decoration: underline; }
         
-        /* SEO content block */
         .seo-content {
             background: white;
             padding: 32px;
@@ -296,19 +326,16 @@
 </head>
 <body>
 
-    <!-- Top Bar -->
     <header class="bg-[#6b21a8] py-3 text-white text-center text-sm font-medium">
         PROPERTIES IN KENYA — Verified • Trusted • Transparent
     </header>
 
-    <!-- Navbar -->
     <nav class="bg-white shadow sticky top-0 z-50">
         <div class="max-w-7xl mx-auto px-6 py-5 flex items-center justify-between">
             <a href="/" class="flex items-center gap-3 text-2xl font-bold text-[#6b21a8]">
                 🏡 <span>PROPERTIES IN KENYA</span>
             </a>
             
-            <!-- Desktop Nav -->
             <div class="hidden md:flex gap-8 font-medium text-base">
                 <a href="#for-sale" class="hover:text-[#6b21a8]">Buy</a>
                 <a href="#for-rent" class="hover:text-[#6b21a8]">Rent</a>
@@ -330,7 +357,6 @@
         </div>
     </nav>
 
-    <!-- Mobile Menu -->
     <div id="mobileOverlay" class="mobile-overlay" onclick="toggleMobileMenu()"></div>
     <div id="mobileMenu" class="mobile-menu">
         <div class="flex justify-between items-center mb-8">
@@ -385,8 +411,22 @@
         </div>
     </section>
 
+    <!-- ===== AI RESULTS SECTION (NEW) ===== -->
+    <section id="aiResultsSection" class="ai-results-section" style="display:none;">
+        <div class="max-w-7xl mx-auto px-6">
+            <div class="ai-results-header">
+                <h2>
+                    <i class="fas fa-magic"></i>
+                    The Caretaker Found Properties For You
+                </h2>
+                <p id="aiResultsCount">Found 0 properties matching the description provided</p>
+            </div>
+            <div id="aiResultsGrid" class="ai-results-grid"></div>
+        </div>
+    </section>
+
     <!-- Quick Actions -->
-    <div class="max-w-6xl mx-auto px-6 -mt-8 relative z-10 pb-6">
+    <div class="max-w-6xl mx-auto px-6 py-12">
         <div class="grid grid-cols-2 md:grid-cols-5 gap-6 bg-white rounded-3xl shadow-xl p-8">
             <a href="#all-listings" class="text-center cursor-pointer hover:scale-105 transition block">
                 <div class="w-14 h-14 mx-auto bg-purple-100 rounded-2xl flex items-center justify-center text-3xl mb-3">🏘️</div>
@@ -410,7 +450,6 @@
             </a>
         </div>
         
-        <!-- ===== CATEGORY PILLS ===== -->
         <div class="category-pills">
             <button class="category-pill active" onclick="filterByCategory('all', this)">
                 <i class="fas fa-th"></i> All
@@ -546,7 +585,7 @@
         </div>
     </section>
 
-    <!-- SEO CONTENT BLOCK (Critical for Google) -->
+    <!-- SEO CONTENT -->
     <section class="max-w-5xl mx-auto px-6 py-8">
         <div class="seo-content">
             <h2>Properties in Kenya — Your Trusted Real Estate Platform</h2>
@@ -566,11 +605,6 @@
             <h3>Explore Properties by Category</h3>
             <p>
                 Browse our extensive collection of <strong>houses for sale in Kenya</strong>, modern <strong>apartments in Nairobi</strong>, commercial properties for business owners, and prime <strong>land for sale</strong> across the country. Our listings cover popular areas including Kilimani, Kileleshwa, Westlands, Karen, Langata, Ruai, Kayole, Embakasi, Kasarani, Rongai, Syokimau, Kitengela, Thika, Kiambu, and Kikuyu.
-            </p>
-            
-            <h3>The Caretaker — Kenya's First AI Property Assistant</h3>
-            <p>
-                Our AI assistant understands natural language, so you can search like you'd talk to a friend. Try asking: <em>"Show me 4 bedroom houses in Ruai under 10 million"</em> or <em>"Find me a 2 bedroom apartment for rent in Kilimani"</em>. The Caretaker instantly filters verified listings to match your exact requirements.
             </p>
         </div>
     </section>
@@ -615,7 +649,6 @@
     </footer>
 
     <script>
-        // ===== SUPABASE =====
         const supabaseClient = supabase.createClient(
             "https://nqwvsmuvltbiekfnvovx.supabase.co",
             "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5xd3ZzbXV2bHRiaWVrZm52b3Z4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA1NjU4MDAsImV4cCI6MjA5NjE0MTgwMH0.Xrc-bbAuWdvKSPHnVhTaLiQphV61xeYtDepWePqsrdo"
@@ -626,13 +659,11 @@
         let currentImageIndex = 0;
         let activeCategory = 'all';
 
-        // ===== MOBILE MENU =====
         window.toggleMobileMenu = function() {
             document.getElementById('mobileMenu').classList.toggle('open');
             document.getElementById('mobileOverlay').classList.toggle('open');
         };
 
-        // ===== LOAD PROPERTIES =====
         async function loadProperties() {
             try {
                 const { data, error } = await supabaseClient
@@ -658,7 +689,7 @@
 
                 renderListings(allProperties);
                 renderCarousels();
-                injectPropertySchema(); // SEO: Add schema for each property
+                injectPropertySchema();
             } catch (error) {
                 console.error('Error loading properties:', error);
                 document.getElementById('listings').innerHTML = `
@@ -669,7 +700,6 @@
             }
         }
 
-        // ===== RENDER CAROUSELS =====
         function renderCarousels() {
             const forSale = allProperties.filter(p => p.property_type === 'for sale').slice(0, 15);
             const forRent = allProperties.filter(p => p.property_type === 'for rent').slice(0, 15);
@@ -709,14 +739,12 @@
                 </div>`;
         }
 
-        // ===== CAROUSEL NAVIGATION =====
         window.scrollCarousel = function(id, direction) {
             const container = document.getElementById(id);
             const scrollAmount = 320;
             container.scrollBy({ left: direction * scrollAmount, behavior: 'smooth' });
         };
 
-        // ===== CATEGORY FILTER =====
         window.filterByCategory = function(category, btn) {
             activeCategory = category;
             document.querySelectorAll('.category-pill').forEach(p => p.classList.remove('active'));
@@ -733,7 +761,6 @@
             renderListings(filtered);
         };
 
-        // ===== RENDER ALL LISTINGS =====
         function renderListings(properties) {
             const container = document.getElementById("listings");
             container.innerHTML = "";
@@ -774,7 +801,49 @@
             });
         }
 
-        // ===== MODAL =====
+        // ===== RENDER AI RESULTS (NEW FUNCTION) =====
+        function renderAIResults(properties) {
+            const section = document.getElementById('aiResultsSection');
+            const grid = document.getElementById('aiResultsGrid');
+            const countText = document.getElementById('aiResultsCount');
+            
+            if (properties.length === 0) {
+                section.style.display = 'none';
+                return;
+            }
+            
+            countText.textContent = `Found ${properties.length} ${properties.length === 1 ? 'property' : 'properties'} matching the description provided`;
+            grid.innerHTML = properties.map(p => {
+                const img = p.images?.[0] || p.image_url || 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=600&q=80';
+                return `
+                    <div class="ai-result-card" onclick="openDetail('${p.id}')">
+                        <div class="relative">
+                            <img src="${img}" class="w-full h-56 object-cover" loading="lazy" alt="${escapeHtml(p.title)}" onerror="this.src='https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=600&q=80'">
+                            <div class="absolute top-4 left-4 bg-white text-xs font-bold px-3 py-1 rounded-full shadow">
+                                ${(p.property_type || 'FOR SALE').toUpperCase()}
+                            </div>
+                            ${p.is_featured ? '<div class="absolute top-4 right-4 bg-amber-500 text-white text-xs font-bold px-3 py-1 rounded-full">⭐ FEATURED</div>' : ''}
+                        </div>
+                        <div class="p-6">
+                            <h3 class="font-bold text-lg leading-tight mb-2 text-gray-900">${escapeHtml(p.title)}</h3>
+                            <p class="text-gray-600 text-sm mb-3">📍 ${escapeHtml(p.location)}</p>
+                            <div class="flex justify-between items-end">
+                                <p class="text-2xl font-bold text-emerald-700">KSh ${Number(p.price).toLocaleString()}</p>
+                                <button onclick="event.stopImmediatePropagation(); openDetail('${p.id}');" 
+                                        class="text-sm bg-[#6b21a8] hover:bg-[#581c87] text-white px-4 py-2 rounded-lg font-semibold">View Details</button>
+                            </div>
+                        </div>
+                    </div>`;
+            }).join('');
+            
+            section.style.display = 'block';
+            
+            // Smooth scroll to results
+            setTimeout(() => {
+                section.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }, 300);
+        }
+
         function openDetail(propertyId) {
             const p = allProperties.find(prop => prop.id === propertyId);
             if (!p) return;
@@ -811,7 +880,7 @@
         };
         window.closeModal = () => document.getElementById("detailModal").classList.add("hidden");
 
-        // ===== GROQ AI =====
+        // ===== UPDATED AI FUNCTION =====
         async function askAI() {
             const input = document.getElementById('aiQuery');
             const query = input.value.trim();
@@ -841,6 +910,7 @@
                 let aiResponseText = "";
                 if (filteredProperties.length === 0) {
                     aiResponseText = `😔 I couldn't find any properties matching "<em>${escapeHtml(query)}</em>". Try adjusting your budget or location.`;
+                    document.getElementById('aiResultsSection').style.display = 'none';
                 } else {
                     const filterSummary = [];
                     if (filters.max_price) filterSummary.push(`under KSh ${(filters.max_price / 1000000).toFixed(1)}M`);
@@ -851,13 +921,13 @@
                     aiResponseText = `✨ Found <strong>${filteredProperties.length} ${filteredProperties.length === 1 ? 'property' : 'properties'}</strong>`;
                     if (filterSummary.length > 0) aiResponseText += ` ${filterSummary.join(', ')}`;
                     aiResponseText += `! Check them out below 👇`;
+                    
+                    // Render AI results in the new section
+                    renderAIResults(filteredProperties);
                 }
 
                 addChatMessage(aiResponseText);
-                renderListings(filteredProperties);
-                setTimeout(() => {
-                    document.querySelector('#all-listings').scrollIntoView({ behavior: 'smooth', block: 'start' });
-                }, 500);
+
             } catch (error) {
                 removeTypingIndicator();
                 console.error('AI Error:', error);
@@ -915,7 +985,6 @@
             if (typing) typing.remove();
         }
 
-        // ===== SEO: INJECT SCHEMA FOR EACH PROPERTY =====
         function injectPropertySchema() {
             const existing = document.getElementById('property-schema-container');
             if (existing) existing.remove();
@@ -957,7 +1026,6 @@
             return div.innerHTML;
         }
 
-        // Initialize
         loadProperties();
     </script>
 </body>
