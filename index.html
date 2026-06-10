@@ -3,19 +3,87 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Properties in Kenya — AI Powered</title>
+    
+    <!-- ===== SEO META TAGS ===== -->
+    <title>Properties in Kenya | Houses, Apartments, Land for Sale & Rent in Nairobi</title>
+    <meta name="description" content="Browse verified houses, apartments, land and commercial properties for sale and rent across Kenya. Talk to The Caretaker — our AI property assistant — to find your ideal home in Nairobi, Kilimani, Ruai, Westlands and beyond.">
+    <meta name="keywords" content="properties in Kenya, houses for sale Nairobi, apartments for rent Kenya, land for sale Ruai, Kilimani properties, Westlands apartments, Kenyan real estate, property listings Kenya, buy house Nairobi, rent apartment Kenya">
+    <meta name="robots" content="index, follow, max-image-preview:large">
+    <meta name="author" content="Properties in Kenya">
+    <meta name="geo.region" content="KE">
+    <meta name="geo.placename" content="Nairobi, Kenya">
+    <link rel="canonical" href="https://propertiesinkenya.co.ke/">
+    
+    <!-- ===== OPEN GRAPH (Facebook/WhatsApp) ===== -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://propertiesinkenya.co.ke/">
+    <meta property="og:title" content="Properties in Kenya — Verified Houses, Apartments & Land">
+    <meta property="og:description" content="Find your next home in Kenya. Verified listings with AI-powered search by The Caretaker.">
+    <meta property="og:image" content="https://images.unsplash.com/photo-1611348524140-53c9a25263d6?w=1200&q=80">
+    <meta property="og:locale" content="en_KE">
+    <meta property="og:site_name" content="Properties in Kenya">
+    
+    <!-- ===== TWITTER CARD ===== -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Properties in Kenya — Verified Listings">
+    <meta name="twitter:description" content="AI-powered property search in Kenya. Find houses, apartments, land for sale & rent.">
+    <meta name="twitter:image" content="https://images.unsplash.com/photo-1611348524140-53c9a25263d6?w=1200&q=80">
+    
+    <!-- ===== SCHEMA.ORG STRUCTURED DATA ===== -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "name": "Properties in Kenya",
+      "url": "https://propertiesinkenya.co.ke/",
+      "description": "Verified houses, apartments, land and commercial properties for sale and rent across Kenya.",
+      "potentialAction": {
+        "@type": "SearchAction",
+        "target": "https://propertiesinkenya.co.ke/?q={search_term_string}",
+        "query-input": "required name=search_term_string"
+      },
+      "publisher": {
+        "@type": "Organization",
+        "name": "Properties in Kenya",
+        "logo": {
+          "@type": "ImageObject",
+          "url": "https://propertiesinkenya.co.ke/logo.png"
+        }
+      }
+    }
+    </script>
+    
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "RealEstateAgent",
+      "name": "Properties in Kenya",
+      "url": "https://propertiesinkenya.co.ke/",
+      "areaServed": {
+        "@type": "Country",
+        "name": "Kenya"
+      },
+      "description": "AI-powered real estate platform connecting buyers, renters and verified agents across Kenya."
+    }
+    </script>
+
+    <!-- ===== EXTERNAL RESOURCES ===== -->
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Playfair+Display:wght@700&display=swap');
-        body { font-family: 'Inter', system_ui, sans-serif; }
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@700&display=swap');
         
-        /* Hero - Nairobi skyline */
+        body { 
+            font-family: 'Inter', system_ui, sans-serif;
+            background: #faf5e4; /* Light gold background */
+        }
+        
+        /* Hero with Nairobi skyline */
         .hero-bg {
-            background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.6)),
+            background: linear-gradient(rgba(0,0,0,0.55), rgba(0,0,0,0.65)),
                         url('https://images.unsplash.com/photo-1611348524140-53c9a25263d6?w=2000&q=80') center/cover no-repeat;
-            /* Fallback if Unsplash fails */
             background-color: #1e293b;
         }
         h1 { font-size: 2.5rem; }
@@ -28,7 +96,7 @@
         }
         .property-card:hover {
             transform: translateY(-8px);
-            box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1);
+            box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.15);
         }
         
         /* Chat animations */
@@ -52,25 +120,98 @@
             30% { opacity: 1; }
         }
         
-        /* Carousel */
+        /* ===== CAROUSEL RECTANGULAR FRAME ===== */
+        .carousel-frame {
+            position: relative;
+            background: white;
+            border: 2px solid #e9d5a8;
+            border-radius: 20px;
+            padding: 20px 60px;
+            box-shadow: 0 4px 20px rgba(139, 92, 42, 0.08);
+            overflow: hidden;
+        }
         .carousel-container {
             display: flex;
             overflow-x: auto;
             scroll-snap-type: x mandatory;
             scroll-behavior: smooth;
-            gap: 20px;
-            padding: 10px 4px 20px;
+            gap: 16px;
+            padding: 10px 4px 16px;
             -webkit-overflow-scrolling: touch;
+            scrollbar-width: none;
         }
-        .carousel-container::-webkit-scrollbar { height: 6px; }
-        .carousel-container::-webkit-scrollbar-track { background: #f1f1f1; border-radius: 10px; }
-        .carousel-container::-webkit-scrollbar-thumb { background: #6b21a8; border-radius: 10px; }
+        .carousel-container::-webkit-scrollbar { display: none; }
         .carousel-item {
-            flex: 0 0 320px;
+            flex: 0 0 300px;
             scroll-snap-align: start;
         }
         @media (max-width: 640px) {
-            .carousel-item { flex: 0 0 280px; }
+            .carousel-item { flex: 0 0 260px; }
+            .carousel-frame { padding: 16px 44px; }
+        }
+        
+        /* Carousel nav arrows */
+        .carousel-arrow {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: #6b21a8;
+            color: white;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            box-shadow: 0 4px 12px rgba(107, 33, 168, 0.3);
+            transition: all 0.2s;
+            z-index: 10;
+        }
+        .carousel-arrow:hover {
+            background: #581c87;
+            transform: translateY(-50%) scale(1.1);
+        }
+        .carousel-arrow.prev { left: 8px; }
+        .carousel-arrow.next { right: 8px; }
+        @media (max-width: 640px) {
+            .carousel-arrow { width: 36px; height: 36px; font-size: 14px; }
+        }
+        
+        /* ===== CATEGORY PILLS ===== */
+        .category-pills {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-top: 20px;
+        }
+        .category-pill {
+            padding: 10px 20px;
+            background: white;
+            border: 2px solid #e9d5a8;
+            border-radius: 9999px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 14px;
+            color: #374151;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .category-pill:hover {
+            border-color: #6b21a8;
+            color: #6b21a8;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(107, 33, 168, 0.15);
+        }
+        .category-pill.active {
+            background: #6b21a8;
+            border-color: #6b21a8;
+            color: white;
         }
         
         /* Mobile nav */
@@ -121,9 +262,39 @@
             gap: 4px;
         }
         .view-all-link:hover { text-decoration: underline; }
+        
+        /* SEO content block */
+        .seo-content {
+            background: white;
+            padding: 32px;
+            border-radius: 16px;
+            margin: 32px 0;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+        .seo-content h2 {
+            color: #6b21a8;
+            margin-bottom: 12px;
+            font-size: 1.5rem;
+        }
+        .seo-content h3 {
+            color: #111;
+            margin: 20px 0 8px;
+            font-size: 1.1rem;
+        }
+        .seo-content p {
+            color: #374151;
+            line-height: 1.7;
+            margin-bottom: 12px;
+        }
+        .seo-content ul {
+            list-style: disc;
+            margin-left: 20px;
+            color: #374151;
+            margin-bottom: 12px;
+        }
     </style>
 </head>
-<body class="bg-[#f8f7f4]">
+<body>
 
     <!-- Top Bar -->
     <header class="bg-[#6b21a8] py-3 text-white text-center text-sm font-medium">
@@ -133,7 +304,7 @@
     <!-- Navbar -->
     <nav class="bg-white shadow sticky top-0 z-50">
         <div class="max-w-7xl mx-auto px-6 py-5 flex items-center justify-between">
-            <a href="#" class="flex items-center gap-3 text-2xl font-bold text-[#6b21a8]">
+            <a href="/" class="flex items-center gap-3 text-2xl font-bold text-[#6b21a8]">
                 🏡 <span>PROPERTIES IN KENYA</span>
             </a>
             
@@ -141,9 +312,9 @@
             <div class="hidden md:flex gap-8 font-medium text-base">
                 <a href="#for-sale" class="hover:text-[#6b21a8]">Buy</a>
                 <a href="#for-rent" class="hover:text-[#6b21a8]">Rent</a>
+                <a href="#for-lease" class="hover:text-[#6b21a8]">For Lease</a>
                 <a href="#all-listings" class="hover:text-[#6b21a8]">All Listings</a>
-                <a href="#top-agents" class="hover:text-[#6b21a8]">Top Agents</a>
-                <a href="#" onclick="alert('Agents portal: login at /agent.html'); return false;" class="hover:text-[#6b21a8]">Agents</a>
+                <a href="#blog" class="hover:text-[#6b21a8]">Blog</a>
             </div>
             
             <div class="flex items-center gap-3">
@@ -152,7 +323,6 @@
                     <i class="fas fa-plus"></i> <span class="hidden sm:inline">List Property</span>
                 </button>
                 
-                <!-- Mobile hamburger -->
                 <button onclick="toggleMobileMenu()" class="md:hidden text-2xl text-gray-700">
                     <i class="fas fa-bars"></i>
                 </button>
@@ -160,10 +330,8 @@
         </div>
     </nav>
 
-    <!-- Mobile Menu Overlay -->
+    <!-- Mobile Menu -->
     <div id="mobileOverlay" class="mobile-overlay" onclick="toggleMobileMenu()"></div>
-    
-    <!-- Mobile Menu Drawer -->
     <div id="mobileMenu" class="mobile-menu">
         <div class="flex justify-between items-center mb-8">
             <span class="text-xl font-bold text-[#6b21a8]">🏡 Menu</span>
@@ -172,28 +340,13 @@
             </button>
         </div>
         <div class="flex flex-col gap-4">
-            <a href="#for-sale" onclick="toggleMobileMenu()" class="py-3 px-4 rounded-lg hover:bg-gray-100 font-medium text-gray-800">
-                <i class="fas fa-home mr-3 text-[#6b21a8]"></i> Buy Property
-            </a>
-            <a href="#for-rent" onclick="toggleMobileMenu()" class="py-3 px-4 rounded-lg hover:bg-gray-100 font-medium text-gray-800">
-                <i class="fas fa-key mr-3 text-[#6b21a8]"></i> Rent Property
-            </a>
-            <a href="#all-listings" onclick="toggleMobileMenu()" class="py-3 px-4 rounded-lg hover:bg-gray-100 font-medium text-gray-800">
-                <i class="fas fa-th-large mr-3 text-[#6b21a8]"></i> All Listings
-            </a>
-            <a href="#top-agents" onclick="toggleMobileMenu()" class="py-3 px-4 rounded-lg hover:bg-gray-100 font-medium text-gray-800">
-                <i class="fas fa-user-tie mr-3 text-[#6b21a8]"></i> Top Agents
-            </a>
-            <a href="agent.html" class="py-3 px-4 rounded-lg hover:bg-gray-100 font-medium text-gray-800">
-                <i class="fas fa-user mr-3 text-[#6b21a8]"></i> Agent Portal
-            </a>
-            <a href="login.html" class="py-3 px-4 rounded-lg hover:bg-gray-100 font-medium text-gray-800">
-                <i class="fas fa-sign-in-alt mr-3 text-[#6b21a8]"></i> Login
-            </a>
-            <hr class="my-2">
-            <a href="#" onclick="alert('Call us: +254 700 000 000'); return false;" class="py-3 px-4 rounded-lg bg-emerald-50 text-emerald-700 font-semibold">
-                <i class="fas fa-phone mr-3"></i> Contact Us
-            </a>
+            <a href="#for-sale" onclick="toggleMobileMenu()" class="py-3 px-4 rounded-lg hover:bg-gray-100 font-medium"><i class="fas fa-home mr-3 text-[#6b21a8]"></i>Buy Property</a>
+            <a href="#for-rent" onclick="toggleMobileMenu()" class="py-3 px-4 rounded-lg hover:bg-gray-100 font-medium"><i class="fas fa-key mr-3 text-[#6b21a8]"></i>Rent Property</a>
+            <a href="#for-lease" onclick="toggleMobileMenu()" class="py-3 px-4 rounded-lg hover:bg-gray-100 font-medium"><i class="fas fa-file-contract mr-3 text-[#6b21a8]"></i>For Lease</a>
+            <a href="#all-listings" onclick="toggleMobileMenu()" class="py-3 px-4 rounded-lg hover:bg-gray-100 font-medium"><i class="fas fa-th-large mr-3 text-[#6b21a8]"></i>All Listings</a>
+            <a href="#blog" onclick="toggleMobileMenu()" class="py-3 px-4 rounded-lg hover:bg-gray-100 font-medium"><i class="fas fa-blog mr-3 text-[#6b21a8]"></i>Blog</a>
+            <a href="agent.html" class="py-3 px-4 rounded-lg hover:bg-gray-100 font-medium"><i class="fas fa-user mr-3 text-[#6b21a8]"></i>Agent Portal</a>
+            <a href="login.html" class="py-3 px-4 rounded-lg hover:bg-gray-100 font-medium"><i class="fas fa-sign-in-alt mr-3 text-[#6b21a8]"></i>Login</a>
         </div>
     </div>
 
@@ -205,7 +358,6 @@
             </h1>
             <p class="text-lg mb-8">Talk to <span class="font-semibold text-emerald-300">The Caretaker</span> — our AI assistant</p>
 
-            <!-- AI Chat Interface -->
             <div class="bg-white/95 backdrop-blur-md rounded-3xl p-4 max-w-2xl mx-auto shadow-2xl">
                 <div id="chatMessages" class="max-h-64 overflow-y-auto mb-4 space-y-3 text-left">
                     <div class="chat-message flex gap-3">
@@ -213,7 +365,7 @@
                             <i class="fas fa-user-tie text-sm"></i>
                         </div>
                         <div class="bg-gray-100 rounded-2xl rounded-tl-none px-4 py-3 text-gray-800 text-sm">
-                            👋 Hi! I'm <strong>The Caretaker</strong>. Tell me what you're looking for — e.g. <em>"3 bedroom in Ruai under 8 million"</em>
+                            👋 Hi! I'm <strong>The Caretaker</strong>. Tell me what you're looking for in plain English — e.g. <em>"3 bedroom in Ruai under 8 million"</em>
                         </div>
                     </div>
                 </div>
@@ -234,15 +386,15 @@
     </section>
 
     <!-- Quick Actions -->
-    <div class="max-w-6xl mx-auto px-6 -mt-8 relative z-10 pb-12">
+    <div class="max-w-6xl mx-auto px-6 -mt-8 relative z-10 pb-6">
         <div class="grid grid-cols-2 md:grid-cols-5 gap-6 bg-white rounded-3xl shadow-xl p-8">
             <a href="#all-listings" class="text-center cursor-pointer hover:scale-105 transition block">
                 <div class="w-14 h-14 mx-auto bg-purple-100 rounded-2xl flex items-center justify-center text-3xl mb-3">🏘️</div>
                 <p class="font-medium text-sm">Property Listings</p>
             </a>
-            <a href="#for-sale" class="text-center cursor-pointer hover:scale-105 transition block">
-                <div class="w-14 h-14 mx-auto bg-blue-100 rounded-2xl flex items-center justify-center text-3xl mb-3">📊</div>
-                <p class="font-medium text-sm">Valuation</p>
+            <a href="#inquiries-section" class="text-center cursor-pointer hover:scale-105 transition block">
+                <div class="w-14 h-14 mx-auto bg-blue-100 rounded-2xl flex items-center justify-center text-3xl mb-3">📥</div>
+                <p class="font-medium text-sm">Inquiries</p>
             </a>
             <a href="#all-listings" class="text-center cursor-pointer hover:scale-105 transition block">
                 <div class="w-14 h-14 mx-auto bg-amber-100 rounded-2xl flex items-center justify-center text-3xl mb-3">💰</div>
@@ -252,48 +404,79 @@
                 <div class="w-14 h-14 mx-auto bg-red-100 rounded-2xl flex items-center justify-center text-3xl mb-3">🔥</div>
                 <p class="font-medium text-sm">Hot Deals</p>
             </a>
-            <a href="#top-agents" class="text-center cursor-pointer hover:scale-105 transition block">
-                <div class="w-14 h-14 mx-auto bg-emerald-100 rounded-2xl flex items-center justify-center text-3xl mb-3">👥</div>
-                <p class="font-medium text-sm">Top Agents</p>
+            <a href="#blog" class="text-center cursor-pointer hover:scale-105 transition block">
+                <div class="w-14 h-14 mx-auto bg-emerald-100 rounded-2xl flex items-center justify-center text-3xl mb-3">📝</div>
+                <p class="font-medium text-sm">Blog</p>
             </a>
+        </div>
+        
+        <!-- ===== CATEGORY PILLS ===== -->
+        <div class="category-pills">
+            <button class="category-pill active" onclick="filterByCategory('all', this)">
+                <i class="fas fa-th"></i> All
+            </button>
+            <button class="category-pill" onclick="filterByCategory('apartment', this)">
+                <i class="fas fa-building"></i> Apartments
+            </button>
+            <button class="category-pill" onclick="filterByCategory('house', this)">
+                <i class="fas fa-home"></i> Houses
+            </button>
+            <button class="category-pill" onclick="filterByCategory('commercial', this)">
+                <i class="fas fa-store"></i> Commercial
+            </button>
+            <button class="category-pill" onclick="filterByCategory('land', this)">
+                <i class="fas fa-mountain"></i> Land
+            </button>
         </div>
     </div>
 
     <!-- FOR SALE CAROUSEL -->
-    <section id="for-sale" class="max-w-7xl mx-auto px-6 py-12">
+    <section id="for-sale" class="max-w-7xl mx-auto px-6 py-8">
         <div class="section-header">
             <h2>🏡 Properties For Sale</h2>
             <a href="#all-listings" class="view-all-link">View all <i class="fas fa-arrow-right"></i></a>
         </div>
-        <div id="forSaleCarousel" class="carousel-container">
-            <div class="text-gray-400 py-8"><i class="fas fa-spinner fa-spin mr-2"></i>Loading...</div>
+        <div class="carousel-frame">
+            <button class="carousel-arrow prev" onclick="scrollCarousel('forSaleCarousel', -1)"><i class="fas fa-chevron-left"></i></button>
+            <div id="forSaleCarousel" class="carousel-container">
+                <div class="text-gray-400 py-8 w-full text-center"><i class="fas fa-spinner fa-spin mr-2"></i>Loading...</div>
+            </div>
+            <button class="carousel-arrow next" onclick="scrollCarousel('forSaleCarousel', 1)"><i class="fas fa-chevron-right"></i></button>
         </div>
     </section>
 
     <!-- FOR RENT CAROUSEL -->
-    <section id="for-rent" class="max-w-7xl mx-auto px-6 py-12">
+    <section id="for-rent" class="max-w-7xl mx-auto px-6 py-8">
         <div class="section-header">
             <h2>🔑 Properties For Rent</h2>
             <a href="#all-listings" class="view-all-link">View all <i class="fas fa-arrow-right"></i></a>
         </div>
-        <div id="forRentCarousel" class="carousel-container">
-            <div class="text-gray-400 py-8"><i class="fas fa-spinner fa-spin mr-2"></i>Loading...</div>
+        <div class="carousel-frame">
+            <button class="carousel-arrow prev" onclick="scrollCarousel('forRentCarousel', -1)"><i class="fas fa-chevron-left"></i></button>
+            <div id="forRentCarousel" class="carousel-container">
+                <div class="text-gray-400 py-8 w-full text-center"><i class="fas fa-spinner fa-spin mr-2"></i>Loading...</div>
+            </div>
+            <button class="carousel-arrow next" onclick="scrollCarousel('forRentCarousel', 1)"><i class="fas fa-chevron-right"></i></button>
         </div>
     </section>
 
-    <!-- TOP AGENTS CAROUSEL -->
-    <section id="top-agents" class="max-w-7xl mx-auto px-6 py-12">
+    <!-- FOR LEASE CAROUSEL -->
+    <section id="for-lease" class="max-w-7xl mx-auto px-6 py-8">
         <div class="section-header">
-            <h2>⭐ Our Top Agents</h2>
-            <a href="agent.html" class="view-all-link">Become an agent <i class="fas fa-arrow-right"></i></a>
+            <h2>📄 Properties For Lease</h2>
+            <a href="#all-listings" class="view-all-link">View all <i class="fas fa-arrow-right"></i></a>
         </div>
-        <div id="topAgentsCarousel" class="carousel-container">
-            <div class="text-gray-400 py-8"><i class="fas fa-spinner fa-spin mr-2"></i>Loading...</div>
+        <div class="carousel-frame">
+            <button class="carousel-arrow prev" onclick="scrollCarousel('forLeaseCarousel', -1)"><i class="fas fa-chevron-left"></i></button>
+            <div id="forLeaseCarousel" class="carousel-container">
+                <div class="text-gray-400 py-8 w-full text-center"><i class="fas fa-spinner fa-spin mr-2"></i>Loading...</div>
+            </div>
+            <button class="carousel-arrow next" onclick="scrollCarousel('forLeaseCarousel', 1)"><i class="fas fa-chevron-right"></i></button>
         </div>
     </section>
 
     <!-- ALL LISTINGS GRID -->
-    <section id="all-listings" class="max-w-7xl mx-auto px-6 py-16">
+    <section id="all-listings" class="max-w-7xl mx-auto px-6 py-12">
         <div class="section-header">
             <h2>🔍 All Verified Properties</h2>
             <p class="text-gray-500 text-sm" id="count">Showing 0 properties</p>
@@ -303,6 +486,92 @@
                 <i class="fas fa-spinner fa-spin text-4xl mb-4"></i>
                 <p>Loading properties...</p>
             </div>
+        </div>
+    </section>
+
+    <!-- INQUIRIES SECTION -->
+    <section id="inquiries-section" class="max-w-5xl mx-auto px-6 py-12">
+        <div class="bg-white rounded-3xl shadow-xl p-8 md:p-12 text-center">
+            <div class="w-20 h-20 mx-auto bg-blue-100 rounded-full flex items-center justify-center text-4xl mb-4">📥</div>
+            <h2 class="text-3xl font-bold mb-4 text-[#6b21a8]">Have an Inquiry?</h2>
+            <p class="text-gray-600 mb-6 max-w-xl mx-auto">
+                Interested in a property? Have questions about buying, renting, or leasing in Kenya? 
+                Send us a message and our team will get back to you within 24 hours.
+            </p>
+            <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                <a href="https://wa.me/254700000000" target="_blank" class="bg-[#25D366] hover:bg-[#1ebe5d] text-white px-8 py-4 rounded-full font-semibold inline-flex items-center justify-center gap-2">
+                    <i class="fab fa-whatsapp"></i> WhatsApp Us
+                </a>
+                <a href="mailto:info@propertiesinkenya.co.ke" class="bg-[#6b21a8] hover:bg-[#581c87] text-white px-8 py-4 rounded-full font-semibold inline-flex items-center justify-center gap-2">
+                    <i class="fas fa-envelope"></i> Email Us
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- BLOG SECTION -->
+    <section id="blog" class="max-w-7xl mx-auto px-6 py-12">
+        <div class="section-header">
+            <h2>📝 Real Estate Blog</h2>
+            <a href="#" class="view-all-link">All articles <i class="fas fa-arrow-right"></i></a>
+        </div>
+        <div class="grid md:grid-cols-3 gap-6">
+            <article class="bg-white rounded-2xl overflow-hidden shadow hover:shadow-xl transition">
+                <img src="https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=600&q=80" alt="Buying land in Kenya" class="w-full h-48 object-cover">
+                <div class="p-6">
+                    <span class="text-xs text-[#6b21a8] font-semibold uppercase">Guide</span>
+                    <h3 class="font-bold text-lg mt-2 mb-2">How to Buy Land in Kenya Without Getting Scammed</h3>
+                    <p class="text-gray-600 text-sm mb-4">A step-by-step guide to verifying titles, doing due diligence, and completing land purchases safely.</p>
+                    <a href="#" class="text-[#6b21a8] font-semibold text-sm">Read more →</a>
+                </div>
+            </article>
+            <article class="bg-white rounded-2xl overflow-hidden shadow hover:shadow-xl transition">
+                <img src="https://images.unsplash.com/photo-1582407947304-fd86f028f716?w=600&q=80" alt="Nairobi apartments" class="w-full h-48 object-cover">
+                <div class="p-6">
+                    <span class="text-xs text-[#6b21a8] font-semibold uppercase">Market</span>
+                    <h3 class="font-bold text-lg mt-2 mb-2">Best Nairobi Neighborhoods for Families in 2026</h3>
+                    <p class="text-gray-600 text-sm mb-4">From Kilimani to Ruai — discover the top estates for families based on schools, security, and amenities.</p>
+                    <a href="#" class="text-[#6b21a8] font-semibold text-sm">Read more →</a>
+                </div>
+            </article>
+            <article class="bg-white rounded-2xl overflow-hidden shadow hover:shadow-xl transition">
+                <img src="https://images.unsplash.com/photo-1551833227-8e3512960a83?w=600&q=80" alt="Property investment" class="w-full h-48 object-cover">
+                <div class="p-6">
+                    <span class="text-xs text-[#6b21a8] font-semibold uppercase">Investment</span>
+                    <h3 class="font-bold text-lg mt-2 mb-2">Ruai Property Investment Guide: Why Prices Are Rising</h3>
+                    <p class="text-gray-600 text-sm mb-4">Analysis of Ruai's rapid growth and why it's becoming one of Nairobi's hottest investment areas.</p>
+                    <a href="#" class="text-[#6b21a8] font-semibold text-sm">Read more →</a>
+                </div>
+            </article>
+        </div>
+    </section>
+
+    <!-- SEO CONTENT BLOCK (Critical for Google) -->
+    <section class="max-w-5xl mx-auto px-6 py-8">
+        <div class="seo-content">
+            <h2>Properties in Kenya — Your Trusted Real Estate Platform</h2>
+            <p>
+                Welcome to <strong>Properties in Kenya</strong>, the AI-powered real estate platform connecting buyers, renters, and investors with verified properties across Kenya. Whether you're searching for a <strong>house for sale in Nairobi</strong>, an <strong>apartment for rent in Kilimani</strong>, or <strong>land for sale in Ruai</strong>, our platform makes finding your next property simple, transparent, and secure.
+            </p>
+            
+            <h3>Why Choose Properties in Kenya?</h3>
+            <ul>
+                <li><strong>Verified Listings</strong> — Every property is vetted by our team before going live</li>
+                <li><strong>AI-Powered Search</strong> — Chat with "The Caretaker" to find properties matching your exact needs</li>
+                <li><strong>Nationwide Coverage</strong> — From Nairobi's upscale neighborhoods to emerging areas like Ruai, Syokimau, and Kitengela</li>
+                <li><strong>Direct Agent Contact</strong> — Connect instantly with verified agents via WhatsApp or phone</li>
+                <li><strong>Free for Buyers</strong> — Browse thousands of properties at no cost</li>
+            </ul>
+            
+            <h3>Explore Properties by Category</h3>
+            <p>
+                Browse our extensive collection of <strong>houses for sale in Kenya</strong>, modern <strong>apartments in Nairobi</strong>, commercial properties for business owners, and prime <strong>land for sale</strong> across the country. Our listings cover popular areas including Kilimani, Kileleshwa, Westlands, Karen, Langata, Ruai, Kayole, Embakasi, Kasarani, Rongai, Syokimau, Kitengela, Thika, Kiambu, and Kikuyu.
+            </p>
+            
+            <h3>The Caretaker — Kenya's First AI Property Assistant</h3>
+            <p>
+                Our AI assistant understands natural language, so you can search like you'd talk to a friend. Try asking: <em>"Show me 4 bedroom houses in Ruai under 10 million"</em> or <em>"Find me a 2 bedroom apartment for rent in Kilimani"</em>. The Caretaker instantly filters verified listings to match your exact requirements.
+            </p>
         </div>
     </section>
 
@@ -325,12 +594,8 @@
                     <div id="modalPrice" class="text-4xl font-bold text-emerald-700"></div>
                     <div id="modalMeta" class="text-base"></div>
                     <p id="modalDescription" class="text-gray-600"></p>
-                    <a id="modalWA" href="#" target="_blank" class="block bg-[#25D366] text-white text-center py-5 rounded-2xl font-semibold text-lg">
-                        💬 WhatsApp Agent
-                    </a>
-                    <a id="modalCall" href="tel:" class="block bg-gray-800 text-white text-center py-4 rounded-2xl font-semibold">
-                        <i class="fas fa-phone mr-2"></i> Call Agent
-                    </a>
+                    <a id="modalWA" href="#" target="_blank" class="block bg-[#25D366] text-white text-center py-5 rounded-2xl font-semibold text-lg">💬 WhatsApp Agent</a>
+                    <a id="modalCall" href="tel:" class="block bg-gray-800 text-white text-center py-4 rounded-2xl font-semibold"><i class="fas fa-phone mr-2"></i>Call Agent</a>
                 </div>
             </div>
         </div>
@@ -339,7 +604,14 @@
     <footer class="bg-[#0f172a] text-white py-12 text-center">
         <p class="text-2xl font-bold">Properties in Kenya</p>
         <p class="text-gray-400 mt-2">Verified • Trusted • Transparent</p>
-        <p class="text-gray-500 text-sm mt-4">© 2026 Properties in Kenya. All rights reserved.</p>
+        <div class="flex justify-center gap-6 mt-6 text-gray-400 text-sm">
+            <a href="#" class="hover:text-white">About</a>
+            <a href="#blog" class="hover:text-white">Blog</a>
+            <a href="#" class="hover:text-white">Terms</a>
+            <a href="#" class="hover:text-white">Privacy</a>
+            <a href="#inquiries-section" class="hover:text-white">Contact</a>
+        </div>
+        <p class="text-gray-500 text-sm mt-6">© 2026 Properties in Kenya. All rights reserved.</p>
     </footer>
 
     <script>
@@ -350,9 +622,9 @@
         );
 
         let allProperties = [];
-        let allAgents = [];
         let currentImages = [];
         let currentImageIndex = 0;
+        let activeCategory = 'all';
 
         // ===== MOBILE MENU =====
         window.toggleMobileMenu = function() {
@@ -370,7 +642,6 @@
                     .order("created_at", { ascending: false });
 
                 if (error) throw error;
-
                 allProperties = data || [];
                 
                 if (allProperties.length === 0) {
@@ -378,57 +649,43 @@
                         <div class="col-span-full text-center py-12 text-gray-500">
                             <i class="fas fa-inbox text-4xl mb-4"></i>
                             <p>No properties available yet. Check back soon!</p>
-                        </div>
-                    `;
-                    document.getElementById('forSaleCarousel').innerHTML = '<p class="text-gray-400 py-8">No properties for sale yet.</p>';
-                    document.getElementById('forRentCarousel').innerHTML = '<p class="text-gray-400 py-8">No properties for rent yet.</p>';
+                        </div>`;
+                    ['forSaleCarousel','forRentCarousel','forLeaseCarousel'].forEach(id => {
+                        document.getElementById(id).innerHTML = '<p class="text-gray-400 py-8 w-full text-center">No properties yet.</p>';
+                    });
                     return;
                 }
 
                 renderListings(allProperties);
                 renderCarousels();
+                injectPropertySchema(); // SEO: Add schema for each property
             } catch (error) {
                 console.error('Error loading properties:', error);
                 document.getElementById('listings').innerHTML = `
                     <div class="col-span-full text-center py-12 text-red-500">
                         <i class="fas fa-exclamation-triangle text-4xl mb-4"></i>
-                        <p>Unable to load properties. Please refresh the page.</p>
-                    </div>
-                `;
-            }
-        }
-
-        // ===== LOAD AGENTS =====
-        async function loadAgents() {
-            try {
-                const { data, error } = await supabaseClient
-                    .from("profiles")
-                    .select("*")
-                    .eq("role", "agent")
-                    .eq("subscribed", true)
-                    .limit(10);
-
-                if (error) throw error;
-                allAgents = data || [];
-                renderAgentsCarousel();
-            } catch (error) {
-                console.error('Error loading agents:', error);
-                document.getElementById('topAgentsCarousel').innerHTML = '<p class="text-gray-400 py-8">Unable to load agents.</p>';
+                        <p>Unable to load properties. Please refresh.</p>
+                    </div>`;
             }
         }
 
         // ===== RENDER CAROUSELS =====
         function renderCarousels() {
-            const forSale = allProperties.filter(p => p.property_type === 'for sale').slice(0, 10);
-            const forRent = allProperties.filter(p => p.property_type === 'for rent').slice(0, 10);
+            const forSale = allProperties.filter(p => p.property_type === 'for sale').slice(0, 15);
+            const forRent = allProperties.filter(p => p.property_type === 'for rent').slice(0, 15);
+            const forLease = allProperties.filter(p => p.property_type === 'lease').slice(0, 15);
 
             document.getElementById('forSaleCarousel').innerHTML = forSale.length 
                 ? forSale.map(p => carouselCard(p)).join('')
-                : '<p class="text-gray-400 py-8">No properties for sale yet.</p>';
+                : '<p class="text-gray-400 py-8 w-full text-center">No properties for sale yet.</p>';
 
             document.getElementById('forRentCarousel').innerHTML = forRent.length
                 ? forRent.map(p => carouselCard(p)).join('')
-                : '<p class="text-gray-400 py-8">No properties for rent yet.</p>';
+                : '<p class="text-gray-400 py-8 w-full text-center">No properties for rent yet.</p>';
+
+            document.getElementById('forLeaseCarousel').innerHTML = forLease.length
+                ? forLease.map(p => carouselCard(p)).join('')
+                : '<p class="text-gray-400 py-8 w-full text-center">No properties for lease yet.</p>';
         }
 
         function carouselCard(p) {
@@ -437,7 +694,7 @@
                 <div class="carousel-item">
                     <div class="property-card bg-white cursor-pointer border border-gray-100" onclick="openDetail('${p.id}')">
                         <div class="relative">
-                            <img src="${img}" class="w-full h-48 object-cover" onerror="this.src='https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=400&q=80'">
+                            <img src="${img}" class="w-full h-48 object-cover" loading="lazy" alt="${escapeHtml(p.title)} in ${escapeHtml(p.location)}" onerror="this.src='https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=400&q=80'">
                             <div class="absolute top-3 left-3 bg-white text-xs font-bold px-3 py-1 rounded-full shadow">
                                 ${(p.property_type || 'FOR SALE').toUpperCase()}
                             </div>
@@ -449,33 +706,32 @@
                             <p class="text-xl font-bold text-emerald-700">KSh ${Number(p.price).toLocaleString()}</p>
                         </div>
                     </div>
-                </div>
-            `;
+                </div>`;
         }
 
-        function renderAgentsCarousel() {
-            const container = document.getElementById('topAgentsCarousel');
-            if (allAgents.length === 0) {
-                container.innerHTML = '<p class="text-gray-400 py-8">No verified agents yet. <a href="agent.html" class="text-[#6b21a8] font-semibold">Become the first!</a></p>';
-                return;
+        // ===== CAROUSEL NAVIGATION =====
+        window.scrollCarousel = function(id, direction) {
+            const container = document.getElementById(id);
+            const scrollAmount = 320;
+            container.scrollBy({ left: direction * scrollAmount, behavior: 'smooth' });
+        };
+
+        // ===== CATEGORY FILTER =====
+        window.filterByCategory = function(category, btn) {
+            activeCategory = category;
+            document.querySelectorAll('.category-pill').forEach(p => p.classList.remove('active'));
+            btn.classList.add('active');
+            
+            let filtered = allProperties;
+            if (category !== 'all') {
+                filtered = allProperties.filter(p => {
+                    const type = (p.property_category || p.property_type || '').toLowerCase();
+                    const title = (p.title || '').toLowerCase();
+                    return type.includes(category) || title.includes(category);
+                });
             }
-            container.innerHTML = allAgents.map(a => `
-                <div class="carousel-item">
-                    <div class="bg-white rounded-2xl p-6 border border-gray-100 text-center">
-                        <div class="w-20 h-20 mx-auto rounded-full bg-gradient-to-br from-[#6b21a8] to-[#a855f7] flex items-center justify-center text-white text-2xl font-bold mb-3">
-                            ${(a.full_name || 'A').charAt(0).toUpperCase()}
-                        </div>
-                        <h3 class="font-semibold text-base">${escapeHtml(a.full_name || 'Agent')}</h3>
-                        ${a.company ? `<p class="text-gray-500 text-sm mb-2">${escapeHtml(a.company)}</p>` : ''}
-                        ${a.bio ? `<p class="text-gray-600 text-xs mb-3 line-clamp-2">${escapeHtml(a.bio.substring(0, 80))}</p>` : ''}
-                        <div class="flex gap-2 justify-center mt-3">
-                            ${a.phone ? `<a href="https://wa.me/${a.phone.replace(/[^0-9]/g, '')}" target="_blank" class="bg-emerald-500 text-white px-3 py-2 rounded-lg text-xs"><i class="fab fa-whatsapp"></i></a>` : ''}
-                            ${a.phone ? `<a href="tel:${a.phone}" class="bg-gray-800 text-white px-3 py-2 rounded-lg text-xs"><i class="fas fa-phone"></i></a>` : ''}
-                        </div>
-                    </div>
-                </div>
-            `).join('');
-        }
+            renderListings(filtered);
+        };
 
         // ===== RENDER ALL LISTINGS =====
         function renderListings(properties) {
@@ -488,18 +744,17 @@
                     <div class="col-span-full text-center py-12 text-gray-400">
                         <i class="fas fa-search text-4xl mb-4"></i>
                         <p>No properties found matching your criteria.</p>
-                    </div>
-                `;
+                    </div>`;
                 return;
             }
 
             properties.forEach(p => {
-                const card = document.createElement("div");
+                const card = document.createElement("article");
                 card.className = "property-card bg-white cursor-pointer border border-gray-100";
                 const img = p.images?.[0] || p.image_url || 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=600&q=80';
                 card.innerHTML = `
                     <div class="relative">
-                        <img src="${img}" class="w-full h-64 object-cover" onerror="this.src='https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=600&q=80'">
+                        <img src="${img}" class="w-full h-64 object-cover" loading="lazy" alt="${escapeHtml(p.title)} in ${escapeHtml(p.location)}" onerror="this.src='https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=600&q=80'">
                         <div class="absolute top-4 left-4 bg-white text-xs font-bold px-3 py-1 rounded-full shadow">
                             ${(p.property_type || 'FOR SALE').toUpperCase()}
                         </div>
@@ -513,8 +768,7 @@
                             <button onclick="event.stopImmediatePropagation(); openDetail('${p.id}');" 
                                     class="text-sm border border-gray-300 hover:bg-gray-50 px-5 py-2 rounded-xl">View details</button>
                         </div>
-                    </div>
-                `;
+                    </div>`;
                 card.onclick = () => openDetail(p.id);
                 container.appendChild(card);
             });
@@ -529,23 +783,21 @@
                            (p.image_url ? [p.image_url] : ['https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=800&q=80']);
             currentImageIndex = 0;
             document.getElementById("mainImage").src = currentImages[0];
+            document.getElementById("mainImage").alt = `${p.title} in ${p.location}`;
             document.getElementById("modalTitle").textContent = p.title;
             document.getElementById("modalPrice").textContent = `KSh ${Number(p.price).toLocaleString()}`;
             document.getElementById("modalMeta").innerHTML = `
                 📍 ${escapeHtml(p.location)} <br>
                 ${p.property_type ? p.property_type.toUpperCase() : ''}
-                ${p.bedrooms ? `<br>🛏️ ${p.bedrooms} Bedrooms` : ''}
-            `;
+                ${p.bedrooms ? `<br>🛏️ ${p.bedrooms} Bedrooms` : ''}`;
             document.getElementById("modalDescription").textContent = p.description || "Beautiful verified property in a prime location.";
             
-            // Get agent phone for WhatsApp
             const agentPhone = p.agent_phone || '+254700000000';
             const cleanPhone = agentPhone.replace(/[^0-9]/g, '');
             const waMessage = encodeURIComponent(`Hi, I'm interested in your property: ${p.title} (KSh ${Number(p.price).toLocaleString()})`);
             
             document.getElementById("modalWA").href = `https://wa.me/${cleanPhone}?text=${waMessage}`;
             document.getElementById("modalCall").href = `tel:${agentPhone}`;
-            
             document.getElementById("detailModal").classList.remove("hidden");
         }
 
@@ -559,7 +811,7 @@
         };
         window.closeModal = () => document.getElementById("detailModal").classList.add("hidden");
 
-        // ===== GROQ AI (via Vercel API) =====
+        // ===== GROQ AI =====
         async function askAI() {
             const input = document.getElementById('aiQuery');
             const query = input.value.trim();
@@ -574,35 +826,27 @@
             showTypingIndicator();
 
             try {
-                // Call your secure Vercel API route
                 const response = await fetch('/api/ai-assistant', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ query: query })
                 });
-
                 const result = await response.json();
-
-                if (!response.ok) {
-                    throw new Error(result.error || 'Failed to connect to AI');
-                }
+                if (!response.ok) throw new Error(result.error || 'Failed to connect to AI');
 
                 const filters = result.filters;
                 const filteredProperties = applyAIFilters(filters);
-
                 removeTypingIndicator();
 
                 let aiResponseText = "";
                 if (filteredProperties.length === 0) {
-                    aiResponseText = `😔 I couldn't find any properties matching "<em>${escapeHtml(query)}</em>". Try adjusting your budget or location, or browse all listings below.`;
+                    aiResponseText = `😔 I couldn't find any properties matching "<em>${escapeHtml(query)}</em>". Try adjusting your budget or location.`;
                 } else {
                     const filterSummary = [];
                     if (filters.max_price) filterSummary.push(`under KSh ${(filters.max_price / 1000000).toFixed(1)}M`);
-                    if (filters.min_price) filterSummary.push(`above KSh ${(filters.min_price / 1000000).toFixed(1)}M`);
                     if (filters.location) filterSummary.push(`in ${filters.location}`);
                     if (filters.bedrooms) filterSummary.push(`${filters.bedrooms} bedroom`);
                     if (filters.property_type) filterSummary.push(filters.property_type);
-                    if (filters.transaction) filterSummary.push(filters.transaction);
                     
                     aiResponseText = `✨ Found <strong>${filteredProperties.length} ${filteredProperties.length === 1 ? 'property' : 'properties'}</strong>`;
                     if (filterSummary.length > 0) aiResponseText += ` ${filterSummary.join(', ')}`;
@@ -611,22 +855,19 @@
 
                 addChatMessage(aiResponseText);
                 renderListings(filteredProperties);
-
                 setTimeout(() => {
                     document.querySelector('#all-listings').scrollIntoView({ behavior: 'smooth', block: 'start' });
                 }, 500);
-
             } catch (error) {
                 removeTypingIndicator();
                 console.error('AI Error:', error);
-                addChatMessage("⚠️ Sorry, The Caretaker is having trouble connecting. Please try again in a moment, or browse the listings below.");
+                addChatMessage("⚠️ Sorry, The Caretaker is having trouble connecting. Please try again.");
             } finally {
                 btn.disabled = false;
                 btn.innerHTML = '<i class="fas fa-paper-plane"></i>';
             }
         }
 
-        // Apply AI Filters
         function applyAIFilters(filters) {
             return allProperties.filter(p => {
                 if (filters.max_price && p.price > filters.max_price) return false;
@@ -640,25 +881,17 @@
             });
         }
 
-        // Chat helpers
         function addChatMessage(message, isUser = false) {
             const chatMessages = document.getElementById('chatMessages');
             const messageDiv = document.createElement('div');
             messageDiv.className = 'chat-message flex gap-3 ' + (isUser ? 'flex-row-reverse' : '');
-            
             const avatar = isUser ? 
                 '<div class="w-10 h-10 bg-purple-500 rounded-full flex items-center justify-center text-white font-bold flex-shrink-0">You</div>' :
                 '<div class="w-10 h-10 bg-emerald-500 rounded-full flex items-center justify-center text-white font-bold flex-shrink-0"><i class="fas fa-user-tie text-sm"></i></div>';
-            
             const bubbleClass = isUser ? 
                 'bg-emerald-500 text-white rounded-2xl rounded-tr-none' :
                 'bg-gray-100 text-gray-800 rounded-2xl rounded-tl-none';
-            
-            messageDiv.innerHTML = `
-                ${avatar}
-                <div class="${bubbleClass} px-4 py-3 text-sm max-w-md">${message}</div>
-            `;
-            
+            messageDiv.innerHTML = `${avatar}<div class="${bubbleClass} px-4 py-3 text-sm max-w-md">${message}</div>`;
             chatMessages.appendChild(messageDiv);
             chatMessages.scrollTop = chatMessages.scrollHeight;
         }
@@ -672,8 +905,7 @@
                 <div class="w-10 h-10 bg-emerald-500 rounded-full flex items-center justify-center text-white font-bold flex-shrink-0"><i class="fas fa-user-tie text-sm"></i></div>
                 <div class="bg-gray-100 rounded-2xl rounded-tl-none px-4 py-3">
                     <div class="typing-indicator"><span></span><span></span><span></span></div>
-                </div>
-            `;
+                </div>`;
             chatMessages.appendChild(typingDiv);
             chatMessages.scrollTop = chatMessages.scrollHeight;
         }
@@ -683,7 +915,41 @@
             if (typing) typing.remove();
         }
 
-        // Escape HTML
+        // ===== SEO: INJECT SCHEMA FOR EACH PROPERTY =====
+        function injectPropertySchema() {
+            const existing = document.getElementById('property-schema-container');
+            if (existing) existing.remove();
+            
+            const container = document.createElement('div');
+            container.id = 'property-schema-container';
+            container.style.display = 'none';
+            
+            const schemas = allProperties.slice(0, 20).map(p => ({
+                "@context": "https://schema.org",
+                "@type": "Product",
+                "name": p.title,
+                "description": p.description || `${p.title} in ${p.location}, Kenya`,
+                "image": p.images?.[0] || p.image_url || '',
+                "offers": {
+                    "@type": "Offer",
+                    "price": p.price,
+                    "priceCurrency": "KES",
+                    "availability": "https://schema.org/InStock",
+                    "url": `https://propertiesinkenya.co.ke/property/${p.id}`
+                },
+                "address": {
+                    "@type": "PostalAddress",
+                    "addressLocality": p.location,
+                    "addressCountry": "KE"
+                }
+            }));
+            
+            container.innerHTML = schemas.map(s => 
+                `<script type="application/ld+json">${JSON.stringify(s)}<\/script>`
+            ).join('');
+            document.body.appendChild(container);
+        }
+
         function escapeHtml(text) {
             if (!text) return '';
             const div = document.createElement('div');
@@ -693,7 +959,6 @@
 
         // Initialize
         loadProperties();
-        loadAgents();
     </script>
 </body>
 </html>
