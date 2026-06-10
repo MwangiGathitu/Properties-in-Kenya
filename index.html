@@ -1163,71 +1163,89 @@
         }
         .property-cta.offer:hover { background: #9A7BFF; }
         
-        /* AI Insights Panel */
+        /* ===== AI INSIGHTS PANEL (HONEST VERSION) ===== */
         .ai-insights-panel {
             background: linear-gradient(135deg, #7C4DFF 0%, #E9E3FF 100%);
-            padding: 24px;
+            padding: 32px;
             border-radius: 16px;
             margin: 0 32px 32px;
             color: white;
+            text-align: center;
         }
         .ai-insights-header {
             display: flex;
             align-items: center;
+            justify-content: center;
             gap: 10px;
-            margin-bottom: 16px;
+            margin-bottom: 24px;
         }
         .ai-insights-icon {
-            width: 32px;
-            height: 32px;
+            width: 40px;
+            height: 40px;
             background: rgba(255, 255, 255, 0.2);
-            border-radius: 8px;
+            border-radius: 10px;
             display: flex;
             align-items: center;
             justify-content: center;
+            font-size: 18px;
         }
         .ai-insights-title {
-            font-size: 16px;
-            font-weight: 600;
-        }
-        .ai-insights-content {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 16px;
-            margin-bottom: 20px;
-        }
-        .ai-insight-card {
-            background: rgba(255, 255, 255, 0.15);
-            padding: 16px;
-            border-radius: 10px;
-            backdrop-filter: blur(10px);
-        }
-        .ai-insight-label {
-            font-size: 11px;
-            color: rgba(255, 255, 255, 0.8);
-            margin-bottom: 4px;
-        }
-        .ai-insight-value {
             font-size: 18px;
-            font-weight: 700;
-        }
-        .ai-insights-actions {
-            display: flex;
-            gap: 10px;
-        }
-        .ai-insight-btn {
-            padding: 10px 16px;
-            background: white;
-            color: #7C4DFF;
-            border: none;
-            border-radius: 8px;
-            font-size: 13px;
             font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s;
         }
-        .ai-insight-btn:hover {
-            background: #F3F0FF;
+        
+        /* Coming Soon State */
+        .ai-insights-coming-soon {
+            padding: 24px 16px;
+            background: rgba(255, 255, 255, 0.12);
+            border-radius: 12px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+        }
+        .ai-insights-coming-soon-icon {
+            width: 56px;
+            height: 56px;
+            margin: 0 auto 16px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+            color: white;
+        }
+        .ai-insights-coming-soon-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: white;
+            margin-bottom: 8px;
+        }
+        .ai-insights-coming-soon-text {
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.85);
+            line-height: 1.6;
+            max-width: 420px;
+            margin: 0 auto;
+        }
+        .ai-insights-coming-soon-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            margin-top: 16px;
+            padding: 6px 14px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 9999px;
+            font-size: 11px;
+            font-weight: 500;
+            color: rgba(255, 255, 255, 0.9);
+            letter-spacing: 0.3px;
+        }
+        .ai-insights-coming-soon-badge-dot {
+            width: 6px;
+            height: 6px;
+            background: #FBBF24;
+            border-radius: 50%;
+            animation: pulse 2s infinite;
         }
         
         /* Property Details Grid */
@@ -1399,7 +1417,6 @@
             .footer-top { grid-template-columns: 1fr 1fr; gap: 32px; }
             .category-grid { grid-template-columns: repeat(2, 1fr); }
             .property-hero { grid-template-columns: 1fr; }
-            .ai-insights-content { grid-template-columns: 1fr; }
             .property-details-grid { grid-template-columns: repeat(2, 1fr); }
         }
         @media (max-width: 768px) {
@@ -1424,6 +1441,9 @@
             .property-details-grid { grid-template-columns: 1fr; }
             .mobile-bottom-bar { display: flex; }
             .property-modal { margin: 0; border-radius: 0; min-height: 100vh; }
+            .ai-insights-panel { margin: 0 20px 20px; padding: 24px 20px; }
+            .ai-insights-coming-soon-title { font-size: 16px; }
+            .ai-insights-coming-soon-text { font-size: 12px; }
         }
     </style>
 </head>
@@ -1780,6 +1800,7 @@
                 </div>
             </div>
             
+            <!-- ===== HONEST AI INSIGHTS PANEL (REPLACED FAKE VALUES) ===== -->
             <div class="ai-insights-panel">
                 <div class="ai-insights-header">
                     <div class="ai-insights-icon">
@@ -1787,23 +1808,20 @@
                     </div>
                     <div class="ai-insights-title">AI Property Insights</div>
                 </div>
-                <div class="ai-insights-content">
-                    <div class="ai-insight-card">
-                        <div class="ai-insight-label">Market Position</div>
-                        <div class="ai-insight-value">12% Below Average</div>
+                
+                <div class="ai-insights-coming-soon">
+                    <div class="ai-insights-coming-soon-icon">
+                        <i class="fas fa-rocket"></i>
                     </div>
-                    <div class="ai-insight-card">
-                        <div class="ai-insight-label">Rental Demand</div>
-                        <div class="ai-insight-value">8.4/10 Score</div>
+                    <h3 class="ai-insights-coming-soon-title">AI Property Analysis Coming Soon</h3>
+                    <p class="ai-insights-coming-soon-text">
+                        Advanced property valuation and market insights are currently being developed. 
+                        Soon you'll get real-time data on market position, rental demand, and estimated returns for every property.
+                    </p>
+                    <div class="ai-insights-coming-soon-badge">
+                        <span class="ai-insights-coming-soon-badge-dot"></span>
+                        In Development • Launching Q1 2026
                     </div>
-                    <div class="ai-insight-card">
-                        <div class="ai-insight-label">Est. Monthly Rent</div>
-                        <div class="ai-insight-value">KES 95,000</div>
-                    </div>
-                </div>
-                <div class="ai-insights-actions">
-                    <button class="ai-insight-btn">Ask AI About This Property</button>
-                    <button class="ai-insight-btn">Compare Similar Listings</button>
                 </div>
             </div>
             
@@ -1899,16 +1917,13 @@
 
         // ===== NAVIGATION FUNCTION =====
         function navigateToCategory(category) {
-            // Close mobile menu if open
             const drawer = document.getElementById('mobileMenuDrawer');
             if (drawer.classList.contains('active')) {
                 toggleMobileMenu();
             }
             
-            // Find the category card
             const categoryCard = document.querySelector(`.category-card[data-category="${category}"]`);
             if (categoryCard) {
-                // Trigger the filter
                 filterCategory(category, categoryCard);
             }
         }
@@ -2004,7 +2019,6 @@
             let filtered = category === 'all' ? allProperties : allProperties.filter(p => p.property_type === category);
             renderFeatured(filtered);
             
-            // Scroll to featured section
             setTimeout(() => {
                 document.getElementById('featured').scrollIntoView({ behavior: 'smooth', block: 'start' });
             }, 100);
@@ -2241,7 +2255,6 @@
         document.addEventListener('keydown', (e) => {
             if (e.key === 'Escape') {
                 closePropertyModal();
-                // Also close mobile menu if open
                 const drawer = document.getElementById('mobileMenuDrawer');
                 if (drawer.classList.contains('active')) {
                     toggleMobileMenu();
