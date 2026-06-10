@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Agent Portal — Properties in Kenya</title>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="https://cdn.jsdelivr.net/npm/browser-image-compression@2.0.2/dist/browser-image-compression.js"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -214,48 +215,109 @@
     }
     @media (max-width: 600px) { .form-row { grid-template-columns: 1fr; } }
 
-    /* Image Upload */
+    /* ===== NEW IMAGE UPLOAD SYSTEM ===== */
     .image-upload-area {
       border: 2px dashed #d1d5db;
       border-radius: 12px;
-      padding: 24px;
+      padding: 40px 20px;
       text-align: center;
       cursor: pointer;
       transition: all 0.2s;
       background: #f9fafb;
     }
-    .image-upload-area:hover { border-color: #6b21a8; background: #faf5ff; }
-    .image-upload-area i { font-size: 32px; color: #9ca3af; margin-bottom: 8px; }
+    .image-upload-area:hover {
+      border-color: #6b21a8;
+      background: #faf5ff;
+    }
+    .image-upload-area.dragover {
+      border-color: #6b21a8;
+      background: #f3e8ff;
+      transform: scale(1.01);
+    }
     .image-preview-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
-      gap: 10px;
-      margin-top: 12px;
+      grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+      gap: 12px;
+      margin-top: 16px;
     }
     .image-preview-item {
       position: relative;
       aspect-ratio: 1;
-      border-radius: 8px;
+      border-radius: 10px;
       overflow: hidden;
       background: #f3f4f6;
+      border: 2px solid transparent;
+      transition: all 0.2s;
     }
-    .image-preview-item img { width: 100%; height: 100%; object-fit: cover; }
+    .image-preview-item.is-cover {
+      border-color: #6b21a8;
+    }
+    .image-preview-item.is-cover::after {
+      content: 'COVER';
+      position: absolute;
+      top: 4px;
+      left: 4px;
+      background: #6b21a8;
+      color: white;
+      font-size: 9px;
+      font-weight: 700;
+      padding: 2px 6px;
+      border-radius: 4px;
+      letter-spacing: 0.5px;
+      z-index: 2;
+    }
+    .image-preview-item img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
     .image-preview-item .remove-img {
       position: absolute;
       top: 4px;
       right: 4px;
-      background: rgba(239,68,68,0.9);
+      background: rgba(239, 68, 68, 0.95);
       color: white;
       border: none;
-      width: 24px;
-      height: 24px;
+      width: 26px;
+      height: 26px;
       border-radius: 50%;
       cursor: pointer;
-      font-size: 12px;
+      font-size: 14px;
       padding: 0;
       display: flex;
       align-items: center;
       justify-content: center;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+      z-index: 3;
+      transition: all 0.2s;
+    }
+    .image-preview-item .remove-img:hover {
+      background: #dc2626;
+      transform: scale(1.1);
+    }
+    .image-preview-item .uploading-overlay {
+      position: absolute;
+      inset: 0;
+      background: rgba(0,0,0,0.6);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 24px;
+      z-index: 2;
+    }
+    .image-preview-item .upload-failed {
+      position: absolute;
+      inset: 0;
+      background: rgba(239, 68, 68, 0.9);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 12px;
+      text-align: center;
+      padding: 8px;
+      z-index: 2;
     }
 
     /* Status Badge */
@@ -766,19 +828,29 @@
         <textarea id="propDescription" placeholder="Describe the property..."></textarea>
       </div>
 
+      <!-- ===== NEW IMAGE UPLOAD SYSTEM ===== -->
       <div class="form-group">
-        <label>Property Images (up to 10)</label>
-        <div class="image-upload-area" onclick="document.getElementById('imageInput').click()">
-          <i class="fas fa-cloud-upload-alt"></i>
-          <p>Click to add image URLs</p>
-          <p style="font-size:12px; color:#9ca3af;">Add image URLs one at a time</p>
+        <label>Property Images (up to 10) *</label>
+        
+        <div id="dropZone" class="image-upload-area">
+          <i class="fas fa-cloud-upload-alt" style="font-size:40px; color:#6b21a8;"></i>
+          <p style="font-weight:600; margin-top:8px; color:#111;">
+            Drag & drop images here
+          </p>
+          <p style="font-size:13px; color:#6b7280; margin-top:4px;">
+            or click to browse • JPG, PNG, WEBP • Max 5MB each
+          </p>
         </div>
-        <input type="text" id="newImageUrl" placeholder="Paste image URL and click Add" style="margin-top:10px;">
-        <button type="button" class="btn-ghost btn-sm" onclick="addImageUrl()" style="margin-top:6px;">
-          <i class="fas fa-plus"></i> Add Image URL
-        </button>
-        <input type="file" id="imageInput" accept="image/*" multiple style="display:none;" onchange="handleImageUpload(event)">
-        <div class="image-preview-grid" id="imagePreviewGrid"></div>
+        
+        <input type="file" id="imageInput" accept="image/jpeg,image/png,image/webp" 
+               multiple style="display:none;">
+        
+        <div id="imagePreviewGrid" class="image-preview-grid"></div>
+        
+        <p style="font-size:12px; color:#6b7280; margin-top:8px;">
+          <i class="fas fa-info-circle"></i> 
+          Images are automatically compressed to save data. First image will be the cover photo.
+        </p>
       </div>
 
       <div style="display:flex; gap:10px; flex-wrap:wrap;">
@@ -996,10 +1068,11 @@
   let myListings = [];
   let myDeals = [];
   let myInquiries = [];
-  let currentImages = [];
+  let uploadedImageUrls = []; // Final URLs stored in database
   let currentDealId = null;
   let currentInquiryId = null;
   let currentFeaturePropertyId = null;
+  let editingPropertyId = null;
 
   // Deal stages
   const DEAL_STAGES = [
@@ -1108,7 +1181,6 @@
     const { data: { user } } = await supabaseClient.auth.getUser();
     if (!user) return;
 
-    // Get or create profile
     let { data: profile } = await supabaseClient
       .from("profiles")
       .select("*")
@@ -1263,48 +1335,273 @@
     }).join('');
   }
 
-  // ===== IMAGE HANDLING =====
-  window.addImageUrl = function() {
-    const input = document.getElementById('newImageUrl');
-    const url = input.value.trim();
-    if (!url) return;
-    if (currentImages.length >= 10) {
-      toast('warning', 'Limit Reached', 'Maximum 10 images allowed.');
+  // ===== NEW IMAGE UPLOAD SYSTEM =====
+  
+  // Initialize drag-and-drop when DOM is ready
+  document.addEventListener('DOMContentLoaded', () => {
+    const dropZone = document.getElementById('dropZone');
+    const fileInput = document.getElementById('imageInput');
+    if (!dropZone || !fileInput) return;
+
+    // Click to open file picker
+    dropZone.addEventListener('click', () => fileInput.click());
+
+    // Prevent default drag behaviors
+    ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+      dropZone.addEventListener(eventName, preventDefaults, false);
+      document.body.addEventListener(eventName, preventDefaults, false);
+    });
+
+    function preventDefaults(e) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+
+    // Visual feedback
+    ['dragenter', 'dragover'].forEach(eventName => {
+      dropZone.addEventListener(eventName, () => dropZone.classList.add('dragover'), false);
+    });
+    ['dragleave', 'drop'].forEach(eventName => {
+      dropZone.addEventListener(eventName, () => dropZone.classList.remove('dragover'), false);
+    });
+
+    // Handle dropped files
+    dropZone.addEventListener('drop', (e) => {
+      const files = e.dataTransfer.files;
+      handleFiles(files);
+    }, false);
+
+    // Handle file input selection
+    fileInput.addEventListener('change', (event) => {
+      handleFiles(event.target.files);
+      event.target.value = ''; // Reset so same file can be selected again
+    });
+  });
+
+  // Main file handler - validates and processes files
+  async function handleFiles(files) {
+    const filesArray = Array.from(files);
+    
+    // Check total limit
+    if (uploadedImageUrls.length + filesArray.length > 10) {
+      toast('warning', 'Too Many Images', 'Maximum 10 images per property.');
       return;
     }
-    currentImages.push(url);
-    input.value = '';
-    renderImagePreviews();
-  };
 
-  function handleImageUpload(event) {
-    const files = event.target.files;
-    if (!files.length) return;
-
-    // For demo, we'll use object URLs. In production, upload to Supabase Storage.
-    Array.from(files).forEach(file => {
-      if (currentImages.length >= 10) return;
-      const url = URL.createObjectURL(file);
-      currentImages.push(url);
-    });
-    renderImagePreviews();
-    toast('info', 'Images Added', 'Note: In production, upload to Supabase Storage.');
+    for (const file of filesArray) {
+      // Validate file type
+      if (!['image/jpeg', 'image/png', 'image/webp'].includes(file.type)) {
+        toast('error', 'Invalid Format', `${file.name} is not a supported image format.`);
+        continue;
+      }
+      
+      // Validate file size (5MB)
+      if (file.size > 5 * 1024 * 1024) {
+        toast('error', 'File Too Large', `${file.name} exceeds 5MB limit.`);
+        continue;
+      }
+      
+      // Check if we've hit the limit mid-loop
+      if (uploadedImageUrls.length >= 10) {
+        toast('warning', 'Limit Reached', 'Maximum 10 images reached.');
+        break;
+      }
+      
+      await processAndUploadImage(file);
+    }
   }
 
-  function renderImagePreviews() {
+  // Compress and upload a single image
+  async function processAndUploadImage(file) {
+    const tempId = 'upload-' + Date.now() + '-' + Math.random().toString(36).substr(2, 9);
+    
+    // Show preview with uploading state
+    addPreviewPlaceholder(tempId, file);
+    
+    try {
+      // STEP 1: Compress the image (critical for Kenya - saves data!)
+      const options = {
+        maxSizeMB: 0.5,           // Max 500KB per image
+        maxWidthOrHeight: 1920,   // Max 1920px dimension
+        useWebWorker: true,
+        fileType: 'image/webp'    // Convert to WebP for best compression
+      };
+      
+      const compressedFile = await imageCompression(file, options);
+      updatePreviewStatus(tempId, 'compressing');
+      
+      // STEP 2: Generate unique filename
+      const timestamp = Date.now();
+      const randomStr = Math.random().toString(36).substring(2, 10);
+      const extension = compressedFile.type.split('/')[1] || 'webp';
+      const fileName = `${currentUser.id}/${timestamp}-${randomStr}.${extension}`;
+      
+      // STEP 3: Upload to Supabase Storage
+      updatePreviewStatus(tempId, 'uploading');
+      
+      const { data, error } = await supabaseClient.storage
+        .from('property-images')
+        .upload(fileName, compressedFile, {
+          cacheControl: '31536000', // Cache for 1 year
+          upsert: false,
+          contentType: compressedFile.type
+        });
+      
+      if (error) throw error;
+      
+      // STEP 4: Get public URL
+      const { data: urlData } = supabaseClient.storage
+        .from('property-images')
+        .getPublicUrl(fileName);
+      
+      const publicUrl = urlData.publicUrl;
+      
+      // STEP 5: Add to our array and update preview
+      uploadedImageUrls.push(publicUrl);
+      updatePreviewToComplete(tempId, publicUrl);
+      
+      // Show success toast only for first image (avoid spam)
+      if (uploadedImageUrls.length === 1) {
+        toast('success', 'Image Uploaded', 'Image ready. Add more if needed.');
+      }
+      
+    } catch (error) {
+      console.error('Upload error:', error);
+      updatePreviewStatus(tempId, 'failed', error.message);
+      toast('error', 'Upload Failed', error.message || 'Could not upload image.');
+    }
+  }
+
+  // Add a placeholder preview while uploading
+  function addPreviewPlaceholder(tempId, file) {
     const grid = document.getElementById('imagePreviewGrid');
-    grid.innerHTML = currentImages.map((url, i) => `
-      <div class="image-preview-item">
-        <img src="${url}" alt="Preview" onerror="this.src='https://picsum.photos/seed/${i}/100'">
-        <button class="remove-img" onclick="removeImage(${i})">×</button>
-      </div>
-    `).join('');
+    const item = document.createElement('div');
+    item.className = 'image-preview-item';
+    item.id = tempId;
+    
+    // Show local preview from file
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      item.innerHTML = `
+        <img src="${e.target.result}" alt="Uploading">
+        <div class="uploading-overlay">
+          <i class="fas fa-spinner fa-spin"></i>
+        </div>
+      `;
+    };
+    reader.readAsDataURL(file);
+    
+    grid.appendChild(item);
+    updateCoverBadges();
   }
 
-  window.removeImage = function(index) {
-    currentImages.splice(index, 1);
-    renderImagePreviews();
+  // Update preview status during upload
+  function updatePreviewStatus(tempId, status, errorMsg = '') {
+    const item = document.getElementById(tempId);
+    if (!item) return;
+    
+    if (status === 'compressing') {
+      const overlay = item.querySelector('.uploading-overlay');
+      if (overlay) {
+        overlay.innerHTML = '<div style="text-align:center;"><i class="fas fa-compress-arrows-alt fa-spin"></i><div style="font-size:10px; margin-top:4px;">Compressing...</div></div>';
+      }
+    } else if (status === 'uploading') {
+      const overlay = item.querySelector('.uploading-overlay');
+      if (overlay) {
+        overlay.innerHTML = '<div style="text-align:center;"><i class="fas fa-cloud-upload-alt fa-spin"></i><div style="font-size:10px; margin-top:4px;">Uploading...</div></div>';
+      }
+    } else if (status === 'failed') {
+      item.innerHTML = `
+        <div class="upload-failed">
+          <div>
+            <i class="fas fa-exclamation-triangle" style="font-size:20px;"></i>
+            <div style="margin-top:4px;">Failed</div>
+          </div>
+        </div>
+      `;
+      setTimeout(() => {
+        item.style.transform = 'scale(0)';
+        item.style.opacity = '0';
+        setTimeout(() => {
+          item.remove();
+          updateCoverBadges();
+        }, 200);
+      }, 2500);
+    }
+  }
+
+  // Update preview when upload completes
+  function updatePreviewToComplete(tempId, url) {
+    const item = document.getElementById(tempId);
+    if (!item) return;
+    
+    item.innerHTML = `
+      <img src="${url}" alt="Property image">
+      <button type="button" class="remove-img" onclick="removeUploadedImage('${tempId}', '${url}')">×</button>
+    `;
+    updateCoverBadges();
+  }
+
+  // Remove an uploaded image
+  window.removeUploadedImage = function(tempId, url) {
+    uploadedImageUrls = uploadedImageUrls.filter(u => u !== url);
+    
+    const item = document.getElementById(tempId);
+    if (item) {
+      item.style.transform = 'scale(0)';
+      item.style.opacity = '0';
+      setTimeout(() => {
+        item.remove();
+        updateCoverBadges();
+      }, 200);
+    }
+    
+    toast('info', 'Image Removed', 'Image removed from this property.');
   };
+
+  // Update "COVER" badge on first image
+  function updateCoverBadges() {
+    const items = document.querySelectorAll('#imagePreviewGrid .image-preview-item');
+    items.forEach((item, index) => {
+      if (index === 0) {
+        item.classList.add('is-cover');
+      } else {
+        item.classList.remove('is-cover');
+      }
+    });
+  }
+
+  // Load existing images into preview grid (for editing)
+  function loadExistingImages(urls) {
+    uploadedImageUrls = [...urls];
+    const grid = document.getElementById('imagePreviewGrid');
+    grid.innerHTML = '';
+    
+    urls.forEach((url, index) => {
+      const tempId = 'existing-' + index + '-' + Date.now();
+      const item = document.createElement('div');
+      item.className = 'image-preview-item';
+      item.id = tempId;
+      item.innerHTML = `
+        <img src="${url}" alt="Property image">
+        <button type="button" class="remove-img" onclick="removeUploadedImage('${tempId}', '${url}')">×</button>
+      `;
+      grid.appendChild(item);
+    });
+    
+    updateCoverBadges();
+  }
+
+  // Get current uploaded images (use in submitProperty)
+  function getUploadedImages() {
+    return [...uploadedImageUrls];
+  }
+
+  // Reset upload system (call after successful property submission)
+  function resetImageUpload() {
+    uploadedImageUrls = [];
+    document.getElementById('imagePreviewGrid').innerHTML = '';
+  }
 
   // ===== SUBMIT PROPERTY =====
   window.submitProperty = async function(status = 'pending') {
@@ -1315,9 +1612,15 @@
     const location = document.getElementById("propLocation").value.trim();
     const propertyType = document.getElementById("propType").value;
     const description = document.getElementById("propDescription").value.trim();
+    const images = getUploadedImages();
 
     if (!title || !price || !location || !propertyType) {
       toast('error', 'Missing Fields', 'Title, price, location, and type are required.');
+      return;
+    }
+
+    if (images.length === 0 && status !== 'draft') {
+      toast('error', 'Images Required', 'Please upload at least one property image.');
       return;
     }
 
@@ -1325,33 +1628,54 @@
     if (status !== 'draft') {
       const isSubscribed = currentProfile.subscribed && new Date(currentProfile.subscribed_until) > new Date();
       const activeCount = myListings.filter(l => l.approval_status !== 'draft').length;
-      if (!isSubscribed && activeCount >= 3) {
+      if (!isSubscribed && activeCount >= 3 && !editingPropertyId) {
         toast('warning', 'Limit Reached', 'Free plan allows only 3 listings. Please subscribe.');
         showSubscribeModal();
         return;
       }
     }
 
-    const { error } = await supabaseClient.from("properties").insert([{
-      title,
-      price: parseFloat(price),
-      location,
-      property_type: propertyType,
-      description,
-      images: currentImages,
-      approval_status: status,
-      agent_id: currentUser.id,
-      views_count: 0,
-      is_featured: false
-    }]);
+    // If editing, update instead of insert
+    if (editingPropertyId) {
+      const { error } = await supabaseClient
+        .from("properties")
+        .update({
+          title, price: parseFloat(price), location,
+          property_type: propertyType, description,
+          images: images, approval_status: status
+        })
+        .eq("id", editingPropertyId);
 
-    if (error) {
-      toast('error', 'Submission Failed', error.message);
-      return;
+      if (error) {
+        toast('error', 'Update Failed', error.message);
+        return;
+      }
+
+      toast('success', 'Updated', 'Property updated successfully.');
+      editingPropertyId = null;
+    } else {
+      // Insert new property
+      const { error } = await supabaseClient.from("properties").insert([{
+        title,
+        price: parseFloat(price),
+        location,
+        property_type: propertyType,
+        description,
+        images: images,
+        approval_status: status,
+        agent_id: currentUser.id,
+        views_count: 0,
+        is_featured: false
+      }]);
+
+      if (error) {
+        toast('error', 'Submission Failed', error.message);
+        return;
+      }
+
+      toast('success', status === 'draft' ? 'Draft Saved' : 'Property Submitted',
+            status === 'draft' ? 'You can continue editing later.' : 'Awaiting admin approval.');
     }
-
-    toast('success', status === 'draft' ? 'Draft Saved' : 'Property Submitted',
-          status === 'draft' ? 'You can continue editing later.' : 'Awaiting admin approval.');
 
     // Clear form
     document.getElementById("propTitle").value = "";
@@ -1359,8 +1683,7 @@
     document.getElementById("propLocation").value = "";
     document.getElementById("propType").value = "";
     document.getElementById("propDescription").value = "";
-    currentImages = [];
-    renderImagePreviews();
+    resetImageUpload();
 
     await loadMyListings();
   };
@@ -1378,52 +1701,13 @@
     document.getElementById("propLocation").value = p.location || '';
     document.getElementById("propType").value = p.property_type || '';
     document.getElementById("propDescription").value = p.description || '';
-    currentImages = p.images ? [...p.images] : (p.image_url ? [p.image_url] : []);
-    renderImagePreviews();
+    
+    // Load existing images into the new upload system
+    const existingImages = p.images ? [...p.images] : (p.image_url ? [p.image_url] : []);
+    loadExistingImages(existingImages);
 
-    // Delete old and re-submit pattern (simpler than update for this demo)
-    toast('info', 'Editing', 'Make changes and resubmit. The old listing will be replaced.');
-
-    // Store ID for replacement
-    window.editingPropertyId = id;
-
-    // Override submit to update instead of insert
-    const originalSubmit = window.submitProperty;
-    window.submitProperty = async function(status) {
-      const title = document.getElementById("propTitle").value.trim();
-      const price = document.getElementById("propPrice").value;
-      const location = document.getElementById("propLocation").value.trim();
-      const propertyType = document.getElementById("propType").value;
-      const description = document.getElementById("propDescription").value.trim();
-
-      const { error } = await supabaseClient
-        .from("properties")
-        .update({
-          title, price: parseFloat(price), location,
-          property_type: propertyType, description,
-          images: currentImages, approval_status: status
-        })
-        .eq("id", window.editingPropertyId);
-
-      if (error) {
-        toast('error', 'Update Failed', error.message);
-        return;
-      }
-
-      toast('success', 'Updated', 'Property updated successfully.');
-      window.submitProperty = originalSubmit;
-      window.editingPropertyId = null;
-
-      document.getElementById("propTitle").value = "";
-      document.getElementById("propPrice").value = "";
-      document.getElementById("propLocation").value = "";
-      document.getElementById("propType").value = "";
-      document.getElementById("propDescription").value = "";
-      currentImages = [];
-      renderImagePreviews();
-
-      await loadMyListings();
-    };
+    editingPropertyId = id;
+    toast('info', 'Editing Mode', 'Make changes and click Submit to update.');
 
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
@@ -1679,7 +1963,6 @@
 
   // ===== INQUIRIES =====
   async function loadMyInquiries() {
-    // Get all properties owned by this agent
     const propertyIds = myListings.map(p => p.id);
     if (propertyIds.length === 0) {
       myInquiries = [];
@@ -1804,9 +2087,6 @@
       return;
     }
 
-    const inq = myInquiries.find(i => i.id === currentInquiryId);
-
-    // Save reply to inquiries table
     const { error } = await supabaseClient
       .from("inquiries")
       .update({
@@ -1838,7 +2118,6 @@
     document.getElementById('statConversion').textContent = conversionRate + '%';
     document.getElementById('statDeals').textContent = activeDeals;
 
-    // Top properties chart
     const topChart = document.getElementById('topPropertiesChart');
     const sorted = [...myListings].sort((a, b) => (b.views_count || 0) - (a.views_count || 0)).slice(0, 5);
     const maxViews = Math.max(...sorted.map(p => p.views_count || 0), 1);
@@ -1859,7 +2138,6 @@
       }).join('');
     }
 
-    // Deals by stage chart
     const dealsChart = document.getElementById('dealsByStageChart');
     const maxDeals = Math.max(...DEAL_STAGES.map(s => myDeals.filter(d => d.stage === s.id).length), 1);
     dealsChart.innerHTML = DEAL_STAGES.map(stage => {
