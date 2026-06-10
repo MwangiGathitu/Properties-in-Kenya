@@ -8,7 +8,1515 @@
     <title>Properties in Kenya | Houses, Apartments, Land for Sale & Rent in Nairobi</title>
     <meta name="description" content="Browse verified houses, apartments, land and commercial properties for sale and rent across Kenya. Talk to The Caretaker — our AI property assistant — to find your ideal home in Nairobi, Kilimani, Ruai, Westlands and beyond.">
     <meta name="keywords" content="properties in Kenya, houses for sale Nairobi, apartments for rent Kenya, land for sale Ruai, Kilimani properties, Westlands apartments, Kenyan real estate">
-    <meta name="robots" content="index, follow, max-image-preview:large">
+    <meta name="<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <title>Properties in Kenya | AI-Powered Real Estate Platform</title>
+    <meta name="description" content="Find verified houses, apartments, and land across Kenya with The Caretaker AI. Smart property matching for buyers, renters, and investors.">
+    <meta name="keywords" content="properties Kenya, houses Nairobi, apartments rent, land sale, real estate AI">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://propertiesinkenya.co.ke/">
+    
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Properties in Kenya — AI Real Estate Intelligence">
+    <meta property="og:description" content="Smart property matching powered by The Caretaker AI.">
+    <meta property="og:image" content="https://images.unsplash.com/photo-1611348524140-53c9a25263d6?w=1200&q=80">
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        
+        body { 
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            color: #1F2937;
+            font-size: 14px;
+            line-height: 1.6;
+            overflow-x: hidden;
+            background: #FAFAFA;
+        }
+
+        /* ===== ENHANCED BACKGROUND (More visible skyline) ===== */
+        .bg-layers {
+            position: fixed;
+            inset: 0;
+            z-index: -1;
+            pointer-events: none;
+        }
+        .bg-layer-1 {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(180deg, #FFFFFF 0%, #F9FAFB 100%);
+        }
+        .bg-layer-2 {
+            position: absolute;
+            inset: 0;
+            background-image: url('https://images.unsplash.com/photo-1611348524140-53c9a25263d6?w=2000&q=80');
+            background-size: cover;
+            background-position: center;
+            opacity: 0.12;
+            filter: blur(2px);
+        }
+        .bg-layer-3 {
+            position: absolute;
+            inset: 0;
+            background: 
+                radial-gradient(circle at 20% 30%, rgba(167, 139, 250, 0.06) 0%, transparent 50%),
+                radial-gradient(circle at 80% 70%, rgba(196, 181, 253, 0.05) 0%, transparent 50%);
+        }
+
+        /* ===== NAVIGATION (Minimal, Apple-style) ===== */
+        .nav-fixed {
+            position: fixed;
+            top: 0; left: 0; right: 0;
+            height: 64px;
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(20px) saturate(180%);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.04);
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            padding: 0 80px;
+        }
+        .nav-content {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 100%;
+            max-width: 1440px;
+            margin: 0 auto;
+        }
+        .nav-logo {
+            font-size: 16px;
+            font-weight: 600;
+            color: #111827;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            letter-spacing: -0.02em;
+        }
+        .nav-logo-icon {
+            width: 28px;
+            height: 28px;
+            background: linear-gradient(135deg, #A78BFA, #C4B5FD);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 12px;
+        }
+        .nav-center {
+            display: flex;
+            gap: 40px;
+            align-items: center;
+        }
+        .nav-link {
+            font-size: 14px;
+            font-weight: 500;
+            color: #6B7280;
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+        .nav-link:hover { color: #111827; }
+        .nav-cta {
+            padding: 8px 16px;
+            border: 1px solid #E5E7EB;
+            border-radius: 8px;
+            background: white;
+            font-size: 13px;
+            font-weight: 500;
+            color: #374151;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .nav-cta:hover {
+            border-color: #A78BFA;
+            color: #7C3AED;
+        }
+
+        /* ===== MAIN CONTENT (More breathing space) ===== */
+        .main-content {
+            padding-top: 64px;
+            max-width: 1440px;
+            margin: 0 auto;
+            padding-left: 80px;
+            padding-right: 80px;
+        }
+
+        /* ===== AI INTELLIGENCE SECTION (Reduced chat dominance) ===== */
+        .ai-intelligence-section {
+            padding: 80px 0 60px;
+            text-align: center;
+        }
+        .ai-system-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 14px;
+            background: rgba(167, 139, 250, 0.08);
+            border: 1px solid rgba(167, 139, 250, 0.15);
+            border-radius: 9999px;
+            font-size: 12px;
+            font-weight: 500;
+            color: #7C3AED;
+            margin-bottom: 24px;
+        }
+        .ai-system-badge-dot {
+            width: 6px;
+            height: 6px;
+            background: #10B981;
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        .ai-title {
+            font-size: 36px;
+            font-weight: 600;
+            color: #111827;
+            margin-bottom: 12px;
+            letter-spacing: -0.03em;
+            line-height: 1.2;
+        }
+        .ai-subtitle {
+            font-size: 16px;
+            color: #6B7280;
+            line-height: 1.6;
+            margin-bottom: 40px;
+            max-width: 560px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        /* Compact AI Input */
+        .ai-input-container {
+            max-width: 640px;
+            margin: 0 auto 16px;
+        }
+        .ai-input-wrapper {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06), 0 1px 2px rgba(0, 0, 0, 0.04);
+            padding: 4px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            border: 1px solid #E5E7EB;
+            transition: all 0.2s;
+        }
+        .ai-input-wrapper:focus-within {
+            box-shadow: 0 4px 12px rgba(167, 139, 250, 0.1);
+            border-color: #A78BFA;
+        }
+        .ai-input {
+            flex: 1;
+            padding: 12px 16px;
+            border: none;
+            outline: none;
+            font-size: 14px;
+            color: #111827;
+            background: transparent;
+        }
+        .ai-input::placeholder { color: #9CA3AF; }
+        .ai-send-btn {
+            padding: 10px 18px;
+            background: #111827;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .ai-send-btn:hover {
+            background: #1F2937;
+        }
+        .ai-send-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        
+        .ai-suggestions {
+            display: flex;
+            gap: 8px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 16px;
+        }
+        .ai-suggestion {
+            padding: 6px 12px;
+            background: white;
+            border: 1px solid #E5E7EB;
+            border-radius: 6px;
+            font-size: 12px;
+            color: #6B7280;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .ai-suggestion:hover {
+            border-color: #A78BFA;
+            color: #7C3AED;
+        }
+
+        /* Chat Messages (Compact) */
+        .ai-chat-messages {
+            max-width: 640px;
+            margin: 0 auto 20px;
+            max-height: 160px;
+            overflow-y: auto;
+            display: none;
+        }
+        .ai-chat-messages.active { display: block; }
+        .ai-chat-message {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 10px;
+            animation: slideIn 0.3s ease;
+        }
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(8px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .ai-chat-avatar {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
+            font-weight: 600;
+            flex-shrink: 0;
+        }
+        .ai-chat-avatar.ai {
+            background: #A78BFA;
+            color: white;
+        }
+        .ai-chat-avatar.user {
+            background: #E5E7EB;
+            color: #374151;
+            margin-left: auto;
+            order: 2;
+        }
+        .ai-chat-bubble {
+            padding: 10px 14px;
+            border-radius: 10px;
+            font-size: 13px;
+            line-height: 1.5;
+            max-width: 75%;
+        }
+        .ai-chat-bubble.ai {
+            background: white;
+            color: #374151;
+            border: 1px solid #E5E7EB;
+            border-top-left-radius: 2px;
+        }
+        .ai-chat-bubble.user {
+            background: #111827;
+            color: white;
+            border-top-right-radius: 2px;
+            order: 1;
+        }
+
+        /* ===== AI RESULTS SECTION (Primary, Smart Matches) ===== */
+        .ai-results-section {
+            background: linear-gradient(180deg, #F9FAFB 0%, #F3F4F6 100%);
+            border-radius: 20px;
+            padding: 48px 0;
+            margin: 40px 0 80px;
+            display: none;
+            position: relative;
+        }
+        .ai-results-section.active { display: block; }
+        .ai-results-header {
+            text-align: center;
+            margin-bottom: 32px;
+            padding: 0 48px;
+        }
+        .ai-results-label {
+            font-size: 11px;
+            color: #9CA3AF;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+        .ai-results-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: #111827;
+            margin-bottom: 6px;
+            letter-spacing: -0.01em;
+        }
+        .ai-results-count {
+            font-size: 13px;
+            color: #6B7280;
+        }
+
+        /* Compact Property Cards for AI Results */
+        .carousel-wrapper {
+            position: relative;
+            padding: 0 48px;
+        }
+        .carousel-container {
+            display: flex;
+            gap: 16px;
+            overflow-x: auto;
+            scroll-snap-type: x mandatory;
+            scroll-behavior: smooth;
+            padding: 12px 4px 20px;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: none;
+        }
+        .carousel-container::-webkit-scrollbar { display: none; }
+        
+        .ai-result-card {
+            flex: 0 0 280px;
+            scroll-snap-align: start;
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 1px solid #F3F4F6;
+        }
+        .ai-result-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+        }
+        .ai-result-image {
+            width: 100%;
+            height: 180px;
+            object-fit: cover;
+        }
+        .ai-result-info { padding: 16px; }
+        .ai-result-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: #111827;
+            margin-bottom: 4px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        .ai-result-location {
+            font-size: 12px;
+            color: #6B7280;
+            margin-bottom: 10px;
+        }
+        .ai-result-price {
+            font-size: 16px;
+            font-weight: 700;
+            color: #111827;
+            margin-bottom: 10px;
+        }
+        .ai-result-tags {
+            display: flex;
+            gap: 4px;
+            flex-wrap: wrap;
+        }
+        .ai-result-tag {
+            padding: 3px 8px;
+            background: #F9FAFB;
+            border-radius: 4px;
+            font-size: 11px;
+            color: #6B7280;
+            font-weight: 500;
+        }
+
+        .carousel-arrow {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: white;
+            border: 1px solid #E5E7EB;
+            color: #374151;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 13px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            transition: all 0.2s;
+            z-index: 10;
+        }
+        .carousel-arrow:hover {
+            background: #F9FAFB;
+            border-color: #A78BFA;
+            color: #7C3AED;
+        }
+        .carousel-arrow.prev { left: 0; }
+        .carousel-arrow.next { right: 0; }
+
+        /* ===== CATEGORY SECTION (Larger, More Emotional) ===== */
+        .category-section {
+            padding: 40px 0 80px;
+        }
+        .section-header {
+            margin-bottom: 40px;
+        }
+        .section-title {
+            font-size: 28px;
+            font-weight: 600;
+            color: #111827;
+            letter-spacing: -0.02em;
+            margin-bottom: 8px;
+        }
+        .section-subtitle {
+            font-size: 15px;
+            color: #6B7280;
+        }
+        
+        .category-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+        }
+        .category-card {
+            background: white;
+            border: 1px solid #F3F4F6;
+            border-radius: 16px;
+            padding: 32px 24px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        .category-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, #A78BFA, #C4B5FD);
+            transform: scaleX(0);
+            transition: transform 0.3s;
+        }
+        .category-card:hover::before {
+            transform: scaleX(1);
+        }
+        .category-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 12px 32px rgba(0, 0, 0, 0.08);
+            border-color: #E5E7EB;
+        }
+        .category-card.active {
+            background: linear-gradient(135deg, #A78BFA, #8B5CF6);
+            border-color: transparent;
+        }
+        .category-card.active::before { display: none; }
+        .category-card.active .category-icon {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+        }
+        .category-card.active .category-name { color: white; }
+        .category-card.active .category-count { color: rgba(255, 255, 255, 0.9); }
+        
+        .category-icon {
+            width: 56px;
+            height: 56px;
+            margin: 0 auto 16px;
+            background: #F9FAFB;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+            color: #7C3AED;
+            transition: all 0.3s;
+        }
+        .category-name {
+            font-size: 16px;
+            font-weight: 600;
+            color: #111827;
+            margin-bottom: 6px;
+            transition: color 0.3s;
+        }
+        .category-count {
+            font-size: 13px;
+            color: #9CA3AF;
+            transition: color 0.3s;
+        }
+
+        /* ===== FEATURED SECTION (Premium, Larger Cards) ===== */
+        .featured-section {
+            padding: 40px 0 80px;
+        }
+        .featured-card {
+            flex: 0 0 360px;
+            background: white;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 1px solid #F3F4F6;
+        }
+        .featured-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 16px 40px rgba(0, 0, 0, 0.1);
+        }
+        .featured-image-wrapper {
+            position: relative;
+            overflow: hidden;
+        }
+        .featured-image {
+            width: 100%;
+            height: 240px;
+            object-fit: cover;
+            transition: transform 0.4s;
+        }
+        .featured-card:hover .featured-image {
+            transform: scale(1.05);
+        }
+        .featured-badge {
+            position: absolute;
+            top: 12px;
+            left: 12px;
+            padding: 5px 12px;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 6px;
+            font-size: 11px;
+            font-weight: 600;
+            color: #111827;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .featured-verified {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            padding: 5px 10px;
+            background: #10B981;
+            border-radius: 6px;
+            font-size: 10px;
+            font-weight: 600;
+            color: white;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .featured-info { padding: 20px; }
+        .featured-title {
+            font-size: 17px;
+            font-weight: 600;
+            color: #111827;
+            margin-bottom: 8px;
+            line-height: 1.3;
+        }
+        .featured-location {
+            font-size: 13px;
+            color: #6B7280;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .featured-price {
+            font-size: 20px;
+            font-weight: 700;
+            color: #111827;
+            margin-bottom: 14px;
+        }
+        .featured-meta {
+            display: flex;
+            gap: 12px;
+            padding-top: 14px;
+            border-top: 1px solid #F3F4F6;
+        }
+        .featured-meta-item {
+            font-size: 12px;
+            color: #6B7280;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        /* ===== BLOG SECTION (Magazine Editorial) ===== */
+        .blog-section {
+            padding: 40px 0 100px;
+        }
+        .blog-carousel-wrapper {
+            position: relative;
+            padding: 0 48px;
+        }
+        .blog-carousel {
+            display: flex;
+            gap: 24px;
+            overflow-x: auto;
+            scroll-snap-type: x mandatory;
+            scroll-behavior: smooth;
+            padding: 16px 4px 24px;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: none;
+        }
+        .blog-carousel::-webkit-scrollbar { display: none; }
+        
+        .blog-card {
+            flex: 0 0 420px;
+            scroll-snap-align: start;
+            background: white;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 1px solid #F3F4F6;
+        }
+        .blog-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 32px rgba(0, 0, 0, 0.1);
+        }
+        .blog-image-wrapper {
+            position: relative;
+            overflow: hidden;
+            height: 260px;
+        }
+        .blog-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s;
+        }
+        .blog-card:hover .blog-image {
+            transform: scale(1.08);
+        }
+        .blog-category {
+            position: absolute;
+            top: 16px;
+            left: 16px;
+            padding: 6px 14px;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 6px;
+            font-size: 11px;
+            font-weight: 600;
+            color: #7C3AED;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .blog-content { padding: 24px; }
+        .blog-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #111827;
+            margin-bottom: 10px;
+            line-height: 1.4;
+        }
+        .blog-excerpt {
+            font-size: 14px;
+            color: #6B7280;
+            line-height: 1.6;
+        }
+
+        /* ===== FOOTER (Clean, Professional) ===== */
+        .footer {
+            background: white;
+            border-top: 1px solid #F3F4F6;
+            padding: 60px 80px 32px;
+        }
+        .footer-content {
+            max-width: 1440px;
+            margin: 0 auto;
+        }
+        .footer-top {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr;
+            gap: 48px;
+            padding-bottom: 40px;
+            border-bottom: 1px solid #F3F4F6;
+            margin-bottom: 32px;
+        }
+        .footer-brand {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .footer-brand-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #111827;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .footer-brand-desc {
+            font-size: 13px;
+            color: #6B7280;
+            line-height: 1.6;
+            max-width: 320px;
+        }
+        .footer-powered {
+            font-size: 11px;
+            color: #9CA3AF;
+            margin-top: 8px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .footer-powered-dot {
+            width: 6px;
+            height: 6px;
+            background: #A78BFA;
+            border-radius: 50%;
+        }
+        .footer-col-title {
+            font-size: 12px;
+            font-weight: 600;
+            color: #111827;
+            margin-bottom: 16px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .footer-links {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .footer-link {
+            font-size: 13px;
+            color: #6B7280;
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+        .footer-link:hover { color: #7C3AED; }
+        .footer-bottom {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+        .footer-copyright {
+            font-size: 12px;
+            color: #9CA3AF;
+        }
+
+        /* ===== MODAL ===== */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(8px);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .modal-overlay.active { display: flex; }
+        .modal {
+            background: white;
+            border-radius: 20px;
+            max-width: 900px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            animation: modalSlide 0.3s ease;
+        }
+        @keyframes modalSlide {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .modal-header {
+            padding: 24px;
+            border-bottom: 1px solid #F3F4F6;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            background: white;
+            z-index: 10;
+            border-radius: 20px 20px 0 0;
+        }
+        .modal-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #111827;
+        }
+        .modal-close {
+            background: #F3F4F6;
+            border: none;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #6B7280;
+            transition: all 0.2s;
+        }
+        .modal-close:hover {
+            background: #E5E7EB;
+            color: #111827;
+        }
+        .modal-body {
+            padding: 24px;
+            display: grid;
+            grid-template-columns: 1.5fr 1fr;
+            gap: 32px;
+        }
+        .modal-image-container {
+            position: relative;
+            border-radius: 14px;
+            overflow: hidden;
+        }
+        .modal-image {
+            width: 100%;
+            height: 400px;
+            object-fit: cover;
+        }
+        .modal-nav-btn {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.95);
+            color: #111827;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            transition: all 0.2s;
+        }
+        .modal-nav-btn:hover { background: white; }
+        .modal-nav-btn.prev { left: 12px; }
+        .modal-nav-btn.next { right: 12px; }
+        .modal-details {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+        .modal-price {
+            font-size: 28px;
+            font-weight: 700;
+            color: #111827;
+        }
+        .modal-meta {
+            font-size: 14px;
+            color: #6B7280;
+            line-height: 1.6;
+        }
+        .modal-description {
+            font-size: 14px;
+            color: #374151;
+            line-height: 1.7;
+        }
+        .modal-cta {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: auto;
+        }
+        .modal-btn {
+            padding: 14px 20px;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 600;
+            text-align: center;
+            text-decoration: none;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        .modal-btn.whatsapp {
+            background: #25D366;
+            color: white;
+        }
+        .modal-btn.whatsapp:hover { background: #1ebe5d; }
+        .modal-btn.call {
+            background: #111827;
+            color: white;
+        }
+        .modal-btn.call:hover { background: #1F2937; }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 1024px) {
+            .nav-fixed, .main-content, .footer { padding-left: 40px; padding-right: 40px; }
+            .footer-top { grid-template-columns: 1fr 1fr; gap: 32px; }
+            .category-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+        @media (max-width: 768px) {
+            .nav-fixed, .main-content, .footer { padding-left: 20px; padding-right: 20px; }
+            .nav-center { display: none; }
+            .ai-intelligence-section { padding: 48px 0 40px; }
+            .ai-title { font-size: 24px; }
+            .ai-subtitle { font-size: 14px; }
+            .ai-send-btn span { display: none; }
+            .ai-results-section { padding: 32px 0; margin: 24px 0 48px; }
+            .ai-results-header { padding: 0 20px; }
+            .carousel-wrapper, .blog-carousel-wrapper { padding: 0 16px; }
+            .category-grid { grid-template-columns: 1fr; }
+            .ai-result-card, .featured-card { flex: 0 0 280px; }
+            .blog-card { flex: 0 0 320px; }
+            .modal-body { grid-template-columns: 1fr; }
+            .footer-top { grid-template-columns: 1fr; }
+            .section-title { font-size: 22px; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Enhanced Background (More visible skyline) -->
+    <div class="bg-layers">
+        <div class="bg-layer-1"></div>
+        <div class="bg-layer-2"></div>
+        <div class="bg-layer-3"></div>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="nav-fixed">
+        <div class="nav-content">
+            <a href="/" class="nav-logo">
+                <div class="nav-logo-icon"><i class="fas fa-home"></i></div>
+                Properties in Kenya
+            </a>
+            
+            <div class="nav-center">
+                <a href="#buy" class="nav-link">Buy</a>
+                <a href="#rent" class="nav-link">Rent</a>
+                <a href="#lease" class="nav-link">For Lease</a>
+                <a href="#featured" class="nav-link">All Listings</a>
+            </div>
+            
+            <button class="nav-cta" onclick="window.location.href='agent.html'">
+                List Property
+            </button>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        
+        <!-- AI Intelligence Section (Reduced chat dominance) -->
+        <section class="ai-intelligence-section">
+            <div class="ai-system-badge">
+                <span class="ai-system-badge-dot"></span>
+                Powered by The Caretaker Intelligence
+            </div>
+            <h1 class="ai-title">Smart Property Matching</h1>
+            <p class="ai-subtitle">
+                Tell The Caretaker what you're looking for. Our AI analyzes thousands of verified listings to find your perfect match.
+            </p>
+            
+            <div class="ai-input-container">
+                <div class="ai-chat-messages" id="chatMessages"></div>
+                
+                <div class="ai-input-wrapper">
+                    <input 
+                        type="text" 
+                        id="aiQuery" 
+                        class="ai-input" 
+                        placeholder="e.g. 3 bedroom in Ruai under 8 million"
+                        onkeypress="if(event.key === 'Enter') askAI()"
+                    >
+                    <button id="askBtn" class="ai-send-btn" onclick="askAI()">
+                        <i class="fas fa-search"></i>
+                        <span>Search</span>
+                    </button>
+                </div>
+                
+                <div class="ai-suggestions">
+                    <span class="ai-suggestion" onclick="useSuggestion('3 bedroom in Ruai under 8 million')">3 bed in Ruai</span>
+                    <span class="ai-suggestion" onclick="useSuggestion('apartment for rent in Kilimani')">Rent in Kilimani</span>
+                    <span class="ai-suggestion" onclick="useSuggestion('land for sale in Kiambu')">Land in Kiambu</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- AI Results Section (Smart Matches) -->
+        <section id="aiResultsSection" class="ai-results-section">
+            <div class="ai-results-header">
+                <div class="ai-results-label">AI Property Matches</div>
+                <h2 class="ai-results-title">The Caretaker Found Properties For You</h2>
+                <p class="ai-results-count" id="aiResultsCount">Found 0 properties</p>
+            </div>
+            
+            <div class="carousel-wrapper">
+                <button class="carousel-arrow prev" onclick="scrollCarousel('aiResultsCarousel', -1)">
+                    <i class="fas fa-chevron-left"></i>
+                </button>
+                <div id="aiResultsCarousel" class="carousel-container"></div>
+                <button class="carousel-arrow next" onclick="scrollCarousel('aiResultsCarousel', 1)">
+                    <i class="fas fa-chevron-right"></i>
+                </button>
+            </div>
+        </section>
+
+        <!-- Category Section (Larger, More Emotional) -->
+        <section class="category-section" id="categories">
+            <div class="section-header">
+                <h2 class="section-title">Explore by Category</h2>
+                <p class="section-subtitle">Find exactly what you're looking for</p>
+            </div>
+            
+            <div class="category-grid">
+                <div class="category-card active" onclick="filterCategory('all', this)">
+                    <div class="category-icon"><i class="fas fa-th-large"></i></div>
+                    <div class="category-name">All Listings</div>
+                    <div class="category-count" id="count-all">0 properties</div>
+                </div>
+                <div class="category-card" onclick="filterCategory('for sale', this)">
+                    <div class="category-icon"><i class="fas fa-home"></i></div>
+                    <div class="category-name">Buy Properties</div>
+                    <div class="category-count" id="count-sale">0 properties</div>
+                </div>
+                <div class="category-card" onclick="filterCategory('for rent', this)">
+                    <div class="category-icon"><i class="fas fa-key"></i></div>
+                    <div class="category-name">Rent Properties</div>
+                    <div class="category-count" id="count-rent">0 properties</div>
+                </div>
+                <div class="category-card" onclick="filterCategory('lease', this)">
+                    <div class="category-icon"><i class="fas fa-file-contract"></i></div>
+                    <div class="category-name">For Lease</div>
+                    <div class="category-count" id="count-lease">0 properties</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Featured Section (Premium, Larger Cards) -->
+        <section class="featured-section" id="featured">
+            <div class="section-header">
+                <h2 class="section-title">Featured Properties</h2>
+                <p class="section-subtitle">Handpicked verified listings from top agents</p>
+            </div>
+            
+            <div class="carousel-wrapper">
+                <button class="carousel-arrow prev" onclick="scrollCarousel('featuredCarousel', -1)">
+                    <i class="fas fa-chevron-left"></i>
+                </button>
+                <div id="featuredCarousel" class="carousel-container">
+                    <div style="padding:40px; text-align:center; color:#9CA3AF; width:100%;">
+                        <i class="fas fa-spinner fa-spin" style="font-size:20px;"></i>
+                        <p style="margin-top:8px;">Loading properties...</p>
+                    </div>
+                </div>
+                <button class="carousel-arrow next" onclick="scrollCarousel('featuredCarousel', 1)">
+                    <i class="fas fa-chevron-right"></i>
+                </button>
+            </div>
+        </section>
+
+        <!-- Blog Section (Magazine Editorial) -->
+        <section class="blog-section">
+            <div class="section-header">
+                <h2 class="section-title">Real Estate Insights</h2>
+                <p class="section-subtitle">Expert guides and market analysis</p>
+            </div>
+            
+            <div class="blog-carousel-wrapper">
+                <button class="carousel-arrow prev" onclick="scrollCarousel('blogCarousel', -1)">
+                    <i class="fas fa-chevron-left"></i>
+                </button>
+                <div id="blogCarousel" class="blog-carousel">
+                    <article class="blog-card">
+                        <div class="blog-image-wrapper">
+                            <img src="https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=600&q=80" alt="Buying land" class="blog-image">
+                            <span class="blog-category">Guide</span>
+                        </div>
+                        <div class="blog-content">
+                            <h3 class="blog-title">How to Buy Land in Kenya Without Getting Scammed</h3>
+                            <p class="blog-excerpt">A step-by-step guide to verifying titles, doing due diligence, and completing land purchases safely.</p>
+                        </div>
+                    </article>
+                    
+                    <article class="blog-card">
+                        <div class="blog-image-wrapper">
+                            <img src="https://images.unsplash.com/photo-1582407947304-fd86f028f716?w=600&q=80" alt="Nairobi" class="blog-image">
+                            <span class="blog-category">Market</span>
+                        </div>
+                        <div class="blog-content">
+                            <h3 class="blog-title">Best Nairobi Neighborhoods for Families in 2026</h3>
+                            <p class="blog-excerpt">From Kilimani to Ruai — discover the top estates for families based on schools, security, and amenities.</p>
+                        </div>
+                    </article>
+                    
+                    <article class="blog-card">
+                        <div class="blog-image-wrapper">
+                            <img src="https://images.unsplash.com/photo-1551833227-8e3512960a83?w=600&q=80" alt="Investment" class="blog-image">
+                            <span class="blog-category">Investment</span>
+                        </div>
+                        <div class="blog-content">
+                            <h3 class="blog-title">Ruai Property Investment Guide: Why Prices Are Rising</h3>
+                            <p class="blog-excerpt">Analysis of Ruai's rapid growth and why it's becoming one of Nairobi's hottest investment areas.</p>
+                        </div>
+                    </article>
+                </div>
+                <button class="carousel-arrow next" onclick="scrollCarousel('blogCarousel', 1)">
+                    <i class="fas fa-chevron-right"></i>
+                </button>
+            </div>
+        </section>
+
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-top">
+                <div class="footer-brand">
+                    <div class="footer-brand-title">
+                        <div class="nav-logo-icon" style="width:24px; height:24px; font-size:11px;"><i class="fas fa-home"></i></div>
+                        Properties in Kenya
+                    </div>
+                    <p class="footer-brand-desc">
+                        AI-powered real estate platform connecting buyers, renters, and investors with verified properties across Kenya.
+                    </p>
+                    <div class="footer-powered">
+                        <span class="footer-powered-dot"></span>
+                        Powered by The Caretaker Intelligence
+                    </div>
+                </div>
+                <div>
+                    <div class="footer-col-title">Explore</div>
+                    <div class="footer-links">
+                        <a href="#buy" class="footer-link">Buy Property</a>
+                        <a href="#rent" class="footer-link">Rent Property</a>
+                        <a href="#lease" class="footer-link">For Lease</a>
+                        <a href="#featured" class="footer-link">All Listings</a>
+                    </div>
+                </div>
+                <div>
+                    <div class="footer-col-title">Company</div>
+                    <div class="footer-links">
+                        <a href="#" class="footer-link">About Us</a>
+                        <a href="#" class="footer-link">Contact</a>
+                        <a href="agent.html" class="footer-link">For Agents</a>
+                    </div>
+                </div>
+                <div>
+                    <div class="footer-col-title">Legal</div>
+                    <div class="footer-links">
+                        <a href="#" class="footer-link">Terms</a>
+                        <a href="#" class="footer-link">Privacy</a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p class="footer-copyright">© 2026 Properties in Kenya. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Modal -->
+    <div id="detailModal" class="modal-overlay">
+        <div class="modal">
+            <div class="modal-header">
+                <h2 id="modalTitle" class="modal-title"></h2>
+                <button class="modal-close" onclick="closeModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="modal-image-container">
+                    <img id="mainImage" class="modal-image" alt="Property">
+                    <button class="modal-nav-btn prev" onclick="prevImage()">
+                        <i class="fas fa-chevron-left"></i>
+                    </button>
+                    <button class="modal-nav-btn next" onclick="nextImage()">
+                        <i class="fas fa-chevron-right"></i>
+                    </button>
+                </div>
+                <div class="modal-details">
+                    <div id="modalPrice" class="modal-price"></div>
+                    <div id="modalMeta" class="modal-meta"></div>
+                    <p id="modalDescription" class="modal-description"></p>
+                    <div class="modal-cta">
+                        <a id="modalWA" href="#" target="_blank" class="modal-btn whatsapp">
+                            <i class="fab fa-whatsapp"></i>
+                            WhatsApp Agent
+                        </a>
+                        <a id="modalCall" href="tel:" class="modal-btn call">
+                            <i class="fas fa-phone"></i>
+                            Call Agent
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const supabaseClient = supabase.createClient(
+            "https://nqwvsmuvltbiekfnvovx.supabase.co",
+            "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5xd3ZzbXV2bHRiaWVrZm52b3Z4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA1NjU4MDAsImV4cCI6MjA5NjE0MTgwMH0.Xrc-bbAuWdvKSPHnVhTaLiQphV61xeYtDepWePqsrdo"
+        );
+
+        let allProperties = [];
+        let currentImages = [];
+        let currentImageIndex = 0;
+
+        async function loadProperties() {
+            try {
+                const { data, error } = await supabaseClient
+                    .from("properties")
+                    .select("*")
+                    .eq("approval_status", "approved")
+                    .order("created_at", { ascending: false });
+
+                if (error) throw error;
+                allProperties = data || [];
+                
+                updateCategoryCounts();
+                renderFeatured(allProperties);
+            } catch (error) {
+                console.error('Error loading properties:', error);
+            }
+        }
+
+        function updateCategoryCounts() {
+            document.getElementById('count-all').textContent = `${allProperties.length} properties`;
+            document.getElementById('count-sale').textContent = `${allProperties.filter(p => p.property_type === 'for sale').length} properties`;
+            document.getElementById('count-rent').textContent = `${allProperties.filter(p => p.property_type === 'for rent').length} properties`;
+            document.getElementById('count-lease').textContent = `${allProperties.filter(p => p.property_type === 'lease').length} properties`;
+        }
+
+        function renderFeatured(properties) {
+            const carousel = document.getElementById('featuredCarousel');
+            
+            if (properties.length === 0) {
+                carousel.innerHTML = '<div style="padding:40px; text-align:center; color:#9CA3AF; width:100%;">No properties yet</div>';
+                return;
+            }
+            
+            carousel.innerHTML = properties.map(p => createFeaturedCard(p)).join('');
+        }
+
+        function createFeaturedCard(p) {
+            const img = p.images?.[0] || p.image_url || 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=600&q=80';
+            
+            return `
+                <div class="featured-card" onclick="openDetail('${p.id}')">
+                    <div class="featured-image-wrapper">
+                        <img src="${img}" class="featured-image" alt="${escapeHtml(p.title)}" loading="lazy">
+                        <div class="featured-badge">${(p.property_type || 'FOR SALE').toUpperCase()}</div>
+                        <div class="featured-verified"><i class="fas fa-check-circle"></i> Verified</div>
+                    </div>
+                    <div class="featured-info">
+                        <h3 class="featured-title">${escapeHtml(p.title)}</h3>
+                        <div class="featured-location">
+                            <i class="fas fa-map-marker-alt"></i>
+                            ${escapeHtml(p.location || 'Kenya')}
+                        </div>
+                        <div class="featured-price">KSh ${Number(p.price).toLocaleString()}</div>
+                        <div class="featured-meta">
+                            ${p.bedrooms ? `<div class="featured-meta-item"><i class="fas fa-bed"></i> ${p.bedrooms} Bed</div>` : ''}
+                            ${p.bathrooms ? `<div class="featured-meta-item"><i class="fas fa-bath"></i> ${p.bathrooms} Bath</div>` : ''}
+                            ${p.area ? `<div class="featured-meta-item"><i class="fas fa-ruler-combined"></i> ${p.area} sqm</div>` : ''}
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function createAIResultCard(p) {
+            const img = p.images?.[0] || p.image_url || 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=600&q=80';
+            const tags = [];
+            if (p.bedrooms) tags.push(`${p.bedrooms} Bed`);
+            if (p.location) tags.push(p.location);
+            
+            return `
+                <div class="ai-result-card" onclick="openDetail('${p.id}')">
+                    <img src="${img}" class="ai-result-image" alt="${escapeHtml(p.title)}" loading="lazy">
+                    <div class="ai-result-info">
+                        <h3 class="ai-result-title">${escapeHtml(p.title)}</h3>
+                        <div class="ai-result-location">${escapeHtml(p.location || 'Kenya')}</div>
+                        <div class="ai-result-price">KSh ${Number(p.price).toLocaleString()}</div>
+                        <div class="ai-result-tags">
+                            ${tags.map(tag => `<span class="ai-result-tag">${tag}</span>`).join('')}
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        window.filterCategory = function(category, element) {
+            document.querySelectorAll('.category-card').forEach(c => c.classList.remove('active'));
+            element.classList.add('active');
+            
+            let filtered = category === 'all' ? allProperties : allProperties.filter(p => p.property_type === category);
+            renderFeatured(filtered);
+            
+            document.getElementById('featured').scrollIntoView({ behavior: 'smooth', block: 'start' });
+        };
+
+        function renderAIResults(properties) {
+            const section = document.getElementById('aiResultsSection');
+            const carousel = document.getElementById('aiResultsCarousel');
+            const countText = document.getElementById('aiResultsCount');
+            
+            if (properties.length === 0) {
+                section.classList.remove('active');
+                return;
+            }
+            
+            countText.textContent = `Found ${properties.length} ${properties.length === 1 ? 'property' : 'properties'}`;
+            carousel.innerHTML = properties.map(p => createAIResultCard(p)).join('');
+            
+            section.classList.add('active');
+            
+            setTimeout(() => {
+                section.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }, 300);
+        }
+
+        window.scrollCarousel = function(id, direction) {
+            const container = document.getElementById(id);
+            container.scrollBy({ left: direction * 320, behavior: 'smooth' });
+        };
+
+        function openDetail(propertyId) {
+            const p = allProperties.find(prop => prop.id === propertyId);
+            if (!p) return;
+
+            currentImages = p.images?.length > 0 ? p.images : [p.image_url || 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=800&q=80'];
+            currentImageIndex = 0;
+            
+            document.getElementById("mainImage").src = currentImages[0];
+            document.getElementById("modalTitle").textContent = p.title;
+            document.getElementById("modalPrice").textContent = `KSh ${Number(p.price).toLocaleString()}`;
+            document.getElementById("modalMeta").innerHTML = `📍 ${escapeHtml(p.location || 'Kenya')}<br>${p.property_type || ''}`;
+            document.getElementById("modalDescription").textContent = p.description || "Beautiful verified property.";
+            
+            const agentPhone = p.agent_phone || '+254700000000';
+            const cleanPhone = agentPhone.replace(/[^0-9]/g, '');
+            const waMessage = encodeURIComponent(`Hi, I'm interested in: ${p.title}`);
+            
+            document.getElementById("modalWA").href = `https://wa.me/${cleanPhone}?text=${waMessage}`;
+            document.getElementById("modalCall").href = `tel:${agentPhone}`;
+            document.getElementById("detailModal").classList.add("active");
+        }
+
+        window.prevImage = () => { 
+            currentImageIndex = (currentImageIndex - 1 + currentImages.length) % currentImages.length; 
+            document.getElementById("mainImage").src = currentImages[currentImageIndex]; 
+        };
+        
+        window.nextImage = () => { 
+            currentImageIndex = (currentImageIndex + 1) % currentImages.length; 
+            document.getElementById("mainImage").src = currentImages[currentImageIndex]; 
+        };
+        
+        window.closeModal = () => document.getElementById("detailModal").classList.remove("active");
+
+        window.useSuggestion = function(text) {
+            document.getElementById('aiQuery').value = text;
+            askAI();
+        };
+
+        async function askAI() {
+            const input = document.getElementById('aiQuery');
+            const query = input.value.trim();
+            if (!query) return;
+
+            const btn = document.getElementById('askBtn');
+            const messagesDiv = document.getElementById('chatMessages');
+            
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+
+            messagesDiv.classList.add('active');
+            addChatMessage(query, true);
+            input.value = '';
+
+            try {
+                const response = await fetch('/api/ai-assistant', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ query })
+                });
+                
+                const result = await response.json();
+                if (!response.ok) throw new Error(result.error);
+
+                const filteredProperties = applyAIFilters(result.filters);
+
+                let aiResponse = filteredProperties.length === 0 
+                    ? `No properties found matching "${query}".`
+                    : `✨ Found ${filteredProperties.length} ${filteredProperties.length === 1 ? 'property' : 'properties'}!`;
+                
+                addChatMessage(aiResponse, false);
+                
+                if (filteredProperties.length > 0) {
+                    renderAIResults(filteredProperties);
+                }
+
+            } catch (error) {
+                addChatMessage("Sorry, having trouble connecting.", false);
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fas fa-search"></i><span>Search</span>';
+            }
+        }
+
+        function applyAIFilters(filters) {
+            return allProperties.filter(p => {
+                if (filters.max_price && p.price > filters.max_price) return false;
+                if (filters.location && !(p.location || '').toLowerCase().includes(filters.location.toLowerCase())) return false;
+                if (filters.property_type && !(p.property_type || '').toLowerCase().includes(filters.property_type.toLowerCase())) return false;
+                if (filters.bedrooms && p.bedrooms !== filters.bedrooms) return false;
+                return true;
+            });
+        }
+
+        function addChatMessage(message, isUser) {
+            const messagesDiv = document.getElementById('chatMessages');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = 'ai-chat-message';
+            
+            messageDiv.innerHTML = isUser
+                ? `<div class="ai-chat-bubble user">${escapeHtml(message)}</div><div class="ai-chat-avatar user"><i class="fas fa-user"></i></div>`
+                : `<div class="ai-chat-avatar ai"><i class="fas fa-robot"></i></div><div class="ai-chat-bubble ai">${message}</div>`;
+            
+            messagesDiv.appendChild(messageDiv);
+            messagesDiv.scrollTop = messagesDiv.scrollHeight;
+        }
+
+        function escapeHtml(text) {
+            if (!text) return '';
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        document.getElementById('detailModal').addEventListener('click', (e) => {
+            if (e.target.id === 'detailModal') closeModal();
+        });
+
+        loadProperties();
+    </script>
+</body>
+</html>robots" content="index, follow, max-image-preview:large">
     <link rel="canonical" href="https://propertiesinkenya.co.ke/">
     
     <!-- Open Graph -->
