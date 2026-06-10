@@ -1,0 +1,8 @@
+User-agent: *
+Allow: /
+Disallow: /agent.html
+Disallow: /admin.html
+Disallow: /login.html
+Disallow: /api/
+
+Sitemap: https://propertiesinkenya.co.ke/sitemap.xml
