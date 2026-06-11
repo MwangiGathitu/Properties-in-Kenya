@@ -3098,26 +3098,51 @@ detailsHTML += `
 }
 document.getElementById('propertyDetailsGrid').innerHTML = detailsHTML ||
 '<div style="grid-column:1/-1; text-align:center; color:#9CA3AF; padding:20px;">No additional details available</div>';
+
+// ===== SAFE FEATURE PARSER =====
 let features = [];
-if (Array.isArray(p.features)) {
-features = p.features;
-} else if (typeof p.features === 'string' && p.features.trim() !== '') {
-features = p.features.split(',').map(f => f.trim()).filter(f => f !== '');
+if (p.features) {
+    if (Array.isArray(p.features)) {
+        features = p.features;
+    } else if (typeof p.features === 'string') {
+        const str = p.features.trim();
+        if (str) {
+            // Handle JSON-stringified arrays from database safely
+            if (str.startsWith('[')) {
+                try {
+                    const parsed = JSON.parse(str);
+                    if (Array.isArray(parsed)) {
+                        features = parsed;
+                    } else {
+                        features = str.split(',').map(f => f.trim()).filter(f => f !== '');
+                    }
+                } catch (e) {
+                    features = str.split(',').map(f => f.trim()).filter(f => f !== '');
+                }
+            } else {
+                features = str.split(',').map(f => f.trim()).filter(f => f !== '');
+            }
+        }
+    }
 }
+// Final safety filter to ensure no empty/null values slip through
+features = features.map(f => String(f).trim()).filter(f => f !== '');
+
 let featuresHTML = '';
 if (features.length > 0) {
-featuresHTML = features.map(f =>
-`<div class="property-feature-chip"><i class="fas fa-check"></i> ${escapeHtml(f)}</div>`
-).join('');
+    featuresHTML = features.map(f => 
+        `<div class="property-feature-chip"><i class="fas fa-check"></i> ${escapeHtml(f)}</div>`
+    ).join('');
 } else {
-featuresHTML = `
-<div class="property-features-empty">
-<i class="fas fa-info-circle"></i>
-<span>Features not yet specified</span>
-</div>
-`;
+    featuresHTML = `
+        <div class="property-features-empty">
+            <i class="fas fa-info-circle"></i>
+            <span>Features not yet specified</span>
+        </div>
+    `;
 }
 document.getElementById('propertyFeatures').innerHTML = featuresHTML;
+
 document.getElementById('agentAvatar').textContent = (p.agent_name || 'A').charAt(0).toUpperCase();
 document.getElementById('agentName').textContent = p.agent_name || 'Verified Agent';
 const agentMetaEl = document.getElementById('agentMeta');
