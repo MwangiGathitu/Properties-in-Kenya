@@ -21,8 +21,6 @@ body {
   color: #111827; background: #f4f4f7;
   line-height: 1.6; padding-bottom: 80px;
 }
-
-/* NAV */
 .nav {
   position: sticky; top: 0; z-index: 100;
   background: white; border-bottom: 1px solid #e5e7eb;
@@ -43,8 +41,6 @@ body {
   text-decoration: none;
 }
 .back-btn:hover { background: #e5e7eb; }
-
-/* LAYOUT */
 .container {
   max-width: 1400px; margin: 24px auto;
   padding: 0 24px;
@@ -57,8 +53,6 @@ body {
   .container { grid-template-columns: 1fr; }
   .sidebar { position: static !important; }
 }
-
-/* CARD */
 .card {
   background: white; border-radius: 16px;
   padding: 24px; margin-bottom: 20px;
@@ -71,8 +65,6 @@ body {
   color: #111827;
 }
 .card-title i { color: #6b21a8; }
-
-/* HERO */
 .hero {
   background: linear-gradient(135deg, #fff 0%, #faf5ff 100%);
   border-radius: 16px; padding: 32px;
@@ -86,10 +78,7 @@ body {
   top: 0; left: 0; right: 0; height: 4px;
   background: linear-gradient(90deg, #6b21a8, #a855f7);
 }
-.hero-top {
-  display: flex; gap: 20px; align-items: flex-start;
-  flex-wrap: wrap;
-}
+.hero-top { display: flex; gap: 20px; align-items: flex-start; flex-wrap: wrap; }
 .avatar-wrap { position: relative; flex-shrink: 0; }
 .avatar {
   width: 110px; height: 110px;
@@ -124,18 +113,11 @@ body {
   padding: 4px 10px; border-radius: 9999px;
   text-transform: uppercase; letter-spacing: 0.5px;
 }
-.company {
-  color: #6b21a8; font-weight: 600;
-  font-size: 14px; margin: 4px 0 12px;
-}
-.meta {
-  display: flex; gap: 16px; flex-wrap: wrap;
-  font-size: 13px; color: #6b7280;
-}
+.company { color: #6b21a8; font-weight: 600; font-size: 14px; margin: 4px 0 12px; }
+.meta { display: flex; gap: 16px; flex-wrap: wrap; font-size: 13px; color: #6b7280; }
 .meta-item { display: flex; align-items: center; gap: 6px; }
 .meta-item i { color: #6b21a8; }
 .meta-item strong { color: #111827; }
-
 .hero-stats {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
@@ -143,17 +125,12 @@ body {
   padding-top: 20px; border-top: 1px solid #e5e7eb;
 }
 .stat { text-align: center; }
-.stat-val {
-  font-size: 22px; font-weight: 800;
-  color: #111827; letter-spacing: -0.5px;
-}
+.stat-val { font-size: 22px; font-weight: 800; color: #111827; letter-spacing: -0.5px; }
 .stat-lbl {
   font-size: 11px; color: #6b7280;
   text-transform: uppercase; letter-spacing: 0.5px;
   margin-top: 2px;
 }
-
-/* TRUST */
 .trust-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
@@ -175,26 +152,17 @@ body {
 }
 .trust-item.ok .trust-icon { background: #10b981; color: white; }
 .trust-lbl { font-size: 13px; font-weight: 600; }
-
 .score-card {
   background: linear-gradient(135deg, #faf5ff, white);
   border: 2px solid #6b21a8;
   border-radius: 14px; padding: 20px;
   display: flex; align-items: center; gap: 20px;
 }
-.score-num {
-  font-size: 48px; font-weight: 800;
-  color: #6b21a8; line-height: 1;
-}
+.score-num { font-size: 48px; font-weight: 800; color: #6b21a8; line-height: 1; }
 .score-num span { font-size: 18px; color: #9ca3af; }
 .score-txt h4 { font-size: 15px; font-weight: 700; margin-bottom: 2px; }
 .score-txt p { font-size: 12px; color: #6b7280; }
-
-/* LISTINGS */
-.tabs {
-  display: flex; gap: 6px;
-  margin-bottom: 16px; overflow-x: auto;
-}
+.tabs { display: flex; gap: 6px; margin-bottom: 16px; overflow-x: auto; }
 .tab {
   padding: 7px 14px; border-radius: 9999px;
   background: #f3f4f6; border: none;
@@ -202,7 +170,6 @@ body {
   cursor: pointer; white-space: nowrap;
 }
 .tab.active { background: #6b21a8; color: white; }
-
 .scroll {
   display: flex; gap: 14px;
   overflow-x: auto; padding-bottom: 8px;
@@ -211,7 +178,6 @@ body {
 }
 .scroll::-webkit-scrollbar { height: 6px; }
 .scroll::-webkit-scrollbar-thumb { background: #a855f7; border-radius: 3px; }
-
 .prop {
   flex: 0 0 260px;
   background: white; border-radius: 14px;
@@ -240,46 +206,29 @@ body {
   text-transform: uppercase;
 }
 .prop-body { padding: 14px; }
-.prop-price {
-  font-size: 17px; font-weight: 800;
-  color: #10b981; margin-bottom: 3px;
-}
+.prop-price { font-size: 17px; font-weight: 800; color: #10b981; margin-bottom: 3px; }
 .prop-title {
   font-size: 13px; font-weight: 600;
   margin-bottom: 4px;
   overflow: hidden; text-overflow: ellipsis;
   white-space: nowrap;
 }
-.prop-loc {
-  font-size: 12px; color: #6b7280;
-  display: flex; align-items: center; gap: 4px;
-}
-
-/* REVIEWS */
+.prop-loc { font-size: 12px; color: #6b7280; display: flex; align-items: center; gap: 4px; }
 .review-summary {
   display: flex; gap: 20px; align-items: center;
   padding: 16px; background: #faf5ff;
   border-radius: 12px; margin-bottom: 16px;
   flex-wrap: wrap;
 }
-.review-score {
-  text-align: center; flex-shrink: 0;
-}
-.review-big {
-  font-size: 40px; font-weight: 800; color: #6b21a8;
-  line-height: 1;
-}
+.review-score { text-align: center; flex-shrink: 0; }
+.review-big { font-size: 40px; font-weight: 800; color: #6b21a8; line-height: 1; }
 .review-stars { color: #fbbf24; margin: 6px 0; }
 .review-cnt { font-size: 12px; color: #6b7280; }
-
 .review-card {
   padding: 14px; border: 1px solid #e5e7eb;
   border-radius: 12px; margin-bottom: 10px;
 }
-.review-head {
-  display: flex; gap: 10px; align-items: center;
-  margin-bottom: 8px;
-}
+.review-head { display: flex; gap: 10px; align-items: center; margin-bottom: 8px; }
 .review-avatar {
   width: 38px; height: 38px;
   border-radius: 50%;
@@ -292,8 +241,6 @@ body {
 .review-name { font-size: 13px; font-weight: 700; }
 .review-date { font-size: 11px; color: #9ca3af; }
 .review-text { font-size: 13px; color: #374151; line-height: 1.5; }
-
-/* SIDEBAR */
 .sidebar { position: sticky; top: 80px; }
 .contact-card {
   background: white; border-radius: 16px;
@@ -312,9 +259,7 @@ body {
   background: #10b981; border-radius: 50%;
   animation: pulse 2s infinite;
 }
-@keyframes pulse {
-  0%,100% { opacity: 1; } 50% { opacity: 0.5; }
-}
+@keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.5; } }
 .privacy {
   background: #d1fae5; color: #065f46;
   padding: 10px; border-radius: 8px;
@@ -322,10 +267,7 @@ body {
   display: flex; align-items: center; gap: 8px;
   margin-bottom: 14px;
 }
-.btns {
-  display: flex; flex-direction: column;
-  gap: 8px; margin-bottom: 14px;
-}
+.btns { display: flex; flex-direction: column; gap: 8px; margin-bottom: 14px; }
 .btn {
   padding: 12px; border-radius: 10px;
   border: none; font-size: 14px; font-weight: 600;
@@ -337,12 +279,8 @@ body {
 .btn:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
 .btn-purple { background: #6b21a8; color: white; }
 .btn-wa { background: #25D366; color: white; }
-.btn-outline {
-  background: white; color: #6b21a8;
-  border: 1.5px solid #6b21a8;
-}
+.btn-outline { background: white; color: #6b21a8; border: 1.5px solid #6b21a8; }
 .btn-ghost { background: #f3f4f6; color: #374151; }
-
 .input {
   width: 100%; padding: 10px 12px;
   border: 1px solid #e5e7eb; border-radius: 8px;
@@ -351,8 +289,6 @@ body {
 }
 .input:focus { outline: none; border-color: #6b21a8; background: white; }
 textarea.input { resize: vertical; min-height: 70px; }
-
-/* MOBILE BAR */
 .mobile-bar {
   position: fixed; bottom: 0; left: 0; right: 0;
   background: white; border-top: 2px solid #6b21a8;
@@ -361,15 +297,8 @@ textarea.input { resize: vertical; min-height: 70px; }
   box-shadow: 0 -4px 16px rgba(0,0,0,0.08);
 }
 .mobile-bar .btn { flex: 1; padding: 11px; font-size: 13px; }
-
-/* EMPTY */
-.empty {
-  text-align: center; padding: 32px 20px;
-  color: #9ca3af;
-}
+.empty { text-align: center; padding: 32px 20px; color: #9ca3af; }
 .empty i { font-size: 36px; margin-bottom: 10px; }
-
-/* TOAST */
 .toast {
   position: fixed; top: 80px; right: 20px;
   background: white; padding: 12px 18px;
@@ -378,8 +307,6 @@ textarea.input { resize: vertical; min-height: 70px; }
   border-left: 4px solid #10b981;
   z-index: 9999; max-width: 300px;
 }
-
-/* AGENT GRID (for browse page) */
 .agent-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
@@ -422,8 +349,6 @@ textarea.input { resize: vertical; min-height: 70px; }
   margin-top: 10px; font-size: 11px;
   color: #6b21a8; font-weight: 600;
 }
-
-/* RESPONSIVE */
 @media (max-width: 768px) {
   .container { padding: 0 16px; }
   .hero, .card { padding: 18px; }
@@ -450,7 +375,6 @@ textarea.input { resize: vertical; min-height: 70px; }
 
 <div class="container">
   <main id="mainContent">
-    <!-- HERO -->
     <section class="hero" id="hero">
       <div class="hero-top">
         <div class="avatar-wrap">
@@ -487,7 +411,6 @@ textarea.input { resize: vertical; min-height: 70px; }
       </div>
     </section>
 
-    <!-- TRUST -->
     <section class="card">
       <h2 class="card-title"><i class="fas fa-shield-halved"></i> Trust & Verification</h2>
       <div class="trust-grid" id="trustGrid"></div>
@@ -500,7 +423,6 @@ textarea.input { resize: vertical; min-height: 70px; }
       </div>
     </section>
 
-    <!-- LISTINGS -->
     <section class="card">
       <h2 class="card-title"><i class="fas fa-building"></i> Agent's Listings</h2>
       <div class="tabs">
@@ -512,13 +434,11 @@ textarea.input { resize: vertical; min-height: 70px; }
       <div class="scroll" id="listings"></div>
     </section>
 
-    <!-- ABOUT -->
     <section class="card">
       <h2 class="card-title"><i class="fas fa-user-tie"></i> About</h2>
       <p id="bio" style="font-size:14px; color:#374151; line-height:1.7;">Loading...</p>
     </section>
 
-    <!-- REVIEWS -->
     <section class="card">
       <h2 class="card-title"><i class="fas fa-star"></i> Customer Reviews</h2>
       <div class="review-summary">
@@ -539,7 +459,6 @@ textarea.input { resize: vertical; min-height: 70px; }
     </section>
   </main>
 
-  <!-- SIDEBAR -->
   <aside class="sidebar" id="sidebar">
     <div class="contact-card">
       <h3 class="contact-name" id="cName">Contact Agent</h3>
@@ -576,7 +495,6 @@ textarea.input { resize: vertical; min-height: 70px; }
   </aside>
 </div>
 
-<!-- MOBILE BAR -->
 <div class="mobile-bar">
   <a href="tel:" id="mCall" class="btn btn-purple">
     <i class="fas fa-phone"></i> Call
@@ -595,8 +513,16 @@ const sb = supabase.createClient(
   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5xd3ZzbXV2bHRiaWVrZm52b3Z4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA1NjU4MDAsImV4cCI6MjA5NjE0MTgwMH0.Xrc-bbAuWdvKSPHnVhTaLiQphV61xeYtDepWePqsrdo"
 );
 
-let profile = null, listings = [], reviews = [];
-const esc = t => { const d = document.createElement('div'); d.textContent = t || ''; return d.innerHTML; };
+let profile = null;
+let listings = [];
+let reviews = [];
+
+const esc = t => {
+  const d = document.createElement('div');
+  d.textContent = t || '';
+  return d.innerHTML;
+};
+
 const toast = (t, m) => {
   const el = document.createElement('div');
   el.className = 'toast';
@@ -609,65 +535,47 @@ async function load() {
   const params = new URLSearchParams(location.search);
   const id = params.get('id');
   const slug = params.get('slug');
-  
-  // If no ID or slug provided, show all agents
+
+  // If no ID or slug, show all agents
   if (!id && !slug) {
     await showAllAgents();
     return;
   }
 
   // Load profile by ID or slug
-  let p;
+  let profileData = null;
+
   if (id) {
     const { data } = await sb.from('profiles').select('*').eq('id', id).maybeSingle();
-    p = data;
+    profileData = data;
   } else if (slug) {
     const { data } = await sb.from('profiles').select('*').eq('slug', slug).maybeSingle();
-    p = data;
+    profileData = data;
   }
-  
-  if (!p) {
-    document.getElementById('agentName').textContent = 'Agent not found';
-    document.getElementById('bio').textContent = 'This agent profile could not be found. Please check the URL or browse all agents below.';
-    await showAllAgents();
-    return;
-  }
-  
-  profile = p;
 
-  // Load profile (using maybeSingle to avoid 406 error)
-  const { data: p, error } = await sb.from('profiles').select('*').eq('id', id).maybeSingle();
-  
-  if (error) {
-    console.error('Error loading profile:', error);
-    document.getElementById('agentName').textContent = 'Error loading profile';
-    document.getElementById('bio').textContent = 'An error occurred while loading this agent profile.';
-    return;
-  }
-  
-  if (!p) {
+  if (!profileData) {
     document.getElementById('agentName').textContent = 'Agent not found';
     document.getElementById('bio').textContent = 'This agent profile could not be found. Please check the URL or browse all agents below.';
     await showAllAgents();
     return;
   }
-  
-  profile = p;
+
+  profile = profileData;
 
   // Load listings
   const { data: l } = await sb.from('properties').select('*')
-    .eq('agent_id', id).eq('approval_status', 'approved')
+    .eq('agent_id', profile.id).eq('approval_status', 'approved')
     .order('created_at', { ascending: false });
   listings = l || [];
 
   // Load reviews
   const { data: r } = await sb.from('reviews').select('*')
-    .eq('agent_id', id).eq('is_approved', true)
+    .eq('agent_id', profile.id).eq('is_approved', true)
     .order('created_at', { ascending: false });
   reviews = r || [];
 
   // Increment views
-  sb.from('profiles').update({ profile_views: (p.profile_views || 0) + 1 }).eq('id', id);
+  sb.from('profiles').update({ profile_views: (profile.profile_views || 0) + 1 }).eq('id', profile.id);
 
   render();
 }
@@ -775,11 +683,11 @@ function render() {
   }
 }
 
-function renderListings(filter) {
-  const list = filter === 'all' ? listings : listings.filter(p => p.property_type === filter);
+function renderListings(filterType) {
+  const list = filterType === 'all' ? listings : listings.filter(p => p.property_type === filterType);
   const c = document.getElementById('listings');
   if (list.length === 0) {
-    c.innerHTML = `<div class="empty" style="width:100%;"><i class="fas fa-building"></i><p>No ${filter === 'all' ? '' : filter + ' '}listings</p></div>`;
+    c.innerHTML = `<div class="empty" style="width:100%;"><i class="fas fa-building"></i><p>No ${filterType === 'all' ? '' : filterType + ' '}listings</p></div>`;
     return;
   }
   c.innerHTML = list.map(p => {
@@ -822,7 +730,6 @@ async function sendMsg() {
   ['mName','mEmail','mPhone','mMsg'].forEach(id => document.getElementById(id).value = '');
 }
 
-// NEW FUNCTION: Show all agents when no ID is provided
 async function showAllAgents() {
   const { data: agents, error } = await sb.from('profiles')
     .select('*')
@@ -831,7 +738,7 @@ async function showAllAgents() {
     .limit(20);
 
   const main = document.getElementById('mainContent');
-  
+
   if (error || !agents || agents.length === 0) {
     main.innerHTML = `
       <div class="card">
@@ -858,11 +765,12 @@ async function showAllAgents() {
       <div class="agent-grid">
         ${agents.map(a => {
           const init = (a.full_name || 'A').charAt(0).toUpperCase();
-          const avatar = a.avatar_url 
+          const avatar = a.avatar_url
             ? `<img src="${a.avatar_url}" onerror="this.parentElement.innerHTML='${init}'">`
             : init;
+          const agentUrl = a.slug ? `/agent/${a.slug}` : `?id=${a.id}`;
           return `
-            <a href="?id=${a.id}" class="agent-card">
+            <a href="${agentUrl}" class="agent-card">
               <div class="agent-avatar">${avatar}</div>
               <div class="agent-name-small">${esc(a.full_name)}</div>
               <div class="agent-company-small">${esc(a.company || 'Independent Agent')}</div>
@@ -877,7 +785,7 @@ async function showAllAgents() {
       </div>
     </div>
   `;
-  
+
   document.getElementById('sidebar').style.display = 'none';
 }
 
