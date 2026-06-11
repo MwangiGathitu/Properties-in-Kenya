@@ -4,9 +4,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Find Verified Real Estate Agents in Kenya | Properties in Kenya</title>
-<meta name="description" content="Browse trusted, verified real estate agents across Kenya. Search by location, specialization, and rating. Connect directly with top-rated agents.">
+<meta name="description" content="Browse trusted, verified real estate agents across Kenya. Search by location, specialization, and rating.">
 <meta property="og:title" content="Find Verified Real Estate Agents in Kenya">
-<meta property="og:description" content="Browse trusted agents across Kenya. Search by location, rating, and specialization.">
+<meta property="og:description" content="Browse trusted agents across Kenya.">
 <meta property="og:image" content="https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=1200&q=80">
 <meta property="og:type" content="website">
 <meta name="twitter:card" content="summary_large_image">
@@ -25,8 +25,6 @@ body {
   color: #111827; background: #f4f4f7;
   line-height: 1.6;
 }
-
-/* NAV */
 .nav {
   position: sticky; top: 0; z-index: 100;
   background: rgba(255,255,255,0.95);
@@ -40,9 +38,7 @@ body {
   display: flex; align-items: center; gap: 8px;
   text-decoration: none;
 }
-.nav-links {
-  display: flex; gap: 24px; align-items: center;
-}
+.nav-links { display: flex; gap: 24px; align-items: center; }
 .nav-links a {
   font-size: 14px; color: #6b7280;
   text-decoration: none; font-weight: 500;
@@ -55,8 +51,6 @@ body {
   font-weight: 600;
 }
 .nav-cta:hover { background: #581c87; }
-
-/* HERO */
 .hero {
   background: linear-gradient(135deg, #6b21a8 0%, #a855f7 100%);
   padding: 60px 24px 80px;
@@ -86,13 +80,7 @@ body {
   margin: 0 auto 32px;
   position: relative;
 }
-
-/* SEARCH BAR */
-.search-wrap {
-  max-width: 640px;
-  margin: 0 auto;
-  position: relative;
-}
+.search-wrap { max-width: 640px; margin: 0 auto; position: relative; }
 .search-box {
   width: 100%;
   padding: 16px 20px 16px 50px;
@@ -114,8 +102,6 @@ body {
   color: #9ca3af;
   font-size: 16px;
 }
-
-/* STATS BAR */
 .stats-bar {
   max-width: 1400px;
   margin: -40px auto 0;
@@ -132,15 +118,8 @@ body {
   grid-template-columns: repeat(4, 1fr);
   gap: 16px;
 }
-.stat-item {
-  text-align: center;
-  padding: 8px;
-}
-.stat-val {
-  font-size: 28px; font-weight: 800;
-  color: #6b21a8;
-  letter-spacing: -0.5px;
-}
+.stat-item { text-align: center; padding: 8px; }
+.stat-val { font-size: 28px; font-weight: 800; color: #6b21a8; letter-spacing: -0.5px; }
 .stat-lbl {
   font-size: 12px; color: #6b7280;
   text-transform: uppercase;
@@ -148,18 +127,8 @@ body {
   margin-top: 4px;
   font-weight: 600;
 }
-
-/* MAIN CONTAINER */
-.container {
-  max-width: 1400px;
-  margin: 32px auto;
-  padding: 0 24px;
-}
-
-/* SECTION */
-.section {
-  margin-bottom: 40px;
-}
+.container { max-width: 1400px; margin: 32px auto; padding: 0 24px; }
+.section { margin-bottom: 40px; }
 .section-head {
   display: flex;
   justify-content: space-between;
@@ -175,12 +144,7 @@ body {
   letter-spacing: -0.3px;
 }
 .section-title i { color: #6b21a8; }
-.section-sub {
-  font-size: 13px; color: #6b7280;
-  margin-top: 4px;
-}
-
-/* TOP AGENTS (Featured) */
+.section-sub { font-size: 13px; color: #6b7280; margin-top: 4px; }
 .top-agents {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
@@ -241,11 +205,7 @@ body {
   margin-bottom: 4px;
   display: flex; align-items: center; justify-content: center; gap: 6px;
 }
-.top-company {
-  font-size: 12px; color: #6b21a8;
-  font-weight: 600;
-  margin-bottom: 6px;
-}
+.top-company { font-size: 12px; color: #6b21a8; font-weight: 600; margin-bottom: 6px; }
 .top-loc {
   font-size: 11px; color: #6b7280;
   margin-bottom: 14px;
@@ -257,14 +217,8 @@ body {
   border-top: 1px solid #e9d5ff;
   font-size: 11px;
 }
-.top-stat {
-  display: flex; flex-direction: column;
-  align-items: center;
-}
-.top-stat-val {
-  font-size: 15px; font-weight: 800;
-  color: #111827;
-}
+.top-stat { display: flex; flex-direction: column; align-items: center; }
+.top-stat-val { font-size: 15px; font-weight: 800; color: #111827; }
 .top-stat-lbl {
   color: #6b7280;
   text-transform: uppercase;
@@ -272,8 +226,6 @@ body {
   font-size: 9px;
   font-weight: 600;
 }
-
-/* FILTERS */
 .filters {
   background: white;
   border-radius: 14px;
@@ -285,9 +237,7 @@ body {
   flex-wrap: wrap;
   align-items: center;
 }
-.filter-group {
-  display: flex; align-items: center; gap: 8px;
-}
+.filter-group { display: flex; align-items: center; gap: 8px; }
 .filter-label {
   font-size: 12px; font-weight: 600;
   color: #6b7280;
@@ -318,8 +268,6 @@ body {
   display: flex; align-items: center; gap: 4px;
 }
 .filter-reset:hover { color: #581c87; }
-
-/* AGENT GRID */
 .agent-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
@@ -359,15 +307,8 @@ body {
   margin-bottom: 4px;
   display: flex; align-items: center; justify-content: center; gap: 6px;
 }
-.verified-tick {
-  color: #10b981;
-  font-size: 12px;
-}
-.agent-company {
-  font-size: 12px; color: #6b21a8;
-  font-weight: 600;
-  margin-bottom: 4px;
-}
+.verified-tick { color: #10b981; font-size: 12px; }
+.agent-company { font-size: 12px; color: #6b21a8; font-weight: 600; margin-bottom: 4px; }
 .agent-loc {
   font-size: 11px; color: #6b7280;
   margin-bottom: 14px;
@@ -379,14 +320,8 @@ body {
   border-top: 1px solid #f3f4f6;
   font-size: 11px;
 }
-.agent-stat {
-  display: flex; flex-direction: column;
-  align-items: center;
-}
-.agent-stat-val {
-  font-size: 14px; font-weight: 800;
-  color: #111827;
-}
+.agent-stat { display: flex; flex-direction: column; align-items: center; }
+.agent-stat-val { font-size: 14px; font-weight: 800; color: #111827; }
 .agent-stat-lbl {
   color: #6b7280;
   font-size: 9px;
@@ -413,26 +348,14 @@ body {
   color: white;
   border-color: #6b21a8;
 }
-
-/* EMPTY */
 .empty {
   text-align: center;
   padding: 60px 20px;
   color: #9ca3af;
   grid-column: 1 / -1;
 }
-.empty i {
-  font-size: 48px;
-  margin-bottom: 16px;
-  display: block;
-}
-.empty h3 {
-  color: #6b7280;
-  margin-bottom: 8px;
-  font-size: 18px;
-}
-
-/* LOADING SKELETON */
+.empty i { font-size: 48px; margin-bottom: 16px; display: block; }
+.empty h3 { color: #6b7280; margin-bottom: 8px; font-size: 18px; }
 .skeleton-card {
   background: white;
   border: 1px solid #e5e7eb;
@@ -463,8 +386,6 @@ body {
   0% { background-position: 200% 0; }
   100% { background-position: -200% 0; }
 }
-
-/* CTA SECTION */
 .cta-section {
   background: linear-gradient(135deg, #6b21a8 0%, #a855f7 100%);
   border-radius: 20px;
@@ -483,11 +404,7 @@ body {
   background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
   pointer-events: none;
 }
-.cta-section h2 {
-  font-size: 28px; font-weight: 800;
-  margin-bottom: 12px;
-  position: relative;
-}
+.cta-section h2 { font-size: 28px; font-weight: 800; margin-bottom: 12px; position: relative; }
 .cta-section p {
   font-size: 15px;
   opacity: 0.95;
@@ -513,8 +430,6 @@ body {
   transform: translateY(-2px);
   box-shadow: 0 10px 24px rgba(0,0,0,0.2);
 }
-
-/* FOOTER */
 .footer {
   background: white;
   border-top: 1px solid #e5e7eb;
@@ -524,8 +439,6 @@ body {
   font-size: 13px;
   margin-top: 40px;
 }
-
-/* RESPONSIVE */
 @media (max-width: 768px) {
   .nav-links a:not(.nav-cta) { display: none; }
   .hero { padding: 40px 20px 60px; }
@@ -546,7 +459,6 @@ body {
 </head>
 <body>
 
-<!-- NAV -->
 <nav class="nav">
   <a href="/" class="logo">
     <i class="fas fa-home"></i> Properties in Kenya
@@ -559,7 +471,6 @@ body {
   </div>
 </nav>
 
-<!-- HERO -->
 <section class="hero">
   <h1>Find Your Perfect Agent</h1>
   <p>Connect with verified, trusted real estate agents across Kenya. Browse ratings, reviews, and specializations.</p>
@@ -569,7 +480,6 @@ body {
   </div>
 </section>
 
-<!-- STATS BAR -->
 <div class="stats-bar">
   <div class="stats-grid">
     <div class="stat-item">
@@ -593,7 +503,6 @@ body {
 
 <div class="container">
 
-  <!-- TOP AGENTS -->
   <section class="section" id="topSection">
     <div class="section-head">
       <div>
@@ -604,7 +513,6 @@ body {
     <div class="top-agents" id="topAgents"></div>
   </section>
 
-  <!-- ALL AGENTS -->
   <section class="section">
     <div class="section-head">
       <div>
@@ -613,7 +521,6 @@ body {
       </div>
     </div>
 
-    <!-- FILTERS -->
     <div class="filters">
       <div class="filter-group">
         <span class="filter-label">Location</span>
@@ -636,9 +543,7 @@ body {
       </button>
     </div>
 
-    <!-- AGENT GRID -->
     <div class="agent-grid" id="agentGrid">
-      <!-- Skeleton loaders -->
       <div class="skeleton-card"><div class="skeleton-avatar"></div><div class="skeleton-line w60"></div><div class="skeleton-line w40"></div><div class="skeleton-line w80"></div></div>
       <div class="skeleton-card"><div class="skeleton-avatar"></div><div class="skeleton-line w60"></div><div class="skeleton-line w40"></div><div class="skeleton-line w80"></div></div>
       <div class="skeleton-card"><div class="skeleton-avatar"></div><div class="skeleton-line w60"></div><div class="skeleton-line w40"></div><div class="skeleton-line w80"></div></div>
@@ -646,7 +551,6 @@ body {
     </div>
   </section>
 
-  <!-- CTA FOR AGENTS -->
   <section class="cta-section">
     <h2>Are You a Real Estate Agent?</h2>
     <p>Join Kenya's fastest-growing property marketplace. Build your reputation, get leads, and close more deals.</p>
@@ -657,7 +561,6 @@ body {
 
 </div>
 
-<!-- FOOTER -->
 <footer class="footer">
   <p>© 2026 Properties in Kenya. All rights reserved. | Powered by The Caretaker AI</p>
 </footer>
@@ -671,12 +574,14 @@ const sb = supabase.createClient(
 let allAgents = [];
 let agentListingsCount = {};
 
-const esc = t => { const d = document.createElement('div'); d.textContent = t || ''; return d.innerHTML; };
+const esc = t => {
+  const d = document.createElement('div');
+  d.textContent = t || '';
+  return d.innerHTML;
+};
 
-// ===== LOAD DATA =====
 async function loadAgents() {
   try {
-    // Load all agents
     const { data: agents, error } = await sb
       .from('profiles')
       .select('*')
@@ -686,15 +591,14 @@ async function loadAgents() {
     if (error) throw error;
     allAgents = agents || [];
 
-    // Load listings count per agent
     const { data: listings } = await sb
       .from('properties')
       .select('agent_id, id')
       .eq('approval_status', 'approved');
 
     if (listings) {
-      listings.forEach(l => {
-        agentListingsCount[l.agent_id] = (agentListingsCount[l.agent_id] || 0) + 1;
+      listings.forEach(listing => {
+        agentListingsCount[listing.agent_id] = (agentListingsCount[listing.agent_id] || 0) + 1;
       });
     }
 
@@ -715,16 +619,15 @@ async function loadAgents() {
   }
 }
 
-// ===== UPDATE STATS =====
 function updateStats() {
   document.getElementById('totalAgents').textContent = allAgents.length;
-  
+
   const totalListings = Object.values(agentListingsCount).reduce((a, b) => a + b, 0);
   document.getElementById('totalListings').textContent = totalListings.toLocaleString();
-  
+
   const totalDeals = allAgents.reduce((sum, a) => sum + (a.total_deals_closed || 0), 0);
   document.getElementById('totalDeals').textContent = totalDeals.toLocaleString();
-  
+
   const ratedAgents = allAgents.filter(a => a.average_rating > 0);
   const avg = ratedAgents.length > 0
     ? (ratedAgents.reduce((sum, a) => sum + parseFloat(a.average_rating), 0) / ratedAgents.length).toFixed(1)
@@ -732,9 +635,8 @@ function updateStats() {
   document.getElementById('avgRating').textContent = avg;
 }
 
-// ===== POPULATE LOCATION FILTER =====
 function populateLocationFilter() {
-  const locations = [...new Set(allAgents.map(a => a.location).filter(l => l))].sort();
+  const locations = [...new Set(allAgents.map(a => a.location).filter(loc => loc))].sort();
   const select = document.getElementById('filterLocation');
   locations.forEach(loc => {
     const opt = document.createElement('option');
@@ -744,14 +646,13 @@ function populateLocationFilter() {
   });
 }
 
-// ===== RENDER TOP AGENTS =====
 function renderTopAgents() {
   const top = allAgents
     .filter(a => (a.trust_score || 0) >= 50 || (a.average_rating || 0) >= 4.5)
     .slice(0, 4);
 
   const container = document.getElementById('topAgents');
-  
+
   if (top.length === 0) {
     document.getElementById('topSection').style.display = 'none';
     return;
@@ -760,24 +661,20 @@ function renderTopAgents() {
   container.innerHTML = top.map(a => renderAgentCard(a, true)).join('');
 }
 
-// ===== RENDER ALL AGENTS =====
 function renderAllAgents() {
   const search = document.getElementById('searchBox').value.toLowerCase().trim();
   const location = document.getElementById('filterLocation').value;
   const sortBy = document.getElementById('sortBy').value;
 
   let filtered = allAgents.filter(a => {
-    // Search filter
     if (search) {
       const haystack = `${a.full_name || ''} ${a.company || ''} ${a.location || ''} ${(a.specializations || []).join(' ')} ${(a.bio || '')}`.toLowerCase();
       if (!haystack.includes(search)) return false;
     }
-    // Location filter
     if (location && a.location !== location) return false;
     return true;
   });
 
-  // Sort
   filtered.sort((a, b) => {
     switch (sortBy) {
       case 'rating': return (b.average_rating || 0) - (a.average_rating || 0);
@@ -789,7 +686,7 @@ function renderAllAgents() {
   });
 
   const container = document.getElementById('agentGrid');
-  document.getElementById('resultsCount').textContent = 
+  document.getElementById('resultsCount').textContent =
     `Showing ${filtered.length} of ${allAgents.length} agents`;
 
   if (filtered.length === 0) {
@@ -806,13 +703,12 @@ function renderAllAgents() {
   container.innerHTML = filtered.map(a => renderAgentCard(a, false)).join('');
 }
 
-// ===== RENDER AGENT CARD =====
 function renderAgentCard(a, isTop) {
   const init = (a.full_name || 'A').charAt(0).toUpperCase();
   const avatar = a.avatar_url
     ? `<img src="${a.avatar_url}" onerror="this.parentElement.innerHTML='${init}'">`
     : init;
-  
+
   const listings = agentListingsCount[a.id] || 0;
   const rating = (a.average_rating || 0).toFixed(1);
   const trust = a.trust_score || 0;
@@ -830,8 +726,11 @@ function renderAgentCard(a, isTop) {
 
   const topBadge = isTop ? `<div class="top-badge"><i class="fas fa-crown"></i> Top Agent</div>` : '';
 
+  // Use slug URL if available, otherwise fall back to ID
   const agentUrl = a.slug ? `/agent/${a.slug}` : `/agent-profile.html?id=${a.id}`;
-return `<a href="${agentUrl}" class="${cardClass}">`;
+
+  return `
+    <a href="${agentUrl}" class="${cardClass}">
       ${topBadge}
       <div class="${avatarClass}">${avatar}</div>
       <div class="${nameClass}">
@@ -861,7 +760,6 @@ return `<a href="${agentUrl}" class="${cardClass}">`;
   `;
 }
 
-// ===== RESET FILTERS =====
 function resetFilters() {
   document.getElementById('searchBox').value = '';
   document.getElementById('filterLocation').value = '';
@@ -869,12 +767,10 @@ function resetFilters() {
   renderAllAgents();
 }
 
-// ===== EVENT LISTENERS =====
 document.getElementById('searchBox').addEventListener('input', renderAllAgents);
 document.getElementById('filterLocation').addEventListener('change', renderAllAgents);
 document.getElementById('sortBy').addEventListener('change', renderAllAgents);
 
-// ===== INIT =====
 loadAgents();
 </script>
 
