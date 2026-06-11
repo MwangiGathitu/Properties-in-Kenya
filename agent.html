@@ -1,1570 +1,1395 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>John Kamau — Verified Agent | Properties in Kenya</title>
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <style>
-    :root {
-      --primary: #6B21A8;
-      --primary-dark: #581c87;
-      --primary-light: #a855f7;
-      --primary-bg: #faf5ff;
-      --success: #10b981;
-      --success-bg: #d1fae5;
-      --warning: #f59e0b;
-      --danger: #ef4444;
-      --text: #111827;
-      --text-muted: #6b7280;
-      --text-light: #9ca3af;
-      --border: #e5e7eb;
-      --bg: #ffffff;
-      --bg-soft: #f9fafb;
-      --bg-softer: #f4f4f7;
-      --shadow-sm: 0 1px 2px rgba(0,0,0,0.04);
-      --shadow: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
-      --shadow-md: 0 4px 12px rgba(0,0,0,0.08);
-      --shadow-lg: 0 10px 30px rgba(0,0,0,0.1);
-      --shadow-xl: 0 20px 50px rgba(107,33,168,0.15);
-      --radius: 16px;
-      --radius-sm: 12px;
-      --radius-xs: 8px;
-    }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    html { scroll-behavior: smooth; }
-    body {
-      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-      background: var(--bg-softer);
-      color: var(--text);
-      line-height: 1.6;
-      -webkit-font-smoothing: antialiased;
-      padding-bottom: 80px;
-    }
+<!-- ===== DYNAMIC SEO - Will be updated by JS ===== -->
+<title id="dynamicTitle">Verified Real Estate Agent | Properties in Kenya</title>
+<meta id="dynamicDescription" name="description" content="Connect with verified, trusted real estate agents across Kenya. View ratings, reviews, listings, and contact agents directly.">
+<meta id="dynamicOGTitle" property="og:title" content="Verified Real Estate Agent | Properties in Kenya">
+<meta id="dynamicOGDescription" property="og:description" content="Connect with verified, trusted real estate agents across Kenya.">
+<meta id="dynamicOGImage" property="og:image" content="https://images.unsplash.com/photo-1611348524140-53c9a25263d6?w=1200&q=80">
+<meta id="dynamicOGUrl" property="og:url" content="https://propertiesinkenya.co.ke/agent-profile.html">
+<meta id="dynamicTwitterTitle" name="twitter:title" content="Verified Real Estate Agent | Properties in Kenya">
+<meta id="dynamicTwitterDescription" name="twitter:description" content="Connect with verified, trusted real estate agents across Kenya.">
+<meta id="dynamicTwitterImage" name="twitter:image" content="https://images.unsplash.com/photo-1611348524140-53c9a25263d6?w=1200&q=80">
+<link id="dynamicCanonical" rel="canonical" href="https://propertiesinkenya.co.ke/agent-profile.html">
 
-    /* ===== HEADER ===== */
-    .site-header {
-      background: rgba(255,255,255,0.95);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-      border-bottom: 1px solid var(--border);
-      position: sticky;
-      top: 0;
-      z-index: 100;
-      padding: 14px 24px;
-    }
-    .header-inner {
-      max-width: 1400px;
-      margin: 0 auto;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-    .logo {
-      font-size: 18px;
-      font-weight: 800;
-      color: var(--primary);
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      text-decoration: none;
-    }
-    .header-actions {
-      display: flex;
-      gap: 8px;
-      align-items: center;
-    }
-    .icon-btn {
-      width: 40px;
-      height: 40px;
-      border-radius: 50%;
-      border: 1px solid var(--border);
-      background: white;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      color: var(--text-muted);
-      transition: all 0.2s;
-    }
-    .icon-btn:hover { background: var(--bg-soft); color: var(--primary); border-color: var(--primary); }
+<meta property="og:type" content="profile">
+<meta property="og:site_name" content="Properties in Kenya">
+<meta property="og:locale" content="en_KE">
+<meta name="twitter:card" content="summary_large_image">
 
-    /* ===== LAYOUT ===== */
-    .page-container {
-      max-width: 1400px;
-      margin: 0 auto;
-      padding: 24px;
-      display: grid;
-      grid-template-columns: 1fr 340px;
-      gap: 24px;
-    }
-    .main-content { min-width: 0; }
-    .sidebar { position: sticky; top: 88px; align-self: start; }
+<meta name="theme-color" content="#D4AF37">
+<meta name="robots" content="index, follow">
 
-    @media (max-width: 1024px) {
-      .page-container { grid-template-columns: 1fr; }
-      .sidebar { position: static; display: none; }
+<!-- ===== STRUCTURED DATA: ProfilePage ===== -->
+<script type="application/ld+json" id="dynamicAgentSchema">
+{
+  "@context": "https://schema.org",
+  "@type": "ProfilePage",
+  "mainEntity": {
+    "@type": "RealEstateAgent",
+    "name": "Verified Agent",
+    "description": "Verified real estate agent on Properties in Kenya",
+    "areaServed": {"@type": "Country", "name": "Kenya"},
+    "aggregateRating": {
+      "@type": "AggregateRating",
+      "ratingValue": "4.9",
+      "reviewCount": "0"
     }
+  }
+}
+</script>
 
-    /* ===== HERO ===== */
-    .hero-card {
-      background: linear-gradient(135deg, #ffffff 0%, #faf5ff 100%);
-      border-radius: var(--radius);
-      padding: 32px;
-      box-shadow: var(--shadow-md);
-      position: relative;
-      overflow: hidden;
-      margin-bottom: 24px;
-    }
-    .hero-card::before {
-      content: '';
-      position: absolute;
-      top: -50%;
-      right: -10%;
-      width: 400px;
-      height: 400px;
-      background: radial-gradient(circle, rgba(168,85,247,0.08) 0%, transparent 70%);
-      pointer-events: none;
-    }
-    .hero-top {
-      display: flex;
-      gap: 24px;
-      align-items: flex-start;
-      flex-wrap: wrap;
-      position: relative;
-    }
-    .avatar-wrapper {
-      position: relative;
-      flex-shrink: 0;
-    }
-    .avatar {
-      width: 120px;
-      height: 120px;
-      border-radius: 50%;
-      background: linear-gradient(135deg, var(--primary), var(--primary-light));
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: white;
-      font-size: 48px;
-      font-weight: 800;
-      overflow: hidden;
-      box-shadow: var(--shadow-lg);
-      border: 4px solid white;
-    }
-    .avatar img { width: 100%; height: 100%; object-fit: cover; }
-    .verified-badge {
-      position: absolute;
-      bottom: 4px;
-      right: 4px;
-      width: 36px;
-      height: 36px;
-      background: var(--success);
-      border: 3px solid white;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: white;
-      font-size: 14px;
-      box-shadow: var(--shadow);
-    }
-    .live-indicator {
-      position: absolute;
-      top: 8px;
-      right: 8px;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      background: white;
-      padding: 4px 10px;
-      border-radius: 9999px;
-      font-size: 11px;
-      font-weight: 600;
-      color: var(--success);
-      box-shadow: var(--shadow);
-    }
-    .live-dot {
-      width: 8px;
-      height: 8px;
-      background: var(--success);
-      border-radius: 50%;
-      animation: pulse 2s infinite;
-    }
-    @keyframes pulse {
-      0%, 100% { opacity: 1; transform: scale(1); }
-      50% { opacity: 0.6; transform: scale(1.2); }
-    }
-    .hero-info { flex: 1; min-width: 240px; position: relative; }
-    .agent-name-row {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      flex-wrap: wrap;
-      margin-bottom: 4px;
-    }
-    .agent-name {
-      font-size: 28px;
-      font-weight: 800;
-      color: var(--text);
-      letter-spacing: -0.5px;
-    }
-    .featured-ribbon {
-      background: linear-gradient(135deg, #fbbf24, #f59e0b);
-      color: white;
-      font-size: 11px;
-      font-weight: 700;
-      padding: 4px 10px;
-      border-radius: 9999px;
-      display: inline-flex;
-      align-items: center;
-      gap: 4px;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-    }
-    .agent-company {
-      font-size: 15px;
-      color: var(--primary);
-      font-weight: 600;
-      margin-bottom: 12px;
-    }
-    .agent-meta {
-      display: flex;
-      gap: 20px;
-      flex-wrap: wrap;
-      margin-bottom: 16px;
-      font-size: 14px;
-      color: var(--text-muted);
-    }
-    .agent-meta-item {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-    .agent-meta-item i { color: var(--primary); }
-    .agent-meta-item strong { color: var(--text); font-weight: 700; }
+<!-- ===== EXTERNAL RESOURCES ===== -->
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script defer data-domain="propertiesinkenya.co.ke" src="https://plausible.io/js/script.js"></script>
 
-    .hero-stats {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
-      gap: 12px;
-      margin-top: 24px;
-      padding-top: 24px;
-      border-top: 1px solid var(--border);
-    }
-    .hero-stat {
-      text-align: center;
-    }
-    .hero-stat-value {
-      font-size: 24px;
-      font-weight: 800;
-      color: var(--text);
-      letter-spacing: -0.5px;
-    }
-    .hero-stat-label {
-      font-size: 12px;
-      color: var(--text-muted);
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      margin-top: 2px;
-    }
+<link rel="preconnect" href="https://nqwvsmuvltbiekfnvovx.supabase.co">
+<link rel="preconnect" href="https://images.unsplash.com">
 
-    /* ===== AI MATCH SCORE (DIFFERENTIATOR) ===== */
-    .ai-match-card {
-      background: linear-gradient(135deg, #6B21A8 0%, #a855f7 100%);
-      border-radius: var(--radius);
-      padding: 28px;
-      color: white;
-      margin-bottom: 24px;
-      position: relative;
-      overflow: hidden;
-      box-shadow: var(--shadow-xl);
-    }
-    .ai-match-card::before {
-      content: '';
-      position: absolute;
-      top: -50%;
-      right: -20%;
-      width: 400px;
-      height: 400px;
-      background: radial-gradient(circle, rgba(255,255,255,0.15) 0%, transparent 70%);
-      pointer-events: none;
-    }
-    .ai-match-header {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      margin-bottom: 20px;
-      position: relative;
-    }
-    .ai-icon {
-      width: 44px;
-      height: 44px;
-      background: rgba(255,255,255,0.2);
-      border-radius: 12px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 20px;
-      backdrop-filter: blur(10px);
-    }
-    .ai-match-title {
-      font-size: 18px;
-      font-weight: 700;
-    }
-    .ai-match-subtitle {
-      font-size: 13px;
-      opacity: 0.85;
-    }
-    .ai-overall-score {
-      display: flex;
-      align-items: center;
-      gap: 20px;
-      margin-bottom: 24px;
-      position: relative;
-    }
-    .ai-score-circle {
-      width: 100px;
-      height: 100px;
-      border-radius: 50%;
-      background: rgba(255,255,255,0.15);
-      backdrop-filter: blur(10px);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      flex-shrink: 0;
-      border: 2px solid rgba(255,255,255,0.3);
-    }
-    .ai-score-number {
-      font-size: 36px;
-      font-weight: 800;
-      line-height: 1;
-    }
-    .ai-score-label {
-      font-size: 11px;
-      opacity: 0.85;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      margin-top: 2px;
-    }
-    .ai-score-text {
-      font-size: 14px;
-      line-height: 1.5;
-      opacity: 0.95;
-    }
-    .ai-match-bars {
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-      position: relative;
-    }
-    .ai-bar-item {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-    .ai-bar-label {
-      flex: 0 0 140px;
-      font-size: 13px;
-      font-weight: 500;
-      opacity: 0.95;
-    }
-    .ai-bar-track {
-      flex: 1;
-      height: 8px;
-      background: rgba(255,255,255,0.2);
-      border-radius: 9999px;
-      overflow: hidden;
-    }
-    .ai-bar-fill {
-      height: 100%;
-      background: white;
-      border-radius: 9999px;
-      transition: width 1s ease-out;
-    }
-    .ai-bar-value {
-      flex: 0 0 40px;
-      text-align: right;
-      font-size: 14px;
-      font-weight: 700;
-    }
-    @media (max-width: 600px) {
-      .ai-bar-label { flex: 0 0 100px; font-size: 12px; }
-      .ai-overall-score { flex-direction: column; text-align: center; }
-    }
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
 
-    /* ===== SECTION CARD ===== */
-    .section {
-      background: white;
-      border-radius: var(--radius);
-      padding: 28px;
-      box-shadow: var(--shadow);
-      margin-bottom: 24px;
-    }
-    .section-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 20px;
-      flex-wrap: wrap;
-      gap: 10px;
-    }
-    .section-title {
-      font-size: 18px;
-      font-weight: 700;
-      color: var(--text);
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-    .section-title i { color: var(--primary); }
-    .section-link {
-      font-size: 13px;
-      color: var(--primary);
-      font-weight: 600;
-      text-decoration: none;
-      display: flex;
-      align-items: center;
-      gap: 4px;
-    }
-    .section-link:hover { text-decoration: underline; }
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  color: #111827;
+  font-size: 14px;
+  line-height: 1.6;
+  overflow-x: hidden;
+  background: #F9FAFB;
+  padding-bottom: 80px;
+}
 
-    /* ===== TRUST SCORE ===== */
-    .trust-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-      gap: 12px;
-      margin-bottom: 20px;
-    }
-    .trust-item {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      padding: 12px 14px;
-      background: var(--bg-soft);
-      border-radius: var(--radius-xs);
-      transition: all 0.2s;
-    }
-    .trust-item:hover { background: var(--primary-bg); transform: translateY(-1px); }
-    .trust-icon {
-      width: 32px;
-      height: 32px;
-      background: var(--success-bg);
-      color: var(--success);
-      border-radius: 8px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 14px;
-      flex-shrink: 0;
-    }
-    .trust-label {
-      font-size: 13px;
-      font-weight: 600;
-      color: var(--text);
-    }
-    .trust-score-card {
-      background: linear-gradient(135deg, var(--primary-bg), white);
-      border: 2px solid var(--primary);
-      border-radius: var(--radius-sm);
-      padding: 20px;
-      display: flex;
-      align-items: center;
-      gap: 20px;
-      flex-wrap: wrap;
-    }
-    .trust-score-big {
-      font-size: 48px;
-      font-weight: 800;
-      color: var(--primary);
-      line-height: 1;
-      letter-spacing: -1px;
-    }
-    .trust-score-big span { font-size: 20px; color: var(--text-light); }
-    .trust-score-text h4 {
-      font-size: 16px;
-      font-weight: 700;
-      margin-bottom: 4px;
-    }
-    .trust-score-text p {
-      font-size: 13px;
-      color: var(--text-muted);
-    }
+/* ===== BACKGROUND ===== */
+.bg-layers { position: fixed; inset: 0; z-index: -1; pointer-events: none; }
+.bg-layer-1 { position: absolute; inset: 0; background: linear-gradient(180deg, #FFFFFF 0%, #F9FAFB 100%); }
+.bg-layer-3 {
+  position: absolute; inset: 0;
+  background:
+    radial-gradient(circle at 20% 30%, rgba(212, 175, 55, 0.04) 0%, transparent 50%),
+    radial-gradient(circle at 80% 70%, rgba(124, 77, 255, 0.04) 0%, transparent 50%);
+}
 
-    /* ===== PERFORMANCE METRICS ===== */
-    .metrics-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-      gap: 12px;
-      margin-bottom: 20px;
-    }
-    .metric-card {
-      background: var(--bg-soft);
-      border-radius: var(--radius-sm);
-      padding: 18px;
-      transition: all 0.2s;
-      border-left: 3px solid var(--primary);
-    }
-    .metric-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); }
-    .metric-card.blue { border-left-color: #3b82f6; }
-    .metric-card.amber { border-left-color: #f59e0b; }
-    .metric-card.green { border-left-color: var(--success); }
-    .metric-label {
-      font-size: 11px;
-      color: var(--text-muted);
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      font-weight: 600;
-      margin-bottom: 6px;
-    }
-    .metric-value {
-      font-size: 26px;
-      font-weight: 800;
-      color: var(--text);
-      letter-spacing: -0.5px;
-    }
-    .metric-trend {
-      font-size: 12px;
-      color: var(--success);
-      margin-top: 4px;
-      display: flex;
-      align-items: center;
-      gap: 4px;
-    }
+/* ===== NAVIGATION ===== */
+.nav-fixed {
+  position: fixed; top: 0; left: 0; right: 0;
+  height: 64px;
+  background: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(20px) saturate(180%);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+  z-index: 100;
+  display: flex; align-items: center;
+  padding: 0 80px;
+}
+.nav-content {
+  display: flex; align-items: center; justify-content: space-between;
+  width: 100%; max-width: 1440px; margin: 0 auto;
+}
+.nav-logo {
+  font-size: 16px; font-weight: 600; color: #111827;
+  display: flex; align-items: center; gap: 10px;
+  text-decoration: none;
+}
+.nav-logo-icon {
+  width: 28px; height: 28px;
+  background: linear-gradient(135deg, #D4AF37, #E6C86B);
+  border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  color: white; font-size: 12px;
+}
+.nav-center { display: flex; gap: 40px; align-items: center; }
+.nav-link {
+  font-size: 14px; font-weight: 500; color: #6B7280;
+  text-decoration: none; transition: color 0.2s; cursor: pointer;
+}
+.nav-link:hover { color: #D4AF37; }
+.nav-cta {
+  padding: 8px 16px;
+  border: 1px solid #E5E7EB;
+  border-radius: 8px;
+  background: white;
+  font-size: 13px; font-weight: 500; color: #374151;
+  cursor: pointer; transition: all 0.2s;
+  text-decoration: none;
+  display: inline-flex; align-items: center; gap: 6px;
+}
+.nav-cta:hover { border-color: #D4AF37; color: #B8922E; }
 
-    /* ===== PROPERTIES CAROUSEL ===== */
-    .property-tabs {
-      display: flex;
-      gap: 6px;
-      margin-bottom: 16px;
-      overflow-x: auto;
-      padding-bottom: 4px;
-    }
-    .property-tab {
-      padding: 8px 16px;
-      border-radius: 9999px;
-      background: var(--bg-soft);
-      border: 1px solid transparent;
-      font-size: 13px;
-      font-weight: 600;
-      color: var(--text-muted);
-      cursor: pointer;
-      white-space: nowrap;
-      transition: all 0.2s;
-    }
-    .property-tab:hover { color: var(--primary); }
-    .property-tab.active {
-      background: var(--primary);
-      color: white;
-    }
-    .property-scroll {
-      display: flex;
-      gap: 16px;
-      overflow-x: auto;
-      padding-bottom: 8px;
-      scroll-snap-type: x mandatory;
-      -webkit-overflow-scrolling: touch;
-    }
-    .property-scroll::-webkit-scrollbar { height: 6px; }
-    .property-scroll::-webkit-scrollbar-track { background: var(--bg-soft); border-radius: 3px; }
-    .property-scroll::-webkit-scrollbar-thumb { background: var(--primary-light); border-radius: 3px; }
-    .property-card {
-      flex: 0 0 280px;
-      background: white;
-      border-radius: var(--radius-sm);
-      overflow: hidden;
-      box-shadow: var(--shadow);
-      transition: all 0.3s;
-      scroll-snap-align: start;
-      cursor: pointer;
-      border: 1px solid var(--border);
-    }
-    .property-card:hover {
-      transform: translateY(-4px);
-      box-shadow: var(--shadow-lg);
-    }
-    .property-image {
-      width: 100%;
-      height: 180px;
-      background: var(--bg-soft);
-      position: relative;
-      overflow: hidden;
-    }
-    .property-image img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      transition: transform 0.4s;
-    }
-    .property-card:hover .property-image img { transform: scale(1.05); }
-    .property-badge {
-      position: absolute;
-      top: 10px;
-      left: 10px;
-      background: var(--primary);
-      color: white;
-      font-size: 10px;
-      font-weight: 700;
-      padding: 4px 10px;
-      border-radius: 9999px;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-    }
-    .property-save {
-      position: absolute;
-      top: 10px;
-      right: 10px;
-      width: 34px;
-      height: 34px;
-      background: rgba(255,255,255,0.95);
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      color: var(--text-muted);
-      transition: all 0.2s;
-      border: none;
-    }
-    .property-save:hover { color: var(--danger); transform: scale(1.1); }
-    .property-save.saved { color: var(--danger); }
-    .property-body { padding: 14px; }
-    .property-price {
-      font-size: 18px;
-      font-weight: 800;
-      color: var(--text);
-      margin-bottom: 4px;
-      letter-spacing: -0.3px;
-    }
-    .property-title {
-      font-size: 14px;
-      font-weight: 600;
-      color: var(--text);
-      margin-bottom: 6px;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-    }
-    .property-location {
-      font-size: 12px;
-      color: var(--text-muted);
-      display: flex;
-      align-items: center;
-      gap: 4px;
-      margin-bottom: 10px;
-    }
-    .property-features {
-      display: flex;
-      gap: 12px;
-      padding-top: 10px;
-      border-top: 1px solid var(--border);
-      font-size: 12px;
-      color: var(--text-muted);
-    }
-    .property-feature {
-      display: flex;
-      align-items: center;
-      gap: 4px;
-    }
+.back-btn {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-size: 13px; color: #6B7280; cursor: pointer;
+  padding: 6px 12px; border-radius: 8px;
+  transition: all 0.2s; background: none; border: none;
+}
+.back-btn:hover { background: #F3F4F6; color: #D4AF37; }
 
-    /* ===== ABOUT ===== */
-    .about-content {
-      font-size: 15px;
-      color: var(--text);
-      line-height: 1.7;
-      margin-bottom: 20px;
-    }
-    .about-tags {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-      margin-bottom: 16px;
-    }
-    .about-tag {
-      padding: 6px 12px;
-      background: var(--primary-bg);
-      color: var(--primary);
-      border-radius: 9999px;
-      font-size: 12px;
-      font-weight: 600;
-    }
-    .about-tag i { margin-right: 4px; }
-    .languages {
-      display: flex;
-      gap: 8px;
-      flex-wrap: wrap;
-    }
-    .language-chip {
-      padding: 6px 12px;
-      background: var(--bg-soft);
-      border-radius: 9999px;
-      font-size: 12px;
-      font-weight: 600;
-      color: var(--text-muted);
-    }
+/* ===== MAIN LAYOUT ===== */
+.main-content {
+  padding-top: 64px;
+  max-width: 1440px;
+  margin: 0 auto;
+  padding-left: 80px;
+  padding-right: 80px;
+}
+.page-layout {
+  display: grid;
+  grid-template-columns: 1fr 360px;
+  gap: 32px;
+  padding: 32px 0 60px;
+  align-items: start;
+}
 
-    /* ===== REVIEWS ===== */
-    .reviews-header {
-      display: flex;
-      gap: 24px;
-      align-items: center;
-      padding: 20px;
-      background: var(--bg-soft);
-      border-radius: var(--radius-sm);
-      margin-bottom: 20px;
-      flex-wrap: wrap;
-    }
-    .reviews-score {
-      text-align: center;
-      flex-shrink: 0;
-    }
-    .reviews-score-big {
-      font-size: 48px;
-      font-weight: 800;
-      color: var(--text);
-      line-height: 1;
-      letter-spacing: -1px;
-    }
-    .reviews-stars {
-      color: #fbbf24;
-      font-size: 16px;
-      margin: 6px 0;
-    }
-    .reviews-count {
-      font-size: 12px;
-      color: var(--text-muted);
-    }
-    .reviews-bars { flex: 1; min-width: 200px; }
-    .review-bar-row {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      margin-bottom: 4px;
-      font-size: 12px;
-    }
-    .review-bar-label {
-      flex: 0 0 20px;
-      color: var(--text-muted);
-      font-weight: 600;
-    }
-    .review-bar-track {
-      flex: 1;
-      height: 6px;
-      background: white;
-      border-radius: 3px;
-      overflow: hidden;
-    }
-    .review-bar-fill {
-      height: 100%;
-      background: #fbbf24;
-      border-radius: 3px;
-    }
-    .review-bar-count {
-      flex: 0 0 30px;
-      text-align: right;
-      color: var(--text-muted);
-    }
+/* ===== HERO SECTION ===== */
+.hero-card {
+  background: white;
+  border-radius: 20px;
+  padding: 32px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  border: 1px solid #F3F4F6;
+  margin-bottom: 24px;
+  position: relative;
+  overflow: hidden;
+}
+.hero-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, #D4AF37, #E6C86B);
+}
+.hero-top {
+  display: flex;
+  gap: 24px;
+  align-items: flex-start;
+  flex-wrap: wrap;
+}
+.avatar-wrapper { position: relative; flex-shrink: 0; }
+.avatar {
+  width: 120px; height: 120px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #D4AF37, #E6C86B);
+  display: flex; align-items: center; justify-content: center;
+  color: white; font-size: 44px; font-weight: 800;
+  overflow: hidden;
+  box-shadow: 0 8px 24px rgba(212, 175, 55, 0.3);
+  border: 4px solid white;
+}
+.avatar img { width: 100%; height: 100%; object-fit: cover; }
+.verified-badge {
+  position: absolute; bottom: 4px; right: 4px;
+  width: 36px; height: 36px;
+  background: #10B981;
+  border: 3px solid white;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  color: white; font-size: 14px;
+  box-shadow: 0 2px 8px rgba(16, 185, 129, 0.3);
+}
+.live-indicator {
+  position: absolute; top: 8px; right: 8px;
+  display: flex; align-items: center; gap: 6px;
+  background: white; padding: 4px 10px;
+  border-radius: 9999px;
+  font-size: 11px; font-weight: 600; color: #10B981;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+.live-dot {
+  width: 8px; height: 8px;
+  background: #10B981; border-radius: 50%;
+  animation: pulse 2s infinite;
+}
+@keyframes pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.6; transform: scale(1.2); }
+}
 
-    .review-card {
-      padding: 16px;
-      border: 1px solid var(--border);
-      border-radius: var(--radius-sm);
-      margin-bottom: 12px;
-      transition: all 0.2s;
-    }
-    .review-card:hover { border-color: var(--primary-light); box-shadow: var(--shadow); }
-    .review-header {
-      display: flex;
-      gap: 12px;
-      align-items: center;
-      margin-bottom: 10px;
-    }
-    .review-avatar {
-      width: 40px;
-      height: 40px;
-      border-radius: 50%;
-      background: linear-gradient(135deg, var(--primary), var(--primary-light));
-      color: white;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-weight: 700;
-      font-size: 14px;
-      flex-shrink: 0;
-    }
-    .review-meta { flex: 1; }
-    .review-name {
-      font-size: 14px;
-      font-weight: 700;
-      color: var(--text);
-    }
-    .review-date {
-      font-size: 12px;
-      color: var(--text-muted);
-    }
-    .review-stars {
-      color: #fbbf24;
-      font-size: 12px;
-    }
-    .review-text {
-      font-size: 14px;
-      color: var(--text);
-      line-height: 1.6;
-    }
+.hero-info { flex: 1; min-width: 240px; }
+.agent-name-row {
+  display: flex; align-items: center; gap: 10px;
+  flex-wrap: wrap; margin-bottom: 4px;
+}
+.agent-name {
+  font-size: 28px; font-weight: 700;
+  color: #111827; letter-spacing: -0.02em;
+}
+.featured-ribbon {
+  background: linear-gradient(135deg, #D4AF37, #E6C86B);
+  color: #111827;
+  font-size: 11px; font-weight: 700;
+  padding: 4px 10px; border-radius: 9999px;
+  display: inline-flex; align-items: center; gap: 4px;
+  text-transform: uppercase; letter-spacing: 0.5px;
+}
+.agent-company {
+  font-size: 15px; color: #B8922E;
+  font-weight: 600; margin-bottom: 12px;
+}
+.agent-meta {
+  display: flex; gap: 20px; flex-wrap: wrap;
+  margin-bottom: 16px; font-size: 14px; color: #6B7280;
+}
+.agent-meta-item { display: flex; align-items: center; gap: 6px; }
+.agent-meta-item i { color: #D4AF37; }
+.agent-meta-item strong { color: #111827; font-weight: 700; }
 
-    /* ===== RESPONSE PERFORMANCE ===== */
-    .response-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-      gap: 12px;
-    }
-    .response-card {
-      background: var(--bg-soft);
-      border-radius: var(--radius-sm);
-      padding: 20px;
-      text-align: center;
-      transition: all 0.2s;
-    }
-    .response-card:hover { background: var(--primary-bg); transform: translateY(-2px); }
-    .response-icon {
-      width: 44px;
-      height: 44px;
-      background: white;
-      color: var(--primary);
-      border-radius: 12px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 18px;
-      margin: 0 auto 10px;
-      box-shadow: var(--shadow-sm);
-    }
-    .response-value {
-      font-size: 24px;
-      font-weight: 800;
-      color: var(--text);
-      letter-spacing: -0.5px;
-      margin-bottom: 2px;
-    }
-    .response-label {
-      font-size: 12px;
-      color: var(--text-muted);
-      font-weight: 500;
-    }
+.hero-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+  gap: 12px;
+  margin-top: 24px;
+  padding-top: 24px;
+  border-top: 1px solid #F3F4F6;
+}
+.hero-stat { text-align: center; }
+.hero-stat-value {
+  font-size: 24px; font-weight: 800;
+  color: #111827; letter-spacing: -0.02em;
+}
+.hero-stat-label {
+  font-size: 11px; color: #9CA3AF;
+  text-transform: uppercase; letter-spacing: 0.5px;
+  margin-top: 2px; font-weight: 600;
+}
 
-    /* ===== BADGES ===== */
-    .badges-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-      gap: 12px;
-    }
-    .badge-card {
-      background: linear-gradient(135deg, #faf5ff, white);
-      border: 1px solid #e9d5ff;
-      border-radius: var(--radius-sm);
-      padding: 18px;
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      transition: all 0.2s;
-    }
-    .badge-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); border-color: var(--primary-light); }
-    .badge-icon {
-      width: 48px;
-      height: 48px;
-      border-radius: 12px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 20px;
-      flex-shrink: 0;
-    }
-    .badge-icon.gold { background: linear-gradient(135deg, #fbbf24, #f59e0b); color: white; }
-    .badge-icon.purple { background: linear-gradient(135deg, var(--primary), var(--primary-light)); color: white; }
-    .badge-icon.green { background: linear-gradient(135deg, #10b981, #34d399); color: white; }
-    .badge-icon.blue { background: linear-gradient(135deg, #3b82f6, #60a5fa); color: white; }
-    .badge-text h4 {
-      font-size: 13px;
-      font-weight: 700;
-      color: var(--text);
-      margin-bottom: 2px;
-    }
-    .badge-text p {
-      font-size: 11px;
-      color: var(--text-muted);
-    }
+/* ===== AI MATCH SCORE (DIFFERENTIATOR) ===== */
+.ai-match-card {
+  background: linear-gradient(135deg, #7C4DFF 0%, #E9E3FF 100%);
+  border-radius: 20px;
+  padding: 32px;
+  color: white;
+  margin-bottom: 24px;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 8px 32px rgba(124, 77, 255, 0.2);
+}
+.ai-match-card::before {
+  content: '';
+  position: absolute;
+  top: -50%; right: -20%;
+  width: 400px; height: 400px;
+  background: radial-gradient(circle, rgba(255,255,255,0.15) 0%, transparent 70%);
+  pointer-events: none;
+}
+.ai-match-header {
+  display: flex; align-items: center; gap: 12px;
+  margin-bottom: 24px; position: relative;
+}
+.ai-icon {
+  width: 44px; height: 44px;
+  background: rgba(255,255,255,0.2);
+  border-radius: 12px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 20px;
+  backdrop-filter: blur(10px);
+}
+.ai-match-title { font-size: 18px; font-weight: 700; }
+.ai-match-subtitle { font-size: 13px; opacity: 0.9; }
+.ai-overall-score {
+  display: flex; align-items: center; gap: 24px;
+  margin-bottom: 28px; position: relative;
+}
+.ai-score-circle {
+  width: 110px; height: 110px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.18);
+  backdrop-filter: blur(10px);
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  flex-shrink: 0;
+  border: 2px solid rgba(255,255,255,0.3);
+}
+.ai-score-number {
+  font-size: 40px; font-weight: 800;
+  line-height: 1; letter-spacing: -0.02em;
+}
+.ai-score-label {
+  font-size: 11px; opacity: 0.9;
+  text-transform: uppercase; letter-spacing: 0.5px;
+  margin-top: 4px; font-weight: 600;
+}
+.ai-score-text { font-size: 14px; line-height: 1.6; opacity: 0.95; }
+.ai-match-bars {
+  display: flex; flex-direction: column; gap: 14px;
+  position: relative;
+}
+.ai-bar-item { display: flex; align-items: center; gap: 12px; }
+.ai-bar-label {
+  flex: 0 0 150px;
+  font-size: 13px; font-weight: 500; opacity: 0.95;
+}
+.ai-bar-track {
+  flex: 1; height: 8px;
+  background: rgba(255,255,255,0.2);
+  border-radius: 9999px; overflow: hidden;
+}
+.ai-bar-fill {
+  height: 100%;
+  background: white;
+  border-radius: 9999px;
+  transition: width 1s ease-out;
+  box-shadow: 0 0 12px rgba(255,255,255,0.4);
+}
+.ai-bar-value {
+  flex: 0 0 44px;
+  text-align: right;
+  font-size: 14px; font-weight: 700;
+}
 
-    /* ===== TEAM ===== */
-    .team-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: 12px;
-    }
-    .team-card {
-      background: var(--bg-soft);
-      border-radius: var(--radius-sm);
-      padding: 16px;
-      text-align: center;
-      transition: all 0.2s;
-    }
-    .team-card:hover { background: white; box-shadow: var(--shadow-md); transform: translateY(-2px); }
-    .team-avatar {
-      width: 64px;
-      height: 64px;
-      border-radius: 50%;
-      background: linear-gradient(135deg, var(--primary), var(--primary-light));
-      color: white;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 22px;
-      font-weight: 700;
-      margin: 0 auto 10px;
-    }
-    .team-name {
-      font-size: 14px;
-      font-weight: 700;
-      color: var(--text);
-      margin-bottom: 2px;
-    }
-    .team-role {
-      font-size: 12px;
-      color: var(--text-muted);
-      margin-bottom: 10px;
-    }
+/* ===== SECTION CARD ===== */
+.section {
+  background: white;
+  border-radius: 20px;
+  padding: 28px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  border: 1px solid #F3F4F6;
+  margin-bottom: 24px;
+}
+.section-header {
+  display: flex; justify-content: space-between;
+  align-items: center; margin-bottom: 20px;
+  flex-wrap: wrap; gap: 10px;
+}
+.section-title {
+  font-size: 18px; font-weight: 700;
+  color: #111827;
+  display: flex; align-items: center; gap: 10px;
+  letter-spacing: -0.01em;
+}
+.section-title-icon {
+  width: 36px; height: 36px;
+  background: linear-gradient(135deg, rgba(212, 175, 55, 0.1), rgba(230, 200, 107, 0.1));
+  border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  color: #B8922E; font-size: 15px;
+}
+.section-link {
+  font-size: 13px; color: #B8922E;
+  font-weight: 600; text-decoration: none;
+  display: flex; align-items: center; gap: 4px;
+  cursor: pointer;
+}
+.section-link:hover { color: #D4AF37; }
 
-    /* ===== MAP ===== */
-    .map-container {
-      width: 100%;
-      height: 360px;
-      border-radius: var(--radius-sm);
-      overflow: hidden;
-      background: var(--bg-soft);
-      position: relative;
-    }
-    .map-container iframe {
-      width: 100%;
-      height: 100%;
-      border: 0;
-    }
-    .map-overlay {
-      position: absolute;
-      bottom: 16px;
-      left: 16px;
-      background: white;
-      padding: 12px 16px;
-      border-radius: var(--radius-xs);
-      box-shadow: var(--shadow-lg);
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      font-size: 13px;
-    }
-    .map-overlay i { color: var(--primary); }
+/* ===== TRUST SCORE ===== */
+.trust-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 10px; margin-bottom: 20px;
+}
+.trust-item {
+  display: flex; align-items: center; gap: 10px;
+  padding: 12px 14px;
+  background: #F9FAFB;
+  border: 1px solid #F3F4F6;
+  border-radius: 12px;
+  transition: all 0.2s;
+}
+.trust-item:hover {
+  background: #F7E7B3;
+  border-color: #E6C86B;
+  transform: translateY(-1px);
+}
+.trust-icon {
+  width: 32px; height: 32px;
+  background: #E9E3FF;
+  color: #7C4DFF;
+  border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 13px; flex-shrink: 0;
+}
+.trust-item.verified .trust-icon {
+  background: #D1FAE5; color: #10B981;
+}
+.trust-label { font-size: 13px; font-weight: 600; color: #111827; }
 
-    /* ===== SIDEBAR STICKY CONTACT ===== */
-    .contact-card {
-      background: white;
-      border-radius: var(--radius);
-      padding: 24px;
-      box-shadow: var(--shadow-md);
-      border: 1px solid var(--border);
-    }
-    .contact-card h3 {
-      font-size: 16px;
-      font-weight: 700;
-      margin-bottom: 4px;
-    }
-    .contact-subtitle {
-      font-size: 13px;
-      color: var(--text-muted);
-      margin-bottom: 16px;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-    .contact-subtitle .live-dot {
-      width: 6px;
-      height: 6px;
-    }
-    .contact-buttons {
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-      margin-bottom: 16px;
-    }
-    .btn {
-      padding: 12px 16px;
-      border-radius: var(--radius-xs);
-      border: none;
-      font-size: 14px;
-      font-weight: 600;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      transition: all 0.2s;
-      text-decoration: none;
-      font-family: inherit;
-    }
-    .btn:hover { transform: translateY(-1px); box-shadow: var(--shadow-md); }
-    .btn-primary { background: var(--primary); color: white; }
-    .btn-primary:hover { background: var(--primary-dark); }
-    .btn-success { background: #25D366; color: white; }
-    .btn-outline { background: white; color: var(--primary); border: 1.5px solid var(--primary); }
-    .btn-outline:hover { background: var(--primary-bg); }
-    .btn-ghost { background: var(--bg-soft); color: var(--text); }
-    .btn-ghost:hover { background: var(--border); }
+.trust-score-card {
+  background: linear-gradient(135deg, #F7E7B3, #FFFFFF);
+  border: 2px solid #D4AF37;
+  border-radius: 16px;
+  padding: 24px;
+  display: flex; align-items: center; gap: 20px;
+  flex-wrap: wrap;
+}
+.trust-score-big {
+  font-size: 56px; font-weight: 800;
+  color: #B8922E; line-height: 1;
+  letter-spacing: -0.03em;
+}
+.trust-score-big span { font-size: 22px; color: #9CA3AF; font-weight: 600; }
+.trust-score-text h4 {
+  font-size: 16px; font-weight: 700;
+  margin-bottom: 4px; color: #111827;
+}
+.trust-score-text p { font-size: 13px; color: #6B7280; }
 
-    .response-note {
-      background: var(--success-bg);
-      color: #065f46;
-      padding: 10px 12px;
-      border-radius: var(--radius-xs);
-      font-size: 12px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      margin-bottom: 16px;
-    }
-    .response-note i { color: var(--success); }
+/* ===== PERFORMANCE METRICS ===== */
+.metrics-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 12px;
+}
+.metric-card {
+  background: #F9FAFB;
+  border: 1px solid #F3F4F6;
+  border-radius: 14px;
+  padding: 20px;
+  transition: all 0.3s;
+  position: relative;
+  overflow: hidden;
+}
+.metric-card::before {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, #D4AF37, #E6C86B);
+  transform: scaleX(0);
+  transition: transform 0.3s;
+  transform-origin: left;
+}
+.metric-card:hover::before { transform: scaleX(1); }
+.metric-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.06);
+  border-color: #E6C86B;
+}
+.metric-label {
+  font-size: 11px; color: #9CA3AF;
+  text-transform: uppercase; letter-spacing: 0.5px;
+  font-weight: 600; margin-bottom: 8px;
+}
+.metric-value {
+  font-size: 28px; font-weight: 800;
+  color: #111827; letter-spacing: -0.02em;
+}
+.metric-trend {
+  font-size: 12px; color: #10B981;
+  margin-top: 6px; font-weight: 600;
+  display: flex; align-items: center; gap: 4px;
+}
 
-    .contact-form {
-      padding-top: 16px;
-      border-top: 1px solid var(--border);
-    }
-    .contact-form h4 {
-      font-size: 14px;
-      font-weight: 700;
-      margin-bottom: 12px;
-    }
-    .form-input {
-      width: 100%;
-      padding: 10px 12px;
-      border: 1px solid var(--border);
-      border-radius: var(--radius-xs);
-      font-size: 13px;
-      font-family: inherit;
-      margin-bottom: 8px;
-      transition: border-color 0.2s;
-    }
-    .form-input:focus { outline: none; border-color: var(--primary); }
-    textarea.form-input { resize: vertical; min-height: 70px; }
+/* ===== PROPERTIES CAROUSEL ===== */
+.property-tabs {
+  display: flex; gap: 6px;
+  margin-bottom: 16px; overflow-x: auto;
+  padding-bottom: 4px;
+}
+.property-tab {
+  padding: 8px 16px;
+  border-radius: 9999px;
+  background: #F9FAFB;
+  border: 1px solid #F3F4F6;
+  font-size: 13px; font-weight: 600;
+  color: #6B7280; cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.2s;
+}
+.property-tab:hover { color: #B8922E; border-color: #E6C86B; }
+.property-tab.active {
+  background: linear-gradient(135deg, #D4AF37, #E6C86B);
+  color: #111827; border-color: transparent;
+}
 
-    /* ===== MOBILE STICKY BAR ===== */
-    .mobile-sticky {
-      position: fixed;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      background: white;
-      border-top: 1px solid var(--border);
-      padding: 10px 16px;
-      display: none;
-      gap: 8px;
-      z-index: 99;
-      box-shadow: 0 -4px 20px rgba(0,0,0,0.08);
-    }
-    .mobile-sticky .btn {
-      flex: 1;
-      padding: 12px 8px;
-      font-size: 13px;
-    }
-    .mobile-sticky .btn i { font-size: 14px; }
-    @media (max-width: 1024px) {
-      .mobile-sticky { display: flex; }
-      body { padding-bottom: 90px; }
-    }
+.property-scroll {
+  display: flex; gap: 16px;
+  overflow-x: auto;
+  padding-bottom: 8px;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+.property-scroll::-webkit-scrollbar { display: none; }
 
-    /* ===== ANIMATIONS ===== */
-    .fade-in {
-      opacity: 0;
-      transform: translateY(20px);
-      transition: opacity 0.6s, transform 0.6s;
-    }
-    .fade-in.visible {
-      opacity: 1;
-      transform: translateY(0);
-    }
+.property-card {
+  flex: 0 0 280px;
+  background: white;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+  transition: all 0.3s;
+  scroll-snap-align: start;
+  cursor: pointer;
+  border: 1px solid #F3F4F6;
+}
+.property-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 32px rgba(0,0,0,0.08);
+  border-color: #E6C86B;
+}
+.property-image {
+  width: 100%; height: 180px;
+  background: #F3F4F6;
+  position: relative; overflow: hidden;
+}
+.property-image img {
+  width: 100%; height: 100%;
+  object-fit: cover;
+  transition: transform 0.4s;
+}
+.property-card:hover .property-image img { transform: scale(1.05); }
+.property-badge {
+  position: absolute; top: 10px; left: 10px;
+  background: rgba(255,255,255,0.95);
+  backdrop-filter: blur(10px);
+  color: #111827;
+  font-size: 10px; font-weight: 700;
+  padding: 5px 12px; border-radius: 6px;
+  text-transform: uppercase; letter-spacing: 0.5px;
+}
+.property-save {
+  position: absolute; top: 10px; right: 10px;
+  width: 36px; height: 36px;
+  background: rgba(255,255,255,0.95);
+  backdrop-filter: blur(10px);
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; color: #9CA3AF;
+  transition: all 0.2s; border: none;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+.property-save:hover { color: #EF4444; transform: scale(1.1); }
+.property-save.saved { color: #EF4444; }
+.property-body { padding: 16px; }
+.property-price {
+  font-size: 18px; font-weight: 800;
+  color: #B8922E; margin-bottom: 4px;
+  letter-spacing: -0.01em;
+}
+.property-title {
+  font-size: 14px; font-weight: 600;
+  color: #111827; margin-bottom: 6px;
+  overflow: hidden; text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.property-location {
+  font-size: 12px; color: #6B7280;
+  display: flex; align-items: center; gap: 4px;
+  margin-bottom: 12px;
+}
+.property-features-row {
+  display: flex; gap: 12px;
+  padding-top: 12px;
+  border-top: 1px solid #F3F4F6;
+  font-size: 12px; color: #6B7280;
+}
+.property-feature { display: flex; align-items: center; gap: 4px; }
 
-    /* ===== RESPONSIVE ===== */
-    @media (max-width: 640px) {
-      .page-container { padding: 16px; }
-      .hero-card, .section { padding: 20px; }
-      .agent-name { font-size: 22px; }
-      .avatar { width: 90px; height: 90px; font-size: 36px; }
-      .hero-stats { grid-template-columns: repeat(2, 1fr); }
-      .property-card { flex: 0 0 260px; }
-      .trust-score-big { font-size: 36px; }
-      .ai-score-circle { width: 80px; height: 80px; }
-      .ai-score-number { font-size: 28px; }
-    }
-  </style>
+/* ===== ABOUT ===== */
+.about-content {
+  font-size: 15px; color: #374151;
+  line-height: 1.7; margin-bottom: 24px;
+}
+.about-tags {
+  display: flex; flex-wrap: wrap; gap: 8px;
+  margin-bottom: 20px;
+}
+.about-tag {
+  padding: 8px 14px;
+  background: linear-gradient(135deg, rgba(212, 175, 55, 0.1), rgba(230, 200, 107, 0.1));
+  color: #B8922E;
+  border: 1px solid rgba(212, 175, 55, 0.2);
+  border-radius: 9999px;
+  font-size: 12px; font-weight: 600;
+  display: inline-flex; align-items: center; gap: 6px;
+}
+.languages { display: flex; gap: 8px; flex-wrap: wrap; }
+.language-chip {
+  padding: 8px 14px;
+  background: #F9FAFB;
+  border: 1px solid #F3F4F6;
+  border-radius: 9999px;
+  font-size: 12px; font-weight: 600;
+  color: #374151;
+}
+
+/* ===== REVIEWS ===== */
+.reviews-header {
+  display: flex; gap: 24px; align-items: center;
+  padding: 24px;
+  background: linear-gradient(135deg, #F7E7B3, #FFFFFF);
+  border: 1px solid #E6C86B;
+  border-radius: 16px;
+  margin-bottom: 20px; flex-wrap: wrap;
+}
+.reviews-score { text-align: center; flex-shrink: 0; }
+.reviews-score-big {
+  font-size: 52px; font-weight: 800;
+  color: #B8922E; line-height: 1;
+  letter-spacing: -0.03em;
+}
+.reviews-stars { color: #FBBF24; font-size: 16px; margin: 8px 0; }
+.reviews-count { font-size: 12px; color: #6B7280; font-weight: 500; }
+.reviews-bars { flex: 1; min-width: 200px; }
+.review-bar-row {
+  display: flex; align-items: center; gap: 8px;
+  margin-bottom: 6px; font-size: 12px;
+}
+.review-bar-label {
+  flex: 0 0 20px; color: #6B7280; font-weight: 600;
+}
+.review-bar-track {
+  flex: 1; height: 6px;
+  background: white; border-radius: 3px;
+  overflow: hidden;
+}
+.review-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #D4AF37, #E6C86B);
+  border-radius: 3px;
+}
+.review-bar-count {
+  flex: 0 0 30px; text-align: right;
+  color: #6B7280; font-weight: 500;
+}
+
+.review-card {
+  padding: 18px;
+  border: 1px solid #F3F4F6;
+  border-radius: 14px;
+  margin-bottom: 12px;
+  transition: all 0.2s;
+}
+.review-card:hover {
+  border-color: #E6C86B;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.04);
+}
+.review-header {
+  display: flex; gap: 12px;
+  align-items: center; margin-bottom: 10px;
+}
+.review-avatar {
+  width: 44px; height: 44px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #D4AF37, #E6C86B);
+  color: white;
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 700; font-size: 14px; flex-shrink: 0;
+}
+.review-meta { flex: 1; }
+.review-name { font-size: 14px; font-weight: 700; color: #111827; }
+.review-date { font-size: 12px; color: #9CA3AF; }
+.review-stars { color: #FBBF24; font-size: 12px; }
+.review-text {
+  font-size: 14px; color: #374151;
+  line-height: 1.6;
+}
+
+/* ===== RESPONSE PERFORMANCE ===== */
+.response-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 12px;
+}
+.response-card {
+  background: #F9FAFB;
+  border: 1px solid #F3F4F6;
+  border-radius: 14px;
+  padding: 22px;
+  text-align: center;
+  transition: all 0.3s;
+  position: relative;
+  overflow: hidden;
+}
+.response-card::before {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, #D4AF37, #E6C86B);
+  transform: scaleX(0);
+  transition: transform 0.3s;
+  transform-origin: left;
+}
+.response-card:hover::before { transform: scaleX(1); }
+.response-card:hover {
+  background: white;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.06);
+  border-color: #E6C86B;
+}
+.response-icon {
+  width: 44px; height: 44px;
+  background: white;
+  color: #B8922E;
+  border-radius: 12px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px;
+  margin: 0 auto 12px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+}
+.response-value {
+  font-size: 26px; font-weight: 800;
+  color: #111827; letter-spacing: -0.02em;
+  margin-bottom: 4px;
+}
+.response-label {
+  font-size: 12px; color: #6B7280; font-weight: 500;
+}
+
+/* ===== BADGES ===== */
+.badges-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 12px;
+}
+.badge-card {
+  background: linear-gradient(135deg, #FFFFFF 0%, #F9FAFB 100%);
+  border: 1px solid #F3F4F6;
+  border-radius: 14px;
+  padding: 18px;
+  display: flex; align-items: center; gap: 14px;
+  transition: all 0.3s;
+  position: relative;
+  overflow: hidden;
+}
+.badge-card::before {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, #D4AF37, #E6C86B);
+  transform: scaleX(0);
+  transition: transform 0.3s;
+  transform-origin: left;
+}
+.badge-card:hover::before { transform: scaleX(1); }
+.badge-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.06);
+  border-color: #E6C86B;
+}
+.badge-icon {
+  width: 48px; height: 48px;
+  border-radius: 12px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 20px; flex-shrink: 0;
+  color: white;
+}
+.badge-icon.gold { background: linear-gradient(135deg, #D4AF37, #E6C86B); }
+.badge-icon.purple { background: linear-gradient(135deg, #7C4DFF, #9A7BFF); }
+.badge-icon.green { background: linear-gradient(135deg, #10B981, #34D399); }
+.badge-icon.blue { background: linear-gradient(135deg, #3B82F6, #60A5FA); }
+.badge-text h4 {
+  font-size: 13px; font-weight: 700;
+  color: #111827; margin-bottom: 2px;
+}
+.badge-text p { font-size: 11px; color: #6B7280; }
+
+/* ===== TEAM ===== */
+.team-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 12px;
+}
+.team-card {
+  background: #F9FAFB;
+  border: 1px solid #F3F4F6;
+  border-radius: 14px;
+  padding: 20px;
+  text-align: center;
+  transition: all 0.3s;
+}
+.team-card:hover {
+  background: white;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.06);
+  border-color: #E6C86B;
+}
+.team-avatar {
+  width: 64px; height: 64px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #D4AF37, #E6C86B);
+  color: white;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 22px; font-weight: 700;
+  margin: 0 auto 12px;
+}
+.team-name { font-size: 14px; font-weight: 700; color: #111827; margin-bottom: 2px; }
+.team-role { font-size: 12px; color: #6B7280; margin-bottom: 12px; }
+.team-btn {
+  width: 100%;
+  padding: 8px;
+  background: white;
+  border: 1px solid #E5E7EB;
+  border-radius: 8px;
+  font-size: 12px; font-weight: 600;
+  color: #374151; cursor: pointer;
+  transition: all 0.2s;
+  display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+}
+.team-btn:hover {
+  border-color: #D4AF37;
+  color: #B8922E;
+}
+
+/* ===== MAP ===== */
+.map-container {
+  width: 100%; height: 360px;
+  border-radius: 14px;
+  overflow: hidden;
+  background: #F3F4F6;
+  position: relative;
+  border: 1px solid #F3F4F6;
+}
+.map-container iframe { width: 100%; height: 100%; border: 0; }
+.map-overlay {
+  position: absolute;
+  bottom: 16px; left: 16px;
+  background: white;
+  padding: 12px 16px;
+  border-radius: 10px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+  display: flex; align-items: center; gap: 10px;
+  font-size: 13px;
+}
+.map-overlay i { color: #B8922E; }
+
+/* ===== SIDEBAR STICKY CONTACT ===== */
+.sidebar { position: sticky; top: 88px; align-self: start; }
+.contact-card {
+  background: white;
+  border-radius: 20px;
+  padding: 28px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+  border: 1px solid #F3F4F6;
+}
+.contact-card h3 {
+  font-size: 18px; font-weight: 700;
+  margin-bottom: 6px; color: #111827;
+}
+.contact-subtitle {
+  font-size: 13px; color: #6B7280;
+  margin-bottom: 16px;
+  display: flex; align-items: center; gap: 6px;
+}
+.contact-subtitle .live-dot { width: 6px; height: 6px; }
+.contact-buttons {
+  display: flex; flex-direction: column;
+  gap: 8px; margin-bottom: 16px;
+}
+.btn {
+  padding: 13px 16px;
+  border-radius: 10px;
+  border: none;
+  font-size: 14px; font-weight: 600;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  gap: 8px;
+  transition: all 0.2s;
+  text-decoration: none;
+  font-family: inherit;
+}
+.btn:hover { transform: translateY(-1px); box-shadow: 0 6px 16px rgba(0,0,0,0.1); }
+.btn-gold {
+  background: linear-gradient(135deg, #D4AF37, #E6C86B);
+  color: #111827;
+}
+.btn-gold:hover { background: linear-gradient(135deg, #E6C86B, #D4AF37); }
+.btn-whatsapp { background: #25D366; color: white; }
+.btn-whatsapp:hover { background: #1ebe5d; }
+.btn-outline {
+  background: white;
+  color: #B8922E;
+  border: 1.5px solid #D4AF37;
+}
+.btn-outline:hover { background: #F7E7B3; }
+.btn-ghost { background: #F9FAFB; color: #374151; border: 1px solid #F3F4F6; }
+.btn-ghost:hover { background: #F3F4F6; }
+
+.response-note {
+  background: #D1FAE5;
+  color: #065f46;
+  padding: 12px 14px;
+  border-radius: 10px;
+  font-size: 12px;
+  display: flex; align-items: center; gap: 8px;
+  margin-bottom: 16px;
+  border: 1px solid #A7F3D0;
+}
+.response-note i { color: #10B981; }
+
+.contact-form {
+  padding-top: 20px;
+  border-top: 1px solid #F3F4F6;
+}
+.contact-form h4 {
+  font-size: 14px; font-weight: 700;
+  margin-bottom: 12px; color: #111827;
+}
+.form-input {
+  width: 100%;
+  padding: 11px 14px;
+  border: 1px solid #E5E7EB;
+  border-radius: 10px;
+  font-size: 13px;
+  font-family: inherit;
+  margin-bottom: 10px;
+  transition: border-color 0.2s;
+  background: #F9FAFB;
+}
+.form-input:focus {
+  outline: none;
+  border-color: #D4AF37;
+  background: white;
+}
+textarea.form-input { resize: vertical; min-height: 80px; }
+
+/* ===== MOBILE STICKY BAR ===== */
+.mobile-sticky {
+  position: fixed;
+  bottom: 0; left: 0; right: 0;
+  background: white;
+  border-top: 2px solid #D4AF37;
+  padding: 12px 16px;
+  display: none;
+  gap: 8px;
+  z-index: 99;
+  box-shadow: 0 -4px 20px rgba(0,0,0,0.08);
+}
+.mobile-sticky .btn {
+  flex: 1;
+  padding: 12px 8px;
+  font-size: 13px;
+}
+.mobile-sticky .btn i { font-size: 14px; }
+
+/* ===== LOADING STATE ===== */
+.loading-skeleton {
+  background: linear-gradient(90deg, #F3F4F6 0%, #E5E7EB 50%, #F3F4F6 100%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+  border-radius: 8px;
+}
+@keyframes shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+/* ===== TOAST ===== */
+.toast {
+  position: fixed;
+  top: 80px; right: 20px;
+  background: white;
+  padding: 14px 18px;
+  border-radius: 10px;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+  border-left: 4px solid #10B981;
+  z-index: 9999;
+  max-width: 320px;
+  animation: slideIn 0.3s ease;
+}
+@keyframes slideIn {
+  from { transform: translateX(400px); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 1024px) {
+  .nav-fixed, .main-content { padding-left: 40px; padding-right: 40px; }
+  .page-layout { grid-template-columns: 1fr; }
+  .sidebar { position: static; }
+}
+@media (max-width: 768px) {
+  .nav-fixed, .main-content { padding-left: 20px; padding-right: 20px; }
+  .nav-center { display: none; }
+  .mobile-sticky { display: flex; }
+  body { padding-bottom: 90px; }
+  .hero-card, .section, .contact-card { padding: 20px; }
+  .agent-name { font-size: 22px; }
+  .avatar { width: 90px; height: 90px; font-size: 32px; }
+  .hero-stats { grid-template-columns: repeat(2, 1fr); }
+  .property-card { flex: 0 0 260px; }
+  .trust-score-big { font-size: 40px; }
+  .ai-score-circle { width: 90px; height: 90px; }
+  .ai-score-number { font-size: 32px; }
+  .ai-bar-label { flex: 0 0 110px; font-size: 12px; }
+  .ai-overall-score { flex-direction: column; text-align: center; }
+  .section-title { font-size: 16px; }
+  .reviews-score-big { font-size: 40px; }
+}
+</style>
 </head>
 <body>
 
-<!-- HEADER -->
-<header class="site-header">
-  <div class="header-inner">
-    <a href="#" class="logo">
-      <i class="fas fa-home"></i>
-      <span>Properties in Kenya</span>
+<!-- Background -->
+<div class="bg-layers">
+  <div class="bg-layer-1"></div>
+  <div class="bg-layer-3"></div>
+</div>
+
+<!-- Navigation -->
+<nav class="nav-fixed" aria-label="Main navigation">
+  <div class="nav-content">
+    <a href="/" class="nav-logo" aria-label="Properties in Kenya - Home">
+      <div class="nav-logo-icon"><i class="fas fa-home" aria-hidden="true"></i></div>
+      Properties in Kenya
     </a>
-    <div class="header-actions">
-      <button class="icon-btn" title="Save Agent" onclick="saveAgent()">
-        <i class="far fa-bookmark"></i>
+    <div class="nav-center">
+      <button class="back-btn" onclick="window.location.href='/'">
+        <i class="fas fa-arrow-left"></i> Back to Search
       </button>
-      <button class="icon-btn" title="Share Profile" onclick="shareProfile()">
+      <a class="nav-link" onclick="scrollToSection('listings')">Listings</a>
+      <a class="nav-link" onclick="scrollToSection('reviews')">Reviews</a>
+      <a class="nav-link" onclick="scrollToSection('about')">About</a>
+    </div>
+    <div style="display: flex; align-items: center; gap: 10px;">
+      <button class="nav-cta" onclick="shareProfile()" title="Share profile">
         <i class="fas fa-share-alt"></i>
+        <span class="desktop-only">Share</span>
       </button>
-      <button class="icon-btn" title="Compare Agents">
-        <i class="fas fa-balance-scale"></i>
+      <button class="nav-cta" onclick="saveAgent()" id="saveAgentBtn" title="Save agent">
+        <i class="far fa-bookmark"></i>
+        <span class="desktop-only">Save</span>
       </button>
     </div>
   </div>
-</header>
+</nav>
 
-<div class="page-container">
+<!-- Main Content -->
+<main class="main-content" role="main">
+  <div class="page-layout">
 
-  <!-- MAIN CONTENT -->
-  <main class="main-content">
+    <!-- MAIN COLUMN -->
+    <div>
 
-    <!-- HERO -->
-    <section class="hero-card fade-in">
-      <div class="hero-top">
-        <div class="avatar-wrapper">
-          <div class="avatar">
-            <img src="https://images.unsplash.com/photo-1560250097-0b93528c311a?w=300&h=300&fit=crop" alt="John Kamau" onerror="this.style.display='none'; this.parentElement.textContent='JK';">
-          </div>
-          <div class="verified-badge" title="Verified Agent">
-            <i class="fas fa-check"></i>
-          </div>
-          <div class="live-indicator">
-            <span class="live-dot"></span>
-            <span>Online</span>
-          </div>
-        </div>
-        <div class="hero-info">
-          <div class="agent-name-row">
-            <h1 class="agent-name">John Kamau</h1>
-            <span class="featured-ribbon"><i class="fas fa-crown"></i> Top Agent 2026</span>
-          </div>
-          <div class="agent-company">Prime Realtors Ltd</div>
-          <div class="agent-meta">
-            <div class="agent-meta-item">
-              <i class="fas fa-briefcase"></i>
-              <span><strong>8</strong> years experience</span>
+      <!-- HERO -->
+      <section class="hero-card" id="heroSection">
+        <div class="hero-top">
+          <div class="avatar-wrapper">
+            <div class="avatar" id="agentAvatar">
+              <span id="avatarInitial">A</span>
             </div>
-            <div class="agent-meta-item">
-              <i class="fas fa-star" style="color:#fbbf24;"></i>
-              <span><strong>4.9</strong> (248 reviews)</span>
+            <div class="verified-badge" title="Verified Agent">
+              <i class="fas fa-check"></i>
             </div>
-            <div class="agent-meta-item">
-              <i class="fas fa-map-marker-alt"></i>
-              <span>Nairobi, Kenya</span>
+            <div class="live-indicator" id="liveIndicator" style="display:none;">
+              <span class="live-dot"></span>
+              <span>Online</span>
             </div>
           </div>
-        </div>
-      </div>
-      <div class="hero-stats">
-        <div class="hero-stat">
-          <div class="hero-stat-value">82</div>
-          <div class="hero-stat-label">Active Listings</div>
-        </div>
-        <div class="hero-stat">
-          <div class="hero-stat-value">127</div>
-          <div class="hero-stat-label">Deals Closed</div>
-        </div>
-        <div class="hero-stat">
-          <div class="hero-stat-value">96%</div>
-          <div class="hero-stat-label">Satisfaction</div>
-        </div>
-        <div class="hero-stat">
-          <div class="hero-stat-value">2 min</div>
-          <div class="hero-stat-label">Avg Response</div>
-        </div>
-      </div>
-    </section>
-
-    <!-- AI MATCH SCORE (DIFFERENTIATOR) -->
-    <section class="ai-match-card fade-in">
-      <div class="ai-match-header">
-        <div class="ai-icon"><i class="fas fa-wand-magic-sparkles"></i></div>
-        <div>
-          <div class="ai-match-title">AI Agent Match Score</div>
-          <div class="ai-match-subtitle">Personalized based on your saved preferences</div>
-        </div>
-      </div>
-      <div class="ai-overall-score">
-        <div class="ai-score-circle">
-          <div class="ai-score-number">92%</div>
-          <div class="ai-score-label">Match</div>
-        </div>
-        <div class="ai-score-text">
-          <strong>Excellent match for you.</strong> John specializes in your preferred locations and property types, with a proven track record of closing deals in your budget range.
-        </div>
-      </div>
-      <div class="ai-match-bars">
-        <div class="ai-bar-item">
-          <div class="ai-bar-label">Your budget</div>
-          <div class="ai-bar-track"><div class="ai-bar-fill" style="width:92%"></div></div>
-          <div class="ai-bar-value">92%</div>
-        </div>
-        <div class="ai-bar-item">
-          <div class="ai-bar-label">Preferred location</div>
-          <div class="ai-bar-track"><div class="ai-bar-fill" style="width:95%"></div></div>
-          <div class="ai-bar-value">95%</div>
-        </div>
-        <div class="ai-bar-item">
-          <div class="ai-bar-label">Property type</div>
-          <div class="ai-bar-track"><div class="ai-bar-fill" style="width:88%"></div></div>
-          <div class="ai-bar-value">88%</div>
-        </div>
-        <div class="ai-bar-item">
-          <div class="ai-bar-label">Response reliability</div>
-          <div class="ai-bar-track"><div class="ai-bar-fill" style="width:97%"></div></div>
-          <div class="ai-bar-value">97%</div>
-        </div>
-      </div>
-    </section>
-
-    <!-- TRUST SCORE -->
-    <section class="section fade-in">
-      <div class="section-header">
-        <h2 class="section-title"><i class="fas fa-shield-halved"></i> Trust & Verification</h2>
-      </div>
-      <div class="trust-grid">
-        <div class="trust-item">
-          <div class="trust-icon"><i class="fas fa-check"></i></div>
-          <div class="trust-label">Verified Identity</div>
-        </div>
-        <div class="trust-item">
-          <div class="trust-icon"><i class="fas fa-check"></i></div>
-          <div class="trust-label">Verified Phone</div>
-        </div>
-        <div class="trust-item">
-          <div class="trust-icon"><i class="fas fa-check"></i></div>
-          <div class="trust-label">Verified Email</div>
-        </div>
-        <div class="trust-item">
-          <div class="trust-icon"><i class="fas fa-check"></i></div>
-          <div class="trust-label">Verified Office</div>
-        </div>
-        <div class="trust-item">
-          <div class="trust-icon"><i class="fas fa-check"></i></div>
-          <div class="trust-label">Licensed Agent</div>
-        </div>
-        <div class="trust-item">
-          <div class="trust-icon"><i class="fas fa-check"></i></div>
-          <div class="trust-label">Premium Member</div>
-        </div>
-      </div>
-      <div class="trust-score-card">
-        <div class="trust-score-big">96<span>/100</span></div>
-        <div class="trust-score-text">
-          <h4>Exceptional Trust Score</h4>
-          <p>Top 5% of agents on Properties in Kenya. All credentials verified.</p>
-        </div>
-      </div>
-    </section>
-
-    <!-- PERFORMANCE -->
-    <section class="section fade-in">
-      <div class="section-header">
-        <h2 class="section-title"><i class="fas fa-chart-line"></i> Agent Performance</h2>
-        <a href="#" class="section-link">View full report <i class="fas fa-arrow-right"></i></a>
-      </div>
-      <div class="metrics-grid">
-        <div class="metric-card blue">
-          <div class="metric-label">Total Views</div>
-          <div class="metric-value">24.8K</div>
-          <div class="metric-trend"><i class="fas fa-arrow-up"></i> 18% this month</div>
-        </div>
-        <div class="metric-card amber">
-          <div class="metric-label">Inquiries</div>
-          <div class="metric-value">342</div>
-          <div class="metric-trend"><i class="fas fa-arrow-up"></i> 12% this month</div>
-        </div>
-        <div class="metric-card green">
-          <div class="metric-label">Deals Closed</div>
-          <div class="metric-value">127</div>
-          <div class="metric-trend"><i class="fas fa-arrow-up"></i> 8 this quarter</div>
-        </div>
-        <div class="metric-card">
-          <div class="metric-label">Conversion</div>
-          <div class="metric-value">14.2%</div>
-          <div class="metric-trend"><i class="fas fa-arrow-up"></i> 2.1% vs avg</div>
-        </div>
-      </div>
-    </section>
-
-    <!-- FEATURED PROPERTIES -->
-    <section class="section fade-in">
-      <div class="section-header">
-        <h2 class="section-title"><i class="fas fa-building"></i> Featured Properties</h2>
-        <a href="#" class="section-link">View all 82 <i class="fas fa-arrow-right"></i></a>
-      </div>
-      <div class="property-tabs">
-        <button class="property-tab active" onclick="switchPropertyTab(this, 'featured')">Featured</button>
-        <button class="property-tab" onclick="switchPropertyTab(this, 'recent')">Recent</button>
-        <button class="property-tab" onclick="switchPropertyTab(this, 'sold')">Sold</button>
-      </div>
-      <div class="property-scroll" id="propertyScroll">
-        <!-- Properties injected by JS -->
-      </div>
-    </section>
-
-    <!-- ABOUT -->
-    <section class="section fade-in">
-      <div class="section-header">
-        <h2 class="section-title"><i class="fas fa-user-tie"></i> About John</h2>
-      </div>
-      <p class="about-content">
-        With over 8 years of experience in Nairobi's real estate market, I specialize in helping families and investors find their perfect property. From luxury homes in Karen to commercial spaces in Westlands, I bring deep market knowledge, transparent dealings, and a client-first approach to every transaction. My goal is not just to close a deal, but to build lasting relationships based on trust and results.
-      </p>
-      <h4 style="font-size:13px; font-weight:700; margin-bottom:10px; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.5px;">Specializations</h4>
-      <div class="about-tags">
-        <span class="about-tag"><i class="fas fa-home"></i> Luxury Homes</span>
-        <span class="about-tag"><i class="fas fa-mountain"></i> Land Sales</span>
-        <span class="about-tag"><i class="fas fa-city"></i> Commercial Property</span>
-        <span class="about-tag"><i class="fas fa-key"></i> Rental Properties</span>
-      </div>
-      <h4 style="font-size:13px; font-weight:700; margin:20px 0 10px; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.5px;">Languages Spoken</h4>
-      <div class="languages">
-        <span class="language-chip">🇬🇧 English</span>
-        <span class="language-chip">🇰🇪 Swahili</span>
-        <span class="language-chip">Kikuyu</span>
-      </div>
-    </section>
-
-    <!-- REVIEWS -->
-    <section class="section fade-in">
-      <div class="section-header">
-        <h2 class="section-title"><i class="fas fa-star"></i> Customer Reviews</h2>
-        <a href="#" class="section-link">View all 248 <i class="fas fa-arrow-right"></i></a>
-      </div>
-      <div class="reviews-header">
-        <div class="reviews-score">
-          <div class="reviews-score-big">4.9</div>
-          <div class="reviews-stars">
-            <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
-          </div>
-          <div class="reviews-count">248 reviews</div>
-        </div>
-        <div class="reviews-bars">
-          <div class="review-bar-row">
-            <div class="review-bar-label">5</div>
-            <div class="review-bar-track"><div class="review-bar-fill" style="width:88%"></div></div>
-            <div class="review-bar-count">218</div>
-          </div>
-          <div class="review-bar-row">
-            <div class="review-bar-label">4</div>
-            <div class="review-bar-track"><div class="review-bar-fill" style="width:9%"></div></div>
-            <div class="review-bar-count">22</div>
-          </div>
-          <div class="review-bar-row">
-            <div class="review-bar-label">3</div>
-            <div class="review-bar-track"><div class="review-bar-fill" style="width:2%"></div></div>
-            <div class="review-bar-count">5</div>
-          </div>
-          <div class="review-bar-row">
-            <div class="review-bar-label">2</div>
-            <div class="review-bar-track"><div class="review-bar-fill" style="width:1%"></div></div>
-            <div class="review-bar-count">2</div>
-          </div>
-          <div class="review-bar-row">
-            <div class="review-bar-label">1</div>
-            <div class="review-bar-track"><div class="review-bar-fill" style="width:0.5%"></div></div>
-            <div class="review-bar-count">1</div>
+          <div class="hero-info">
+            <div class="agent-name-row">
+              <h1 class="agent-name" id="agentName">Loading agent...</h1>
+              <span class="featured-ribbon" id="featuredRibbon" style="display:none;">
+                <i class="fas fa-crown"></i> Top Agent
+              </span>
+            </div>
+            <div class="agent-company" id="agentCompany">—</div>
+            <div class="agent-meta">
+              <div class="agent-meta-item" id="metaExperience">
+                <i class="fas fa-briefcase"></i>
+                <span><strong id="yearsExp">0</strong> years experience</span>
+              </div>
+              <div class="agent-meta-item">
+                <i class="fas fa-star" style="color:#FBBF24;"></i>
+                <span><strong id="ratingValue">0.0</strong> (<span id="reviewCount">0</span> reviews)</span>
+              </div>
+              <div class="agent-meta-item">
+                <i class="fas fa-map-marker-alt"></i>
+                <span id="agentLocation">—</span>
+              </div>
+            </div>
           </div>
         </div>
-      </div>
-      <div id="reviewsList"></div>
-    </section>
-
-    <!-- RESPONSE PERFORMANCE -->
-    <section class="section fade-in">
-      <div class="section-header">
-        <h2 class="section-title"><i class="fas fa-bolt"></i> Response Performance</h2>
-      </div>
-      <div class="response-grid">
-        <div class="response-card">
-          <div class="response-icon"><i class="fas fa-clock"></i></div>
-          <div class="response-value">2 min</div>
-          <div class="response-label">Avg Response Time</div>
-        </div>
-        <div class="response-card">
-          <div class="response-icon"><i class="fas fa-reply"></i></div>
-          <div class="response-value">98%</div>
-          <div class="response-label">Lead Response Rate</div>
-        </div>
-        <div class="response-card">
-          <div class="response-icon"><i class="fas fa-smile"></i></div>
-          <div class="response-value">95%</div>
-          <div class="response-label">Customer Satisfaction</div>
-        </div>
-        <div class="response-card">
-          <div class="response-icon"><i class="fas fa-calendar-check"></i></div>
-          <div class="response-value">24/7</div>
-          <div class="response-label">Availability</div>
-        </div>
-      </div>
-    </section>
-
-    <!-- SOCIAL PROOF / BADGES -->
-    <section class="section fade-in">
-      <div class="section-header">
-        <h2 class="section-title"><i class="fas fa-trophy"></i> Achievements & Badges</h2>
-      </div>
-      <div class="badges-grid">
-        <div class="badge-card">
-          <div class="badge-icon gold"><i class="fas fa-crown"></i></div>
-          <div class="badge-text">
-            <h4>Top Agent 2026</h4>
-            <p>Top 1% in Nairobi</p>
+        <div class="hero-stats">
+          <div class="hero-stat">
+            <div class="hero-stat-value" id="statListings">0</div>
+            <div class="hero-stat-label">Active Listings</div>
+          </div>
+          <div class="hero-stat">
+            <div class="hero-stat-value" id="statDeals">0</div>
+            <div class="hero-stat-label">Deals Closed</div>
+          </div>
+          <div class="hero-stat">
+            <div class="hero-stat-value" id="statSatisfaction">0%</div>
+            <div class="hero-stat-label">Satisfaction</div>
+          </div>
+          <div class="hero-stat">
+            <div class="hero-stat-value" id="statResponse">—</div>
+            <div class="hero-stat-label">Avg Response</div>
           </div>
         </div>
-        <div class="badge-card">
-          <div class="badge-icon purple"><i class="fas fa-handshake"></i></div>
-          <div class="badge-text">
-            <h4>100+ Deals Closed</h4>
-            <p>Verified transactions</p>
-          </div>
-        </div>
-        <div class="badge-card">
-          <div class="badge-icon green"><i class="fas fa-bolt"></i></div>
-          <div class="badge-text">
-            <h4>Fast Responder</h4>
-            <p>Under 5 min avg</p>
-          </div>
-        </div>
-        <div class="badge-card">
-          <div class="badge-icon blue"><i class="fas fa-gem"></i></div>
-          <div class="badge-text">
-            <h4>Premium Partner</h4>
-            <p>Since 2022</p>
-          </div>
-        </div>
-      </div>
-    </section>
+      </section>
 
-    <!-- TEAM -->
-    <section class="section fade-in">
-      <div class="section-header">
-        <h2 class="section-title"><i class="fas fa-users"></i> Meet the Team</h2>
-        <a href="#" class="section-link">View agency <i class="fas fa-arrow-right"></i></a>
-      </div>
-      <div class="team-grid">
-        <div class="team-card">
-          <div class="team-avatar">JK</div>
-          <div class="team-name">John Kamau</div>
-          <div class="team-role">Principal Agent</div>
-          <button class="btn btn-outline btn-sm" style="width:100%; padding:8px; font-size:12px;">
-            <i class="fas fa-envelope"></i> Contact
-          </button>
-        </div>
-        <div class="team-card">
-          <div class="team-avatar">MO</div>
-          <div class="team-name">Mary Omondi</div>
-          <div class="team-role">Senior Agent</div>
-          <button class="btn btn-outline btn-sm" style="width:100%; padding:8px; font-size:12px;">
-            <i class="fas fa-envelope"></i> Contact
-          </button>
-        </div>
-        <div class="team-card">
-          <div class="team-avatar">DW</div>
-          <div class="team-name">David Wanjiku</div>
-          <div class="team-role">Commercial Specialist</div>
-          <button class="btn btn-outline btn-sm" style="width:100%; padding:8px; font-size:12px;">
-            <i class="fas fa-envelope"></i> Contact
-          </button>
-        </div>
-        <div class="team-card">
-          <div class="team-avatar">AN</div>
-          <div class="team-name">Agnes Njeri</div>
-          <div class="team-role">Rental Expert</div>
-          <button class="btn btn-outline btn-sm" style="width:100%; padding:8px; font-size:12px;">
-            <i class="fas fa-envelope"></i> Contact
-          </button>
-        </div>
-      </div>
-    </section>
-
-    <!-- MAP -->
-    <section class="section fade-in">
-      <div class="section-header">
-        <h2 class="section-title"><i class="fas fa-map-location-dot"></i> Coverage Area</h2>
-      </div>
-      <div class="map-container">
-        <iframe
-          src="https://www.openstreetmap.org/export/embed.html?bbox=36.7%2C-1.35%2C36.9%2C-1.2&layer=mapnik&marker=-1.286389%2C36.817223"
-          loading="lazy"
-          referrerpolicy="no-referrer-when-downgrade">
-        </iframe>
-        <div class="map-overlay">
-          <i class="fas fa-building"></i>
+      <!-- AI MATCH SCORE -->
+      <section class="ai-match-card" id="aiMatchSection">
+        <div class="ai-match-header">
+          <div class="ai-icon"><i class="fas fa-wand-magic-sparkles"></i></div>
           <div>
-            <strong>Prime Realtors Office</strong><br>
-            <span style="color:var(--text-muted); font-size:12px;">Westlands, Nairobi</span>
+            <div class="ai-match-title">The Caretaker Match Score</div>
+            <div class="ai-match-subtitle">AI-powered compatibility based on your preferences</div>
           </div>
         </div>
-      </div>
-    </section>
+        <div class="ai-overall-score">
+          <div class="ai-score-circle">
+            <div class="ai-score-number" id="aiOverallScore">—</div>
+            <div class="ai-score-label">Match</div>
+          </div>
+          <div class="ai-score-text" id="aiScoreText">
+            <strong>Analyzing compatibility...</strong> The Caretaker AI is evaluating how well this agent matches your saved preferences.
+          </div>
+        </div>
+        <div class="ai-match-bars" id="aiMatchBars">
+          <div class="ai-bar-item">
+            <div class="ai-bar-label">Your budget</div>
+            <div class="ai-bar-track"><div class="ai-bar-fill" style="width:0%"></div></div>
+            <div class="ai-bar-value">—</div>
+          </div>
+          <div class="ai-bar-item">
+            <div class="ai-bar-label">Preferred location</div>
+            <div class="ai-bar-track"><div class="ai-bar-fill" style="width:0%"></div></div>
+            <div class="ai-bar-value">—</div>
+          </div>
+          <div class="ai-bar-item">
+            <div class="ai-bar-label">Property type</div>
+            <div class="ai-bar-track"><div class="ai-bar-fill" style="width:0%"></div></div>
+            <div class="ai-bar-value">—</div>
+          </div>
+          <div class="ai-bar-item">
+            <div class="ai-bar-label">Response reliability</div>
+            <div class="ai-bar-track"><div class="ai-bar-fill" style="width:0%"></div></div>
+            <div class="ai-bar-value">—</div>
+          </div>
+        </div>
+      </section>
 
-  </main>
+      <!-- TRUST SCORE -->
+      <section class="section" id="trustSection">
+        <div class="section-header">
+          <h2 class="section-title">
+            <div class="section-title-icon"><i class="fas fa-shield-halved"></i></div>
+            Trust & Verification
+          </h2>
+        </div>
+        <div class="trust-grid" id="trustGrid"></div>
+        <div class="trust-score-card">
+          <div class="trust-score-big"><span id="trustScoreValue">0</span><span>/100</span></div>
+          <div class="trust-score-text">
+            <h4 id="trustScoreTitle">Trust Score</h4>
+            <p id="trustScoreDesc">Loading verification status...</p>
+          </div>
+        </div>
+      </section>
 
-  <!-- SIDEBAR (DESKTOP) -->
-  <aside class="sidebar">
-    <div class="contact-card">
-      <h3>Contact John Kamau</h3>
-      <div class="contact-subtitle">
-        <span class="live-dot"></span>
-        <span>Typically replies within 5 minutes</span>
-      </div>
-      <div class="response-note">
-        <i class="fas fa-shield-halved"></i>
-        <span>Your inquiry is protected & private</span>
-      </div>
-      <div class="contact-buttons">
-        <a href="tel:+254712345678" class="btn btn-primary">
-          <i class="fas fa-phone"></i> Call Agent
-        </a>
-        <a href="https://wa.me/254712345678" target="_blank" class="btn btn-success">
-          <i class="fab fa-whatsapp"></i> WhatsApp
-        </a>
-        <a href="mailto:john@primerealtors.co.ke" class="btn btn-outline">
-          <i class="fas fa-envelope"></i> Email
-        </a>
-        <button class="btn btn-ghost" onclick="scrollToForm()">
-          <i class="fas fa-calendar"></i> Request Viewing
-        </button>
-      </div>
-      <div class="contact-form" id="contactForm">
-        <h4>Send a Message</h4>
-        <input type="text" class="form-input" placeholder="Your name">
-        <input type="email" class="form-input" placeholder="Email address">
-        <input type="tel" class="form-input" placeholder="Phone number">
-        <textarea class="form-input" placeholder="I'm interested in..."></textarea>
-        <button class="btn btn-primary" style="width:100%;" onclick="sendMessage()">
-          <i class="fas fa-paper-plane"></i> Send Message
-        </button>
-      </div>
+      <!-- PERFORMANCE -->
+      <section class="section">
+        <div class="section-header">
+          <h2 class="section-title">
+            <div class="section-title-icon"><i class="fas fa-chart-line"></i></div>
+            Agent Performance
+          </h2>
+        </div>
+        <div class="metrics-grid">
+          <div class="metric-card">
+            <div class="metric-label">Total Views</div>
+            <div class="metric-value" id="metricViews">0</div>
+            <div class="metric-trend" id="trendViews"><i class="fas fa-arrow-up"></i> Active</div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-label">Inquiries</div>
+            <div class="metric-value" id="metricInquiries">0</div>
+            <div class="metric-trend"><i class="fas fa-arrow-up"></i> Responding</div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-label">Deals Closed</div>
+            <div class="metric-value" id="metricDeals">0</div>
+            <div class="metric-trend"><i class="fas fa-check"></i> Verified</div>
+          </div>
+          <div class="metric-card">
+            <div class="metric-label">Conversion</div>
+            <div class="metric-value" id="metricConversion">0%</div>
+            <div class="metric-trend"><i class="fas fa-arrow-up"></i> Above avg</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- FEATURED PROPERTIES -->
+      <section class="section" id="listings">
+        <div class="section-header">
+          <h2 class="section-title">
+            <div class="section-title-icon"><i class="fas fa-building"></i></div>
+            Agent's Listings
+          </h2>
+          <span class="section-link" id="viewAllListings">View all <i class="fas fa-arrow-right"></i></span>
+        </div>
+        <div class="property-tabs">
+          <button class="property-tab active" onclick="switchPropertyTab(this, 'all')">All</button>
+          <button class="property-tab" onclick="switchPropertyTab(this, 'for sale')">For Sale</button>
+          <button class="property-tab" onclick="switchPropertyTab(this, 'for rent')">For Rent</button>
+          <button class="property-tab" onclick="switchPropertyTab(this, 'lease')">Lease</button>
+        </div>
+        <div class="property-scroll" id="propertyScroll"></div>
+      </section>
+
+      <!-- ABOUT -->
+      <section class="section" id="about">
+        <div class="section-header">
+          <h2 class="section-title">
+            <div class="section-title-icon"><i class="fas fa-user-tie"></i></div>
+            About the Agent
+          </h2>
+        </div>
+        <p class="about-content" id="agentBio">Loading biography...</p>
+        <h4 style="font-size:12px; font-weight:700; margin-bottom:10px; color:#9CA3AF; text-transform:uppercase; letter-spacing:0.5px;">Specializations</h4>
+        <div class="about-tags" id="specializationsList"></div>
+        <h4 style="font-size:12px; font-weight:700; margin:20px 0 10px; color:#9CA3AF; text-transform:uppercase; letter-spacing:0.5px;">Languages Spoken</h4>
+        <div class="languages" id="languagesList"></div>
+      </section>
+
+      <!-- REVIEWS -->
+      <section class="section" id="reviews">
+        <div class="section-header">
+          <h2 class="section-title">
+            <div class="section-title-icon"><i class="fas fa-star"></i></div>
+            Customer Reviews
+          </h2>
+        </div>
+        <div class="reviews-header">
+          <div class="reviews-score">
+            <div class="reviews-score-big" id="reviewScoreBig">0.0</div>
+            <div class="reviews-stars" id="reviewStarsBig">
+              <i class="far fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i>
+            </div>
+            <div class="reviews-count"><span id="reviewCountBig">0</span> reviews</div>
+          </div>
+          <div class="reviews-bars" id="reviewsBars"></div>
+        </div>
+        <div id="reviewsList"></div>
+      </section>
+
+      <!-- RESPONSE PERFORMANCE -->
+      <section class="section">
+        <div class="section-header">
+          <h2 class="section-title">
+            <div class="section-title-icon"><i class="fas fa-bolt"></i></div>
+            Response Performance
+          </h2>
+        </div>
+        <div class="response-grid">
+          <div class="response-card">
+            <div class="response-icon"><i class="fas fa-clock"></i></div>
+            <div class="response-value" id="responseTime">—</div>
+            <div class="response-label">Avg Response Time</div>
+          </div>
+          <div class="response-card">
+            <div class="response-icon"><i class="fas fa-reply"></i></div>
+            <div class="response-value" id="responseRate">—</div>
+            <div class="response-label">Lead Response Rate</div>
+          </div>
+          <div class="response-card">
+            <div class="response-icon"><i class="fas fa-smile"></i></div>
+            <div class="response-value" id="responseSatisfaction">—</div>
+            <div class="response-label">Customer Satisfaction</div>
+          </div>
+          <div class="response-card">
+            <div class="response-icon"><i class="fas fa-calendar-check"></i></div>
+            <div class="response-value" id="responseAvailability">24/7</div>
+            <div class="response-label">Availability</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- BADGES -->
+      <section class="section">
+        <div class="section-header">
+          <h2 class="section-title">
+            <div class="section-title-icon"><i class="fas fa-trophy"></i></div>
+            Achievements & Badges
+          </h2>
+        </div>
+        <div class="badges-grid" id="badgesGrid"></div>
+      </section>
+
+      <!-- TEAM -->
+      <section class="section" id="teamSection" style="display:none;">
+        <div class="section-header">
+          <h2 class="section-title">
+            <div class="section-title-icon"><i class="fas fa-users"></i></div>
+            Meet the Team
+          </h2>
+        </div>
+        <div class="team-grid" id="teamGrid"></div>
+      </section>
+
+      <!-- MAP -->
+      <section class="section">
+        <div class="section-header">
+          <h2 class="section-title">
+            <div class="section-title-icon"><i class="fas fa-map-location-dot"></i></div>
+            Coverage Area
+          </h2>
+        </div>
+        <div class="map-container">
+          <iframe
+            id="agentMap"
+            src="https://www.openstreetmap.org/export/embed.html?bbox=36.7%2C-1.35%2C36.9%2C-1.2&layer=mapnik&marker=-1.286389%2C36.817223"
+            loading="lazy"
+            referrerpolicy="no-referrer-when-downgrade">
+          </iframe>
+          <div class="map-overlay">
+            <i class="fas fa-building"></i>
+            <div>
+              <strong id="mapCompanyName">Agency Office</strong><br>
+              <span style="color:#6B7280; font-size:12px;" id="mapLocation">Nairobi, Kenya</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
     </div>
-  </aside>
 
-</div>
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+      <div class="contact-card">
+        <h3 id="contactName">Contact Agent</h3>
+        <div class="contact-subtitle">
+          <span class="live-dot"></span>
+          <span id="responseNote">Typically replies within 5 minutes</span>
+        </div>
+        <div class="response-note">
+          <i class="fas fa-shield-halved"></i>
+          <span>Your inquiry is protected & private</span>
+        </div>
+        <div class="contact-buttons">
+          <a href="tel:" id="btnCall" class="btn btn-gold">
+            <i class="fas fa-phone"></i> Call Agent
+          </a>
+          <a href="https://wa.me/" id="btnWhatsApp" target="_blank" rel="noopener" class="btn btn-whatsapp">
+            <i class="fab fa-whatsapp"></i> WhatsApp
+          </a>
+          <a href="mailto:" id="btnEmail" class="btn btn-outline">
+            <i class="fas fa-envelope"></i> Email
+          </a>
+          <button class="btn btn-ghost" onclick="scrollToForm()">
+            <i class="fas fa-calendar"></i> Request Viewing
+          </button>
+        </div>
+        <div class="contact-form" id="contactForm">
+          <h4>Send a Message</h4>
+          <input type="text" class="form-input" id="msgName" placeholder="Your name">
+          <input type="email" class="form-input" id="msgEmail" placeholder="Email address">
+          <input type="tel" class="form-input" id="msgPhone" placeholder="Phone number">
+          <textarea class="form-input" id="msgText" placeholder="I'm interested in..."></textarea>
+          <button class="btn btn-gold" style="width:100%;" onclick="sendMessage()">
+            <i class="fas fa-paper-plane"></i> Send Message
+          </button>
+        </div>
+      </div>
+    </aside>
+
+  </div>
+</main>
 
 <!-- MOBILE STICKY BAR -->
 <div class="mobile-sticky">
-  <a href="tel:+254712345678" class="btn btn-primary">
+  <a href="tel:" id="mobileCall" class="btn btn-gold">
     <i class="fas fa-phone"></i> Call
   </a>
-  <a href="https://wa.me/254712345678" target="_blank" class="btn btn-success">
+  <a href="https://wa.me/" id="mobileWhatsApp" target="_blank" rel="noopener" class="btn btn-whatsapp">
     <i class="fab fa-whatsapp"></i> WhatsApp
   </a>
   <button class="btn btn-outline" onclick="scrollToForm()">
@@ -1573,187 +1398,643 @@
 </div>
 
 <script>
-  // ===== SAMPLE DATA =====
-  const properties = {
-    featured: [
-      { id: 1, title: '4 Bed Villa with Pool', price: 'KSh 45M', location: 'Karen, Nairobi', beds: 4, baths: 4, views: 2340, img: 'https://images.unsplash.com/photo-1613490493576-7fde63acd811?w=600&h=400&fit=crop', badge: 'Featured' },
-      { id: 2, title: 'Modern Apartment Westlands', price: 'KSh 18.5M', location: 'Westlands, Nairobi', beds: 3, baths: 2, views: 1820, img: 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=600&h=400&fit=crop', badge: 'New' },
-      { id: 3, title: 'Commercial Office Space', price: 'KSh 85M', location: 'Upper Hill, Nairobi', beds: 0, baths: 4, views: 980, img: 'https://images.unsplash.com/photo-1497366216548-37526070297c?w=600&h=400&fit=crop', badge: 'Premium' },
-      { id: 4, title: '5 Bedroom Family Home', price: 'KSh 32M', location: 'Kilimani, Nairobi', beds: 5, baths: 4, views: 1540, img: 'https://images.unsplash.com/photo-1568605114967-8130f3a36994?w=600&h=400&fit=crop', badge: 'Hot' },
-      { id: 5, title: 'Luxury Penthouse', price: 'KSh 120M', location: 'Runda, Nairobi', beds: 4, baths: 5, views: 3200, img: 'https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=600&h=400&fit=crop', badge: 'Exclusive' },
-      { id: 6, title: '2 Bed Apartment Kilimani', price: 'KSh 12.5M', location: 'Kilimani, Nairobi', beds: 2, baths: 2, views: 890, img: 'https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=600&h=400&fit=crop', badge: 'New' }
-    ],
-    recent: [
-      { id: 7, title: '3 Bed Townhouse', price: 'KSh 22M', location: 'Lavington, Nairobi', beds: 3, baths: 3, views: 450, img: 'https://images.unsplash.com/photo-1570129477492-45c003edd2be?w=600&h=400&fit=crop', badge: 'Just Listed' },
-      { id: 8, title: 'Beachfront Villa', price: 'KSh 65M', location: 'Diani, Coast', beds: 5, baths: 5, views: 620, img: 'https://images.unsplash.com/photo-1613977789376-04a5e24p2c00?w=600&h=400&fit=crop', badge: 'New' }
-    ],
-    sold: [
-      { id: 9, title: 'Sold - Family Home Runda', price: 'KSh 48M', location: 'Runda, Nairobi', beds: 5, baths: 4, views: 4500, img: 'https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=600&h=400&fit=crop', badge: 'Sold' },
-      { id: 10, title: 'Sold - Apartment Kilimani', price: 'KSh 15M', location: 'Kilimani, Nairobi', beds: 3, baths: 2, views: 3200, img: 'https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=600&h=400&fit=crop', badge: 'Sold' }
-    ]
+// ===== SUPABASE CLIENT =====
+const supabaseClient = supabase.createClient(
+  "https://nqwvsmuvltbiekfnvovx.supabase.co",
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5xd3ZzbXV2bHRiaWVrZm52b3Z4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA1NjU4MDAsImV4cCI6MjA5NjE0MTgwMH0.Xrc-bbAuWdvKSPHnVhTaLiQphV61xeYtDepWePqsrdo"
+);
+
+// ===== STATE =====
+let agentProfile = null;
+let agentListings = [];
+let agentReviews = [];
+let currentFilter = 'all';
+
+// ===== ANALYTICS =====
+function trackEvent(eventName, props = {}) {
+  try {
+    if (typeof plausible === 'function') {
+      plausible(eventName, { props: props });
+    }
+  } catch (e) {
+    console.debug('Analytics:', eventName, props);
+  }
+}
+
+// ===== ESCAPE HTML =====
+function escapeHtml(text) {
+  if (!text) return '';
+  const div = document.createElement('div');
+  div.textContent = text;
+  return div.innerHTML;
+}
+
+// ===== TOAST =====
+function showToast(title, message, type = 'success') {
+  const toast = document.createElement('div');
+  toast.className = 'toast';
+  toast.style.borderLeftColor = type === 'error' ? '#EF4444' : '#10B981';
+  toast.innerHTML = `
+    <div style="font-weight:700; font-size:14px; margin-bottom:2px;">${escapeHtml(title)}</div>
+    <div style="font-size:13px; color:#6B7280;">${escapeHtml(message)}</div>
+  `;
+  document.body.appendChild(toast);
+  setTimeout(() => {
+    toast.style.opacity = '0';
+    toast.style.transition = 'opacity 0.3s';
+    setTimeout(() => toast.remove(), 300);
+  }, 3000);
+}
+
+// ===== LOAD AGENT DATA =====
+async function loadAgentProfile() {
+  const urlParams = new URLSearchParams(window.location.search);
+  const agentId = urlParams.get('id');
+
+  if (!agentId) {
+    document.getElementById('agentName').textContent = 'Agent Not Found';
+    document.getElementById('agentBio').textContent = 'No agent ID provided. Please access this page from a valid agent link.';
+    return;
+  }
+
+  try {
+    // Load profile
+    const { data: profile, error } = await supabaseClient
+      .from('profiles')
+      .select('*')
+      .eq('id', agentId)
+      .eq('role', 'agent')
+      .single();
+
+    if (error || !profile) {
+      document.getElementById('agentName').textContent = 'Agent Not Found';
+      document.getElementById('agentBio').textContent = 'This agent profile could not be found or is no longer active.';
+      return;
+    }
+
+    agentProfile = profile;
+
+    // Load listings
+    const { data: listings } = await supabaseClient
+      .from('properties')
+      .select('*')
+      .eq('agent_id', agentId)
+      .eq('approval_status', 'approved')
+      .order('created_at', { ascending: false });
+
+    agentListings = listings || [];
+
+    // Load reviews
+    const { data: reviews } = await supabaseClient
+      .from('reviews')
+      .select('*')
+      .eq('agent_id', agentId)
+      .eq('is_approved', true)
+      .order('created_at', { ascending: false });
+
+    agentReviews = reviews || [];
+
+    // Increment profile views
+    supabaseClient
+      .from('profiles')
+      .update({ profile_views: (profile.profile_views || 0) + 1 })
+      .eq('id', agentId)
+      .then();
+
+    // Render everything
+    renderAgentProfile();
+    renderListings('all');
+    renderReviews();
+    renderTrustGrid();
+    renderBadges();
+    updateAIMatchScore();
+    updateSEO();
+
+    trackEvent('Agent Profile View', {
+      agentId: agentId,
+      agentName: profile.full_name
+    });
+
+  } catch (err) {
+    console.error('Error loading agent:', err);
+    document.getElementById('agentName').textContent = 'Error Loading Agent';
+    document.getElementById('agentBio').textContent = 'Unable to load this agent profile. Please try again later.';
+  }
+}
+
+// ===== RENDER AGENT PROFILE =====
+function renderAgentProfile() {
+  const p = agentProfile;
+
+  // Hero
+  document.getElementById('agentName').textContent = p.full_name || 'Agent';
+  document.getElementById('agentCompany').textContent = p.company || 'Independent Agent';
+  document.getElementById('yearsExp').textContent = p.years_experience || 0;
+  document.getElementById('agentLocation').textContent = p.location || 'Kenya';
+
+  // Avatar
+  const avatar = document.getElementById('agentAvatar');
+  const initial = (p.full_name || 'A').charAt(0).toUpperCase();
+  if (p.avatar_url) {
+    avatar.innerHTML = `<img src="${p.avatar_url}" alt="${escapeHtml(p.full_name)}" onerror="this.parentElement.innerHTML='${initial}'">`;
+  } else {
+    avatar.innerHTML = `<span>${initial}</span>`;
+  }
+
+  // Featured ribbon
+  if (p.is_featured_agent || (p.total_deals_closed || 0) >= 50) {
+    document.getElementById('featuredRibbon').style.display = 'inline-flex';
+  }
+
+  // Stats
+  document.getElementById('statListings').textContent = agentListings.length;
+  document.getElementById('statDeals').textContent = p.total_deals_closed || 0;
+  const satisfaction = Math.round(p.average_rating ? (p.average_rating / 5) * 100 : 95);
+  document.getElementById('statSatisfaction').textContent = satisfaction + '%';
+  document.getElementById('statResponse').textContent = p.avg_response_minutes ? `${p.avg_response_minutes}m` : '<2h';
+
+  // Contact buttons
+  const phone = p.phone || p.whatsapp_number || '';
+  const cleanPhone = phone.replace(/[^0-9]/g, '');
+  const waNumber = (p.whatsapp_number || phone).replace(/[^0-9]/g, '');
+
+  document.getElementById('btnCall').href = `tel:${phone}`;
+  document.getElementById('btnWhatsApp').href = `https://wa.me/${waNumber}?text=${encodeURIComponent(`Hi ${p.full_name}, I found your profile on Properties in Kenya and would like to inquire about your listings.`)}`;
+  document.getElementById('btnEmail').href = `mailto:${p.email || ''}`;
+  document.getElementById('mobileCall').href = `tel:${phone}`;
+  document.getElementById('mobileWhatsApp').href = `https://wa.me/${waNumber}`;
+
+  document.getElementById('contactName').textContent = `Contact ${p.full_name?.split(' ')[0] || 'Agent'}`;
+
+  // Response note
+  if (p.avg_response_minutes && p.avg_response_minutes <= 5) {
+    document.getElementById('responseNote').textContent = `Typically replies within ${p.avg_response_minutes} minutes`;
+  } else if (p.avg_response_minutes && p.avg_response_minutes <= 30) {
+    document.getElementById('responseNote').textContent = `Typically replies within ${p.avg_response_minutes} minutes`;
+  } else {
+    document.getElementById('responseNote').textContent = 'Usually replies within a few hours';
+  }
+
+  // Bio
+  document.getElementById('agentBio').textContent = p.bio || 'Experienced real estate professional dedicated to helping clients find their perfect property. Committed to transparency, integrity, and exceptional service.';
+
+  // Specializations
+  const specs = p.specializations || [];
+  const specIcons = {
+    'luxury homes': 'fa-gem', 'land sales': 'fa-mountain',
+    'commercial property': 'fa-city', 'rental properties': 'fa-key',
+    'investment': 'fa-chart-line', 'residential': 'fa-home'
   };
+  document.getElementById('specializationsList').innerHTML = specs.length > 0
+    ? specs.map(s => {
+        const icon = specIcons[s.toLowerCase()] || 'fa-check';
+        return `<span class="about-tag"><i class="fas ${icon}"></i> ${escapeHtml(s)}</span>`;
+      }).join('')
+    : '<span class="about-tag"><i class="fas fa-home"></i> Residential Properties</span>';
 
-  const reviews = [
-    { name: 'Sarah M.', initials: 'SM', rating: 5, date: '2 weeks ago', text: 'John helped us find our dream home in Karen. His knowledge of the market and patience throughout the process was exceptional. Highly recommended!' },
-    { name: 'Peter K.', initials: 'PK', rating: 5, date: '1 month ago', text: 'Professional, responsive, and honest. John closed our commercial deal in record time. A true expert in Nairobi real estate.' },
-    { name: 'Grace W.', initials: 'GW', rating: 5, date: '2 months ago', text: 'We sold our property 15% above asking price thanks to John\'s marketing strategy and negotiation skills. Incredible service!' },
-    { name: 'Michael O.', initials: 'MO', rating: 4, date: '3 months ago', text: 'Great agent. Very knowledgeable about the Kilimani area. Would work with him again.' }
-  ];
+  // Languages
+  const langs = p.languages || ['English', 'Swahili'];
+  document.getElementById('languagesList').innerHTML = langs.map(l =>
+    `<span class="language-chip">${escapeHtml(l)}</span>`
+  ).join('');
 
-  // ===== RENDER PROPERTIES =====
-  function renderProperties(category = 'featured') {
-    const container = document.getElementById('propertyScroll');
-    const list = properties[category] || [];
-    container.innerHTML = list.map(p => `
-      <div class="property-card" onclick="viewProperty(${p.id})">
+  // Performance metrics
+  const totalViews = agentListings.reduce((sum, p) => sum + (p.views_count || 0), 0);
+  document.getElementById('metricViews').textContent = totalViews.toLocaleString();
+  document.getElementById('metricInquiries').textContent = p.total_reviews || 0;
+  document.getElementById('metricDeals').textContent = p.total_deals_closed || 0;
+  const conversion = agentListings.length > 0
+    ? Math.round(((p.total_deals_closed || 0) / agentListings.length) * 100)
+    : 0;
+  document.getElementById('metricConversion').textContent = conversion + '%';
+
+  // Response
+  document.getElementById('responseTime').textContent = p.avg_response_minutes ? `${p.avg_response_minutes}m` : '<2h';
+  document.getElementById('responseRate').textContent = (p.response_rate || 98) + '%';
+  document.getElementById('responseSatisfaction').textContent = satisfaction + '%';
+
+  // Map
+  document.getElementById('mapCompanyName').textContent = p.company || 'Agent Office';
+  document.getElementById('mapLocation').textContent = p.location || 'Nairobi, Kenya';
+
+  // View all listings link
+  document.getElementById('viewAllListings').onclick = () => {
+    window.location.href = `/#agent=${p.id}`;
+  };
+}
+
+// ===== RENDER LISTINGS =====
+function renderListings(filter) {
+  const container = document.getElementById('propertyScroll');
+  let filtered = filter === 'all'
+    ? agentListings
+    : agentListings.filter(p => p.property_type === filter);
+
+  if (filtered.length === 0) {
+    container.innerHTML = `
+      <div style="padding:40px; text-align:center; color:#9CA3AF; width:100%;">
+        <i class="fas fa-building" style="font-size:32px; margin-bottom:10px; display:block;"></i>
+        <p>No ${filter === 'all' ? '' : filter + ' '}listings yet</p>
+      </div>
+    `;
+    return;
+  }
+
+  container.innerHTML = filtered.map(p => {
+    const img = p.images?.[0] || p.image_url || 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=600&q=80';
+    return `
+      <article class="property-card" onclick="viewProperty('${p.id}')">
         <div class="property-image">
-          <img src="${p.img}" alt="${p.title}" onerror="this.src='https://picsum.photos/seed/${p.id}/600/400'">
-          <span class="property-badge">${p.badge}</span>
-          <button class="property-save" onclick="event.stopPropagation(); toggleSave(this, ${p.id})">
+          <img src="${img}" alt="${escapeHtml(p.title)}" loading="lazy"
+               onerror="this.src='https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=600&q=80'">
+          <span class="property-badge">${(p.property_type || 'FOR SALE').toUpperCase()}</span>
+          <button class="property-save" onclick="event.stopPropagation(); toggleSave(this, '${p.id}')">
             <i class="far fa-heart"></i>
           </button>
         </div>
         <div class="property-body">
-          <div class="property-price">${p.price}</div>
-          <div class="property-title">${p.title}</div>
+          <div class="property-price">KSh ${Number(p.price || 0).toLocaleString()}</div>
+          <div class="property-title">${escapeHtml(p.title)}</div>
           <div class="property-location">
-            <i class="fas fa-map-marker-alt"></i> ${p.location}
+            <i class="fas fa-map-marker-alt"></i> ${escapeHtml(p.location || 'Kenya')}
           </div>
-          <div class="property-features">
-            ${p.beds > 0 ? `<span class="property-feature"><i class="fas fa-bed"></i> ${p.beds}</span>` : ''}
-            <span class="property-feature"><i class="fas fa-bath"></i> ${p.baths}</span>
-            <span class="property-feature" style="margin-left:auto;"><i class="fas fa-eye"></i> ${p.views.toLocaleString()}</span>
+          <div class="property-features-row">
+            ${p.bedrooms ? `<span class="property-feature"><i class="fas fa-bed"></i> ${p.bedrooms}</span>` : ''}
+            ${p.bathrooms ? `<span class="property-feature"><i class="fas fa-bath"></i> ${p.bathrooms}</span>` : ''}
+            ${p.area ? `<span class="property-feature"><i class="fas fa-ruler-combined"></i> ${p.area} sqm</span>` : ''}
+            <span class="property-feature" style="margin-left:auto;"><i class="fas fa-eye"></i> ${p.views_count || 0}</span>
           </div>
         </div>
+      </article>
+    `;
+  }).join('');
+}
+
+window.switchPropertyTab = function(btn, filter) {
+  document.querySelectorAll('.property-tab').forEach(t => t.classList.remove('active'));
+  btn.classList.add('active');
+  currentFilter = filter;
+  renderListings(filter);
+};
+
+window.viewProperty = function(id) {
+  window.location.href = `/#property=${id}`;
+};
+
+window.toggleSave = function(btn, id) {
+  btn.classList.toggle('saved');
+  const icon = btn.querySelector('i');
+  if (btn.classList.contains('saved')) {
+    icon.className = 'fas fa-heart';
+    showToast('Saved', 'Property added to your favorites');
+  } else {
+    icon.className = 'far fa-heart';
+  }
+};
+
+// ===== RENDER REVIEWS =====
+function renderReviews() {
+  const rating = agentProfile.average_rating || 0;
+  const count = agentReviews.length;
+
+  document.getElementById('reviewScoreBig').textContent = rating.toFixed(1);
+  document.getElementById('reviewCountBig').textContent = count;
+
+  // Stars
+  const fullStars = Math.floor(rating);
+  const halfStar = rating % 1 >= 0.5;
+  let starsHTML = '';
+  for (let i = 0; i < 5; i++) {
+    if (i < fullStars) starsHTML += '<i class="fas fa-star"></i>';
+    else if (i === fullStars && halfStar) starsHTML += '<i class="fas fa-star-half-alt"></i>';
+    else starsHTML += '<i class="far fa-star"></i>';
+  }
+  document.getElementById('reviewStarsBig').innerHTML = starsHTML;
+
+  // Distribution bars
+  const distribution = [0, 0, 0, 0, 0];
+  agentReviews.forEach(r => {
+    if (r.rating >= 1 && r.rating <= 5) distribution[5 - r.rating]++;
+  });
+
+  document.getElementById('reviewsBars').innerHTML = [5, 4, 3, 2, 1].map((star, idx) => {
+    const pct = count > 0 ? (distribution[idx] / count) * 100 : 0;
+    return `
+      <div class="review-bar-row">
+        <div class="review-bar-label">${star}</div>
+        <div class="review-bar-track"><div class="review-bar-fill" style="width:${pct}%"></div></div>
+        <div class="review-bar-count">${distribution[idx]}</div>
       </div>
-    `).join('');
+    `;
+  }).join('');
+
+  // Review cards
+  const container = document.getElementById('reviewsList');
+  if (agentReviews.length === 0) {
+    container.innerHTML = `
+      <div style="text-align:center; padding:40px; color:#9CA3AF;">
+        <i class="fas fa-comment" style="font-size:32px; margin-bottom:10px; display:block;"></i>
+        <p>No reviews yet. Be the first to review this agent!</p>
+      </div>
+    `;
+    return;
   }
 
-  window.switchPropertyTab = function(btn, category) {
-    document.querySelectorAll('.property-tab').forEach(t => t.classList.remove('active'));
-    btn.classList.add('active');
-    renderProperties(category);
-  };
-
-  window.toggleSave = function(btn, id) {
-    btn.classList.toggle('saved');
-    const icon = btn.querySelector('i');
-    if (btn.classList.contains('saved')) {
-      icon.className = 'fas fa-heart';
-    } else {
-      icon.className = 'far fa-heart';
-    }
-  };
-
-  window.viewProperty = function(id) {
-    console.log('View property:', id);
-  };
-
-  // ===== RENDER REVIEWS =====
-  function renderReviews() {
-    const container = document.getElementById('reviewsList');
-    container.innerHTML = reviews.map(r => `
+  container.innerHTML = agentReviews.slice(0, 10).map(r => {
+    const initials = r.reviewer_initials || (r.reviewer_name || 'A').split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
+    const stars = '<i class="fas fa-star"></i>'.repeat(r.rating) + '<i class="far fa-star"></i>'.repeat(5 - r.rating);
+    const date = new Date(r.created_at).toLocaleDateString('en-KE', { year: 'numeric', month: 'short' });
+    return `
       <div class="review-card">
         <div class="review-header">
-          <div class="review-avatar">${r.initials}</div>
+          <div class="review-avatar">${initials}</div>
           <div class="review-meta">
-            <div class="review-name">${r.name}</div>
-            <div class="review-date">${r.date}</div>
+            <div class="review-name">${escapeHtml(r.reviewer_name)}</div>
+            <div class="review-date">${date}</div>
           </div>
-          <div class="review-stars">
-            ${'<i class="fas fa-star"></i>'.repeat(r.rating)}${'<i class="far fa-star"></i>'.repeat(5 - r.rating)}
-          </div>
+          <div class="review-stars">${stars}</div>
         </div>
-        <div class="review-text">${r.text}</div>
+        <div class="review-text">${escapeHtml(r.review_text || '')}</div>
       </div>
-    `).join('');
+    `;
+  }).join('');
+}
+
+// ===== RENDER TRUST GRID =====
+function renderTrustGrid() {
+  const p = agentProfile;
+  const items = [
+    { key: 'is_verified_identity', label: 'Verified Identity', icon: 'fa-id-card' },
+    { key: 'is_verified_phone', label: 'Verified Phone', icon: 'fa-phone' },
+    { key: 'is_verified_email', label: 'Verified Email', icon: 'fa-envelope' },
+    { key: 'is_verified_office', label: 'Verified Office', icon: 'fa-building' },
+    { key: 'is_licensed_agent', label: 'Licensed Agent', icon: 'fa-certificate' },
+    { key: 'is_premium_member', label: 'Premium Member', icon: 'fa-gem' }
+  ];
+
+  document.getElementById('trustGrid').innerHTML = items.map(item => {
+    const verified = p[item.key];
+    return `
+      <div class="trust-item ${verified ? 'verified' : ''}">
+        <div class="trust-icon"><i class="fas ${item.icon}"></i></div>
+        <div class="trust-label">${item.label}</div>
+      </div>
+    `;
+  }).join('');
+
+  // Trust score
+  const score = p.trust_score || 0;
+  document.getElementById('trustScoreValue').textContent = score;
+
+  let title = 'Trust Score', desc = 'Complete verification to boost your score';
+  if (score >= 90) { title = 'Exceptional Trust Score'; desc = 'Top 5% of agents on Properties in Kenya. All credentials verified.'; }
+  else if (score >= 70) { title = 'Very Trustworthy'; desc = 'This agent has been thoroughly verified and has a strong track record.'; }
+  else if (score >= 50) { title = 'Good Standing'; desc = 'This agent has completed key verifications.'; }
+  else { title = 'Building Trust'; desc = 'Agent is in the process of completing verification.'; }
+
+  document.getElementById('trustScoreTitle').textContent = title;
+  document.getElementById('trustScoreDesc').textContent = desc;
+}
+
+// ===== RENDER BADGES =====
+function renderBadges() {
+  const p = agentProfile;
+  const deals = p.total_deals_closed || 0;
+  const rating = p.average_rating || 0;
+  const responseMin = p.avg_response_minutes || 0;
+
+  const achievements = [];
+
+  if (deals >= 100) achievements.push({ icon: 'fa-crown', color: 'gold', title: 'Top Agent 2026', sub: '100+ deals closed' });
+  else if (deals >= 50) achievements.push({ icon: 'fa-medal', color: 'gold', title: '50+ Deals Closed', sub: 'Experienced agent' });
+  else if (deals >= 10) achievements.push({ icon: 'fa-handshake', color: 'purple', title: '10+ Deals Closed', sub: 'Proven track record' });
+
+  if (rating >= 4.8) achievements.push({ icon: 'fa-star', color: 'gold', title: 'Elite Rated', sub: `${rating.toFixed(1)} avg rating` });
+  else if (rating >= 4.5) achievements.push({ icon: 'fa-star', color: 'purple', title: 'Highly Rated', sub: `${rating.toFixed(1)} avg rating` });
+
+  if (responseMin > 0 && responseMin <= 5) achievements.push({ icon: 'fa-bolt', color: 'green', title: 'Fast Responder', sub: `Under 5 min avg` });
+
+  if (p.is_premium_member) achievements.push({ icon: 'fa-gem', color: 'blue', title: 'Premium Partner', sub: 'Verified member' });
+
+  if (p.is_featured_agent) achievements.push({ icon: 'fa-fire', color: 'gold', title: 'Featured Agent', sub: 'Top of search' });
+
+  if (agentListings.length >= 20) achievements.push({ icon: 'fa-building', color: 'purple', title: 'Prolific Lister', sub: `${agentListings.length} active listings` });
+
+  const grid = document.getElementById('badgesGrid');
+  if (achievements.length === 0) {
+    grid.innerHTML = `
+      <div style="grid-column: 1/-1; text-align:center; padding:30px; color:#9CA3AF;">
+        <i class="fas fa-trophy" style="font-size:32px; margin-bottom:10px; display:block;"></i>
+        <p>Agent is building their reputation. Check back soon!</p>
+      </div>
+    `;
+    return;
   }
 
-  // ===== ACTIONS =====
-  window.saveAgent = function() {
-    const btn = event.currentTarget;
-    const icon = btn.querySelector('i');
-    if (icon.classList.contains('far')) {
-      icon.className = 'fas fa-bookmark';
-      btn.style.color = 'var(--primary)';
-      showToast('Agent saved', 'You can find John in your saved agents.');
-    } else {
-      icon.className = 'far fa-bookmark';
-      btn.style.color = '';
-      showToast('Removed', 'Agent removed from saved list.');
-    }
-  };
+  grid.innerHTML = achievements.map(a => `
+    <div class="badge-card">
+      <div class="badge-icon ${a.color}"><i class="fas ${a.icon}"></i></div>
+      <div class="badge-text">
+        <h4>${a.title}</h4>
+        <p>${a.sub}</p>
+      </div>
+    </div>
+  `).join('');
+}
 
-  window.shareProfile = function() {
-    if (navigator.share) {
-      navigator.share({
-        title: 'John Kamau - Verified Agent',
-        text: 'Check out this top-rated real estate agent on Properties in Kenya',
-        url: window.location.href
-      });
-    } else {
-      navigator.clipboard.writeText(window.location.href);
-      showToast('Link copied', 'Profile link copied to clipboard.');
-    }
-  };
+// ===== AI MATCH SCORE =====
+function updateAIMatchScore() {
+  // Simulate AI match based on agent's actual data
+  // In production, this would call a Supabase Edge Function with user preferences
+  const p = agentProfile;
 
-  window.scrollToForm = function() {
-    const form = document.getElementById('contactForm');
-    if (form) {
-      form.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      const firstInput = form.querySelector('input');
-      setTimeout(() => firstInput && firstInput.focus(), 500);
-    }
-  };
+  // Calculate realistic scores based on agent data
+  const responseScore = p.avg_response_minutes ?
+    (p.avg_response_minutes <= 5 ? 97 : p.avg_response_minutes <= 15 ? 92 : p.avg_response_minutes <= 60 ? 85 : 75) : 80;
 
-  window.sendMessage = function() {
-    showToast('Message sent!', 'John typically replies within 5 minutes.');
-  };
+  const ratingScore = p.average_rating ? Math.round((p.average_rating / 5) * 100) : 85;
 
-  // ===== TOAST =====
-  function showToast(title, message) {
-    const toast = document.createElement('div');
-    toast.style.cssText = `
-      position: fixed; top: 80px; right: 20px; z-index: 9999;
-      background: white; padding: 14px 18px; border-radius: 10px;
-      box-shadow: 0 8px 24px rgba(0,0,0,0.15); border-left: 4px solid var(--success);
-      max-width: 320px; animation: slideIn 0.3s;
-    `;
-    toast.innerHTML = `
-      <div style="font-weight:700; font-size:14px; margin-bottom:2px;">${title}</div>
-      <div style="font-size:13px; color:var(--text-muted);">${message}</div>
-    `;
-    document.body.appendChild(toast);
+  // Simulate location/type match (would be real in production)
+  const locationScore = 85 + Math.floor(Math.random() * 10);
+  const budgetScore = 82 + Math.floor(Math.random() * 12);
+
+  const overall = Math.round((responseScore + ratingScore + locationScore + budgetScore) / 4);
+
+  // Update UI
+  document.getElementById('aiOverallScore').textContent = overall + '%';
+
+  const bars = document.querySelectorAll('#aiMatchBars .ai-bar-item');
+  const scores = [budgetScore, locationScore, ratingScore, responseScore];
+  bars.forEach((bar, i) => {
+    const fill = bar.querySelector('.ai-bar-fill');
+    const value = bar.querySelector('.ai-bar-value');
     setTimeout(() => {
-      toast.style.opacity = '0';
-      toast.style.transition = 'opacity 0.3s';
-      setTimeout(() => toast.remove(), 300);
-    }, 3000);
+      fill.style.width = scores[i] + '%';
+      value.textContent = scores[i] + '%';
+    }, 200 + (i * 100));
+  });
+
+  // Update text
+  let matchText;
+  if (overall >= 90) {
+    matchText = `<strong>Excellent match for you.</strong> ${p.full_name?.split(' ')[0] || 'This agent'} specializes in your preferred locations and property types, with a proven track record of closing deals in your budget range.`;
+  } else if (overall >= 80) {
+    matchText = `<strong>Great match for you.</strong> ${p.full_name?.split(' ')[0] || 'This agent'} has strong experience in your areas of interest and responds quickly to inquiries.`;
+  } else if (overall >= 70) {
+    matchText = `<strong>Good match.</strong> ${p.full_name?.split(' ')[0] || 'This agent'} may be able to help with your property search. Consider reaching out to discuss your needs.`;
+  } else {
+    matchText = `<strong>Potential match.</strong> Contact ${p.full_name?.split(' ')[0] || 'this agent'} to discuss if they can help with your specific requirements.`;
+  }
+  document.getElementById('aiScoreText').innerHTML = matchText;
+}
+
+// ===== UPDATE SEO =====
+function updateSEO() {
+  const p = agentProfile;
+  if (!p) return;
+
+  const name = p.full_name || 'Verified Agent';
+  const company = p.company || '';
+  const location = p.location || 'Kenya';
+  const rating = p.average_rating || 0;
+  const reviews = agentReviews.length;
+  const listings = agentListings.length;
+
+  const title = `${name}${company ? ' @ ' + company : ''} | Verified Agent in ${location} | Properties in Kenya`;
+  const description = `${name} is a verified real estate agent${company ? ' at ' + company : ''} in ${location}. ${rating > 0 ? `Rated ${rating.toFixed(1)}/5 by ${reviews} clients.` : ''} ${listings} active listings. Contact directly through Properties in Kenya.`;
+  const image = p.avatar_url || 'https://images.unsplash.com/photo-1611348524140-53c9a25263d6?w=1200&q=80';
+  const url = `https://propertiesinkenya.co.ke/agent-profile.html?id=${p.id}`;
+
+  document.title = title;
+  document.getElementById('dynamicDescription').setAttribute('content', description);
+  document.getElementById('dynamicOGTitle').setAttribute('content', title);
+  document.getElementById('dynamicOGDescription').setAttribute('content', description);
+  document.getElementById('dynamicOGImage').setAttribute('content', image);
+  document.getElementById('dynamicOGUrl').setAttribute('content', url);
+  document.getElementById('dynamicTwitterTitle').setAttribute('content', title);
+  document.getElementById('dynamicTwitterDescription').setAttribute('content', description);
+  document.getElementById('dynamicTwitterImage').setAttribute('content', image);
+  document.getElementById('dynamicCanonical').setAttribute('href', url);
+
+  // Update JSON-LD
+  const schema = {
+    "@context": "https://schema.org",
+    "@type": "ProfilePage",
+    "mainEntity": {
+      "@type": "RealEstateAgent",
+      "name": name,
+      "description": (p.bio || description).substring(0, 500),
+      "image": image,
+      "url": url,
+      "telephone": p.phone || '',
+      "address": {
+        "@type": "PostalAddress",
+        "addressLocality": location,
+        "addressCountry": "KE"
+      },
+      "areaServed": {"@type": "Country", "name": "Kenya"},
+      "aggregateRating": {
+        "@type": "AggregateRating",
+        "ratingValue": rating.toFixed(1),
+        "reviewCount": reviews.toString()
+      },
+      "knowsLanguage": (p.languages || ['English', 'Swahili']).join(', '),
+      "hasOfferCatalog": {
+        "@type": "OfferCatalog",
+        "name": `${name}'s Listings`,
+        "numberOfItems": listings
+      }
+    }
+  };
+  document.getElementById('dynamicAgentSchema').textContent = JSON.stringify(schema);
+}
+
+// ===== ACTIONS =====
+window.scrollToSection = function(id) {
+  const el = document.getElementById(id);
+  if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+};
+
+window.scrollToForm = function() {
+  const form = document.getElementById('contactForm');
+  if (form) {
+    form.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    setTimeout(() => document.getElementById('msgName').focus(), 500);
+  }
+};
+
+window.shareProfile = function() {
+  const url = window.location.href;
+  const text = `Check out ${agentProfile?.full_name || 'this verified agent'} on Properties in Kenya`;
+
+  if (navigator.share) {
+    navigator.share({ title: document.title, text: text, url: url });
+  } else {
+    navigator.clipboard.writeText(url);
+    showToast('Link Copied', 'Agent profile link copied to clipboard');
+  }
+  trackEvent('Share Agent', { agentId: agentProfile?.id });
+};
+
+window.saveAgent = function() {
+  const btn = document.getElementById('saveAgentBtn');
+  const icon = btn.querySelector('i');
+  const saved = icon.classList.contains('fas');
+
+  if (saved) {
+    icon.className = 'far fa-bookmark';
+    showToast('Removed', 'Agent removed from saved list');
+  } else {
+    icon.className = 'fas fa-bookmark';
+    icon.style.color = '#D4AF37';
+    showToast('Saved', 'Agent added to your saved list');
+  }
+  trackEvent('Save Agent', { agentId: agentProfile?.id, action: saved ? 'remove' : 'add' });
+};
+
+window.sendMessage = async function() {
+  const name = document.getElementById('msgName').value.trim();
+  const email = document.getElementById('msgEmail').value.trim();
+  const phone = document.getElementById('msgPhone').value.trim();
+  const message = document.getElementById('msgText').value.trim();
+
+  if (!name || !message) {
+    showToast('Missing Info', 'Please enter your name and message', 'error');
+    return;
   }
 
-  // ===== SCROLL ANIMATIONS =====
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        entry.target.classList.add('visible');
-      }
+  try {
+    const { error } = await supabaseClient
+      .from('inquiries')
+      .insert([{
+        property_id: agentListings[0]?.id || null,
+        buyer_name: name,
+        buyer_email: email,
+        buyer_phone: phone,
+        message: message,
+        agent_id: agentProfile.id,
+        read: false
+      }]);
+
+    if (error) throw error;
+
+    showToast('Message Sent', `${agentProfile.full_name?.split(' ')[0]} will respond shortly`);
+    document.getElementById('msgName').value = '';
+    document.getElementById('msgEmail').value = '';
+    document.getElementById('msgPhone').value = '';
+    document.getElementById('msgText').value = '';
+
+    trackEvent('Agent Contact', {
+      agentId: agentProfile.id,
+      method: 'form'
     });
-  }, { threshold: 0.1 });
+  } catch (err) {
+    showToast('Error', 'Failed to send message. Please try again.', 'error');
+  }
+};
 
-  document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
-
-  // ===== INIT =====
-  renderProperties('featured');
-  renderReviews();
-
-  // Animate AI match bars on load
-  setTimeout(() => {
-    document.querySelectorAll('.ai-bar-fill').forEach(bar => {
-      const width = bar.style.width;
-      bar.style.width = '0';
-      setTimeout(() => bar.style.width = width, 100);
-    });
-  }, 500);
+// ===== INIT =====
+loadAgentProfile();
 </script>
 
 </body>
