@@ -1,0 +1,16 @@
+{
+  "rewrites": [
+    {
+      "source": "/agent/:slug",
+      "destination": "/agent-profile.html?slug=:slug"
+    },
+    {
+      "source": "/agents",
+      "destination": "/agents.html"
+    },
+    {
+      "source": "/property/:id",
+      "destination": "/?property=:id"
+    }
+  ]
+}
