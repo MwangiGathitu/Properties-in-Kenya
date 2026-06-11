@@ -532,16 +532,33 @@ const toast = (t, m) => {
 };
 
 // ==========================================================
-// DEBUG VERSION OF LOAD FUNCTION
+// FIXED LOAD FUNCTION (Extracts slug from URL path)
 // ==========================================================
 async function load() {
   console.log("=== 🕵️ AGENT PROFILE DEBUG START ===");
+  console.log("Current Full URL:", window.location.href);
+  console.log("Pathname:", location.pathname);
+  console.log("Search (query string):", location.search);
+
   const params = new URLSearchParams(location.search);
-  const id = params.get('id');
-  const slug = params.get('slug');
-  
-  console.log("1. URL ID parameter:", id);
-  console.log("2. URL Slug parameter:", slug);
+  let id = params.get('id');
+  let slug = params.get('slug');
+
+  // 🔑 THE FIX: If slug isn't in the query string, extract it from the URL path /agent/:slug
+  if (!id && !slug) {
+    // Remove leading/trailing slashes and split by /
+    const cleanPath = location.pathname.replace(/^\/|\/$/g, '');
+    const parts = cleanPath.split('/');
+    
+    // Check if path matches /agent/...
+    if (parts[0] === 'agent' && parts[1]) {
+      slug = decodeURIComponent(parts[1]);
+      console.log("🔍 SUCCESS: Extracted slug from URL path:", slug);
+    }
+  }
+
+  console.log("1. Final ID parameter:", id);
+  console.log("2. Final Slug parameter:", slug);
 
   // If no ID or slug, show all agents
   if (!id && !slug) {
