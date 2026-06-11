@@ -1,0 +1,689 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title id="pageTitle">Property Details | Properties in Kenya</title>
+<meta id="pageDescription" name="description" content="View property details, photos, and contact the listing agent.">
+<meta property="og:title" id="ogTitle" content="Property Details | Properties in Kenya">
+<meta property="og:description" id="ogDescription" content="View property details, photos, and contact the listing agent.">
+<meta property="og:image" id="ogImage" content="https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=1200&q=80">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" id="canonical" href="https://propertiesinkenya.co.ke/property.html">
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: 'Inter', -apple-system, sans-serif;
+  color: #111827; background: #f4f4f7;
+  line-height: 1.6;
+  padding-bottom: 80px;
+}
+
+/* NAV */
+.nav {
+  position: sticky; top: 0; z-index: 100;
+  background: rgba(255,255,255,0.95);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid #e5e7eb;
+  padding: 14px 24px;
+  display: flex; justify-content: space-between; align-items: center;
+}
+.logo {
+  font-size: 16px; font-weight: 700; color: #6b21a8;
+  display: flex; align-items: center; gap: 8px;
+  text-decoration: none;
+}
+.back-btn {
+  background: #f3f4f6; color: #374151;
+  border: none; padding: 8px 14px; border-radius: 8px;
+  font-size: 13px; font-weight: 500; cursor: pointer;
+  display: flex; align-items: center; gap: 6px;
+  text-decoration: none;
+}
+.back-btn:hover { background: #e5e7eb; }
+
+/* CONTAINER */
+.container {
+  max-width: 1400px;
+  margin: 24px auto;
+  padding: 0 24px;
+  display: grid;
+  grid-template-columns: 1fr 380px;
+  gap: 24px;
+  align-items: start;
+}
+@media (max-width: 1024px) {
+  .container { grid-template-columns: 1fr; }
+  .sidebar { position: static !important; }
+}
+
+/* CARD */
+.card {
+  background: white; border-radius: 16px;
+  padding: 24px; margin-bottom: 20px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+}
+.card-title {
+  font-size: 18px; font-weight: 700;
+  margin-bottom: 16px;
+  display: flex; align-items: center; gap: 8px;
+  color: #111827;
+}
+.card-title i { color: #6b21a8; }
+
+/* HERO GALLERY */
+.hero-gallery {
+  margin-bottom: 24px;
+}
+.main-image {
+  width: 100%; height: 450px;
+  background: #f3f4f6;
+  border-radius: 16px;
+  overflow: hidden;
+  position: relative;
+}
+.main-image img {
+  width: 100%; height: 100%;
+  object-fit: cover;
+}
+.thumbnails {
+  display: flex; gap: 10px;
+  margin-top: 12px;
+  overflow-x: auto;
+  padding-bottom: 4px;
+}
+.thumbnail {
+  width: 100px; height: 70px;
+  border-radius: 10px;
+  overflow: hidden;
+  cursor: pointer;
+  border: 2px solid transparent;
+  flex-shrink: 0;
+  transition: all 0.2s;
+}
+.thumbnail:hover, .thumbnail.active {
+  border-color: #6b21a8;
+  transform: translateY(-2px);
+}
+.thumbnail img {
+  width: 100%; height: 100%;
+  object-fit: cover;
+}
+
+/* PRICE BADGE */
+.price-badge {
+  display: inline-block;
+  background: linear-gradient(135deg, #6b21a8, #a855f7);
+  color: white;
+  padding: 8px 16px;
+  border-radius: 9999px;
+  font-size: 14px;
+  font-weight: 700;
+  margin-bottom: 12px;
+}
+
+/* PROPERTY TITLE */
+.property-title {
+  font-size: 28px; font-weight: 800;
+  color: #111827;
+  margin-bottom: 8px;
+  letter-spacing: -0.5px;
+}
+.property-location {
+  font-size: 15px; color: #6b7280;
+  display: flex; align-items: center; gap: 6px;
+  margin-bottom: 16px;
+}
+
+/* FEATURES GRID */
+.features-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin: 20px 0;
+}
+.feature-item {
+  display: flex; align-items: center; gap: 8px;
+  padding: 12px;
+  background: #f9fafb;
+  border-radius: 10px;
+}
+.feature-icon {
+  width: 36px; height: 36px;
+  background: linear-gradient(135deg, rgba(107,33,168,0.1), rgba(168,85,247,0.1));
+  color: #6b21a8;
+  border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 14px;
+}
+.feature-text { font-size: 13px; font-weight: 600; color: #111827; }
+.feature-label { font-size: 11px; color: #6b7280; }
+
+/* SIDEBAR */
+.sidebar { position: sticky; top: 88px; }
+.contact-card {
+  background: white; border-radius: 16px;
+  padding: 24px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+  border: 1px solid #e5e7eb;
+}
+.price-display {
+  font-size: 32px; font-weight: 800;
+  color: #6b21a8;
+  margin-bottom: 16px;
+  letter-spacing: -0.5px;
+}
+.btn {
+  width: 100%;
+  padding: 14px;
+  border-radius: 12px;
+  border: none;
+  font-size: 14px; font-weight: 700;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  gap: 8px;
+  text-decoration: none;
+  margin-bottom: 10px;
+  transition: all 0.2s;
+}
+.btn:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(0,0,0,0.15); }
+.btn-whatsapp { background: #25D366; color: white; }
+.btn-call { background: #6b21a8; color: white; }
+.btn-email { background: white; color: #6b21a8; border: 2px solid #6b21a8; }
+.btn-email:hover { background: #faf5ff; }
+
+/* AGENT CARD */
+.agent-card {
+  margin-top: 20px;
+  padding: 20px;
+  background: linear-gradient(135deg, #faf5ff, white);
+  border: 2px solid #e9d5ff;
+  border-radius: 14px;
+}
+.agent-header {
+  display: flex; gap: 14px; align-items: center;
+  margin-bottom: 14px;
+}
+.agent-avatar {
+  width: 56px; height: 56px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #6b21a8, #a855f7);
+  color: white; font-size: 22px; font-weight: 800;
+  display: flex; align-items: center; justify-content: center;
+  overflow: hidden;
+  border: 3px solid white;
+}
+.agent-avatar img { width: 100%; height: 100%; object-fit: cover; }
+.agent-info { flex: 1; }
+.agent-name {
+  font-size: 15px; font-weight: 700;
+  color: #111827;
+  display: flex; align-items: center; gap: 6px;
+}
+.agent-company {
+  font-size: 12px; color: #6b21a8;
+  font-weight: 600;
+}
+.agent-stats {
+  display: flex; gap: 12px;
+  font-size: 11px; color: #6b7280;
+}
+.agent-stat { display: flex; align-items: center; gap: 4px; }
+.agent-stat strong { color: #111827; font-weight: 700; }
+.view-profile-btn {
+  width: 100%;
+  padding: 10px;
+  background: white;
+  border: 1.5px solid #6b21a8;
+  color: #6b21a8;
+  border-radius: 10px;
+  font-size: 13px; font-weight: 600;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  gap: 6px;
+  transition: all 0.2s;
+  text-decoration: none;
+}
+.view-profile-btn:hover {
+  background: #6b21a8;
+  color: white;
+}
+
+/* DESCRIPTION */
+.description {
+  font-size: 15px; color: #374151;
+  line-height: 1.7;
+}
+
+/* FEATURES LIST */
+.features-list {
+  display: flex; flex-wrap: wrap; gap: 8px;
+}
+.feature-chip {
+  padding: 8px 14px;
+  background: #f9fafb;
+  border: 1px solid #e5e7eb;
+  border-radius: 9999px;
+  font-size: 13px; color: #374151;
+  display: flex; align-items: center; gap: 6px;
+}
+.feature-chip i { color: #10b981; font-size: 12px; }
+
+/* SIMILAR PROPERTIES */
+.similar-scroll {
+  display: flex; gap: 16px;
+  overflow-x: auto;
+  padding-bottom: 8px;
+  scroll-snap-type: x mandatory;
+}
+.similar-card {
+  flex: 0 0 260px;
+  background: white; border-radius: 14px;
+  overflow: hidden;
+  border: 1px solid #e5e7eb;
+  cursor: pointer;
+  scroll-snap-align: start;
+}
+.similar-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+  border-color: #a855f7;
+}
+.similar-img {
+  width: 100%; height: 160px;
+  background: #f3f4f6;
+}
+.similar-img img { width: 100%; height: 100%; object-fit: cover; }
+.similar-body { padding: 14px; }
+.similar-price {
+  font-size: 17px; font-weight: 800;
+  color: #6b21a8; margin-bottom: 4px;
+}
+.similar-title {
+  font-size: 13px; font-weight: 600;
+  margin-bottom: 4px;
+  overflow: hidden; text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.similar-loc {
+  font-size: 12px; color: #6b7280;
+  display: flex; align-items: center; gap: 4px;
+}
+
+/* MOBILE BAR */
+.mobile-bar {
+  position: fixed; bottom: 0; left: 0; right: 0;
+  background: white; border-top: 2px solid #6b21a8;
+  padding: 12px; z-index: 99;
+  display: none; gap: 8px;
+  box-shadow: 0 -4px 16px rgba(0,0,0,0.08);
+}
+.mobile-bar .btn { flex: 1; padding: 12px; font-size: 13px; margin: 0; }
+
+/* LOADING */
+.loading {
+  text-align: center; padding: 60px 20px;
+  color: #6b7280;
+}
+.loading i {
+  font-size: 48px;
+  animation: spin 1s linear infinite;
+}
+@keyframes spin { 100% { transform: rotate(360deg); } }
+
+/* EMPTY */
+.empty {
+  text-align: center; padding: 40px 20px;
+  color: #9ca3af;
+}
+.empty i { font-size: 36px; margin-bottom: 10px; }
+
+@media (max-width: 768px) {
+  .container { padding: 0 16px; }
+  .main-image { height: 280px; }
+  .property-title { font-size: 22px; }
+  .features-grid { grid-template-columns: repeat(2, 1fr); }
+  .price-display { font-size: 26px; }
+  .mobile-bar { display: flex; }
+  body { padding-bottom: 90px; }
+}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <a href="/" class="logo">
+    <i class="fas fa-home"></i> Properties in Kenya
+  </a>
+  <a href="/" class="back-btn">
+    <i class="fas fa-arrow-left"></i> Back
+  </a>
+</nav>
+
+<div class="container">
+  <main>
+    <div id="loadingState" class="loading">
+      <i class="fas fa-spinner"></i>
+      <p>Loading property details...</p>
+    </div>
+
+    <div id="propertyContent" style="display:none;">
+      <!-- HERO GALLERY -->
+      <section class="hero-gallery">
+        <div class="main-image">
+          <img id="mainImage" src="" alt="">
+        </div>
+        <div class="thumbnails" id="thumbnails"></div>
+      </section>
+
+      <!-- TITLE & PRICE -->
+      <div class="price-badge" id="propertyType">FOR SALE</div>
+      <h1 class="property-title" id="propertyTitle">Loading...</h1>
+      <div class="property-location">
+        <i class="fas fa-map-marker-alt"></i>
+        <span id="propertyLocation">Loading...</span>
+      </div>
+
+      <!-- FEATURES GRID -->
+      <div class="features-grid" id="featuresGrid"></div>
+
+      <!-- DESCRIPTION -->
+      <section class="card">
+        <h2 class="card-title"><i class="fas fa-align-left"></i> Description</h2>
+        <div class="description" id="propertyDescription">Loading...</div>
+      </section>
+
+      <!-- FEATURES -->
+      <section class="card">
+        <h2 class="card-title"><i class="fas fa-check-circle"></i> Features & Amenities</h2>
+        <div class="features-list" id="featuresList">
+          <div class="empty"><i class="fas fa-info-circle"></i> No features listed</div>
+        </div>
+      </section>
+
+      <!-- SIMILAR PROPERTIES -->
+      <section class="card">
+        <h2 class="card-title"><i class="fas fa-home"></i> Similar Properties Nearby</h2>
+        <div class="similar-scroll" id="similarProperties">
+          <div class="empty"><i class="fas fa-search"></i> No similar properties found</div>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <aside class="sidebar">
+    <div class="contact-card">
+      <div class="price-display" id="sidebarPrice">KES 0</div>
+      
+      <a href="#" id="btnWhatsApp" target="_blank" class="btn btn-whatsapp">
+        <i class="fab fa-whatsapp"></i> WhatsApp Agent
+      </a>
+      <a href="#" id="btnCall" class="btn btn-call">
+        <i class="fas fa-phone"></i> Call Agent
+      </a>
+      <a href="#" id="btnEmail" class="btn btn-email">
+        <i class="fas fa-envelope"></i> Email Agent
+      </a>
+
+      <!-- AGENT CARD -->
+      <div class="agent-card">
+        <div class="agent-header">
+          <div class="agent-avatar" id="agentAvatar">A</div>
+          <div class="agent-info">
+            <div class="agent-name" id="agentName">
+              Loading...
+              <i class="fas fa-check-circle" style="color:#10b981; font-size:12px;"></i>
+            </div>
+            <div class="agent-company" id="agentCompany">—</div>
+            <div class="agent-stats">
+              <div class="agent-stat">
+                <i class="fas fa-star" style="color:#fbbf24;"></i>
+                <strong id="agentRating">0.0</strong>
+              </div>
+              <div class="agent-stat">
+                <i class="fas fa-shield-halved"></i>
+                <strong id="agentTrust">0</strong>
+              </div>
+            </div>
+          </div>
+        </div>
+        <a href="#" id="viewAgentProfile" class="view-profile-btn">
+          <i class="fas fa-user"></i> View Agent Profile
+        </a>
+      </div>
+    </div>
+  </aside>
+</div>
+
+<!-- MOBILE BAR -->
+<div class="mobile-bar">
+  <a href="#" id="mobileCall" class="btn btn-call">
+    <i class="fas fa-phone"></i> Call
+  </a>
+  <a href="#" id="mobileWhatsApp" target="_blank" class="btn btn-whatsapp">
+    <i class="fab fa-whatsapp"></i> WhatsApp
+  </a>
+</div>
+
+<script>
+const sb = supabase.createClient(
+  "https://nqwvsmuvltbiekfnvovx.supabase.co",
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5xd3ZzbXV2bHRiaWVrZm52b3Z4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA1NjU4MDAsImV4cCI6MjA5NjE0MTgwMH0.Xrc-bbAuWdvKSPHnVhTaLiQphV61xeYtDepWePqsrdo"
+);
+
+let property = null;
+let agent = null;
+let currentImageIndex = 0;
+
+const esc = t => {
+  const d = document.createElement('div');
+  d.textContent = t || '';
+  return d.innerHTML;
+};
+
+async function loadProperty() {
+  const params = new URLSearchParams(location.search);
+  const id = params.get('id');
+
+  if (!id) {
+    document.getElementById('loadingState').innerHTML = `
+      <div class="empty">
+        <i class="fas fa-exclamation-circle"></i>
+        <h3>No property ID provided</h3>
+        <a href="/" class="btn btn-call" style="display:inline-block; margin-top:16px;">Browse Properties</a>
+      </div>
+    `;
+    return;
+  }
+
+  // Load property
+  const { data: prop, error } = await sb
+    .from('properties')
+    .select('*')
+    .eq('id', id)
+    .eq('approval_status', 'approved')
+    .single();
+
+  if (error || !prop) {
+    document.getElementById('loadingState').innerHTML = `
+      <div class="empty">
+        <i class="fas fa-exclamation-circle"></i>
+        <h3>Property not found</h3>
+        <p>This property may have been sold or removed.</p>
+        <a href="/" class="btn btn-call" style="display:inline-block; margin-top:16px;">Browse Properties</a>
+      </div>
+    `;
+    return;
+  }
+
+  property = prop;
+
+  // Load agent
+  if (prop.agent_id) {
+    const { data: agentData } = await sb
+      .from('profiles')
+      .select('*')
+      .eq('id', prop.agent_id)
+      .single();
+    agent = agentData;
+  }
+
+  // Increment views
+  sb.from('properties').update({ views_count: (prop.views_count || 0) + 1 }).eq('id', id);
+
+  renderProperty();
+  if (agent) renderAgent();
+  loadSimilarProperties();
+}
+
+function renderProperty() {
+  document.getElementById('loadingState').style.display = 'none';
+  document.getElementById('propertyContent').style.display = 'block';
+
+  // SEO
+  const title = `${property.title} | ${property.location} | KES ${Number(property.price).toLocaleString()}`;
+  document.title = title;
+  document.getElementById('pageDescription').setAttribute('content', property.description || `View ${property.title} in ${property.location}. Listed for KES ${Number(property.price).toLocaleString()}.`);
+  document.getElementById('ogTitle').setAttribute('content', title);
+  document.getElementById('ogDescription').setAttribute('content', property.description || '');
+  document.getElementById('canonical').setAttribute('href', `https://propertiesinkenya.co.ke/property.html?id=${property.id}`);
+
+  // Images
+  const images = property.images?.length > 0 ? property.images : [property.image_url || 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=800&q=80'];
+  document.getElementById('mainImage').src = images[0];
+  document.getElementById('mainImage').alt = property.title;
+
+  const thumbnailsHTML = images.map((img, i) => `
+    <div class="thumbnail ${i === 0 ? 'active' : ''}" onclick="changeImage(${i})">
+      <img src="${img}" alt="">
+    </div>
+  `).join('');
+  document.getElementById('thumbnails').innerHTML = thumbnailsHTML;
+
+  // Basic info
+  document.getElementById('propertyType').textContent = (property.property_type || 'FOR SALE').toUpperCase();
+  document.getElementById('propertyTitle').textContent = property.title;
+  document.getElementById('propertyLocation').textContent = property.location || 'Kenya';
+  document.getElementById('sidebarPrice').textContent = `KES ${Number(property.price).toLocaleString()}`;
+
+  // Features grid
+  const features = [];
+  if (property.bedrooms) features.push({ icon: 'fa-bed', label: 'Bedrooms', value: property.bedrooms });
+  if (property.bathrooms) features.push({ icon: 'fa-bath', label: 'Bathrooms', value: property.bathrooms });
+  if (property.area) features.push({ icon: 'fa-ruler-combined', label: 'Size', value: `${property.area} ${property.area_unit || 'sqm'}` });
+  if (property.parking) features.push({ icon: 'fa-car', label: 'Parking', value: property.parking });
+
+  document.getElementById('featuresGrid').innerHTML = features.map(f => `
+    <div class="feature-item">
+      <div class="feature-icon"><i class="fas ${f.icon}"></i></div>
+      <div>
+        <div class="feature-text">${f.value}</div>
+        <div class="feature-label">${f.label}</div>
+      </div>
+    </div>
+  `).join('');
+
+  // Description
+  document.getElementById('propertyDescription').textContent = property.description || 'No description available.';
+
+  // Features list
+  const featuresList = property.features || [];
+  if (featuresList.length > 0) {
+    document.getElementById('featuresList').innerHTML = featuresList.map(f => `
+      <div class="feature-chip"><i class="fas fa-check"></i> ${esc(f)}</div>
+    `).join('');
+  }
+
+  // Contact buttons
+  if (agent) {
+    const phone = agent.phone || agent.whatsapp_number || '';
+    const waPhone = (agent.whatsapp_number || phone).replace(/[^0-9]/g, '');
+    const waMsg = encodeURIComponent(`Hi ${agent.full_name?.split(' ')[0]}, I'm interested in: ${property.title} (KES ${Number(property.price).toLocaleString()})`);
+
+    document.getElementById('btnWhatsApp').href = `https://wa.me/${waPhone}?text=${waMsg}`;
+    document.getElementById('btnCall').href = `tel:${phone}`;
+    document.getElementById('btnEmail').href = `mailto:${agent.email || ''}`;
+    document.getElementById('mobileWhatsApp').href = `https://wa.me/${waPhone}?text=${waMsg}`;
+    document.getElementById('mobileCall').href = `tel:${phone}`;
+  }
+}
+
+function renderAgent() {
+  const init = (agent.full_name || 'A').charAt(0).toUpperCase();
+  document.getElementById('agentAvatar').innerHTML = agent.avatar_url
+    ? `<img src="${agent.avatar_url}" onerror="this.parentElement.innerHTML='${init}'">`
+    : init;
+
+  document.getElementById('agentName').innerHTML = `
+    ${esc(agent.full_name || 'Agent')}
+    <i class="fas fa-check-circle" style="color:#10b981; font-size:12px;"></i>
+  `;
+  document.getElementById('agentCompany').textContent = agent.company || 'Independent Agent';
+  document.getElementById('agentRating').textContent = (agent.average_rating || 0).toFixed(1);
+  document.getElementById('agentTrust').textContent = agent.trust_score || 0;
+
+  const agentUrl = agent.slug ? `/agent/${agent.slug}` : `/agent-profile.html?id=${agent.id}`;
+  document.getElementById('viewAgentProfile').href = agentUrl;
+}
+
+function changeImage(index) {
+  currentImageIndex = index;
+  const images = property.images?.length > 0 ? property.images : [property.image_url];
+  document.getElementById('mainImage').src = images[index];
+  document.querySelectorAll('.thumbnail').forEach((t, i) => {
+    t.classList.toggle('active', i === index);
+  });
+}
+
+async function loadSimilarProperties() {
+  if (!property.location) return;
+
+  const { data: similar } = await sb
+    .from('properties')
+    .select('*')
+    .eq('location', property.location)
+    .neq('id', property.id)
+    .eq('approval_status', 'approved')
+    .limit(6);
+
+  const container = document.getElementById('similarProperties');
+
+  if (!similar || similar.length === 0) {
+    container.innerHTML = '<div class="empty"><i class="fas fa-search"></i> No similar properties found</div>';
+    return;
+  }
+
+  container.innerHTML = similar.map(p => {
+    const img = p.images?.[0] || p.image_url || 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=400&q=80';
+    return `
+      <div class="similar-card" onclick="location.href='?id=${p.id}'">
+        <div class="similar-img">
+          <img src="${img}" alt="${esc(p.title)}">
+        </div>
+        <div class="similar-body">
+          <div class="similar-price">KES ${Number(p.price).toLocaleString()}</div>
+          <div class="similar-title">${esc(p.title)}</div>
+          <div class="similar-loc">
+            <i class="fas fa-map-marker-alt"></i> ${esc(p.location)}
+          </div>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+window.changeImage = changeImage;
+
+loadProperty();
+</script>
+
+</body>
+</html>
