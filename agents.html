@@ -339,9 +339,8 @@ body {
   color: #6b21a8;
   font-weight: 600;
   font-size: 12px;
-  cursor: pointer;
-  transition: all 0.2s;
   display: flex; align-items: center; justify-content: center; gap: 6px;
+  transition: all 0.2s;
 }
 .agent-card:hover .agent-btn {
   background: #6b21a8;
@@ -703,6 +702,9 @@ function renderAllAgents() {
   container.innerHTML = filtered.map(a => renderAgentCard(a, false)).join('');
 }
 
+// ==========================================================
+// BULLETPROOF RENDER FUNCTION
+// ==========================================================
 function renderAgentCard(a, isTop) {
   const init = (a.full_name || 'A').charAt(0).toUpperCase();
   const avatar = a.avatar_url
@@ -726,8 +728,13 @@ function renderAgentCard(a, isTop) {
 
   const topBadge = isTop ? `<div class="top-badge"><i class="fas fa-crown"></i> Top Agent</div>` : '';
 
-  // Use slug URL if available, otherwise fall back to ID
-  const agentUrl = a.slug ? `/agent/${a.slug}` : `/agent-profile.html?id=${a.id}`;
+  // BULLETPROOF ABSOLUTE URL GENERATION
+  const baseUrl = window.location.origin;
+  const agentUrl = (a.slug && String(a.slug).trim() !== '') 
+    ? `${baseUrl}/agent/${a.slug}` 
+    : `${baseUrl}/agent-profile.html?id=${a.id}`;
+
+  console.log('Rendering card for:', a.full_name, '| Slug:', a.slug, '| Final URL:', agentUrl);
 
   return `
     <a href="${agentUrl}" class="${cardClass}">
@@ -755,7 +762,7 @@ function renderAgentCard(a, isTop) {
           <div class="${statLblClass}">Listings</div>
         </div>
       </div>
-      ${!isTop ? `<button class="agent-btn"><i class="fas fa-arrow-right"></i> View Profile</button>` : ''}
+      ${!isTop ? `<div class="agent-btn"><i class="fas fa-arrow-right"></i> View Profile</div>` : ''}
     </a>
   `;
 }
