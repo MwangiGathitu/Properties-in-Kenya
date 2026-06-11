@@ -3012,44 +3012,8 @@ script.id = 'dynamic-property-schema';
 script.textContent = JSON.stringify(schema);
 document.head.appendChild(script);
 }
-function openPropertyDetail(propertyId, updateHash = true) {
-const p = allProperties.find(prop => prop.id === propertyId);
-if (!p) return;
-currentProperty = p;
-currentImages = p.images?.length > 0 ? p.images : [p.image_url || 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=800&q=80'];
-currentImageIndex = 0;
-document.getElementById('propertyMainImage').src = currentImages[0];
-document.getElementById('propertyMainImage').alt = `${p.title} - ${p.location || 'Kenya'}`;
-const thumbnailsHTML = currentImages.map((img, idx) =>
-`<img src="${img}" class="property-thumbnail ${idx === 0 ? 'active' : ''}" onclick="changeImage(${idx})" alt="${p.title} - Image ${idx + 1}">`
-).join('');
-document.getElementById('propertyThumbnails').innerHTML = thumbnailsHTML;
-document.getElementById('propertyTitle').textContent = p.title;
-document.getElementById('propertyLocation').textContent = p.location || 'Kenya';
-document.getElementById('propertyPrice').textContent = `KES ${Number(p.price).toLocaleString()}`;
-document.getElementById('propertyDescription').textContent = p.description || 'Beautiful verified property in a prime location with modern amenities and excellent access to major roads and amenities.';
-const badgesHTML = `
-<div class="property-badge for-sale">${(p.property_type || 'FOR SALE').toUpperCase()}</div>
-<div class="property-badge verified"><i class="fas fa-check-circle"></i> VERIFIED LISTING</div>
-`;
-document.getElementById('propertyBadges').innerHTML = badgesHTML;
-const agentPhone = p.agent_phone || '+254700000000';
-const cleanPhone = agentPhone.replace(/[^0-9]/g, '');
-const waMessage = encodeURIComponent(`Hi, I'm interested in: ${p.title} (KES ${Number(p.price).toLocaleString()})`);
-document.getElementById('propertyWhatsApp').href = `https://wa.me/${cleanPhone}?text=${waMessage}`;
-document.getElementById('propertyCall').href = `tel:${agentPhone}`;
-document.getElementById('mobileWhatsApp').href = `https://wa.me/${cleanPhone}?text=${waMessage}`;
-document.getElementById('mobileCall').href = `tel:${agentPhone}`;
-let detailsHTML = '';
-if (p.bedrooms) {
-detailsHTML += `
-<div class="property-detail-item">
-<div class="property-detail-icon"><i class="fas fa-bed"></i></div>
-<div>
-<div class="property-detail-label">Bedrooms</div>
-<div class="property-detail-value">${p.bedrooms}</div>
-</div>
-</div>`;
+function openPropertyDetail(propertyId) {
+    window.location.href = `property.html?id=${propertyId}`;
 }
 if (p.bathrooms) {
 detailsHTML += `
