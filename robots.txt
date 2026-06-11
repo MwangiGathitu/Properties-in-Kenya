@@ -1,8 +1,13 @@
+# robots.txt for Properties in Kenya
+# https://propertiesinkenya.co.ke/
+
 User-agent: *
 Allow: /
-Disallow: /agent.html
-Disallow: /admin.html
 Disallow: /login.html
 Disallow: /api/
 
+# Sitemap location
 Sitemap: https://propertiesinkenya.co.ke/sitemap.xml
+
+# Crawl-delay for respectful crawling
+Crawl-delay: 1
