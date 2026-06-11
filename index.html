@@ -1530,6 +1530,291 @@
             font-size: 13px;
         }
 
+        /* ===== SKELETON LOADERS ===== */
+        .skeleton {
+            background: #E5E7EB;
+            border-radius: 8px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .skeleton::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(
+                90deg,
+                transparent,
+                rgba(255, 255, 255, 0.6),
+                transparent
+            );
+            animation: shimmer 1.5s infinite;
+        }
+        
+        @keyframes shimmer {
+            0% { left: -100%; }
+            100% { left: 100%; }
+        }
+        
+        /* Featured Card Skeleton */
+        .skeleton-featured-card {
+            flex: 0 0 360px;
+            background: white;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+            border: 1px solid #F3F4F6;
+        }
+        .skeleton-featured-image {
+            width: 100%;
+            height: 240px;
+            background: #E5E7EB;
+            position: relative;
+            overflow: hidden;
+        }
+        .skeleton-featured-image::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.6), transparent);
+            animation: shimmer 1.5s infinite;
+        }
+        .skeleton-featured-info {
+            padding: 20px;
+        }
+        .skeleton-title {
+            height: 20px;
+            background: #E5E7EB;
+            border-radius: 6px;
+            margin-bottom: 12px;
+            width: 80%;
+            position: relative;
+            overflow: hidden;
+        }
+        .skeleton-title::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.6), transparent);
+            animation: shimmer 1.5s infinite;
+        }
+        .skeleton-location {
+            height: 16px;
+            background: #E5E7EB;
+            border-radius: 6px;
+            margin-bottom: 16px;
+            width: 60%;
+            position: relative;
+            overflow: hidden;
+        }
+        .skeleton-location::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.6), transparent);
+            animation: shimmer 1.5s infinite;
+        }
+        .skeleton-price {
+            height: 24px;
+            background: #E5E7EB;
+            border-radius: 6px;
+            margin-bottom: 16px;
+            width: 50%;
+            position: relative;
+            overflow: hidden;
+        }
+        .skeleton-price::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.6), transparent);
+            animation: shimmer 1.5s infinite;
+        }
+        .skeleton-meta {
+            display: flex;
+            gap: 12px;
+            padding-top: 14px;
+            border-top: 1px solid #F3F4F6;
+        }
+        .skeleton-meta-item {
+            height: 14px;
+            background: #E5E7EB;
+            border-radius: 4px;
+            width: 60px;
+            position: relative;
+            overflow: hidden;
+        }
+        .skeleton-meta-item::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.6), transparent);
+            animation: shimmer 1.5s infinite;
+        }
+        
+        /* AI Result Card Skeleton */
+        .skeleton-ai-card {
+            flex: 0 0 280px;
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+            border: 1px solid #F3F4F6;
+        }
+        .skeleton-ai-image {
+            width: 100%;
+            height: 180px;
+            background: #E5E7EB;
+            position: relative;
+            overflow: hidden;
+        }
+        .skeleton-ai-image::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.6), transparent);
+            animation: shimmer 1.5s infinite;
+        }
+        .skeleton-ai-info {
+            padding: 16px;
+        }
+        .skeleton-ai-title {
+            height: 18px;
+            background: #E5E7EB;
+            border-radius: 6px;
+            margin-bottom: 8px;
+            width: 85%;
+            position: relative;
+            overflow: hidden;
+        }
+        .skeleton-ai-title::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.6), transparent);
+            animation: shimmer 1.5s infinite;
+        }
+        .skeleton-ai-location {
+            height: 14px;
+            background: #E5E7EB;
+            border-radius: 6px;
+            margin-bottom: 12px;
+            width: 65%;
+            position: relative;
+            overflow: hidden;
+        }
+        .skeleton-ai-location::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.6), transparent);
+            animation: shimmer 1.5s infinite;
+        }
+        .skeleton-ai-price {
+            height: 20px;
+            background: #E5E7EB;
+            border-radius: 6px;
+            margin-bottom: 12px;
+            width: 55%;
+            position: relative;
+            overflow: hidden;
+        }
+        .skeleton-ai-price::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.6), transparent);
+            animation: shimmer 1.5s infinite;
+        }
+        .skeleton-ai-tags {
+            display: flex;
+            gap: 6px;
+        }
+        .skeleton-ai-tag {
+            height: 20px;
+            background: #E5E7EB;
+            border-radius: 4px;
+            width: 50px;
+            position: relative;
+            overflow: hidden;
+        }
+        .skeleton-ai-tag::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.6), transparent);
+            animation: shimmer 1.5s infinite;
+        }
+
+        /* Dark Mode Support */
+        @media (prefers-color-scheme: dark) {
+            .skeleton,
+            .skeleton-featured-image,
+            .skeleton-title,
+            .skeleton-location,
+            .skeleton-price,
+            .skeleton-meta-item,
+            .skeleton-ai-image,
+            .skeleton-ai-title,
+            .skeleton-ai-location,
+            .skeleton-ai-price,
+            .skeleton-ai-tag {
+                background: #374151;
+            }
+            
+            .skeleton::after,
+            .skeleton-featured-image::after,
+            .skeleton-title::after,
+            .skeleton-location::after,
+            .skeleton-price::after,
+            .skeleton-meta-item::after,
+            .skeleton-ai-image::after,
+            .skeleton-ai-title::after,
+            .skeleton-ai-location::after,
+            .skeleton-ai-price::after,
+            .skeleton-ai-tag::after {
+                background: linear-gradient(
+                    90deg,
+                    transparent,
+                    rgba(255, 255, 255, 0.1),
+                    transparent
+                );
+            }
+        }
+
         /* ===== RESPONSIVE ===== */
         @media (max-width: 1024px) {
             .nav-fixed, .main-content, .footer { padding-left: 40px; padding-right: 40px; }
@@ -1551,7 +1836,8 @@
             .ai-results-header { padding: 0 20px; }
             .carousel-wrapper, .blog-carousel-wrapper { padding: 0 16px; }
             .category-grid { grid-template-columns: 1fr; }
-            .ai-result-card, .featured-card { flex: 0 0 280px; }
+            .ai-result-card, .featured-card, 
+            .skeleton-ai-card, .skeleton-featured-card { flex: 0 0 280px; }
             .blog-card { flex: 0 0 320px; }
             .footer-top { grid-template-columns: 1fr; }
             .section-title { font-size: 22px; }
@@ -1782,10 +2068,7 @@
                     <i class="fas fa-chevron-left"></i>
                 </button>
                 <div id="featuredCarousel" class="carousel-container">
-                    <div style="padding:40px; text-align:center; color:#9CA3AF; width:100%;">
-                        <i class="fas fa-spinner fa-spin" style="font-size:20px;"></i>
-                        <p style="margin-top:8px;">Loading properties...</p>
-                    </div>
+                    <!-- Skeleton loaders will be inserted here -->
                 </div>
                 <button class="carousel-arrow next" onclick="scrollCarousel('featuredCarousel', 1)">
                     <i class="fas fa-chevron-right"></i>
@@ -2217,7 +2500,57 @@
             }
         }
 
+        // ===== SKELETON LOADERS =====
+        function createFeaturedSkeleton() {
+            return `
+                <div class="skeleton-featured-card">
+                    <div class="skeleton-featured-image"></div>
+                    <div class="skeleton-featured-info">
+                        <div class="skeleton-title"></div>
+                        <div class="skeleton-location"></div>
+                        <div class="skeleton-price"></div>
+                        <div class="skeleton-meta">
+                            <div class="skeleton-meta-item"></div>
+                            <div class="skeleton-meta-item"></div>
+                            <div class="skeleton-meta-item"></div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function createAISkeleton() {
+            return `
+                <div class="skeleton-ai-card">
+                    <div class="skeleton-ai-image"></div>
+                    <div class="skeleton-ai-info">
+                        <div class="skeleton-ai-title"></div>
+                        <div class="skeleton-ai-location"></div>
+                        <div class="skeleton-ai-price"></div>
+                        <div class="skeleton-ai-tags">
+                            <div class="skeleton-ai-tag"></div>
+                            <div class="skeleton-ai-tag"></div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function showFeaturedSkeletons() {
+            const carousel = document.getElementById('featuredCarousel');
+            const skeletonCount = 4;
+            carousel.innerHTML = Array(skeletonCount).fill(createFeaturedSkeleton()).join('');
+        }
+
+        function showAISkeletons() {
+            const carousel = document.getElementById('aiResultsCarousel');
+            const skeletonCount = 4;
+            carousel.innerHTML = Array(skeletonCount).fill(createAISkeleton()).join('');
+        }
+
         async function loadProperties() {
+            showFeaturedSkeletons();
+            
             try {
                 const { data, error } = await supabaseClient
                     .from("properties")
@@ -2233,6 +2566,8 @@
                 updateFavoritesCount();
             } catch (error) {
                 console.error('Error loading properties:', error);
+                document.getElementById('featuredCarousel').innerHTML = 
+                    '<div style="padding:40px; text-align:center; color:#9CA3AF; width:100%;">Failed to load properties</div>';
             }
         }
 
@@ -2501,6 +2836,11 @@
             addChatMessage(query, true);
             input.value = '';
 
+            // Show AI results section with skeletons
+            const section = document.getElementById('aiResultsSection');
+            section.classList.add('active');
+            showAISkeletons();
+
             try {
                 const response = await fetch('/api/ai-assistant', {
                     method: 'POST',
@@ -2521,10 +2861,13 @@
                 
                 if (filteredProperties.length > 0) {
                     renderAIResults(filteredProperties);
+                } else {
+                    section.classList.remove('active');
                 }
 
             } catch (error) {
                 addChatMessage("Sorry, having trouble connecting.", false);
+                section.classList.remove('active');
             } finally {
                 btn.disabled = false;
                 btn.innerHTML = '<i class="fas fa-search"></i><span>Search</span>';
