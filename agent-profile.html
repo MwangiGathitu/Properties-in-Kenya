@@ -608,12 +608,32 @@ const toast = (t, m) => {
 async function load() {
   const params = new URLSearchParams(location.search);
   const id = params.get('id');
+  const slug = params.get('slug');
   
-  // If no ID provided, show all agents
-  if (!id) {
+  // If no ID or slug provided, show all agents
+  if (!id && !slug) {
     await showAllAgents();
     return;
   }
+
+  // Load profile by ID or slug
+  let p;
+  if (id) {
+    const { data } = await sb.from('profiles').select('*').eq('id', id).maybeSingle();
+    p = data;
+  } else if (slug) {
+    const { data } = await sb.from('profiles').select('*').eq('slug', slug).maybeSingle();
+    p = data;
+  }
+  
+  if (!p) {
+    document.getElementById('agentName').textContent = 'Agent not found';
+    document.getElementById('bio').textContent = 'This agent profile could not be found. Please check the URL or browse all agents below.';
+    await showAllAgents();
+    return;
+  }
+  
+  profile = p;
 
   // Load profile (using maybeSingle to avoid 406 error)
   const { data: p, error } = await sb.from('profiles').select('*').eq('id', id).maybeSingle();
