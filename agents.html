@@ -830,8 +830,8 @@ function renderAgentCard(a, isTop) {
 
   const topBadge = isTop ? `<div class="top-badge"><i class="fas fa-crown"></i> Top Agent</div>` : '';
 
-  return `
-    <a href="/agent-profile.html?id=${a.id}" class="${cardClass}">
+  const agentUrl = a.slug ? `/agent/${a.slug}` : `/agent-profile.html?id=${a.id}`;
+return `<a href="${agentUrl}" class="${cardClass}">`;
       ${topBadge}
       <div class="${avatarClass}">${avatar}</div>
       <div class="${nameClass}">
