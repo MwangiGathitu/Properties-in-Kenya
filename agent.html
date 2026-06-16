@@ -1,2041 +1,294 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<!-- ===== DYNAMIC SEO - Will be updated by JS ===== -->
-<title id="dynamicTitle">Verified Real Estate Agent | Properties in Kenya</title>
-<meta id="dynamicDescription" name="description" content="Connect with verified, trusted real estate agents across Kenya. View ratings, reviews, listings, and contact agents directly.">
-<meta id="dynamicOGTitle" property="og:title" content="Verified Real Estate Agent | Properties in Kenya">
-<meta id="dynamicOGDescription" property="og:description" content="Connect with verified, trusted real estate agents across Kenya.">
-<meta id="dynamicOGImage" property="og:image" content="https://images.unsplash.com/photo-1611348524140-53c9a25263d6?w=1200&q=80">
-<meta id="dynamicOGUrl" property="og:url" content="https://propertiesinkenya.co.ke/agent-profile.html">
-<meta id="dynamicTwitterTitle" name="twitter:title" content="Verified Real Estate Agent | Properties in Kenya">
-<meta id="dynamicTwitterDescription" name="twitter:description" content="Connect with verified, trusted real estate agents across Kenya.">
-<meta id="dynamicTwitterImage" name="twitter:image" content="https://images.unsplash.com/photo-1611348524140-53c9a25263d6?w=1200&q=80">
-<link id="dynamicCanonical" rel="canonical" href="https://propertiesinkenya.co.ke/agent-profile.html">
-
-<meta property="og:type" content="profile">
-<meta property="og:site_name" content="Properties in Kenya">
-<meta property="og:locale" content="en_KE">
-<meta name="twitter:card" content="summary_large_image">
-
-<meta name="theme-color" content="#D4AF37">
-<meta name="robots" content="index, follow">
-
-<!-- ===== STRUCTURED DATA: ProfilePage ===== -->
-<script type="application/ld+json" id="dynamicAgentSchema">
-{
-  "@context": "https://schema.org",
-  "@type": "ProfilePage",
-  "mainEntity": {
-    "@type": "RealEstateAgent",
-    "name": "Verified Agent",
-    "description": "Verified real estate agent on Properties in Kenya",
-    "areaServed": {"@type": "Country", "name": "Kenya"},
-    "aggregateRating": {
-      "@type": "AggregateRating",
-      "ratingValue": "4.9",
-      "reviewCount": "0"
-    }
-  }
-}
-</script>
-
-<!-- ===== EXTERNAL RESOURCES ===== -->
-<script src="https://cdn.tailwindcss.com"></script>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script defer data-domain="propertiesinkenya.co.ke" src="https://plausible.io/js/script.js"></script>
-
-<link rel="preconnect" href="https://nqwvsmuvltbiekfnvovx.supabase.co">
-<link rel="preconnect" href="https://images.unsplash.com">
-
-<style>
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
-
-* { margin: 0; padding: 0; box-sizing: border-box; }
-html { scroll-behavior: smooth; }
-body {
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-  color: #111827;
-  font-size: 14px;
-  line-height: 1.6;
-  overflow-x: hidden;
-  background: #F9FAFB;
-  padding-bottom: 80px;
-}
-
-/* ===== BACKGROUND ===== */
-.bg-layers { position: fixed; inset: 0; z-index: -1; pointer-events: none; }
-.bg-layer-1 { position: absolute; inset: 0; background: linear-gradient(180deg, #FFFFFF 0%, #F9FAFB 100%); }
-.bg-layer-3 {
-  position: absolute; inset: 0;
-  background:
-    radial-gradient(circle at 20% 30%, rgba(212, 175, 55, 0.04) 0%, transparent 50%),
-    radial-gradient(circle at 80% 70%, rgba(124, 77, 255, 0.04) 0%, transparent 50%);
-}
-
-/* ===== NAVIGATION ===== */
-.nav-fixed {
-  position: fixed; top: 0; left: 0; right: 0;
-  height: 64px;
-  background: rgba(255, 255, 255, 0.9);
-  backdrop-filter: blur(20px) saturate(180%);
-  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
-  z-index: 100;
-  display: flex; align-items: center;
-  padding: 0 80px;
-}
-.nav-content {
-  display: flex; align-items: center; justify-content: space-between;
-  width: 100%; max-width: 1440px; margin: 0 auto;
-}
-.nav-logo {
-  font-size: 16px; font-weight: 600; color: #111827;
-  display: flex; align-items: center; gap: 10px;
-  text-decoration: none;
-}
-.nav-logo-icon {
-  width: 28px; height: 28px;
-  background: linear-gradient(135deg, #D4AF37, #E6C86B);
-  border-radius: 8px;
-  display: flex; align-items: center; justify-content: center;
-  color: white; font-size: 12px;
-}
-.nav-center { display: flex; gap: 40px; align-items: center; }
-.nav-link {
-  font-size: 14px; font-weight: 500; color: #6B7280;
-  text-decoration: none; transition: color 0.2s; cursor: pointer;
-}
-.nav-link:hover { color: #D4AF37; }
-.nav-cta {
-  padding: 8px 16px;
-  border: 1px solid #E5E7EB;
-  border-radius: 8px;
-  background: white;
-  font-size: 13px; font-weight: 500; color: #374151;
-  cursor: pointer; transition: all 0.2s;
-  text-decoration: none;
-  display: inline-flex; align-items: center; gap: 6px;
-}
-.nav-cta:hover { border-color: #D4AF37; color: #B8922E; }
-
-.back-btn {
-  display: inline-flex; align-items: center; gap: 6px;
-  font-size: 13px; color: #6B7280; cursor: pointer;
-  padding: 6px 12px; border-radius: 8px;
-  transition: all 0.2s; background: none; border: none;
-}
-.back-btn:hover { background: #F3F4F6; color: #D4AF37; }
-
-/* ===== MAIN LAYOUT ===== */
-.main-content {
-  padding-top: 64px;
-  max-width: 1440px;
-  margin: 0 auto;
-  padding-left: 80px;
-  padding-right: 80px;
-}
-.page-layout {
-  display: grid;
-  grid-template-columns: 1fr 360px;
-  gap: 32px;
-  padding: 32px 0 60px;
-  align-items: start;
-}
-
-/* ===== HERO SECTION ===== */
-.hero-card {
-  background: white;
-  border-radius: 20px;
-  padding: 32px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
-  border: 1px solid #F3F4F6;
-  margin-bottom: 24px;
-  position: relative;
-  overflow: hidden;
-}
-.hero-card::before {
-  content: '';
-  position: absolute;
-  top: 0; left: 0; right: 0;
-  height: 4px;
-  background: linear-gradient(90deg, #D4AF37, #E6C86B);
-}
-.hero-top {
-  display: flex;
-  gap: 24px;
-  align-items: flex-start;
-  flex-wrap: wrap;
-}
-.avatar-wrapper { position: relative; flex-shrink: 0; }
-.avatar {
-  width: 120px; height: 120px;
-  border-radius: 50%;
-  background: linear-gradient(135deg, #D4AF37, #E6C86B);
-  display: flex; align-items: center; justify-content: center;
-  color: white; font-size: 44px; font-weight: 800;
-  overflow: hidden;
-  box-shadow: 0 8px 24px rgba(212, 175, 55, 0.3);
-  border: 4px solid white;
-}
-.avatar img { width: 100%; height: 100%; object-fit: cover; }
-.verified-badge {
-  position: absolute; bottom: 4px; right: 4px;
-  width: 36px; height: 36px;
-  background: #10B981;
-  border: 3px solid white;
-  border-radius: 50%;
-  display: flex; align-items: center; justify-content: center;
-  color: white; font-size: 14px;
-  box-shadow: 0 2px 8px rgba(16, 185, 129, 0.3);
-}
-.live-indicator {
-  position: absolute; top: 8px; right: 8px;
-  display: flex; align-items: center; gap: 6px;
-  background: white; padding: 4px 10px;
-  border-radius: 9999px;
-  font-size: 11px; font-weight: 600; color: #10B981;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-}
-.live-dot {
-  width: 8px; height: 8px;
-  background: #10B981; border-radius: 50%;
-  animation: pulse 2s infinite;
-}
-@keyframes pulse {
-  0%, 100% { opacity: 1; transform: scale(1); }
-  50% { opacity: 0.6; transform: scale(1.2); }
-}
-
-.hero-info { flex: 1; min-width: 240px; }
-.agent-name-row {
-  display: flex; align-items: center; gap: 10px;
-  flex-wrap: wrap; margin-bottom: 4px;
-}
-.agent-name {
-  font-size: 28px; font-weight: 700;
-  color: #111827; letter-spacing: -0.02em;
-}
-.featured-ribbon {
-  background: linear-gradient(135deg, #D4AF37, #E6C86B);
-  color: #111827;
-  font-size: 11px; font-weight: 700;
-  padding: 4px 10px; border-radius: 9999px;
-  display: inline-flex; align-items: center; gap: 4px;
-  text-transform: uppercase; letter-spacing: 0.5px;
-}
-.agent-company {
-  font-size: 15px; color: #B8922E;
-  font-weight: 600; margin-bottom: 12px;
-}
-.agent-meta {
-  display: flex; gap: 20px; flex-wrap: wrap;
-  margin-bottom: 16px; font-size: 14px; color: #6B7280;
-}
-.agent-meta-item { display: flex; align-items: center; gap: 6px; }
-.agent-meta-item i { color: #D4AF37; }
-.agent-meta-item strong { color: #111827; font-weight: 700; }
-
-.hero-stats {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
-  gap: 12px;
-  margin-top: 24px;
-  padding-top: 24px;
-  border-top: 1px solid #F3F4F6;
-}
-.hero-stat { text-align: center; }
-.hero-stat-value {
-  font-size: 24px; font-weight: 800;
-  color: #111827; letter-spacing: -0.02em;
-}
-.hero-stat-label {
-  font-size: 11px; color: #9CA3AF;
-  text-transform: uppercase; letter-spacing: 0.5px;
-  margin-top: 2px; font-weight: 600;
-}
-
-/* ===== AI MATCH SCORE (DIFFERENTIATOR) ===== */
-.ai-match-card {
-  background: linear-gradient(135deg, #7C4DFF 0%, #E9E3FF 100%);
-  border-radius: 20px;
-  padding: 32px;
-  color: white;
-  margin-bottom: 24px;
-  position: relative;
-  overflow: hidden;
-  box-shadow: 0 8px 32px rgba(124, 77, 255, 0.2);
-}
-.ai-match-card::before {
-  content: '';
-  position: absolute;
-  top: -50%; right: -20%;
-  width: 400px; height: 400px;
-  background: radial-gradient(circle, rgba(255,255,255,0.15) 0%, transparent 70%);
-  pointer-events: none;
-}
-.ai-match-header {
-  display: flex; align-items: center; gap: 12px;
-  margin-bottom: 24px; position: relative;
-}
-.ai-icon {
-  width: 44px; height: 44px;
-  background: rgba(255,255,255,0.2);
-  border-radius: 12px;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 20px;
-  backdrop-filter: blur(10px);
-}
-.ai-match-title { font-size: 18px; font-weight: 700; }
-.ai-match-subtitle { font-size: 13px; opacity: 0.9; }
-.ai-overall-score {
-  display: flex; align-items: center; gap: 24px;
-  margin-bottom: 28px; position: relative;
-}
-.ai-score-circle {
-  width: 110px; height: 110px;
-  border-radius: 50%;
-  background: rgba(255,255,255,0.18);
-  backdrop-filter: blur(10px);
-  display: flex; flex-direction: column;
-  align-items: center; justify-content: center;
-  flex-shrink: 0;
-  border: 2px solid rgba(255,255,255,0.3);
-}
-.ai-score-number {
-  font-size: 40px; font-weight: 800;
-  line-height: 1; letter-spacing: -0.02em;
-}
-.ai-score-label {
-  font-size: 11px; opacity: 0.9;
-  text-transform: uppercase; letter-spacing: 0.5px;
-  margin-top: 4px; font-weight: 600;
-}
-.ai-score-text { font-size: 14px; line-height: 1.6; opacity: 0.95; }
-.ai-match-bars {
-  display: flex; flex-direction: column; gap: 14px;
-  position: relative;
-}
-.ai-bar-item { display: flex; align-items: center; gap: 12px; }
-.ai-bar-label {
-  flex: 0 0 150px;
-  font-size: 13px; font-weight: 500; opacity: 0.95;
-}
-.ai-bar-track {
-  flex: 1; height: 8px;
-  background: rgba(255,255,255,0.2);
-  border-radius: 9999px; overflow: hidden;
-}
-.ai-bar-fill {
-  height: 100%;
-  background: white;
-  border-radius: 9999px;
-  transition: width 1s ease-out;
-  box-shadow: 0 0 12px rgba(255,255,255,0.4);
-}
-.ai-bar-value {
-  flex: 0 0 44px;
-  text-align: right;
-  font-size: 14px; font-weight: 700;
-}
-
-/* ===== SECTION CARD ===== */
-.section {
-  background: white;
-  border-radius: 20px;
-  padding: 28px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
-  border: 1px solid #F3F4F6;
-  margin-bottom: 24px;
-}
-.section-header {
-  display: flex; justify-content: space-between;
-  align-items: center; margin-bottom: 20px;
-  flex-wrap: wrap; gap: 10px;
-}
-.section-title {
-  font-size: 18px; font-weight: 700;
-  color: #111827;
-  display: flex; align-items: center; gap: 10px;
-  letter-spacing: -0.01em;
-}
-.section-title-icon {
-  width: 36px; height: 36px;
-  background: linear-gradient(135deg, rgba(212, 175, 55, 0.1), rgba(230, 200, 107, 0.1));
-  border-radius: 10px;
-  display: flex; align-items: center; justify-content: center;
-  color: #B8922E; font-size: 15px;
-}
-.section-link {
-  font-size: 13px; color: #B8922E;
-  font-weight: 600; text-decoration: none;
-  display: flex; align-items: center; gap: 4px;
-  cursor: pointer;
-}
-.section-link:hover { color: #D4AF37; }
-
-/* ===== TRUST SCORE ===== */
-.trust-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-  gap: 10px; margin-bottom: 20px;
-}
-.trust-item {
-  display: flex; align-items: center; gap: 10px;
-  padding: 12px 14px;
-  background: #F9FAFB;
-  border: 1px solid #F3F4F6;
-  border-radius: 12px;
-  transition: all 0.2s;
-}
-.trust-item:hover {
-  background: #F7E7B3;
-  border-color: #E6C86B;
-  transform: translateY(-1px);
-}
-.trust-icon {
-  width: 32px; height: 32px;
-  background: #E9E3FF;
-  color: #7C4DFF;
-  border-radius: 8px;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 13px; flex-shrink: 0;
-}
-.trust-item.verified .trust-icon {
-  background: #D1FAE5; color: #10B981;
-}
-.trust-label { font-size: 13px; font-weight: 600; color: #111827; }
-
-.trust-score-card {
-  background: linear-gradient(135deg, #F7E7B3, #FFFFFF);
-  border: 2px solid #D4AF37;
-  border-radius: 16px;
-  padding: 24px;
-  display: flex; align-items: center; gap: 20px;
-  flex-wrap: wrap;
-}
-.trust-score-big {
-  font-size: 56px; font-weight: 800;
-  color: #B8922E; line-height: 1;
-  letter-spacing: -0.03em;
-}
-.trust-score-big span { font-size: 22px; color: #9CA3AF; font-weight: 600; }
-.trust-score-text h4 {
-  font-size: 16px; font-weight: 700;
-  margin-bottom: 4px; color: #111827;
-}
-.trust-score-text p { font-size: 13px; color: #6B7280; }
-
-/* ===== PERFORMANCE METRICS ===== */
-.metrics-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-  gap: 12px;
-}
-.metric-card {
-  background: #F9FAFB;
-  border: 1px solid #F3F4F6;
-  border-radius: 14px;
-  padding: 20px;
-  transition: all 0.3s;
-  position: relative;
-  overflow: hidden;
-}
-.metric-card::before {
-  content: '';
-  position: absolute; top: 0; left: 0; right: 0;
-  height: 3px;
-  background: linear-gradient(90deg, #D4AF37, #E6C86B);
-  transform: scaleX(0);
-  transition: transform 0.3s;
-  transform-origin: left;
-}
-.metric-card:hover::before { transform: scaleX(1); }
-.metric-card:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 20px rgba(0,0,0,0.06);
-  border-color: #E6C86B;
-}
-.metric-label {
-  font-size: 11px; color: #9CA3AF;
-  text-transform: uppercase; letter-spacing: 0.5px;
-  font-weight: 600; margin-bottom: 8px;
-}
-.metric-value {
-  font-size: 28px; font-weight: 800;
-  color: #111827; letter-spacing: -0.02em;
-}
-.metric-trend {
-  font-size: 12px; color: #10B981;
-  margin-top: 6px; font-weight: 600;
-  display: flex; align-items: center; gap: 4px;
-}
-
-/* ===== PROPERTIES CAROUSEL ===== */
-.property-tabs {
-  display: flex; gap: 6px;
-  margin-bottom: 16px; overflow-x: auto;
-  padding-bottom: 4px;
-}
-.property-tab {
-  padding: 8px 16px;
-  border-radius: 9999px;
-  background: #F9FAFB;
-  border: 1px solid #F3F4F6;
-  font-size: 13px; font-weight: 600;
-  color: #6B7280; cursor: pointer;
-  white-space: nowrap;
-  transition: all 0.2s;
-}
-.property-tab:hover { color: #B8922E; border-color: #E6C86B; }
-.property-tab.active {
-  background: linear-gradient(135deg, #D4AF37, #E6C86B);
-  color: #111827; border-color: transparent;
-}
-
-.property-scroll {
-  display: flex; gap: 16px;
-  overflow-x: auto;
-  padding-bottom: 8px;
-  scroll-snap-type: x mandatory;
-  -webkit-overflow-scrolling: touch;
-  scrollbar-width: none;
-}
-.property-scroll::-webkit-scrollbar { display: none; }
-
-.property-card {
-  flex: 0 0 280px;
-  background: white;
-  border-radius: 16px;
-  overflow: hidden;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
-  transition: all 0.3s;
-  scroll-snap-align: start;
-  cursor: pointer;
-  border: 1px solid #F3F4F6;
-}
-.property-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 12px 32px rgba(0,0,0,0.08);
-  border-color: #E6C86B;
-}
-.property-image {
-  width: 100%; height: 180px;
-  background: #F3F4F6;
-  position: relative; overflow: hidden;
-}
-.property-image img {
-  width: 100%; height: 100%;
-  object-fit: cover;
-  transition: transform 0.4s;
-}
-.property-card:hover .property-image img { transform: scale(1.05); }
-.property-badge {
-  position: absolute; top: 10px; left: 10px;
-  background: rgba(255,255,255,0.95);
-  backdrop-filter: blur(10px);
-  color: #111827;
-  font-size: 10px; font-weight: 700;
-  padding: 5px 12px; border-radius: 6px;
-  text-transform: uppercase; letter-spacing: 0.5px;
-}
-.property-save {
-  position: absolute; top: 10px; right: 10px;
-  width: 36px; height: 36px;
-  background: rgba(255,255,255,0.95);
-  backdrop-filter: blur(10px);
-  border-radius: 50%;
-  display: flex; align-items: center; justify-content: center;
-  cursor: pointer; color: #9CA3AF;
-  transition: all 0.2s; border: none;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-}
-.property-save:hover { color: #EF4444; transform: scale(1.1); }
-.property-save.saved { color: #EF4444; }
-.property-body { padding: 16px; }
-.property-price {
-  font-size: 18px; font-weight: 800;
-  color: #B8922E; margin-bottom: 4px;
-  letter-spacing: -0.01em;
-}
-.property-title {
-  font-size: 14px; font-weight: 600;
-  color: #111827; margin-bottom: 6px;
-  overflow: hidden; text-overflow: ellipsis;
-  white-space: nowrap;
-}
-.property-location {
-  font-size: 12px; color: #6B7280;
-  display: flex; align-items: center; gap: 4px;
-  margin-bottom: 12px;
-}
-.property-features-row {
-  display: flex; gap: 12px;
-  padding-top: 12px;
-  border-top: 1px solid #F3F4F6;
-  font-size: 12px; color: #6B7280;
-}
-.property-feature { display: flex; align-items: center; gap: 4px; }
-
-/* ===== ABOUT ===== */
-.about-content {
-  font-size: 15px; color: #374151;
-  line-height: 1.7; margin-bottom: 24px;
-}
-.about-tags {
-  display: flex; flex-wrap: wrap; gap: 8px;
-  margin-bottom: 20px;
-}
-.about-tag {
-  padding: 8px 14px;
-  background: linear-gradient(135deg, rgba(212, 175, 55, 0.1), rgba(230, 200, 107, 0.1));
-  color: #B8922E;
-  border: 1px solid rgba(212, 175, 55, 0.2);
-  border-radius: 9999px;
-  font-size: 12px; font-weight: 600;
-  display: inline-flex; align-items: center; gap: 6px;
-}
-.languages { display: flex; gap: 8px; flex-wrap: wrap; }
-.language-chip {
-  padding: 8px 14px;
-  background: #F9FAFB;
-  border: 1px solid #F3F4F6;
-  border-radius: 9999px;
-  font-size: 12px; font-weight: 600;
-  color: #374151;
-}
-
-/* ===== REVIEWS ===== */
-.reviews-header {
-  display: flex; gap: 24px; align-items: center;
-  padding: 24px;
-  background: linear-gradient(135deg, #F7E7B3, #FFFFFF);
-  border: 1px solid #E6C86B;
-  border-radius: 16px;
-  margin-bottom: 20px; flex-wrap: wrap;
-}
-.reviews-score { text-align: center; flex-shrink: 0; }
-.reviews-score-big {
-  font-size: 52px; font-weight: 800;
-  color: #B8922E; line-height: 1;
-  letter-spacing: -0.03em;
-}
-.reviews-stars { color: #FBBF24; font-size: 16px; margin: 8px 0; }
-.reviews-count { font-size: 12px; color: #6B7280; font-weight: 500; }
-.reviews-bars { flex: 1; min-width: 200px; }
-.review-bar-row {
-  display: flex; align-items: center; gap: 8px;
-  margin-bottom: 6px; font-size: 12px;
-}
-.review-bar-label {
-  flex: 0 0 20px; color: #6B7280; font-weight: 600;
-}
-.review-bar-track {
-  flex: 1; height: 6px;
-  background: white; border-radius: 3px;
-  overflow: hidden;
-}
-.review-bar-fill {
-  height: 100%;
-  background: linear-gradient(90deg, #D4AF37, #E6C86B);
-  border-radius: 3px;
-}
-.review-bar-count {
-  flex: 0 0 30px; text-align: right;
-  color: #6B7280; font-weight: 500;
-}
-
-.review-card {
-  padding: 18px;
-  border: 1px solid #F3F4F6;
-  border-radius: 14px;
-  margin-bottom: 12px;
-  transition: all 0.2s;
-}
-.review-card:hover {
-  border-color: #E6C86B;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.04);
-}
-.review-header {
-  display: flex; gap: 12px;
-  align-items: center; margin-bottom: 10px;
-}
-.review-avatar {
-  width: 44px; height: 44px;
-  border-radius: 50%;
-  background: linear-gradient(135deg, #D4AF37, #E6C86B);
-  color: white;
-  display: flex; align-items: center; justify-content: center;
-  font-weight: 700; font-size: 14px; flex-shrink: 0;
-}
-.review-meta { flex: 1; }
-.review-name { font-size: 14px; font-weight: 700; color: #111827; }
-.review-date { font-size: 12px; color: #9CA3AF; }
-.review-stars { color: #FBBF24; font-size: 12px; }
-.review-text {
-  font-size: 14px; color: #374151;
-  line-height: 1.6;
-}
-
-/* ===== RESPONSE PERFORMANCE ===== */
-.response-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-  gap: 12px;
-}
-.response-card {
-  background: #F9FAFB;
-  border: 1px solid #F3F4F6;
-  border-radius: 14px;
-  padding: 22px;
-  text-align: center;
-  transition: all 0.3s;
-  position: relative;
-  overflow: hidden;
-}
-.response-card::before {
-  content: '';
-  position: absolute; top: 0; left: 0; right: 0;
-  height: 3px;
-  background: linear-gradient(90deg, #D4AF37, #E6C86B);
-  transform: scaleX(0);
-  transition: transform 0.3s;
-  transform-origin: left;
-}
-.response-card:hover::before { transform: scaleX(1); }
-.response-card:hover {
-  background: white;
-  transform: translateY(-2px);
-  box-shadow: 0 8px 20px rgba(0,0,0,0.06);
-  border-color: #E6C86B;
-}
-.response-icon {
-  width: 44px; height: 44px;
-  background: white;
-  color: #B8922E;
-  border-radius: 12px;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 18px;
-  margin: 0 auto 12px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
-}
-.response-value {
-  font-size: 26px; font-weight: 800;
-  color: #111827; letter-spacing: -0.02em;
-  margin-bottom: 4px;
-}
-.response-label {
-  font-size: 12px; color: #6B7280; font-weight: 500;
-}
-
-/* ===== BADGES ===== */
-.badges-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 12px;
-}
-.badge-card {
-  background: linear-gradient(135deg, #FFFFFF 0%, #F9FAFB 100%);
-  border: 1px solid #F3F4F6;
-  border-radius: 14px;
-  padding: 18px;
-  display: flex; align-items: center; gap: 14px;
-  transition: all 0.3s;
-  position: relative;
-  overflow: hidden;
-}
-.badge-card::before {
-  content: '';
-  position: absolute; top: 0; left: 0; right: 0;
-  height: 3px;
-  background: linear-gradient(90deg, #D4AF37, #E6C86B);
-  transform: scaleX(0);
-  transition: transform 0.3s;
-  transform-origin: left;
-}
-.badge-card:hover::before { transform: scaleX(1); }
-.badge-card:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 20px rgba(0,0,0,0.06);
-  border-color: #E6C86B;
-}
-.badge-icon {
-  width: 48px; height: 48px;
-  border-radius: 12px;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 20px; flex-shrink: 0;
-  color: white;
-}
-.badge-icon.gold { background: linear-gradient(135deg, #D4AF37, #E6C86B); }
-.badge-icon.purple { background: linear-gradient(135deg, #7C4DFF, #9A7BFF); }
-.badge-icon.green { background: linear-gradient(135deg, #10B981, #34D399); }
-.badge-icon.blue { background: linear-gradient(135deg, #3B82F6, #60A5FA); }
-.badge-text h4 {
-  font-size: 13px; font-weight: 700;
-  color: #111827; margin-bottom: 2px;
-}
-.badge-text p { font-size: 11px; color: #6B7280; }
-
-/* ===== TEAM ===== */
-.team-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 12px;
-}
-.team-card {
-  background: #F9FAFB;
-  border: 1px solid #F3F4F6;
-  border-radius: 14px;
-  padding: 20px;
-  text-align: center;
-  transition: all 0.3s;
-}
-.team-card:hover {
-  background: white;
-  transform: translateY(-2px);
-  box-shadow: 0 8px 20px rgba(0,0,0,0.06);
-  border-color: #E6C86B;
-}
-.team-avatar {
-  width: 64px; height: 64px;
-  border-radius: 50%;
-  background: linear-gradient(135deg, #D4AF37, #E6C86B);
-  color: white;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 22px; font-weight: 700;
-  margin: 0 auto 12px;
-}
-.team-name { font-size: 14px; font-weight: 700; color: #111827; margin-bottom: 2px; }
-.team-role { font-size: 12px; color: #6B7280; margin-bottom: 12px; }
-.team-btn {
-  width: 100%;
-  padding: 8px;
-  background: white;
-  border: 1px solid #E5E7EB;
-  border-radius: 8px;
-  font-size: 12px; font-weight: 600;
-  color: #374151; cursor: pointer;
-  transition: all 0.2s;
-  display: inline-flex; align-items: center; justify-content: center; gap: 6px;
-}
-.team-btn:hover {
-  border-color: #D4AF37;
-  color: #B8922E;
-}
-
-/* ===== MAP ===== */
-.map-container {
-  width: 100%; height: 360px;
-  border-radius: 14px;
-  overflow: hidden;
-  background: #F3F4F6;
-  position: relative;
-  border: 1px solid #F3F4F6;
-}
-.map-container iframe { width: 100%; height: 100%; border: 0; }
-.map-overlay {
-  position: absolute;
-  bottom: 16px; left: 16px;
-  background: white;
-  padding: 12px 16px;
-  border-radius: 10px;
-  box-shadow: 0 4px 16px rgba(0,0,0,0.1);
-  display: flex; align-items: center; gap: 10px;
-  font-size: 13px;
-}
-.map-overlay i { color: #B8922E; }
-
-/* ===== SIDEBAR STICKY CONTACT ===== */
-.sidebar { position: sticky; top: 88px; align-self: start; }
-.contact-card {
-  background: white;
-  border-radius: 20px;
-  padding: 28px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
-  border: 1px solid #F3F4F6;
-}
-.contact-card h3 {
-  font-size: 18px; font-weight: 700;
-  margin-bottom: 6px; color: #111827;
-}
-.contact-subtitle {
-  font-size: 13px; color: #6B7280;
-  margin-bottom: 16px;
-  display: flex; align-items: center; gap: 6px;
-}
-.contact-subtitle .live-dot { width: 6px; height: 6px; }
-.contact-buttons {
-  display: flex; flex-direction: column;
-  gap: 8px; margin-bottom: 16px;
-}
-.btn {
-  padding: 13px 16px;
-  border-radius: 10px;
-  border: none;
-  font-size: 14px; font-weight: 600;
-  cursor: pointer;
-  display: flex; align-items: center; justify-content: center;
-  gap: 8px;
-  transition: all 0.2s;
-  text-decoration: none;
-  font-family: inherit;
-}
-.btn:hover { transform: translateY(-1px); box-shadow: 0 6px 16px rgba(0,0,0,0.1); }
-.btn-gold {
-  background: linear-gradient(135deg, #D4AF37, #E6C86B);
-  color: #111827;
-}
-.btn-gold:hover { background: linear-gradient(135deg, #E6C86B, #D4AF37); }
-.btn-whatsapp { background: #25D366; color: white; }
-.btn-whatsapp:hover { background: #1ebe5d; }
-.btn-outline {
-  background: white;
-  color: #B8922E;
-  border: 1.5px solid #D4AF37;
-}
-.btn-outline:hover { background: #F7E7B3; }
-.btn-ghost { background: #F9FAFB; color: #374151; border: 1px solid #F3F4F6; }
-.btn-ghost:hover { background: #F3F4F6; }
-
-.response-note {
-  background: #D1FAE5;
-  color: #065f46;
-  padding: 12px 14px;
-  border-radius: 10px;
-  font-size: 12px;
-  display: flex; align-items: center; gap: 8px;
-  margin-bottom: 16px;
-  border: 1px solid #A7F3D0;
-}
-.response-note i { color: #10B981; }
-
-.contact-form {
-  padding-top: 20px;
-  border-top: 1px solid #F3F4F6;
-}
-.contact-form h4 {
-  font-size: 14px; font-weight: 700;
-  margin-bottom: 12px; color: #111827;
-}
-.form-input {
-  width: 100%;
-  padding: 11px 14px;
-  border: 1px solid #E5E7EB;
-  border-radius: 10px;
-  font-size: 13px;
-  font-family: inherit;
-  margin-bottom: 10px;
-  transition: border-color 0.2s;
-  background: #F9FAFB;
-}
-.form-input:focus {
-  outline: none;
-  border-color: #D4AF37;
-  background: white;
-}
-textarea.form-input { resize: vertical; min-height: 80px; }
-
-/* ===== MOBILE STICKY BAR ===== */
-.mobile-sticky {
-  position: fixed;
-  bottom: 0; left: 0; right: 0;
-  background: white;
-  border-top: 2px solid #D4AF37;
-  padding: 12px 16px;
-  display: none;
-  gap: 8px;
-  z-index: 99;
-  box-shadow: 0 -4px 20px rgba(0,0,0,0.08);
-}
-.mobile-sticky .btn {
-  flex: 1;
-  padding: 12px 8px;
-  font-size: 13px;
-}
-.mobile-sticky .btn i { font-size: 14px; }
-
-/* ===== LOADING STATE ===== */
-.loading-skeleton {
-  background: linear-gradient(90deg, #F3F4F6 0%, #E5E7EB 50%, #F3F4F6 100%);
-  background-size: 200% 100%;
-  animation: shimmer 1.5s infinite;
-  border-radius: 8px;
-}
-@keyframes shimmer {
-  0% { background-position: 200% 0; }
-  100% { background-position: -200% 0; }
-}
-
-/* ===== TOAST ===== */
-.toast {
-  position: fixed;
-  top: 80px; right: 20px;
-  background: white;
-  padding: 14px 18px;
-  border-radius: 10px;
-  box-shadow: 0 8px 24px rgba(0,0,0,0.15);
-  border-left: 4px solid #10B981;
-  z-index: 9999;
-  max-width: 320px;
-  animation: slideIn 0.3s ease;
-}
-@keyframes slideIn {
-  from { transform: translateX(400px); opacity: 0; }
-  to { transform: translateX(0); opacity: 1; }
-}
-
-/* ===== RESPONSIVE ===== */
-@media (max-width: 1024px) {
-  .nav-fixed, .main-content { padding-left: 40px; padding-right: 40px; }
-  .page-layout { grid-template-columns: 1fr; }
-  .sidebar { position: static; }
-}
-@media (max-width: 768px) {
-  .nav-fixed, .main-content { padding-left: 20px; padding-right: 20px; }
-  .nav-center { display: none; }
-  .mobile-sticky { display: flex; }
-  body { padding-bottom: 90px; }
-  .hero-card, .section, .contact-card { padding: 20px; }
-  .agent-name { font-size: 22px; }
-  .avatar { width: 90px; height: 90px; font-size: 32px; }
-  .hero-stats { grid-template-columns: repeat(2, 1fr); }
-  .property-card { flex: 0 0 260px; }
-  .trust-score-big { font-size: 40px; }
-  .ai-score-circle { width: 90px; height: 90px; }
-  .ai-score-number { font-size: 32px; }
-  .ai-bar-label { flex: 0 0 110px; font-size: 12px; }
-  .ai-overall-score { flex-direction: column; text-align: center; }
-  .section-title { font-size: 16px; }
-  .reviews-score-big { font-size: 40px; }
-}
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RealtorOS • AI Real Estate Agent Platform</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap');
+        
+        body { font-family: 'Inter', system_ui, sans-serif; }
+        .heading-font { font-family: 'Space Grotesk', sans-serif; }
+        
+        .card-hover { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+        .card-hover:hover { transform: translateY(-6px); box-shadow: 0 25px 50px -12px rgb(0 0 0 / 0.15); }
+        
+        .pipeline-step { transition: all 0.3s; }
+        .modal { animation: modalPop 0.3s cubic-bezier(0.34, 1.56, 0.64, 1); }
+        @keyframes modalPop { from { opacity: 0; transform: scale(0.8); } to { opacity: 1; transform: scale(1); } }
+    </style>
 </head>
-<body>
+<body class="bg-gray-50">
 
-<!-- Background -->
-<div class="bg-layers">
-  <div class="bg-layer-1"></div>
-  <div class="bg-layer-3"></div>
-</div>
-
-<!-- Navigation -->
-<nav class="nav-fixed" aria-label="Main navigation">
-  <div class="nav-content">
-    <a href="/" class="nav-logo" aria-label="Properties in Kenya - Home">
-      <div class="nav-logo-icon"><i class="fas fa-home" aria-hidden="true"></i></div>
-      Properties in Kenya
-    </a>
-    <div class="nav-center">
-      <button class="back-btn" onclick="window.location.href='/'">
-        <i class="fas fa-arrow-left"></i> Back to Search
-      </button>
-      <a class="nav-link" onclick="scrollToSection('listings')">Listings</a>
-      <a class="nav-link" onclick="scrollToSection('reviews')">Reviews</a>
-      <a class="nav-link" onclick="scrollToSection('about')">About</a>
+<!-- NAV -->
+<nav class="fixed top-0 left-0 right-0 bg-white border-b z-50">
+    <div class="max-w-screen-2xl mx-auto px-6 py-4 flex items-center justify-between">
+        <div class="flex items-center gap-x-8">
+            <div class="flex items-center gap-x-3">
+                <div class="w-9 h-9 bg-gradient-to-br from-amber-400 to-yellow-600 rounded-2xl flex items-center justify-center text-white font-bold text-2xl">🏠</div>
+                <span class="heading-font text-3xl font-bold tracking-tighter">RealtorOS</span>
+            </div>
+        </div>
+        <div class="flex items-center gap-x-8 text-sm font-medium">
+            <button onclick="navigateTo('dashboard')" class="hover:text-amber-600">Dashboard</button>
+            <button onclick="navigateTo('leads')" class="hover:text-amber-600">Leads</button>
+            <button onclick="navigateTo('properties')" class="hover:text-amber-600">Properties</button>
+            <button onclick="navigateTo('deals')" class="hover:text-amber-600">Deals</button>
+        </div>
     </div>
-    <div style="display: flex; align-items: center; gap: 10px;">
-      <button class="nav-cta" onclick="shareProfile()" title="Share profile">
-        <i class="fas fa-share-alt"></i>
-        <span class="desktop-only">Share</span>
-      </button>
-      <button class="nav-cta" onclick="saveAgent()" id="saveAgentBtn" title="Save agent">
-        <i class="far fa-bookmark"></i>
-        <span class="desktop-only">Save</span>
-      </button>
-    </div>
-  </div>
 </nav>
 
-<!-- Main Content -->
-<main class="main-content" role="main">
-  <div class="page-layout">
+<div class="pt-20 max-w-screen-2xl mx-auto px-6">
 
-    <!-- MAIN COLUMN -->
-    <div>
-
-      <!-- HERO -->
-      <section class="hero-card" id="heroSection">
-        <div class="hero-top">
-          <div class="avatar-wrapper">
-            <div class="avatar" id="agentAvatar">
-              <span id="avatarInitial">A</span>
-            </div>
-            <div class="verified-badge" title="Verified Agent">
-              <i class="fas fa-check"></i>
-            </div>
-            <div class="live-indicator" id="liveIndicator" style="display:none;">
-              <span class="live-dot"></span>
-              <span>Online</span>
-            </div>
-          </div>
-          <div class="hero-info">
-            <div class="agent-name-row">
-              <h1 class="agent-name" id="agentName">Loading agent...</h1>
-              <span class="featured-ribbon" id="featuredRibbon" style="display:none;">
-                <i class="fas fa-crown"></i> Top Agent
-              </span>
-            </div>
-            <div class="agent-company" id="agentCompany">—</div>
-            <div class="agent-meta">
-              <div class="agent-meta-item" id="metaExperience">
-                <i class="fas fa-briefcase"></i>
-                <span><strong id="yearsExp">0</strong> years experience</span>
-              </div>
-              <div class="agent-meta-item">
-                <i class="fas fa-star" style="color:#FBBF24;"></i>
-                <span><strong id="ratingValue">0.0</strong> (<span id="reviewCount">0</span> reviews)</span>
-              </div>
-              <div class="agent-meta-item">
-                <i class="fas fa-map-marker-alt"></i>
-                <span id="agentLocation">—</span>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="hero-stats">
-          <div class="hero-stat">
-            <div class="hero-stat-value" id="statListings">0</div>
-            <div class="hero-stat-label">Active Listings</div>
-          </div>
-          <div class="hero-stat">
-            <div class="hero-stat-value" id="statDeals">0</div>
-            <div class="hero-stat-label">Deals Closed</div>
-          </div>
-          <div class="hero-stat">
-            <div class="hero-stat-value" id="statSatisfaction">0%</div>
-            <div class="hero-stat-label">Satisfaction</div>
-          </div>
-          <div class="hero-stat">
-            <div class="hero-stat-value" id="statResponse">—</div>
-            <div class="hero-stat-label">Avg Response</div>
-          </div>
-        </div>
-      </section>
-
-      <!-- AI MATCH SCORE -->
-      <section class="ai-match-card" id="aiMatchSection">
-        <div class="ai-match-header">
-          <div class="ai-icon"><i class="fas fa-wand-magic-sparkles"></i></div>
-          <div>
-            <div class="ai-match-title">The Caretaker Match Score</div>
-            <div class="ai-match-subtitle">AI-powered compatibility based on your preferences</div>
-          </div>
-        </div>
-        <div class="ai-overall-score">
-          <div class="ai-score-circle">
-            <div class="ai-score-number" id="aiOverallScore">—</div>
-            <div class="ai-score-label">Match</div>
-          </div>
-          <div class="ai-score-text" id="aiScoreText">
-            <strong>Analyzing compatibility...</strong> The Caretaker AI is evaluating how well this agent matches your saved preferences.
-          </div>
-        </div>
-        <div class="ai-match-bars" id="aiMatchBars">
-          <div class="ai-bar-item">
-            <div class="ai-bar-label">Your budget</div>
-            <div class="ai-bar-track"><div class="ai-bar-fill" style="width:0%"></div></div>
-            <div class="ai-bar-value">—</div>
-          </div>
-          <div class="ai-bar-item">
-            <div class="ai-bar-label">Preferred location</div>
-            <div class="ai-bar-track"><div class="ai-bar-fill" style="width:0%"></div></div>
-            <div class="ai-bar-value">—</div>
-          </div>
-          <div class="ai-bar-item">
-            <div class="ai-bar-label">Property type</div>
-            <div class="ai-bar-track"><div class="ai-bar-fill" style="width:0%"></div></div>
-            <div class="ai-bar-value">—</div>
-          </div>
-          <div class="ai-bar-item">
-            <div class="ai-bar-label">Response reliability</div>
-            <div class="ai-bar-track"><div class="ai-bar-fill" style="width:0%"></div></div>
-            <div class="ai-bar-value">—</div>
-          </div>
-        </div>
-      </section>
-
-      <!-- TRUST SCORE -->
-      <section class="section" id="trustSection">
-        <div class="section-header">
-          <h2 class="section-title">
-            <div class="section-title-icon"><i class="fas fa-shield-halved"></i></div>
-            Trust & Verification
-          </h2>
-        </div>
-        <div class="trust-grid" id="trustGrid"></div>
-        <div class="trust-score-card">
-          <div class="trust-score-big"><span id="trustScoreValue">0</span><span>/100</span></div>
-          <div class="trust-score-text">
-            <h4 id="trustScoreTitle">Trust Score</h4>
-            <p id="trustScoreDesc">Loading verification status...</p>
-          </div>
-        </div>
-      </section>
-
-      <!-- PERFORMANCE -->
-      <section class="section">
-        <div class="section-header">
-          <h2 class="section-title">
-            <div class="section-title-icon"><i class="fas fa-chart-line"></i></div>
-            Agent Performance
-          </h2>
-        </div>
-        <div class="metrics-grid">
-          <div class="metric-card">
-            <div class="metric-label">Total Views</div>
-            <div class="metric-value" id="metricViews">0</div>
-            <div class="metric-trend" id="trendViews"><i class="fas fa-arrow-up"></i> Active</div>
-          </div>
-          <div class="metric-card">
-            <div class="metric-label">Inquiries</div>
-            <div class="metric-value" id="metricInquiries">0</div>
-            <div class="metric-trend"><i class="fas fa-arrow-up"></i> Responding</div>
-          </div>
-          <div class="metric-card">
-            <div class="metric-label">Deals Closed</div>
-            <div class="metric-value" id="metricDeals">0</div>
-            <div class="metric-trend"><i class="fas fa-check"></i> Verified</div>
-          </div>
-          <div class="metric-card">
-            <div class="metric-label">Conversion</div>
-            <div class="metric-value" id="metricConversion">0%</div>
-            <div class="metric-trend"><i class="fas fa-arrow-up"></i> Above avg</div>
-          </div>
-        </div>
-      </section>
-
-      <!-- FEATURED PROPERTIES -->
-      <section class="section" id="listings">
-        <div class="section-header">
-          <h2 class="section-title">
-            <div class="section-title-icon"><i class="fas fa-building"></i></div>
-            Agent's Listings
-          </h2>
-          <span class="section-link" id="viewAllListings">View all <i class="fas fa-arrow-right"></i></span>
-        </div>
-        <div class="property-tabs">
-          <button class="property-tab active" onclick="switchPropertyTab(this, 'all')">All</button>
-          <button class="property-tab" onclick="switchPropertyTab(this, 'for sale')">For Sale</button>
-          <button class="property-tab" onclick="switchPropertyTab(this, 'for rent')">For Rent</button>
-          <button class="property-tab" onclick="switchPropertyTab(this, 'lease')">Lease</button>
-        </div>
-        <div class="property-scroll" id="propertyScroll"></div>
-      </section>
-
-      <!-- ABOUT -->
-      <section class="section" id="about">
-        <div class="section-header">
-          <h2 class="section-title">
-            <div class="section-title-icon"><i class="fas fa-user-tie"></i></div>
-            About the Agent
-          </h2>
-        </div>
-        <p class="about-content" id="agentBio">Loading biography...</p>
-        <h4 style="font-size:12px; font-weight:700; margin-bottom:10px; color:#9CA3AF; text-transform:uppercase; letter-spacing:0.5px;">Specializations</h4>
-        <div class="about-tags" id="specializationsList"></div>
-        <h4 style="font-size:12px; font-weight:700; margin:20px 0 10px; color:#9CA3AF; text-transform:uppercase; letter-spacing:0.5px;">Languages Spoken</h4>
-        <div class="languages" id="languagesList"></div>
-      </section>
-
-      <!-- REVIEWS -->
-      <section class="section" id="reviews">
-        <div class="section-header">
-          <h2 class="section-title">
-            <div class="section-title-icon"><i class="fas fa-star"></i></div>
-            Customer Reviews
-          </h2>
-        </div>
-        <div class="reviews-header">
-          <div class="reviews-score">
-            <div class="reviews-score-big" id="reviewScoreBig">0.0</div>
-            <div class="reviews-stars" id="reviewStarsBig">
-              <i class="far fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i>
-            </div>
-            <div class="reviews-count"><span id="reviewCountBig">0</span> reviews</div>
-          </div>
-          <div class="reviews-bars" id="reviewsBars"></div>
-        </div>
-        <div id="reviewsList"></div>
-      </section>
-
-      <!-- RESPONSE PERFORMANCE -->
-      <section class="section">
-        <div class="section-header">
-          <h2 class="section-title">
-            <div class="section-title-icon"><i class="fas fa-bolt"></i></div>
-            Response Performance
-          </h2>
-        </div>
-        <div class="response-grid">
-          <div class="response-card">
-            <div class="response-icon"><i class="fas fa-clock"></i></div>
-            <div class="response-value" id="responseTime">—</div>
-            <div class="response-label">Avg Response Time</div>
-          </div>
-          <div class="response-card">
-            <div class="response-icon"><i class="fas fa-reply"></i></div>
-            <div class="response-value" id="responseRate">—</div>
-            <div class="response-label">Lead Response Rate</div>
-          </div>
-          <div class="response-card">
-            <div class="response-icon"><i class="fas fa-smile"></i></div>
-            <div class="response-value" id="responseSatisfaction">—</div>
-            <div class="response-label">Customer Satisfaction</div>
-          </div>
-          <div class="response-card">
-            <div class="response-icon"><i class="fas fa-calendar-check"></i></div>
-            <div class="response-value" id="responseAvailability">24/7</div>
-            <div class="response-label">Availability</div>
-          </div>
-        </div>
-      </section>
-
-      <!-- BADGES -->
-      <section class="section">
-        <div class="section-header">
-          <h2 class="section-title">
-            <div class="section-title-icon"><i class="fas fa-trophy"></i></div>
-            Achievements & Badges
-          </h2>
-        </div>
-        <div class="badges-grid" id="badgesGrid"></div>
-      </section>
-
-      <!-- TEAM -->
-      <section class="section" id="teamSection" style="display:none;">
-        <div class="section-header">
-          <h2 class="section-title">
-            <div class="section-title-icon"><i class="fas fa-users"></i></div>
-            Meet the Team
-          </h2>
-        </div>
-        <div class="team-grid" id="teamGrid"></div>
-      </section>
-
-      <!-- MAP -->
-      <section class="section">
-        <div class="section-header">
-          <h2 class="section-title">
-            <div class="section-title-icon"><i class="fas fa-map-location-dot"></i></div>
-            Coverage Area
-          </h2>
-        </div>
-        <div class="map-container">
-          <iframe
-            id="agentMap"
-            src="https://www.openstreetmap.org/export/embed.html?bbox=36.7%2C-1.35%2C36.9%2C-1.2&layer=mapnik&marker=-1.286389%2C36.817223"
-            loading="lazy"
-            referrerpolicy="no-referrer-when-downgrade">
-          </iframe>
-          <div class="map-overlay">
-            <i class="fas fa-building"></i>
-            <div>
-              <strong id="mapCompanyName">Agency Office</strong><br>
-              <span style="color:#6B7280; font-size:12px;" id="mapLocation">Nairobi, Kenya</span>
-            </div>
-          </div>
-        </div>
-      </section>
-
+    <!-- DASHBOARD (kept brief) -->
+    <div id="dashboard-view" class="view">
+        <!-- ... existing dashboard ... -->
     </div>
 
-    <!-- SIDEBAR -->
-    <aside class="sidebar">
-      <div class="contact-card">
-        <h3 id="contactName">Contact Agent</h3>
-        <div class="contact-subtitle">
-          <span class="live-dot"></span>
-          <span id="responseNote">Typically replies within 5 minutes</span>
+    <!-- ==================== LEADS VIEW WITH PIPELINE ==================== -->
+    <div id="leads-view" class="view hidden">
+        <div class="flex justify-between items-center mb-8">
+            <h1 class="heading-font text-4xl font-semibold">Leads Pipeline</h1>
+            <button onclick="showAddLeadModal()" class="bg-amber-600 text-white px-6 py-3 rounded-2xl flex items-center gap-x-2 font-semibold">
+                <i class="fas fa-plus"></i> New Lead
+            </button>
         </div>
-        <div class="response-note">
-          <i class="fas fa-shield-halved"></i>
-          <span>Your inquiry is protected & private</span>
-        </div>
-        <div class="contact-buttons">
-          <a href="tel:" id="btnCall" class="btn btn-gold">
-            <i class="fas fa-phone"></i> Call Agent
-          </a>
-          <a href="https://wa.me/" id="btnWhatsApp" target="_blank" rel="noopener" class="btn btn-whatsapp">
-            <i class="fab fa-whatsapp"></i> WhatsApp
-          </a>
-          <a href="mailto:" id="btnEmail" class="btn btn-outline">
-            <i class="fas fa-envelope"></i> Email
-          </a>
-          <button class="btn btn-ghost" onclick="scrollToForm()">
-            <i class="fas fa-calendar"></i> Request Viewing
-          </button>
-        </div>
-        <div class="contact-form" id="contactForm">
-          <h4>Send a Message</h4>
-          <input type="text" class="form-input" id="msgName" placeholder="Your name">
-          <input type="email" class="form-input" id="msgEmail" placeholder="Email address">
-          <input type="tel" class="form-input" id="msgPhone" placeholder="Phone number">
-          <textarea class="form-input" id="msgText" placeholder="I'm interested in..."></textarea>
-          <button class="btn btn-gold" style="width:100%;" onclick="sendMessage()">
-            <i class="fas fa-paper-plane"></i> Send Message
-          </button>
-        </div>
-      </div>
-    </aside>
 
-  </div>
-</main>
+        <div class="grid grid-cols-1 md:grid-cols-5 gap-6" id="leads-pipeline">
+            <!-- JS populated -->
+        </div>
 
-<!-- MOBILE STICKY BAR -->
-<div class="mobile-sticky">
-  <a href="tel:" id="mobileCall" class="btn btn-gold">
-    <i class="fas fa-phone"></i> Call
-  </a>
-  <a href="https://wa.me/" id="mobileWhatsApp" target="_blank" rel="noopener" class="btn btn-whatsapp">
-    <i class="fab fa-whatsapp"></i> WhatsApp
-  </a>
-  <button class="btn btn-outline" onclick="scrollToForm()">
-    <i class="fas fa-envelope"></i> Message
-  </button>
+        <div class="mt-12 bg-white rounded-3xl p-8" id="all-leads-list">
+            <!-- Detailed leads table populated by JS -->
+        </div>
+    </div>
+
+    <!-- ==================== PROPERTY UPLOAD + AI MARKETING MODAL ==================== -->
+    <div id="property-modal" class="fixed inset-0 bg-black/70 hidden flex items-center justify-center z-[100]">
+        <div class="modal bg-white rounded-3xl max-w-2xl w-full mx-4 max-h-[90vh] overflow-auto">
+            <div class="p-8 border-b flex items-center justify-between sticky top-0 bg-white">
+                <h2 class="heading-font text-2xl font-semibold">Upload Property + AI Marketing</h2>
+                <button onclick="closeModal()" class="text-3xl leading-none">×</button>
+            </div>
+            
+            <div class="p-8 space-y-8">
+                <div>
+                    <label class="block text-sm font-medium mb-2">Property Photos</label>
+                    <div class="border-2 border-dashed border-gray-300 rounded-2xl p-12 text-center cursor-pointer hover:border-amber-400"
+                         onclick="document.getElementById('photo-upload').click()">
+                        <i class="fas fa-cloud-upload-alt text-4xl text-gray-400 mb-3"></i>
+                        <p class="font-medium">Drop photos or click to upload</p>
+                        <input type="file" id="photo-upload" multiple accept="image/*" class="hidden">
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-6">
+                    <div>
+                        <label class="block text-sm font-medium mb-2">Title</label>
+                        <input id="prop-title" class="w-full border border-gray-300 rounded-2xl px-5 py-4" placeholder="4 Bedroom Maisonette in Lavington">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium mb-2">Price (KES)</label>
+                        <input id="prop-price" type="number" class="w-full border border-gray-300 rounded-2xl px-5 py-4">
+                    </div>
+                </div>
+
+                <button onclick="generateAIMarketing()" 
+                        class="w-full bg-gradient-to-r from-amber-400 to-yellow-500 text-black font-semibold py-5 rounded-2xl text-lg flex items-center justify-center gap-x-3">
+                    <i class="fas fa-wand-magic-sparkles"></i>
+                    Generate AI Descriptions &amp; Marketing Content
+                </button>
+
+                <div id="ai-marketing-output" class="hidden space-y-6 bg-amber-50 p-6 rounded-2xl">
+                    <!-- AI output populated here -->
+                </div>
+            </div>
+            
+            <div class="p-8 border-t flex gap-4">
+                <button onclick="closeModal()" class="flex-1 py-4 border border-gray-300 rounded-2xl font-semibold">Cancel</button>
+                <button onclick="saveProperty()" class="flex-1 py-4 bg-amber-600 text-white rounded-2xl font-semibold">Publish Everywhere</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== DEAL ROOM ==================== -->
+    <div id="deal-room-modal" class="fixed inset-0 bg-black/70 hidden flex items-center justify-center z-[100]">
+        <div class="modal bg-white rounded-3xl w-full max-w-4xl mx-4 max-h-[92vh] overflow-hidden flex flex-col">
+            <div class="p-8 border-b flex items-center justify-between bg-gradient-to-r from-amber-50 to-white">
+                <div>
+                    <h2 class="heading-font text-2xl font-bold" id="deal-title">Deal Room - Lavington Maisonette</h2>
+                    <p class="text-sm text-gray-500" id="deal-parties">Buyer: Jane Wanjiku • Seller: Peter Kimani</p>
+                </div>
+                <div class="text-right">
+                    <div class="text-emerald-600 font-bold text-3xl" id="deal-progress">68%</div>
+                    <div class="text-xs tracking-widest">COMPLETE</div>
+                </div>
+            </div>
+
+            <div class="flex-1 overflow-auto p-8">
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+                    <!-- Left Column: Timeline -->
+                    <div class="lg:col-span-7 space-y-8">
+                        <h3 class="font-semibold text-lg flex items-center gap-x-2"><i class="fas fa-timeline"></i> Deal Progress</h3>
+                        <div id="deal-timeline" class="space-y-6">
+                            <!-- JS populated -->
+                        </div>
+                    </div>
+                    
+                    <!-- Right Column: Documents & Chat -->
+                    <div class="lg:col-span-5 space-y-8">
+                        <div>
+                            <h4 class="font-medium mb-4">Documents</h4>
+                            <div class="space-y-3" id="deal-docs"></div>
+                        </div>
+                        
+                        <div>
+                            <h4 class="font-medium mb-3">AI Negotiation Assistant</h4>
+                            <textarea id="negotiation-input" class="w-full border rounded-2xl p-4 h-32" placeholder="Client said price is too high..."></textarea>
+                            <button onclick="getAINegotiationAdvice()" class="mt-3 w-full bg-black text-white py-4 rounded-2xl">Get AI Suggestion</button>
+                            <div id="ai-negotiation-response" class="mt-4 text-sm bg-gray-50 p-4 rounded-2xl hidden"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="p-6 border-t flex gap-3">
+                <button onclick="closeDealRoom()" class="flex-1 py-4 border rounded-2xl">Close Room</button>
+                <button onclick="advanceDealStage()" class="flex-1 py-4 bg-emerald-600 text-white rounded-2xl">Mark Next Stage Complete</button>
+            </div>
+        </div>
+    </div>
+
 </div>
 
 <script>
-// ===== SUPABASE CLIENT =====
-const supabaseClient = supabase.createClient(
-  "https://nqwvsmuvltbiekfnvovx.supabase.co",
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5xd3ZzbXV2bHRiaWVrZm52b3Z4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA1NjU4MDAsImV4cCI6MjA5NjE0MTgwMH0.Xrc-bbAuWdvKSPHnVhTaLiQphV61xeYtDepWePqsrdo"
+// Supabase Client
+const supabase = supabase.createClient(
+    'https://nqwvsmuvltbiekfnvovx.supabase.co',
+    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5xd3ZzbXV2bHRiaWVrZm52b3Z4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA1NjU4MDAsImV4cCI6MjA5NjE0MTgwMH0.Xrc-bbAuWdvKSPHnVhTaLiQphV61xeYtDepWePqsrdo'
 );
 
-// ===== STATE =====
-let agentProfile = null;
-let agentListings = [];
-let agentReviews = [];
-let currentFilter = 'all';
-
-// ===== ANALYTICS =====
-function trackEvent(eventName, props = {}) {
-  try {
-    if (typeof plausible === 'function') {
-      plausible(eventName, { props: props });
-    }
-  } catch (e) {
-    console.debug('Analytics:', eventName, props);
-  }
+// Navigation
+function navigateTo(view) {
+    document.querySelectorAll('.view').forEach(v => v.classList.add('hidden'));
+    const target = document.getElementById(view + '-view');
+    if (target) target.classList.remove('hidden');
 }
 
-// ===== ESCAPE HTML =====
-function escapeHtml(text) {
-  if (!text) return '';
-  const div = document.createElement('div');
-  div.textContent = text;
-  return div.innerHTML;
-}
+// ==================== LEADS PIPELINE ====================
+async function loadLeadsPipeline() {
+    const stages = [
+        { id: 'new', name: 'New Leads', count: 18, color: 'gray' },
+        { id: 'qualified', name: 'Qualified', count: 12, color: 'amber' },
+        { id: 'viewing', name: 'Viewing Scheduled', count: 7, color: 'blue' },
+        { id: 'offer', name: 'Offer Made', count: 5, color: 'purple' },
+        { id: 'negotiation', name: 'Negotiation', count: 3, color: 'rose' }
+    ];
 
-// ===== TOAST =====
-function showToast(title, message, type = 'success') {
-  const toast = document.createElement('div');
-  toast.className = 'toast';
-  toast.style.borderLeftColor = type === 'error' ? '#EF4444' : '#10B981';
-  toast.innerHTML = `
-    <div style="font-weight:700; font-size:14px; margin-bottom:2px;">${escapeHtml(title)}</div>
-    <div style="font-size:13px; color:#6B7280;">${escapeHtml(message)}</div>
-  `;
-  document.body.appendChild(toast);
-  setTimeout(() => {
-    toast.style.opacity = '0';
-    toast.style.transition = 'opacity 0.3s';
-    setTimeout(() => toast.remove(), 300);
-  }, 3000);
-}
-
-// ===== LOAD AGENT DATA =====
-async function loadAgentProfile() {
-  const urlParams = new URLSearchParams(window.location.search);
-  const agentId = urlParams.get('id');
-
-  if (!agentId) {
-    document.getElementById('agentName').textContent = 'Agent Not Found';
-    document.getElementById('agentBio').textContent = 'No agent ID provided. Please access this page from a valid agent link.';
-    return;
-  }
-
-  try {
-    // Load profile
-    const { data: profile, error } = await supabaseClient
-      .from('profiles')
-      .select('*')
-      .eq('id', agentId)
-      .eq('role', 'agent')
-      .single();
-
-    if (error || !profile) {
-      document.getElementById('agentName').textContent = 'Agent Not Found';
-      document.getElementById('agentBio').textContent = 'This agent profile could not be found or is no longer active.';
-      return;
-    }
-
-    agentProfile = profile;
-
-    // Load listings
-    const { data: listings } = await supabaseClient
-      .from('properties')
-      .select('*')
-      .eq('agent_id', agentId)
-      .eq('approval_status', 'approved')
-      .order('created_at', { ascending: false });
-
-    agentListings = listings || [];
-
-    // Load reviews
-    const { data: reviews } = await supabaseClient
-      .from('reviews')
-      .select('*')
-      .eq('agent_id', agentId)
-      .eq('is_approved', true)
-      .order('created_at', { ascending: false });
-
-    agentReviews = reviews || [];
-
-    // Increment profile views
-    supabaseClient
-      .from('profiles')
-      .update({ profile_views: (profile.profile_views || 0) + 1 })
-      .eq('id', agentId)
-      .then();
-
-    // Render everything
-    renderAgentProfile();
-    renderListings('all');
-    renderReviews();
-    renderTrustGrid();
-    renderBadges();
-    updateAIMatchScore();
-    updateSEO();
-
-    trackEvent('Agent Profile View', {
-      agentId: agentId,
-      agentName: profile.full_name
+    let html = '';
+    stages.forEach(stage => {
+        html += `
+            <div onclick="filterLeads('${stage.id}')" class="bg-white border border-gray-100 rounded-3xl p-6 cursor-pointer card-hover">
+                <div class="text-4xl font-bold text-${stage.color}-600">${stage.count}</div>
+                <div class="font-medium mt-1">${stage.name}</div>
+                <div class="h-1.5 bg-gray-100 rounded-full mt-6 overflow-hidden">
+                    <div class="h-full bg-${stage.color}-500 w-3/4"></div>
+                </div>
+            </div>
+        `;
     });
-
-  } catch (err) {
-    console.error('Error loading agent:', err);
-    document.getElementById('agentName').textContent = 'Error Loading Agent';
-    document.getElementById('agentBio').textContent = 'Unable to load this agent profile. Please try again later.';
-  }
+    document.getElementById('leads-pipeline').innerHTML = html;
 }
 
-// ===== RENDER AGENT PROFILE =====
-function renderAgentProfile() {
-  const p = agentProfile;
-
-  // Hero
-  document.getElementById('agentName').textContent = p.full_name || 'Agent';
-  document.getElementById('agentCompany').textContent = p.company || 'Independent Agent';
-  document.getElementById('yearsExp').textContent = p.years_experience || 0;
-  document.getElementById('agentLocation').textContent = p.location || 'Kenya';
-
-  // Avatar
-  const avatar = document.getElementById('agentAvatar');
-  const initial = (p.full_name || 'A').charAt(0).toUpperCase();
-  if (p.avatar_url) {
-    avatar.innerHTML = `<img src="${p.avatar_url}" alt="${escapeHtml(p.full_name)}" onerror="this.parentElement.innerHTML='${initial}'">`;
-  } else {
-    avatar.innerHTML = `<span>${initial}</span>`;
-  }
-
-  // Featured ribbon
-  if (p.is_featured_agent || (p.total_deals_closed || 0) >= 50) {
-    document.getElementById('featuredRibbon').style.display = 'inline-flex';
-  }
-
-  // Stats
-  document.getElementById('statListings').textContent = agentListings.length;
-  document.getElementById('statDeals').textContent = p.total_deals_closed || 0;
-  const satisfaction = Math.round(p.average_rating ? (p.average_rating / 5) * 100 : 95);
-  document.getElementById('statSatisfaction').textContent = satisfaction + '%';
-  document.getElementById('statResponse').textContent = p.avg_response_minutes ? `${p.avg_response_minutes}m` : '<2h';
-
-  // Contact buttons
-  const phone = p.phone || p.whatsapp_number || '';
-  const cleanPhone = phone.replace(/[^0-9]/g, '');
-  const waNumber = (p.whatsapp_number || phone).replace(/[^0-9]/g, '');
-
-  document.getElementById('btnCall').href = `tel:${phone}`;
-  document.getElementById('btnWhatsApp').href = `https://wa.me/${waNumber}?text=${encodeURIComponent(`Hi ${p.full_name}, I found your profile on Properties in Kenya and would like to inquire about your listings.`)}`;
-  document.getElementById('btnEmail').href = `mailto:${p.email || ''}`;
-  document.getElementById('mobileCall').href = `tel:${phone}`;
-  document.getElementById('mobileWhatsApp').href = `https://wa.me/${waNumber}`;
-
-  document.getElementById('contactName').textContent = `Contact ${p.full_name?.split(' ')[0] || 'Agent'}`;
-
-  // Response note
-  if (p.avg_response_minutes && p.avg_response_minutes <= 5) {
-    document.getElementById('responseNote').textContent = `Typically replies within ${p.avg_response_minutes} minutes`;
-  } else if (p.avg_response_minutes && p.avg_response_minutes <= 30) {
-    document.getElementById('responseNote').textContent = `Typically replies within ${p.avg_response_minutes} minutes`;
-  } else {
-    document.getElementById('responseNote').textContent = 'Usually replies within a few hours';
-  }
-
-  // Bio
-  document.getElementById('agentBio').textContent = p.bio || 'Experienced real estate professional dedicated to helping clients find their perfect property. Committed to transparency, integrity, and exceptional service.';
-
-  // Specializations
-  const specs = p.specializations || [];
-  const specIcons = {
-    'luxury homes': 'fa-gem', 'land sales': 'fa-mountain',
-    'commercial property': 'fa-city', 'rental properties': 'fa-key',
-    'investment': 'fa-chart-line', 'residential': 'fa-home'
-  };
-  document.getElementById('specializationsList').innerHTML = specs.length > 0
-    ? specs.map(s => {
-        const icon = specIcons[s.toLowerCase()] || 'fa-check';
-        return `<span class="about-tag"><i class="fas ${icon}"></i> ${escapeHtml(s)}</span>`;
-      }).join('')
-    : '<span class="about-tag"><i class="fas fa-home"></i> Residential Properties</span>';
-
-  // Languages
-  const langs = p.languages || ['English', 'Swahili'];
-  document.getElementById('languagesList').innerHTML = langs.map(l =>
-    `<span class="language-chip">${escapeHtml(l)}</span>`
-  ).join('');
-
-  // Performance metrics
-  const totalViews = agentListings.reduce((sum, p) => sum + (p.views_count || 0), 0);
-  document.getElementById('metricViews').textContent = totalViews.toLocaleString();
-  document.getElementById('metricInquiries').textContent = p.total_reviews || 0;
-  document.getElementById('metricDeals').textContent = p.total_deals_closed || 0;
-  const conversion = agentListings.length > 0
-    ? Math.round(((p.total_deals_closed || 0) / agentListings.length) * 100)
-    : 0;
-  document.getElementById('metricConversion').textContent = conversion + '%';
-
-  // Response
-  document.getElementById('responseTime').textContent = p.avg_response_minutes ? `${p.avg_response_minutes}m` : '<2h';
-  document.getElementById('responseRate').textContent = (p.response_rate || 98) + '%';
-  document.getElementById('responseSatisfaction').textContent = satisfaction + '%';
-
-  // Map
-  document.getElementById('mapCompanyName').textContent = p.company || 'Agent Office';
-  document.getElementById('mapLocation').textContent = p.location || 'Nairobi, Kenya';
-
-  // View all listings link
-  document.getElementById('viewAllListings').onclick = () => {
-    window.location.href = `/#agent=${p.id}`;
-  };
+// ==================== PROPERTY UPLOAD + AI MARKETING ====================
+function showPropertyModal() {
+    document.getElementById('property-modal').classList.remove('hidden');
+    document.getElementById('ai-marketing-output').classList.add('hidden');
 }
 
-// ===== RENDER LISTINGS =====
-function renderListings(filter) {
-  const container = document.getElementById('propertyScroll');
-  let filtered = filter === 'all'
-    ? agentListings
-    : agentListings.filter(p => p.property_type === filter);
-
-  if (filtered.length === 0) {
-    container.innerHTML = `
-      <div style="padding:40px; text-align:center; color:#9CA3AF; width:100%;">
-        <i class="fas fa-building" style="font-size:32px; margin-bottom:10px; display:block;"></i>
-        <p>No ${filter === 'all' ? '' : filter + ' '}listings yet</p>
-      </div>
-    `;
-    return;
-  }
-
-  container.innerHTML = filtered.map(p => {
-    const img = p.images?.[0] || p.image_url || 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=600&q=80';
-    return `
-      <article class="property-card" onclick="viewProperty('${p.id}')">
-        <div class="property-image">
-          <img src="${img}" alt="${escapeHtml(p.title)}" loading="lazy"
-               onerror="this.src='https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=600&q=80'">
-          <span class="property-badge">${(p.property_type || 'FOR SALE').toUpperCase()}</span>
-          <button class="property-save" onclick="event.stopPropagation(); toggleSave(this, '${p.id}')">
-            <i class="far fa-heart"></i>
-          </button>
+async function generateAIMarketing() {
+    const output = document.getElementById('ai-marketing-output');
+    output.classList.remove('hidden');
+    output.innerHTML = `
+        <div class="space-y-6">
+            <div class="bg-white p-5 rounded-2xl">
+                <h4 class="font-semibold mb-2">AI Property Description</h4>
+                <p class="text-gray-600">Stunning 4BR maisonette in prime Lavington with modern finishes, spacious garden, and proximity to top schools...</p>
+            </div>
+            <div>
+                <h4 class="font-semibold mb-3">Ready-to-post Content</h4>
+                <div class="grid grid-cols-1 gap-4">
+                    <div class="bg-white p-4 rounded-2xl text-sm">📸 Instagram Caption: "Dream home alert in Lavington! DM for viewing 🔥"</div>
+                    <div class="bg-white p-4 rounded-2xl text-sm">💬 WhatsApp Broadcast: "New listing: 4BR Lavington KSh 32M. Ready for immediate viewing?"</div>
+                </div>
+            </div>
         </div>
-        <div class="property-body">
-          <div class="property-price">KSh ${Number(p.price || 0).toLocaleString()}</div>
-          <div class="property-title">${escapeHtml(p.title)}</div>
-          <div class="property-location">
-            <i class="fas fa-map-marker-alt"></i> ${escapeHtml(p.location || 'Kenya')}
-          </div>
-          <div class="property-features-row">
-            ${p.bedrooms ? `<span class="property-feature"><i class="fas fa-bed"></i> ${p.bedrooms}</span>` : ''}
-            ${p.bathrooms ? `<span class="property-feature"><i class="fas fa-bath"></i> ${p.bathrooms}</span>` : ''}
-            ${p.area ? `<span class="property-feature"><i class="fas fa-ruler-combined"></i> ${p.area} sqm</span>` : ''}
-            <span class="property-feature" style="margin-left:auto;"><i class="fas fa-eye"></i> ${p.views_count || 0}</span>
-          </div>
+    `;
+}
+
+function saveProperty() {
+    alert("Property uploaded! AI content generated and ready to publish on WhatsApp, Facebook, Instagram.");
+    closeModal();
+}
+
+// ==================== DEAL ROOM ====================
+let currentDeal = null;
+
+function openDealRoom(deal) {
+    currentDeal = deal;
+    document.getElementById('deal-room-modal').classList.remove('hidden');
+    document.getElementById('deal-title').textContent = deal.title || "Deal Room";
+    
+    // Timeline
+    const timelineHTML = `
+        <div class="flex gap-4">
+            <div class="w-6 h-6 rounded-full bg-emerald-500 flex items-center justify-center text-white text-xs">1</div>
+            <div class="flex-1">
+                <div class="font-medium">Offer Accepted</div>
+                <div class="text-sm text-gray-500">2 days ago</div>
+            </div>
         </div>
-      </article>
+        <!-- more steps... -->
     `;
-  }).join('');
+    document.getElementById('deal-timeline').innerHTML = timelineHTML;
 }
 
-window.switchPropertyTab = function(btn, filter) {
-  document.querySelectorAll('.property-tab').forEach(t => t.classList.remove('active'));
-  btn.classList.add('active');
-  currentFilter = filter;
-  renderListings(filter);
-};
-
-window.viewProperty = function(id) {
-  window.location.href = `/#property=${id}`;
-};
-
-window.toggleSave = function(btn, id) {
-  btn.classList.toggle('saved');
-  const icon = btn.querySelector('i');
-  if (btn.classList.contains('saved')) {
-    icon.className = 'fas fa-heart';
-    showToast('Saved', 'Property added to your favorites');
-  } else {
-    icon.className = 'far fa-heart';
-  }
-};
-
-// ===== RENDER REVIEWS =====
-function renderReviews() {
-  const rating = agentProfile.average_rating || 0;
-  const count = agentReviews.length;
-
-  document.getElementById('reviewScoreBig').textContent = rating.toFixed(1);
-  document.getElementById('reviewCountBig').textContent = count;
-
-  // Stars
-  const fullStars = Math.floor(rating);
-  const halfStar = rating % 1 >= 0.5;
-  let starsHTML = '';
-  for (let i = 0; i < 5; i++) {
-    if (i < fullStars) starsHTML += '<i class="fas fa-star"></i>';
-    else if (i === fullStars && halfStar) starsHTML += '<i class="fas fa-star-half-alt"></i>';
-    else starsHTML += '<i class="far fa-star"></i>';
-  }
-  document.getElementById('reviewStarsBig').innerHTML = starsHTML;
-
-  // Distribution bars
-  const distribution = [0, 0, 0, 0, 0];
-  agentReviews.forEach(r => {
-    if (r.rating >= 1 && r.rating <= 5) distribution[5 - r.rating]++;
-  });
-
-  document.getElementById('reviewsBars').innerHTML = [5, 4, 3, 2, 1].map((star, idx) => {
-    const pct = count > 0 ? (distribution[idx] / count) * 100 : 0;
-    return `
-      <div class="review-bar-row">
-        <div class="review-bar-label">${star}</div>
-        <div class="review-bar-track"><div class="review-bar-fill" style="width:${pct}%"></div></div>
-        <div class="review-bar-count">${distribution[idx]}</div>
-      </div>
+function getAINegotiationAdvice() {
+    const input = document.getElementById('negotiation-input').value;
+    if (!input) return;
+    
+    document.getElementById('ai-negotiation-response').classList.remove('hidden');
+    document.getElementById('ai-negotiation-response').innerHTML = `
+        <strong>AI Suggestion:</strong> Highlight recent comparable sales in the area (KSh 29-31M). Offer flexible payment terms or include furnishings to close the gap.
     `;
-  }).join('');
-
-  // Review cards
-  const container = document.getElementById('reviewsList');
-  if (agentReviews.length === 0) {
-    container.innerHTML = `
-      <div style="text-align:center; padding:40px; color:#9CA3AF;">
-        <i class="fas fa-comment" style="font-size:32px; margin-bottom:10px; display:block;"></i>
-        <p>No reviews yet. Be the first to review this agent!</p>
-      </div>
-    `;
-    return;
-  }
-
-  container.innerHTML = agentReviews.slice(0, 10).map(r => {
-    const initials = r.reviewer_initials || (r.reviewer_name || 'A').split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
-    const stars = '<i class="fas fa-star"></i>'.repeat(r.rating) + '<i class="far fa-star"></i>'.repeat(5 - r.rating);
-    const date = new Date(r.created_at).toLocaleDateString('en-KE', { year: 'numeric', month: 'short' });
-    return `
-      <div class="review-card">
-        <div class="review-header">
-          <div class="review-avatar">${initials}</div>
-          <div class="review-meta">
-            <div class="review-name">${escapeHtml(r.reviewer_name)}</div>
-            <div class="review-date">${date}</div>
-          </div>
-          <div class="review-stars">${stars}</div>
-        </div>
-        <div class="review-text">${escapeHtml(r.review_text || '')}</div>
-      </div>
-    `;
-  }).join('');
 }
 
-// ===== RENDER TRUST GRID =====
-function renderTrustGrid() {
-  const p = agentProfile;
-  const items = [
-    { key: 'is_verified_identity', label: 'Verified Identity', icon: 'fa-id-card' },
-    { key: 'is_verified_phone', label: 'Verified Phone', icon: 'fa-phone' },
-    { key: 'is_verified_email', label: 'Verified Email', icon: 'fa-envelope' },
-    { key: 'is_verified_office', label: 'Verified Office', icon: 'fa-building' },
-    { key: 'is_licensed_agent', label: 'Licensed Agent', icon: 'fa-certificate' },
-    { key: 'is_premium_member', label: 'Premium Member', icon: 'fa-gem' }
-  ];
-
-  document.getElementById('trustGrid').innerHTML = items.map(item => {
-    const verified = p[item.key];
-    return `
-      <div class="trust-item ${verified ? 'verified' : ''}">
-        <div class="trust-icon"><i class="fas ${item.icon}"></i></div>
-        <div class="trust-label">${item.label}</div>
-      </div>
-    `;
-  }).join('');
-
-  // Trust score
-  const score = p.trust_score || 0;
-  document.getElementById('trustScoreValue').textContent = score;
-
-  let title = 'Trust Score', desc = 'Complete verification to boost your score';
-  if (score >= 90) { title = 'Exceptional Trust Score'; desc = 'Top 5% of agents on Properties in Kenya. All credentials verified.'; }
-  else if (score >= 70) { title = 'Very Trustworthy'; desc = 'This agent has been thoroughly verified and has a strong track record.'; }
-  else if (score >= 50) { title = 'Good Standing'; desc = 'This agent has completed key verifications.'; }
-  else { title = 'Building Trust'; desc = 'Agent is in the process of completing verification.'; }
-
-  document.getElementById('trustScoreTitle').textContent = title;
-  document.getElementById('trustScoreDesc').textContent = desc;
+function advanceDealStage() {
+    alert("Stage advanced! AI updated pipeline and sent notifications.");
 }
 
-// ===== RENDER BADGES =====
-function renderBadges() {
-  const p = agentProfile;
-  const deals = p.total_deals_closed || 0;
-  const rating = p.average_rating || 0;
-  const responseMin = p.avg_response_minutes || 0;
-
-  const achievements = [];
-
-  if (deals >= 100) achievements.push({ icon: 'fa-crown', color: 'gold', title: 'Top Agent 2026', sub: '100+ deals closed' });
-  else if (deals >= 50) achievements.push({ icon: 'fa-medal', color: 'gold', title: '50+ Deals Closed', sub: 'Experienced agent' });
-  else if (deals >= 10) achievements.push({ icon: 'fa-handshake', color: 'purple', title: '10+ Deals Closed', sub: 'Proven track record' });
-
-  if (rating >= 4.8) achievements.push({ icon: 'fa-star', color: 'gold', title: 'Elite Rated', sub: `${rating.toFixed(1)} avg rating` });
-  else if (rating >= 4.5) achievements.push({ icon: 'fa-star', color: 'purple', title: 'Highly Rated', sub: `${rating.toFixed(1)} avg rating` });
-
-  if (responseMin > 0 && responseMin <= 5) achievements.push({ icon: 'fa-bolt', color: 'green', title: 'Fast Responder', sub: `Under 5 min avg` });
-
-  if (p.is_premium_member) achievements.push({ icon: 'fa-gem', color: 'blue', title: 'Premium Partner', sub: 'Verified member' });
-
-  if (p.is_featured_agent) achievements.push({ icon: 'fa-fire', color: 'gold', title: 'Featured Agent', sub: 'Top of search' });
-
-  if (agentListings.length >= 20) achievements.push({ icon: 'fa-building', color: 'purple', title: 'Prolific Lister', sub: `${agentListings.length} active listings` });
-
-  const grid = document.getElementById('badgesGrid');
-  if (achievements.length === 0) {
-    grid.innerHTML = `
-      <div style="grid-column: 1/-1; text-align:center; padding:30px; color:#9CA3AF;">
-        <i class="fas fa-trophy" style="font-size:32px; margin-bottom:10px; display:block;"></i>
-        <p>Agent is building their reputation. Check back soon!</p>
-      </div>
-    `;
-    return;
-  }
-
-  grid.innerHTML = achievements.map(a => `
-    <div class="badge-card">
-      <div class="badge-icon ${a.color}"><i class="fas ${a.icon}"></i></div>
-      <div class="badge-text">
-        <h4>${a.title}</h4>
-        <p>${a.sub}</p>
-      </div>
-    </div>
-  `).join('');
+// Modal helpers
+function closeModal() {
+    document.querySelectorAll('.fixed.inset-0').forEach(m => m.classList.add('hidden'));
 }
 
-// ===== AI MATCH SCORE =====
-function updateAIMatchScore() {
-  // Simulate AI match based on agent's actual data
-  // In production, this would call a Supabase Edge Function with user preferences
-  const p = agentProfile;
+function showAddLeadModal() {
+    alert("New Lead Capture (WhatsApp integration ready)");
+}
 
-  // Calculate realistic scores based on agent data
-  const responseScore = p.avg_response_minutes ?
-    (p.avg_response_minutes <= 5 ? 97 : p.avg_response_minutes <= 15 ? 92 : p.avg_response_minutes <= 60 ? 85 : 75) : 80;
-
-  const ratingScore = p.average_rating ? Math.round((p.average_rating / 5) * 100) : 85;
-
-  // Simulate location/type match (would be real in production)
-  const locationScore = 85 + Math.floor(Math.random() * 10);
-  const budgetScore = 82 + Math.floor(Math.random() * 12);
-
-  const overall = Math.round((responseScore + ratingScore + locationScore + budgetScore) / 4);
-
-  // Update UI
-  document.getElementById('aiOverallScore').textContent = overall + '%';
-
-  const bars = document.querySelectorAll('#aiMatchBars .ai-bar-item');
-  const scores = [budgetScore, locationScore, ratingScore, responseScore];
-  bars.forEach((bar, i) => {
-    const fill = bar.querySelector('.ai-bar-fill');
-    const value = bar.querySelector('.ai-bar-value');
+// Init
+window.onload = () => {
+    loadLeadsPipeline();
+    navigateTo('dashboard');
+    
+    // Demo: Open a deal room after 2s
     setTimeout(() => {
-      fill.style.width = scores[i] + '%';
-      value.textContent = scores[i] + '%';
-    }, 200 + (i * 100));
-  });
-
-  // Update text
-  let matchText;
-  if (overall >= 90) {
-    matchText = `<strong>Excellent match for you.</strong> ${p.full_name?.split(' ')[0] || 'This agent'} specializes in your preferred locations and property types, with a proven track record of closing deals in your budget range.`;
-  } else if (overall >= 80) {
-    matchText = `<strong>Great match for you.</strong> ${p.full_name?.split(' ')[0] || 'This agent'} has strong experience in your areas of interest and responds quickly to inquiries.`;
-  } else if (overall >= 70) {
-    matchText = `<strong>Good match.</strong> ${p.full_name?.split(' ')[0] || 'This agent'} may be able to help with your property search. Consider reaching out to discuss your needs.`;
-  } else {
-    matchText = `<strong>Potential match.</strong> Contact ${p.full_name?.split(' ')[0] || 'this agent'} to discuss if they can help with your specific requirements.`;
-  }
-  document.getElementById('aiScoreText').innerHTML = matchText;
-}
-
-// ===== UPDATE SEO =====
-function updateSEO() {
-  const p = agentProfile;
-  if (!p) return;
-
-  const name = p.full_name || 'Verified Agent';
-  const company = p.company || '';
-  const location = p.location || 'Kenya';
-  const rating = p.average_rating || 0;
-  const reviews = agentReviews.length;
-  const listings = agentListings.length;
-
-  const title = `${name}${company ? ' @ ' + company : ''} | Verified Agent in ${location} | Properties in Kenya`;
-  const description = `${name} is a verified real estate agent${company ? ' at ' + company : ''} in ${location}. ${rating > 0 ? `Rated ${rating.toFixed(1)}/5 by ${reviews} clients.` : ''} ${listings} active listings. Contact directly through Properties in Kenya.`;
-  const image = p.avatar_url || 'https://images.unsplash.com/photo-1611348524140-53c9a25263d6?w=1200&q=80';
-  const url = `https://propertiesinkenya.co.ke/agent-profile.html?id=${p.id}`;
-
-  document.title = title;
-  document.getElementById('dynamicDescription').setAttribute('content', description);
-  document.getElementById('dynamicOGTitle').setAttribute('content', title);
-  document.getElementById('dynamicOGDescription').setAttribute('content', description);
-  document.getElementById('dynamicOGImage').setAttribute('content', image);
-  document.getElementById('dynamicOGUrl').setAttribute('content', url);
-  document.getElementById('dynamicTwitterTitle').setAttribute('content', title);
-  document.getElementById('dynamicTwitterDescription').setAttribute('content', description);
-  document.getElementById('dynamicTwitterImage').setAttribute('content', image);
-  document.getElementById('dynamicCanonical').setAttribute('href', url);
-
-  // Update JSON-LD
-  const schema = {
-    "@context": "https://schema.org",
-    "@type": "ProfilePage",
-    "mainEntity": {
-      "@type": "RealEstateAgent",
-      "name": name,
-      "description": (p.bio || description).substring(0, 500),
-      "image": image,
-      "url": url,
-      "telephone": p.phone || '',
-      "address": {
-        "@type": "PostalAddress",
-        "addressLocality": location,
-        "addressCountry": "KE"
-      },
-      "areaServed": {"@type": "Country", "name": "Kenya"},
-      "aggregateRating": {
-        "@type": "AggregateRating",
-        "ratingValue": rating.toFixed(1),
-        "reviewCount": reviews.toString()
-      },
-      "knowsLanguage": (p.languages || ['English', 'Swahili']).join(', '),
-      "hasOfferCatalog": {
-        "@type": "OfferCatalog",
-        "name": `${name}'s Listings`,
-        "numberOfItems": listings
-      }
-    }
-  };
-  document.getElementById('dynamicAgentSchema').textContent = JSON.stringify(schema);
-}
-
-// ===== ACTIONS =====
-window.scrollToSection = function(id) {
-  const el = document.getElementById(id);
-  if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        openDealRoom({ title: "4BR Lavington Maisonette - KSh 32M" });
+    }, 1500);
 };
-
-window.scrollToForm = function() {
-  const form = document.getElementById('contactForm');
-  if (form) {
-    form.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    setTimeout(() => document.getElementById('msgName').focus(), 500);
-  }
-};
-
-window.shareProfile = function() {
-  const url = window.location.href;
-  const text = `Check out ${agentProfile?.full_name || 'this verified agent'} on Properties in Kenya`;
-
-  if (navigator.share) {
-    navigator.share({ title: document.title, text: text, url: url });
-  } else {
-    navigator.clipboard.writeText(url);
-    showToast('Link Copied', 'Agent profile link copied to clipboard');
-  }
-  trackEvent('Share Agent', { agentId: agentProfile?.id });
-};
-
-window.saveAgent = function() {
-  const btn = document.getElementById('saveAgentBtn');
-  const icon = btn.querySelector('i');
-  const saved = icon.classList.contains('fas');
-
-  if (saved) {
-    icon.className = 'far fa-bookmark';
-    showToast('Removed', 'Agent removed from saved list');
-  } else {
-    icon.className = 'fas fa-bookmark';
-    icon.style.color = '#D4AF37';
-    showToast('Saved', 'Agent added to your saved list');
-  }
-  trackEvent('Save Agent', { agentId: agentProfile?.id, action: saved ? 'remove' : 'add' });
-};
-
-window.sendMessage = async function() {
-  const name = document.getElementById('msgName').value.trim();
-  const email = document.getElementById('msgEmail').value.trim();
-  const phone = document.getElementById('msgPhone').value.trim();
-  const message = document.getElementById('msgText').value.trim();
-
-  if (!name || !message) {
-    showToast('Missing Info', 'Please enter your name and message', 'error');
-    return;
-  }
-
-  try {
-    const { error } = await supabaseClient
-      .from('inquiries')
-      .insert([{
-        property_id: agentListings[0]?.id || null,
-        buyer_name: name,
-        buyer_email: email,
-        buyer_phone: phone,
-        message: message,
-        agent_id: agentProfile.id,
-        read: false
-      }]);
-
-    if (error) throw error;
-
-    showToast('Message Sent', `${agentProfile.full_name?.split(' ')[0]} will respond shortly`);
-    document.getElementById('msgName').value = '';
-    document.getElementById('msgEmail').value = '';
-    document.getElementById('msgPhone').value = '';
-    document.getElementById('msgText').value = '';
-
-    trackEvent('Agent Contact', {
-      agentId: agentProfile.id,
-      method: 'form'
-    });
-  } catch (err) {
-    showToast('Error', 'Failed to send message. Please try again.', 'error');
-  }
-};
-
-// ===== INIT =====
-loadAgentProfile();
 </script>
-
 </body>
 </html>
