@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agent Dashboard - Properties in Kenya</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap');
+        
+        body { font-family: 'Inter', system_ui, sans-serif; }
+        .heading-font { font-family: 'Space Grotesk', sans-serif; }
+        
+        .sidebar-link.active {
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+            color: white;
+        }
+        .sidebar-link:hover:not(.active) {
+            background-color: #fef3c7;
+            color: #d97706;
+        }
+        
+        .stat-card {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .stat-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 20px 40px -12px rgb(0 0 0 / 0.15);
+        }
+        
+        .activity-item {
+            transition: all 0.2s;
+        }
+        .activity-item:hover {
+            background-color: #f9fafb;
+        }
+        
+        @media (max-width: 1024px) {
+            .sidebar { display: none; }
+            .sidebar.mobile-open { display: block; }
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+
+<!-- Mobile Menu Button -->
+<button onclick="toggleMobileMenu()" class="lg:hidden fixed top-4 left-4 z-50 bg-white p-3 rounded-xl shadow-lg">
+    <i class="fas fa-bars text-gray-700"></i>
+</button>
+
+<!-- Mobile Overlay -->
+<div id="mobile-overlay" onclick="toggleMobileMenu()" class="hidden lg:hidden fixed inset-0 bg-black/50 z-40"></div>
+
+<div class="flex min-h-screen">
+
+    <!-- SIDEBAR -->
+    <aside id="sidebar" class="sidebar fixed lg:sticky top-0 left-0 h-screen w-72 bg-white border-r border-gray-200 z-40 overflow-y-auto">
+        <div class="p-6 border-b border-gray-200">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 bg-gradient-to-br from-amber-400 to-yellow-600 rounded-xl flex items-center justify-center text-white font-bold text-xl">🏠</div>
+                <div>
+                    <h1 class="heading-font text-xl font-bold">RealtorOS</h1>
+                    <p class="text-xs text-gray-500">Agent Dashboard</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Profile Card -->
+        <div class="p-4 border-b border-gray-200">
+            <div class="bg-gradient-to-br from-amber-50 to-orange-50 rounded-2xl p-4">
+                <div class="flex items-center gap-3 mb-3">
+                    <div class="w-12 h-12 bg-gradient-to-br from-amber-400 to-yellow-600 rounded-full flex items-center justify-center text-white font-bold text-lg" id="profile-initial">A</div>
+                    <div class="flex-1 min-w-0">
+                        <p class="font-semibold text-sm truncate" id="profile-name">Loading...</p>
+                        <p class="text-xs text-gray-500 truncate" id="profile-agency">Agent</p>
+                    </div>
+                </div>
+                <div class="bg-white rounded-xl p-3">
+                    <div class="flex justify-between items-center mb-1">
+                        <span class="text-xs font-medium text-gray-600">Profile Completion</span>
+                        <span class="text-xs font-bold text-amber-600" id="profile-percent">0%</span>
+                    </div>
+                    <div class="h-2 bg-gray-200 rounded-full overflow-hidden">
+                        <div id="profile-bar" class="h-full bg-gradient-to-r from-amber-400 to-yellow-600 transition-all duration-500" style="width: 0%"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Navigation -->
+        <nav class="p-4 space-y-1">
+            <a href="agent-dashboard.html" class="sidebar-link active flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium">
+                <i class="fas fa-chart-line w-5"></i> Dashboard
+            </a>
+            <a href="agent-properties.html" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-gray-700">
+                <i class="fas fa-building w-5"></i> Properties
+            </a>
+            <a href="shared-listings.html" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-gray-700">
+                <i class="fas fa-share-nodes w-5"></i> Shared Listings
+            </a>
+            <a href="buyer-requests.html" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-gray-700">
+                <i class="fas fa-user-tie w-5"></i> Buyer Requests
+            </a>
+            <a href="lead-center.html" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-gray-700">
+                <i class="fas fa-bullseye w-5"></i> Lead Center
+            </a>
+            <a href="agent-network.html" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-gray-700">
+                <i class="fas fa-users w-5"></i> Agent Network
+            </a>
+            <a href="messages.html" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-gray-700">
+                <i class="fas fa-comment-dots w-5"></i> Messages
+                <span id="unread-badge" class="ml-auto bg-red-500 text-white text-xs px-2 py-0.5 rounded-full hidden">0</span>
+            </a>
+            <a href="commissions.html" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-gray-700">
+                <i class="fas fa-wallet w-5"></i> Commissions
+            </a>
+            <a href="analytics.html" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-gray-700">
+                <i class="fas fa-chart-pie w-5"></i> Analytics
+            </a>
+            
+            <div class="pt-4 mt-4 border-t border-gray-200">
+                <a href="agent-profile.html" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-gray-700">
+                    <i class="fas fa-user-circle w-5"></i> Profile
+                </a>
+                <a href="#" onclick="logout()" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-gray-700">
+                    <i class="fas fa-sign-out-alt w-5"></i> Logout
+                </a>
+            </div>
+        </nav>
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <main class="flex-1 lg:ml-0">
+        <!-- Top Bar -->
+        <header class="bg-white border-b border-gray-200 sticky top-0 z-30">
+            <div class="px-6 py-4 flex items-center justify-between">
+                <div class="lg:pl-0 pl-12">
+                    <h1 class="heading-font text-2xl font-bold">Dashboard</h1>
+                    <p class="text-sm text-gray-500" id="greeting">Welcome back</p>
+                </div>
+                <div class="flex items-center gap-3">
+                    <button class="relative p-2 hover:bg-gray-100 rounded-xl">
+                        <i class="fas fa-bell text-gray-600"></i>
+                        <span class="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full"></span>
+                    </button>
+                    <a href="agent-properties.html?action=new" class="hidden sm:flex items-center gap-2 bg-gradient-to-r from-amber-500 to-yellow-600 text-white px-4 py-2 rounded-xl font-semibold text-sm hover:shadow-lg transition">
+                        <i class="fas fa-plus"></i> Add Property
+                    </a>
+                </div>
+            </div>
+        </header>
+
+        <!-- Dashboard Content -->
+        <div class="p-6 space-y-6">
+
+            <!-- Stats Grid -->
+            <div class="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4">
+                <div class="stat-card bg-white rounded-2xl p-5 border border-gray-100">
+                    <div class="flex items-center justify-between mb-3">
+                        <div class="w-10 h-10 bg-blue-100 rounded-xl flex items-center justify-center">
+                            <i class="fas fa-building text-blue-600"></i>
+                        </div>
+                        <span class="text-xs font-medium text-green-600 bg-green-50 px-2 py-1 rounded-full" id="properties-trend">+0%</span>
+                    </div>
+                    <p class="text-2xl font-bold" id="stat-properties">0</p>
+                    <p class="text-xs text-gray-500 mt-1">Total Properties</p>
+                </div>
+
+                <div class="stat-card bg-white rounded-2xl p-5 border border-gray-100">
+                    <div class="flex items-center justify-between mb-3">
+                        <div class="w-10 h-10 bg-amber-100 rounded-xl flex items-center justify-center">
+                            <i class="fas fa-bullseye text-amber-600"></i>
+                        </div>
+                        <span class="text-xs font-medium text-green-600 bg-green-50 px-2 py-1 rounded-full" id="leads-trend">+0%</span>
+                    </div>
+                    <p class="text-2xl font-bold" id="stat-leads">0</p>
+                    <p class="text-xs text-gray-500 mt-1">Active Leads</p>
+                </div>
+
+                <div class="stat-card bg-white rounded-2xl p-5 border border-gray-100">
+                    <div class="flex items-center justify-between mb-3">
+                        <div class="w-10 h-10 bg-purple-100 rounded-xl flex items-center justify-center">
+                            <i class="fas fa-user-tie text-purple-600"></i>
+                        </div>
+                        <span class="text-xs font-medium text-green-600 bg-green-50 px-2 py-1 rounded-full" id="requests-trend">+0%</span>
+                    </div>
+                    <p class="text-2xl font-bold" id="stat-requests">0</p>
+                    <p class="text-xs text-gray-500 mt-1">Buyer Requests</p>
+                </div>
+
+                <div class="stat-card bg-white rounded-2xl p-5 border border-gray-100">
+                    <div class="flex items-center justify-between mb-3">
+                        <div class="w-10 h-10 bg-emerald-100 rounded-xl flex items-center justify-center">
+                            <i class="fas fa-share-nodes text-emerald-600"></i>
+                        </div>
+                        <span class="text-xs font-medium text-green-600 bg-green-50 px-2 py-1 rounded-full" id="shared-trend">+0%</span>
+                    </div>
+                    <p class="text-2xl font-bold" id="stat-shared">0</p>
+                    <p class="text-xs text-gray-500 mt-1">Shared Listings</p>
+                </div>
+
+                <div class="stat-card bg-white rounded-2xl p-5 border border-gray-100">
+                    <div class="flex items-center justify-between mb-3">
+                        <div class="w-10 h-10 bg-rose-100 rounded-xl flex items-center justify-center">
+                            <i class="fas fa-handshake text-rose-600"></i>
+                        </div>
+                        <span class="text-xs font-medium text-green-600 bg-green-50 px-2 py-1 rounded-full">Active</span>
+                    </div>
+                    <p class="text-2xl font-bold" id="stat-collabs">0</p>
+                    <p class="text-xs text-gray-500 mt-1">Collaborations</p>
+                </div>
+
+                <div class="stat-card bg-gradient-to-br from-amber-500 to-yellow-600 rounded-2xl p-5 text-white">
+                    <div class="flex items-center justify-between mb-3">
+                        <div class="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center">
+                            <i class="fas fa-wallet text-white"></i>
+                        </div>
+                        <span class="text-xs font-medium bg-white/20 px-2 py-1 rounded-full">Earnings</span>
+                    </div>
+                    <p class="text-2xl font-bold" id="stat-commission">KES 0</p>
+                    <p class="text-xs opacity-90 mt-1">Total Commission</p>
+                </div>
+            </div>
+
+            <!-- Two Column Layout -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                
+                <!-- Recent Activity (2/3 width) -->
+                <div class="lg:col-span-2 bg-white rounded-2xl border border-gray-100">
+                    <div class="p-6 border-b border-gray-100 flex items-center justify-between">
+                        <div>
+                            <h2 class="heading-font text-lg font-bold">Recent Activity</h2>
+                            <p class="text-sm text-gray-500">Your latest updates</p>
+                        </div>
+                        <button class="text-sm text-amber-600 font-semibold hover:text-amber-700">View All</button>
+                    </div>
+                    <div id="activity-feed" class="divide-y divide-gray-100">
+                        <div class="p-6 text-center text-gray-400">
+                            <i class="fas fa-spinner fa-spin text-2xl mb-2"></i>
+                            <p class="text-sm">Loading activity...</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quick Actions (1/3 width) -->
+                <div class="space-y-6">
+                    <!-- Quick Actions -->
+                    <div class="bg-white rounded-2xl border border-gray-100 p-6">
+                        <h2 class="heading-font text-lg font-bold mb-4">Quick Actions</h2>
+                        <div class="space-y-2">
+                            <a href="agent-properties.html?action=new" class="flex items-center gap-3 p-3 rounded-xl hover:bg-amber-50 transition">
+                                <div class="w-10 h-10 bg-amber-100 rounded-xl flex items-center justify-center">
+                                    <i class="fas fa-plus text-amber-600"></i>
+                                </div>
+                                <div>
+                                    <p class="font-semibold text-sm">Add New Property</p>
+                                    <p class="text-xs text-gray-500">List a property</p>
+                                </div>
+                            </a>
+                            <a href="buyer-requests.html?action=new" class="flex items-center gap-3 p-3 rounded-xl hover:bg-purple-50 transition">
+                                <div class="w-10 h-10 bg-purple-100 rounded-xl flex items-center justify-center">
+                                    <i class="fas fa-user-plus text-purple-600"></i>
+                                </div>
+                                <div>
+                                    <p class="font-semibold text-sm">Create Buyer Request</p>
+                                    <p class="text-xs text-gray-500">Find matches</p>
+                                </div>
+                            </a>
+                            <a href="lead-center.html" class="flex items-center gap-3 p-3 rounded-xl hover:bg-blue-50 transition">
+                                <div class="w-10 h-10 bg-blue-100 rounded-xl flex items-center justify-center">
+                                    <i class="fas fa-bullseye text-blue-600"></i>
+                                </div>
+                                <div>
+                                    <p class="font-semibold text-sm">View Lead Center</p>
+                                    <p class="text-xs text-gray-500">Manage leads</p>
+                                </div>
+                            </a>
+                            <a href="shared-listings.html" class="flex items-center gap-3 p-3 rounded-xl hover:bg-emerald-50 transition">
+                                <div class="w-10 h-10 bg-emerald-100 rounded-xl flex items-center justify-center">
+                                    <i class="fas fa-share-nodes text-emerald-600"></i>
+                                </div>
+                                <div>
+                                    <p class="font-semibold text-sm">Browse Shared Listings</p>
+                                    <p class="text-xs text-gray-500">Co-broker deals</p>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- AI Insights -->
+                    <div class="bg-gradient-to-br from-indigo-500 to-purple-600 rounded-2xl p-6 text-white">
+                        <div class="flex items-center gap-2 mb-3">
+                            <i class="fas fa-wand-magic-sparkles"></i>
+                            <h2 class="heading-font text-lg font-bold">AI Insights</h2>
+                        </div>
+                        <p class="text-sm opacity-90 mb-4">Based on your activity, here's what you should focus on today:</p>
+                        <div class="space-y-2 text-sm">
+                            <div class="flex items-start gap-2 bg-white/10 p-3 rounded-xl">
+                                <i class="fas fa-check-circle mt-0.5"></i>
+                                <span>Follow up with 3 hot leads</span>
+                            </div>
+                            <div class="flex items-start gap-2 bg-white/10 p-3 rounded-xl">
+                                <i class="fas fa-check-circle mt-0.5"></i>
+                                <span>2 buyer requests have new matches</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </main>
+</div>
+
+<script>
+// Supabase Client
+const supabase = window.supabase.createClient(
+    'https://nqvsmuvltbiekfnvovx.supabase.co',
+    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5xd3ZzbXV2bHRiaWVrZm52b3Z4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA1NjU4MDAsImV4cCI6MjA5NjE0MTgwMH0.Xrc-bbAuWdvKSPHnVhTaLiQphV61xeYtDepWePqsrdo'
+);
+
+let currentUser = null;
+
+// Check authentication
+async function checkAuth() {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) {
+        window.location.href = 'login.html';
+        return;
+    }
+    currentUser = user;
+    await loadDashboard();
+}
+
+// Format KES currency
+function formatKES(amount) {
+    return new Intl.NumberFormat('en-KE', { 
+        style: 'currency', 
+        currency: 'KES', 
+        maximumFractionDigits: 0 
+    }).format(amount || 0);
+}
+
+// Load all dashboard data
+async function loadDashboard() {
+    try {
+        // 1. Load profile
+        const { data: profile } = await supabase
+            .from('profiles')
+            .select('*')
+            .eq('id', currentUser.id)
+            .single();
+
+        if (profile) {
+            document.getElementById('profile-name').textContent = profile.full_name || 'Agent';
+            document.getElementById('profile-agency').textContent = profile.agency || 'Independent Agent';
+            document.getElementById('profile-initial').textContent = (profile.full_name || 'A').charAt(0).toUpperCase();
+            document.getElementById('greeting').textContent = `Welcome back, ${profile.full_name?.split(' ')[0] || 'Agent'}`;
+            
+            const completion = profile.profile_completion || 0;
+            document.getElementById('profile-percent').textContent = `${completion}%`;
+            document.getElementById('profile-bar').style.width = `${completion}%`;
+        }
+
+        // 2. Load stats in parallel
+        const [propertiesRes, leadsRes, requestsRes, sharedRes, collabsRes, commissionsRes] = await Promise.all([
+            supabase.from('properties').select('id', { count: 'exact', head: true }).eq('agent_id', currentUser.id),
+            supabase.from('leads').select('id', { count: 'exact', head: true }).eq('agent_id', currentUser.id).in('status', ['new', 'contacted', 'viewing', 'negotiating', 'offer']),
+            supabase.from('buyer_requests').select('id', { count: 'exact', head: true }).eq('agent_id', currentUser.id).eq('status', 'open'),
+            supabase.from('properties').select('id', { count: 'exact', head: true }).eq('visibility', 'co-broker'),
+            supabase.from('collaborations').select('id', { count: 'exact', head: true }).or(`listing_agent_id.eq.${currentUser.id},marketing_agent_id.eq.${currentUser.id}`),
+            supabase.from('commissions').select('amount').eq('agent_id', currentUser.id)
+        ]);
+
+        // Update stats
+        document.getElementById('stat-properties').textContent = propertiesRes.count || 0;
+        document.getElementById('stat-leads').textContent = leadsRes.count || 0;
+        document.getElementById('stat-requests').textContent = requestsRes.count || 0;
+        document.getElementById('stat-shared').textContent = sharedRes.count || 0;
+        document.getElementById('stat-collabs').textContent = collabsRes.count || 0;
+
+        const totalCommission = (commissionsRes.data || []).reduce((sum, c) => sum + (c.amount || 0), 0);
+        document.getElementById('stat-commission').textContent = formatKES(totalCommission);
+
+        // 3. Load recent activity
+        await loadActivityFeed();
+
+    } catch (error) {
+        console.error('Error loading dashboard:', error);
+    }
+}
+
+// Load activity feed
+async function loadActivityFeed() {
+    const feed = document.getElementById('activity-feed');
+    
+    try {
+        // Get recent properties
+        const { data: recentProperties } = await supabase
+            .from('properties')
+            .select('title, created_at, status')
+            .eq('agent_id', currentUser.id)
+            .order('created_at', { ascending: false })
+            .limit(3);
+
+        // Get recent leads
+        const { data: recentLeads } = await supabase
+            .from('leads')
+            .select('buyer_name, status, created_at')
+            .eq('agent_id', currentUser.id)
+            .order('created_at', { ascending: false })
+            .limit(3);
+
+        // Get recent notifications
+        const { data: notifications } = await supabase
+            .from('notifications')
+            .select('*')
+            .eq('agent_id', currentUser.id)
+            .order('created_at', { ascending: false })
+            .limit(5);
+
+        // Combine and sort activities
+        const activities = [];
+
+        (recentProperties || []).forEach(p => {
+            activities.push({
+                type: 'property',
+                icon: 'fa-building',
+                color: 'blue',
+                title: `New property listed`,
+                subtitle: p.title,
+                time: p.created_at
+            });
+        });
+
+        (recentLeads || []).forEach(l => {
+            activities.push({
+                type: 'lead',
+                icon: 'fa-user',
+                color: 'amber',
+                title: `New lead: ${l.buyer_name}`,
+                subtitle: `Status: ${l.status}`,
+                time: l.created_at
+            });
+        });
+
+        (notifications || []).forEach(n => {
+            const iconMap = {
+                'new_lead': 'fa-user-plus',
+                'new_message': 'fa-comment',
+                'collaboration_request': 'fa-handshake',
+                'commission_update': 'fa-wallet'
+            };
+            activities.push({
+                type: 'notification',
+                icon: iconMap[n.type] || 'fa-bell',
+                color: 'purple',
+                title: n.title,
+                subtitle: n.message || '',
+                time: n.created_at
+            });
+        });
+
+        // Sort by time
+        activities.sort((a, b) => new Date(b.time) - new Date(a.time));
+
+        if (activities.length === 0) {
+            feed.innerHTML = `
+                <div class="p-12 text-center">
+                    <div class="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                        <i class="fas fa-inbox text-2xl text-gray-400"></i>
+                    </div>
+                    <p class="text-gray-500 font-medium">No recent activity</p>
+                    <p class="text-sm text-gray-400 mt-1">Start by adding your first property or lead</p>
+                    <a href="agent-properties.html?action=new" class="inline-block mt-4 bg-amber-500 text-white px-4 py-2 rounded-xl text-sm font-semibold">
+                        <i class="fas fa-plus mr-1"></i> Add Property
+                    </a>
+                </div>
+            `;
+            return;
+        }
+
+        feed.innerHTML = activities.slice(0, 8).map(activity => `
+            <div class="activity-item flex items-start gap-4 p-4">
+                <div class="w-10 h-10 bg-${activity.color}-100 rounded-xl flex items-center justify-center flex-shrink-0">
+                    <i class="fas ${activity.icon} text-${activity.color}-600"></i>
+                </div>
+                <div class="flex-1 min-w-0">
+                    <p class="font-semibold text-sm">${activity.title}</p>
+                    <p class="text-xs text-gray-500 truncate">${activity.subtitle}</p>
+                    <p class="text-xs text-gray-400 mt-1">${getTimeAgo(activity.time)}</p>
+                </div>
+            </div>
+        `).join('');
+
+    } catch (error) {
+        console.error('Error loading activity:', error);
+        feed.innerHTML = '<div class="p-6 text-center text-gray-400">Unable to load activity</div>';
+    }
+}
+
+// Time ago helper
+function getTimeAgo(dateString) {
+    const date = new Date(dateString);
+    const now = new Date();
+    const seconds = Math.floor((now - date) / 1000);
+
+    if (seconds < 60) return 'Just now';
+    if (seconds < 3600) return `${Math.floor(seconds / 60)} min ago`;
+    if (seconds < 86400) return `${Math.floor(seconds / 3600)} hours ago`;
+    if (seconds < 604800) return `${Math.floor(seconds / 86400)} days ago`;
+    return date.toLocaleDateString();
+}
+
+// Mobile menu toggle
+function toggleMobileMenu() {
+    const sidebar = document.getElementById('sidebar');
+    const overlay = document.getElementById('mobile-overlay');
+    sidebar.classList.toggle('mobile-open');
+    overlay.classList.toggle('hidden');
+}
+
+// Logout
+async function logout() {
+    await supabase.auth.signOut();
+    window.location.href = 'login.html';
+}
+
+// Initialize
+checkAuth();
+</script>
+
+</body>
+</html>
