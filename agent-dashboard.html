@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Agent Dashboard - Properties in Kenya</title>
+    <!-- NOTE: For production, replace this CDN with a pre-compiled Tailwind CSS file -->
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -22,20 +23,14 @@
             color: #d97706;
         }
         
-        .stat-card {
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        }
+        .stat-card { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
         .stat-card:hover {
             transform: translateY(-4px);
             box-shadow: 0 20px 40px -12px rgb(0 0 0 / 0.15);
         }
         
-        .activity-item {
-            transition: all 0.2s;
-        }
-        .activity-item:hover {
-            background-color: #f9fafb;
-        }
+        .activity-item { transition: all 0.2s; }
+        .activity-item:hover { background-color: #f9fafb; }
         
         @media (max-width: 1024px) {
             .sidebar { display: none; }
@@ -52,12 +47,12 @@
 <body class="bg-gray-50">
 
 <!-- Mobile Menu Button -->
-<button onclick="toggleMobileMenu()" class="lg:hidden fixed top-4 left-4 z-50 bg-white p-3 rounded-xl shadow-lg">
+<button id="mobile-menu-btn" class="lg:hidden fixed top-4 left-4 z-50 bg-white p-3 rounded-xl shadow-lg" aria-label="Toggle mobile menu">
     <i class="fas fa-bars text-gray-700"></i>
 </button>
 
 <!-- Mobile Overlay -->
-<div id="mobile-overlay" onclick="toggleMobileMenu()" class="hidden lg:hidden fixed inset-0 bg-black/50 z-40"></div>
+<div id="mobile-overlay" class="hidden lg:hidden fixed inset-0 bg-black/50 z-40"></div>
 
 <div class="flex min-h-screen">
 
@@ -130,7 +125,7 @@
                 <a href="agent-profile.html" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-gray-700">
                     <i class="fas fa-user-circle w-5"></i> Profile
                 </a>
-                <a href="#" onclick="logout()" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-gray-700">
+                <a href="#" id="logout-btn" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-gray-700">
                     <i class="fas fa-sign-out-alt w-5"></i> Logout
                 </a>
             </div>
@@ -139,7 +134,7 @@
 
     <!-- MAIN CONTENT -->
     <main class="flex-1 lg:ml-0">
-        <!-- Top Bar with Notifications -->
+        <!-- Top Bar -->
         <header class="bg-white border-b border-gray-200 sticky top-0 z-30">
             <div class="px-6 py-4 flex items-center justify-between">
                 <div class="lg:pl-0 pl-12">
@@ -150,7 +145,7 @@
                     
                     <!-- Notification Bell -->
                     <div class="relative">
-                        <button onclick="toggleNotifications()" class="relative p-2 hover:bg-gray-100 rounded-xl transition">
+                        <button id="notif-bell-btn" class="relative p-2 hover:bg-gray-100 rounded-xl transition" aria-label="Toggle notifications">
                             <i class="fas fa-bell text-gray-600 text-xl"></i>
                             <span id="notif-badge" class="absolute top-1 right-1 w-3 h-3 bg-red-500 rounded-full border-2 border-white hidden"></span>
                         </button>
@@ -159,7 +154,7 @@
                         <div id="notif-dropdown" class="hidden absolute right-0 mt-2 w-80 bg-white rounded-2xl shadow-xl border border-gray-100 z-50 overflow-hidden">
                             <div class="p-4 border-b border-gray-100 flex justify-between items-center bg-gray-50">
                                 <h3 class="font-bold text-gray-800">Notifications</h3>
-                                <button onclick="markAllRead()" class="text-xs text-blue-600 font-semibold hover:underline">Mark all read</button>
+                                <button id="mark-all-read-btn" class="text-xs text-blue-600 font-semibold hover:underline">Mark all read</button>
                             </div>
                             <div id="notif-list" class="max-h-80 overflow-y-auto">
                                 <div class="p-4 text-center text-gray-400 text-sm">
@@ -176,7 +171,7 @@
             </div>
         </header>
 
-        <!-- Toast Notification Container -->
+        <!-- Toast Container -->
         <div id="toast-container" class="fixed bottom-20 right-6 z-50 flex flex-col gap-3 pointer-events-none"></div>
 
         <!-- Dashboard Content -->
@@ -254,7 +249,7 @@
             <!-- Two Column Layout -->
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
                 
-                <!-- Recent Activity (2/3 width) -->
+                <!-- Recent Activity -->
                 <div class="lg:col-span-2 bg-white rounded-2xl border border-gray-100">
                     <div class="p-6 border-b border-gray-100 flex items-center justify-between">
                         <div>
@@ -271,9 +266,8 @@
                     </div>
                 </div>
 
-                <!-- Quick Actions (1/3 width) -->
+                <!-- Quick Actions & AI -->
                 <div class="space-y-6">
-                    <!-- Quick Actions -->
                     <div class="bg-white rounded-2xl border border-gray-100 p-6">
                         <h2 class="heading-font text-lg font-bold mb-4">Quick Actions</h2>
                         <div class="space-y-2">
@@ -316,7 +310,6 @@
                         </div>
                     </div>
 
-                    <!-- AI Insights -->
                     <div class="bg-gradient-to-br from-indigo-500 to-purple-600 rounded-2xl p-6 text-white">
                         <div class="flex items-center gap-2 mb-3">
                             <i class="fas fa-wand-magic-sparkles"></i>
@@ -342,381 +335,514 @@
 </div>
 
 <script>
-// Supabase Client
-const supabase = window.supabase.createClient(
-    'https://nqvsmuvltbiekfnvovx.supabase.co',
-    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5xd3ZzbXV2bHRiaWVrZm52b3Z4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA1NjU4MDAsImV4cCI6MjA5NjE0MTgwMH0.Xrc-bbAuWdvKSPHnVhTaLiQphV61xeYtDepWePqsrdo'
-);
+(function() {
+    'use strict';
 
-let currentUser = null;
-let notificationChannel = null;
+    // ==========================================
+    // 1. CONFIGURATION & STATE
+    // ==========================================
+    const supabase = window.supabase.createClient(
+        'https://nqvsmuvltbiekfnvovx.supabase.co',
+        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5xd3ZzbXV2bHRiaWVrZm52b3Z4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA1NjU4MDAsImV4cCI6MjA5NjE0MTgwMH0.Xrc-bbAuWdvKSPHnVhTaLiQphV61xeYtDepWePqsrdo'
+    );
 
-// Check authentication
-async function checkAuth() {
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) {
-        window.location.href = 'login.html';
-        return;
+    const state = {
+        user: null,
+        notificationChannel: null,
+        notifLoading: false
+    };
+
+    // Mapping for Tailwind classes to prevent JIT dynamic class bugs
+    const themeColors = {
+        blue: { bg: 'bg-blue-100', text: 'text-blue-600' },
+        amber: { bg: 'bg-amber-100', text: 'text-amber-600' },
+        purple: { bg: 'bg-purple-100', text: 'text-purple-600' },
+        green: { bg: 'bg-green-100', text: 'text-green-600' },
+        rose: { bg: 'bg-rose-100', text: 'text-rose-600' }
+    };
+
+    // ==========================================
+    // 2. UTILITIES
+    // ==========================================
+    function escapeHtml(text) {
+        if (!text) return '';
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
     }
-    currentUser = user;
-    await loadDashboard();
-    
-    // Initialize Notifications
-    if ("Notification" in window && Notification.permission !== "granted" && Notification.permission !== "denied") {
-        Notification.requestPermission();
-    }
-    updateNotificationBadge();
-    setupRealtimeNotifications();
-}
 
-// Format KES currency
-function formatKES(amount) {
-    return new Intl.NumberFormat('en-KE', { 
-        style: 'currency', 
-        currency: 'KES', 
-        maximumFractionDigits: 0 
-    }).format(amount || 0);
-}
-
-// Time ago helper
-function getTimeAgo(dateString) {
-    const date = new Date(dateString);
-    const now = new Date();
-    const seconds = Math.floor((now - date) / 1000);
-    if (seconds < 60) return 'Just now';
-    if (seconds < 3600) return `${Math.floor(seconds / 60)} min ago`;
-    if (seconds < 86400) return `${Math.floor(seconds / 3600)} hours ago`;
-    if (seconds < 604800) return `${Math.floor(seconds / 86400)} days ago`;
-    return date.toLocaleDateString();
-}
-
-// Load all dashboard data
-async function loadDashboard() {
-    try {
-        // 1. Load profile
-        const { data: profile } = await supabase
-            .from('profiles')
-            .select('*')
-            .eq('id', currentUser.id)
-            .single();
-
-        if (profile) {
-            document.getElementById('profile-name').textContent = profile.full_name || 'Agent';
-            document.getElementById('profile-agency').textContent = profile.agency || 'Independent Agent';
-            document.getElementById('profile-initial').textContent = (profile.full_name || 'A').charAt(0).toUpperCase();
-            document.getElementById('greeting').textContent = `Welcome back, ${profile.full_name?.split(' ')[0] || 'Agent'}`;
-            
-            const completion = profile.profile_completion || 0;
-            document.getElementById('profile-percent').textContent = `${completion}%`;
-            document.getElementById('profile-bar').style.width = `${completion}%`;
+    function isValidUrl(string) {
+        try {
+            const url = new URL(string, window.location.origin);
+            return url.protocol === 'http:' || url.protocol === 'https:';
+        } catch (_) {
+            return false;
         }
-
-        // 2. Load stats in parallel
-        const [propertiesRes, leadsRes, requestsRes, sharedRes, collabsRes, commissionsRes] = await Promise.all([
-            supabase.from('properties').select('id', { count: 'exact', head: true }).eq('agent_id', currentUser.id),
-            supabase.from('leads').select('id', { count: 'exact', head: true }).eq('agent_id', currentUser.id).in('status', ['new', 'contacted', 'viewing', 'negotiating', 'offer']),
-            supabase.from('buyer_requests').select('id', { count: 'exact', head: true }).eq('agent_id', currentUser.id).eq('status', 'open'),
-            supabase.from('properties').select('id', { count: 'exact', head: true }).eq('visibility', 'co-broker'),
-            supabase.from('collaborations').select('id', { count: 'exact', head: true }).or(`listing_agent_id.eq.${currentUser.id},marketing_agent_id.eq.${currentUser.id}`),
-            supabase.from('commissions').select('amount').eq('agent_id', currentUser.id)
-        ]);
-
-        // Update stats
-        document.getElementById('stat-properties').textContent = propertiesRes.count || 0;
-        document.getElementById('stat-leads').textContent = leadsRes.count || 0;
-        document.getElementById('stat-requests').textContent = requestsRes.count || 0;
-        document.getElementById('stat-shared').textContent = sharedRes.count || 0;
-        document.getElementById('stat-collabs').textContent = collabsRes.count || 0;
-
-        const totalCommission = (commissionsRes.data || []).reduce((sum, c) => sum + (c.amount || 0), 0);
-        document.getElementById('stat-commission').textContent = formatKES(totalCommission);
-
-        // 3. Load recent activity
-        await loadActivityFeed();
-
-    } catch (error) {
-        console.error('Error loading dashboard:', error);
     }
-}
 
-// Load activity feed
-async function loadActivityFeed() {
-    const feed = document.getElementById('activity-feed');
-    
-    try {
-        const { data: recentProperties } = await supabase
-            .from('properties')
-            .select('title, created_at, status')
-            .eq('agent_id', currentUser.id)
-            .order('created_at', { ascending: false })
-            .limit(3);
+    function formatKES(amount) {
+        return new Intl.NumberFormat('en-KE', { 
+            style: 'currency', 
+            currency: 'KES', 
+            maximumFractionDigits: 0 
+        }).format(amount || 0);
+    }
 
-        const { data: recentLeads } = await supabase
-            .from('leads')
-            .select('buyer_name, status, created_at')
-            .eq('agent_id', currentUser.id)
-            .order('created_at', { ascending: false })
-            .limit(3);
+    function getTimeAgo(dateString) {
+        const date = new Date(dateString);
+        if (isNaN(date.getTime())) return 'Unknown';
+        
+        const now = new Date();
+        const seconds = Math.floor((now - date) / 1000);
+        if (seconds < 0) return 'Just now';
+        if (seconds < 60) return 'Just now';
+        if (seconds < 3600) return `${Math.floor(seconds / 60)} min ago`;
+        if (seconds < 86400) return `${Math.floor(seconds / 3600)} hours ago`;
+        if (seconds < 604800) return `${Math.floor(seconds / 86400)} days ago`;
+        return date.toLocaleDateString();
+    }
 
-        const { data: notifications } = await supabase
-            .from('notifications')
-            .select('*')
-            .eq('agent_id', currentUser.id)
-            .order('created_at', { ascending: false })
-            .limit(5);
+    function getNotifIcon(type) {
+        const icons = {
+            'new_lead': 'fa-user-plus',
+            'new_message': 'fa-comment-dots',
+            'collaboration_request': 'fa-handshake',
+            'commission_update': 'fa-wallet',
+            'property_match': 'fa-bolt'
+        };
+        return icons[type] || 'fa-bell';
+    }
 
-        const activities = [];
+    function getNotifIconColor(type) {
+        const colors = {
+            'new_lead': 'bg-green-100 text-green-600',
+            'new_message': 'bg-blue-100 text-blue-600',
+            'collaboration_request': 'bg-purple-100 text-purple-600',
+            'commission_update': 'bg-amber-100 text-amber-600',
+            'property_match': 'bg-rose-100 text-rose-600'
+        };
+        return colors[type] || 'bg-gray-100 text-gray-600';
+    }
 
-        (recentProperties || []).forEach(p => {
-            activities.push({
-                type: 'property',
-                icon: 'fa-building',
-                color: 'blue',
-                title: `New property listed`,
-                subtitle: p.title,
-                time: p.created_at
-            });
-        });
+    // ==========================================
+    // 3. TOAST SYSTEM
+    // ==========================================
+    function showToast(title, message, icon = 'fa-bell') {
+        const container = document.getElementById('toast-container');
+        const toast = document.createElement('div');
+        toast.className = 'pointer-events-auto bg-gray-900 text-white px-4 py-3 rounded-xl shadow-2xl flex items-center gap-3 min-w-[300px] animate-slide-up';
+        toast.innerHTML = `
+            <i class="fas ${icon} text-amber-400"></i>
+            <div class="flex-1">
+                <p class="text-sm font-bold">${escapeHtml(title)}</p>
+                <p class="text-xs text-gray-300">${escapeHtml(message)}</p>
+            </div>
+        `;
+        container.appendChild(toast);
+        setTimeout(() => {
+            toast.style.opacity = '0';
+            toast.style.transform = 'translateY(20px)';
+            setTimeout(() => toast.remove(), 300);
+        }, 4000);
+    }
 
-        (recentLeads || []).forEach(l => {
-            activities.push({
-                type: 'lead',
-                icon: 'fa-user',
-                color: 'amber',
-                title: `New lead: ${l.buyer_name}`,
-                subtitle: `Status: ${l.status}`,
-                time: l.created_at
-            });
-        });
-
-        (notifications || []).forEach(n => {
-            const iconMap = {
-                'new_lead': 'fa-user-plus',
-                'new_message': 'fa-comment',
-                'collaboration_request': 'fa-handshake',
-                'commission_update': 'fa-wallet'
-            };
-            activities.push({
-                type: 'notification',
-                icon: iconMap[n.type] || 'fa-bell',
-                color: 'purple',
-                title: n.title,
-                subtitle: n.message || '',
-                time: n.created_at
-            });
-        });
-
-        activities.sort((a, b) => new Date(b.time) - new Date(a.time));
-
-        if (activities.length === 0) {
-            feed.innerHTML = `
-                <div class="p-12 text-center">
-                    <div class="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-3">
-                        <i class="fas fa-inbox text-2xl text-gray-400"></i>
-                    </div>
-                    <p class="text-gray-500 font-medium">No recent activity</p>
-                    <p class="text-sm text-gray-400 mt-1">Start by adding your first property or lead</p>
-                    <a href="agent-properties.html?action=new" class="inline-block mt-4 bg-amber-500 text-white px-4 py-2 rounded-xl text-sm font-semibold">
-                        <i class="fas fa-plus mr-1"></i> Add Property
-                    </a>
-                </div>
-            `;
-            return;
+    // ==========================================
+    // 4. AUTH & DASHBOARD LOADING
+    // ==========================================
+    async function checkAuth() {
+        try {
+            const { data: { user }, error } = await supabase.auth.getUser();
+            if (error || !user) {
+                window.location.href = 'login.html';
+                return;
+            }
+            state.user = user;
+            await loadDashboard();
+            setupRealtimeNotifications();
+        } catch (err) {
+            console.error('Auth check failed:', err);
+            window.location.href = 'login.html';
         }
-
-        feed.innerHTML = activities.slice(0, 8).map(activity => `
-            <div class="activity-item flex items-start gap-4 p-4">
-                <div class="w-10 h-10 bg-${activity.color}-100 rounded-xl flex items-center justify-center flex-shrink-0">
-                    <i class="fas ${activity.icon} text-${activity.color}-600"></i>
-                </div>
-                <div class="flex-1 min-w-0">
-                    <p class="font-semibold text-sm">${activity.title}</p>
-                    <p class="text-xs text-gray-500 truncate">${activity.subtitle}</p>
-                    <p class="text-xs text-gray-400 mt-1">${getTimeAgo(activity.time)}</p>
-                </div>
-            </div>
-        `).join('');
-
-    } catch (error) {
-        console.error('Error loading activity:', error);
-        feed.innerHTML = '<div class="p-6 text-center text-gray-400">Unable to load activity</div>';
-    }
-}
-
-// ==========================================
-// REAL-TIME PUSH NOTIFICATIONS SYSTEM
-// ==========================================
-
-async function updateNotificationBadge() {
-    const { count, error } = await supabase
-        .from('notifications')
-        .select('*', { count: 'exact', head: true })
-        .eq('agent_id', currentUser.id)
-        .eq('is_read', false);
-
-    const badge = document.getElementById('notif-badge');
-    if (count > 0) {
-        badge.textContent = count > 9 ? '9+' : count;
-        badge.classList.remove('hidden');
-    } else {
-        badge.classList.add('hidden');
-    }
-}
-
-async function loadNotifications() {
-    const { data, error } = await supabase
-        .from('notifications')
-        .select('*')
-        .eq('agent_id', currentUser.id)
-        .order('created_at', { ascending: false })
-        .limit(10);
-
-    const list = document.getElementById('notif-list');
-    if (!data || data.length === 0) {
-        list.innerHTML = '<div class="p-6 text-center text-gray-400 text-sm">No new notifications</div>';
-        return;
     }
 
-    list.innerHTML = data.map(notif => `
-        <div onclick="handleNotifClick('${notif.link}', '${notif.id}')" class="p-4 border-b border-gray-50 hover:bg-gray-50 cursor-pointer transition ${notif.is_read ? 'opacity-60' : 'bg-blue-50/50'}">
-            <div class="flex items-start gap-3">
-                <div class="w-8 h-8 rounded-full ${getNotifIconColor(notif.type)} flex items-center justify-center flex-shrink-0 mt-1">
-                    <i class="fas ${getNotifIcon(notif.type)} text-xs"></i>
-                </div>
-                <div class="flex-1">
-                    <p class="text-sm font-semibold text-gray-800">${notif.title}</p>
-                    <p class="text-xs text-gray-500 mt-1">${notif.message}</p>
-                    <p class="text-[10px] text-gray-400 mt-2">${getTimeAgo(notif.created_at)}</p>
-                </div>
-                ${!notif.is_read ? '<div class="w-2 h-2 bg-blue-600 rounded-full flex-shrink-0 mt-2"></div>' : ''}
-            </div>
-        </div>
-    `).join('');
-}
+    async function loadDashboard() {
+        try {
+            // 1. Load profile
+            const { data: profile, error: profileErr } = await supabase
+                .from('profiles')
+                .select('*')
+                .eq('id', state.user.id)
+                .single();
 
-function setupRealtimeNotifications() {
-    notificationChannel = supabase
-        .channel('agent-notifications')
-        .on(
-            'postgres_changes',
-            { 
-                event: 'INSERT', 
-                schema: 'public', 
-                table: 'notifications', 
-                filter: `agent_id=eq.${currentUser.id}` 
-            },
-            (payload) => {
-                const newNotif = payload.new;
-                updateNotificationBadge();
-                loadNotifications();
-                showToast(newNotif.title, newNotif.message, getNotifIcon(newNotif.type));
+            if (profileErr) console.error('Profile load error:', profileErr);
+
+            if (profile) {
+                document.getElementById('profile-name').textContent = profile.full_name || 'Agent';
+                document.getElementById('profile-agency').textContent = profile.agency || 'Independent Agent';
+                document.getElementById('profile-initial').textContent = (profile.full_name || 'A').charAt(0).toUpperCase();
+                document.getElementById('greeting').textContent = `Welcome back, ${escapeHtml(profile.full_name?.split(' ')[0] || 'Agent')}`;
                 
-                if ("Notification" in window && Notification.permission === "granted") {
-                    new Notification(newNotif.title, {
-                        body: newNotif.message,
-                        icon: 'https://cdn-icons-png.flaticon.com/512/3135/3135715.png',
-                        badge: 'https://cdn-icons-png.flaticon.com/512/3135/3135715.png',
-                        tag: newNotif.id
-                    });
+                const completion = profile.profile_completion || 0;
+                document.getElementById('profile-percent').textContent = `${completion}%`;
+                document.getElementById('profile-bar').style.width = `${completion}%`;
+            }
+
+            // 2. Load stats in parallel
+            const [propertiesRes, leadsRes, requestsRes, sharedRes, collabsRes, commissionsRes] = await Promise.all([
+                supabase.from('properties').select('id', { count: 'exact', head: true }).eq('agent_id', state.user.id),
+                supabase.from('leads').select('id', { count: 'exact', head: true }).eq('agent_id', state.user.id).in('status', ['new', 'contacted', 'viewing', 'negotiating', 'offer']),
+                supabase.from('buyer_requests').select('id', { count: 'exact', head: true }).eq('agent_id', state.user.id).eq('status', 'open'),
+                supabase.from('properties').select('id', { count: 'exact', head: true }).eq('visibility', 'co-broker'),
+                supabase.from('collaborations').select('id', { count: 'exact', head: true }).or(`listing_agent_id.eq.${state.user.id},marketing_agent_id.eq.${state.user.id}`),
+                supabase.from('commissions').select('amount').eq('agent_id', state.user.id)
+            ]);
+
+            document.getElementById('stat-properties').textContent = propertiesRes.count || 0;
+            document.getElementById('stat-leads').textContent = leadsRes.count || 0;
+            document.getElementById('stat-requests').textContent = requestsRes.count || 0;
+            document.getElementById('stat-shared').textContent = sharedRes.count || 0;
+            document.getElementById('stat-collabs').textContent = collabsRes.count || 0;
+
+            const totalCommission = (commissionsRes.data || []).reduce((sum, c) => sum + (c.amount || 0), 0);
+            document.getElementById('stat-commission').textContent = formatKES(totalCommission);
+
+            // 3. Load activity and notifications
+            await Promise.all([loadActivityFeed(), updateNotificationBadge()]);
+
+        } catch (error) {
+            console.error('Error loading dashboard:', error);
+            showToast('Error', 'Failed to load dashboard data', 'fa-exclamation-circle');
+        }
+    }
+
+    async function loadActivityFeed() {
+        const feed = document.getElementById('activity-feed');
+        
+        try {
+            // Parallel execution
+            const [propsRes, leadsRes, notifsRes] = await Promise.all([
+                supabase.from('properties').select('title, created_at, status').eq('agent_id', state.user.id).order('created_at', { ascending: false }).limit(3),
+                supabase.from('leads').select('buyer_name, status, created_at').eq('agent_id', state.user.id).order('created_at', { ascending: false }).limit(3),
+                supabase.from('notifications').select('*').eq('agent_id', state.user.id).order('created_at', { ascending: false }).limit(5)
+            ]);
+
+            const activities = [];
+
+            (propsRes.data || []).forEach(p => {
+                activities.push({
+                    type: 'property',
+                    icon: 'fa-building',
+                    color: 'blue',
+                    title: 'New property listed',
+                    subtitle: p.title,
+                    time: p.created_at
+                });
+            });
+
+            (leadsRes.data || []).forEach(l => {
+                activities.push({
+                    type: 'lead',
+                    icon: 'fa-user',
+                    color: 'amber',
+                    title: `New lead: ${l.buyer_name}`,
+                    subtitle: `Status: ${l.status}`,
+                    time: l.created_at
+                });
+            });
+
+            (notifsRes.data || []).forEach(n => {
+                const iconMap = {
+                    'new_lead': 'fa-user-plus',
+                    'new_message': 'fa-comment',
+                    'collaboration_request': 'fa-handshake',
+                    'commission_update': 'fa-wallet'
+                };
+                activities.push({
+                    type: 'notification',
+                    icon: iconMap[n.type] || 'fa-bell',
+                    color: 'purple',
+                    title: n.title,
+                    subtitle: n.message || '',
+                    time: n.created_at
+                });
+            });
+
+            activities.sort((a, b) => new Date(b.time) - new Date(a.time));
+
+            if (activities.length === 0) {
+                feed.innerHTML = `
+                    <div class="p-12 text-center">
+                        <div class="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                            <i class="fas fa-inbox text-2xl text-gray-400"></i>
+                        </div>
+                        <p class="text-gray-500 font-medium">No recent activity</p>
+                        <p class="text-sm text-gray-400 mt-1">Start by adding your first property or lead</p>
+                        <a href="agent-properties.html?action=new" class="inline-block mt-4 bg-amber-500 text-white px-4 py-2 rounded-xl text-sm font-semibold">
+                            <i class="fas fa-plus mr-1"></i> Add Property
+                        </a>
+                    </div>
+                `;
+                return;
+            }
+
+            feed.innerHTML = activities.slice(0, 8).map(activity => {
+                const colors = themeColors[activity.color] || themeColors.blue;
+                return `
+                    <div class="activity-item flex items-start gap-4 p-4">
+                        <div class="w-10 h-10 ${colors.bg} rounded-xl flex items-center justify-center flex-shrink-0">
+                            <i class="fas ${activity.icon} ${colors.text}"></i>
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <p class="font-semibold text-sm">${escapeHtml(activity.title)}</p>
+                            <p class="text-xs text-gray-500 truncate">${escapeHtml(activity.subtitle)}</p>
+                            <p class="text-xs text-gray-400 mt-1">${getTimeAgo(activity.time)}</p>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+        } catch (error) {
+            console.error('Error loading activity:', error);
+            feed.innerHTML = '<div class="p-6 text-center text-gray-400">Unable to load activity</div>';
+        }
+    }
+
+    // ==========================================
+    // 5. NOTIFICATIONS SYSTEM
+    // ==========================================
+    async function updateNotificationBadge() {
+        try {
+            const { count, error } = await supabase
+                .from('notifications')
+                .select('*', { count: 'exact', head: true })
+                .eq('agent_id', state.user.id)
+                .eq('is_read', false);
+
+            const badge = document.getElementById('notif-badge');
+            if (error || count === null) {
+                badge.classList.add('hidden');
+                return;
+            }
+
+            if (count > 0) {
+                badge.textContent = count > 9 ? '9+' : count;
+                badge.classList.remove('hidden');
+            } else {
+                badge.classList.add('hidden');
+            }
+        } catch (err) {
+            console.error('Badge update error:', err);
+        }
+    }
+
+    async function loadNotifications() {
+        if (state.notifLoading) return;
+        state.notifLoading = true;
+
+        const list = document.getElementById('notif-list');
+        list.innerHTML = '<div class="p-4 text-center text-gray-400 text-sm"><i class="fas fa-spinner fa-spin mb-2"></i><br>Loading...</div>';
+
+        try {
+            const { data, error } = await supabase
+                .from('notifications')
+                .select('*')
+                .eq('agent_id', state.user.id)
+                .order('created_at', { ascending: false })
+                .limit(10);
+
+            if (error) throw error;
+
+            if (!data || data.length === 0) {
+                list.innerHTML = '<div class="p-6 text-center text-gray-400 text-sm">No new notifications</div>';
+                return;
+            }
+
+            list.innerHTML = data.map(notif => `
+                <div class="notif-item p-4 border-b border-gray-50 hover:bg-gray-50 cursor-pointer transition ${notif.is_read ? 'opacity-60' : 'bg-blue-50/50'}" 
+                     data-link="${escapeHtml(notif.link || '')}" 
+                     data-id="${escapeHtml(notif.id)}">
+                    <div class="flex items-start gap-3">
+                        <div class="w-8 h-8 rounded-full ${getNotifIconColor(notif.type)} flex items-center justify-center flex-shrink-0 mt-1">
+                            <i class="fas ${getNotifIcon(notif.type)} text-xs"></i>
+                        </div>
+                        <div class="flex-1">
+                            <p class="text-sm font-semibold text-gray-800">${escapeHtml(notif.title)}</p>
+                            <p class="text-xs text-gray-500 mt-1">${escapeHtml(notif.message)}</p>
+                            <p class="text-[10px] text-gray-400 mt-2">${getTimeAgo(notif.created_at)}</p>
+                        </div>
+                        ${!notif.is_read ? '<div class="w-2 h-2 bg-blue-600 rounded-full flex-shrink-0 mt-2"></div>' : ''}
+                    </div>
+                </div>
+            `).join('');
+        } catch (err) {
+            console.error('Load notifs error:', err);
+            list.innerHTML = '<div class="p-6 text-center text-gray-400 text-sm">Failed to load notifications</div>';
+        } finally {
+            state.notifLoading = false;
+        }
+    }
+
+    function setupRealtimeNotifications() {
+        // Cleanup existing channel to prevent memory leaks
+        if (state.notificationChannel) {
+            supabase.removeChannel(state.notificationChannel);
+        }
+
+        state.notificationChannel = supabase
+            .channel('agent-notifications')
+            .on(
+                'postgres_changes',
+                { 
+                    event: 'INSERT', 
+                    schema: 'public', 
+                    table: 'notifications', 
+                    filter: `agent_id=eq.${state.user.id}` 
+                },
+                (payload) => {
+                    const newNotif = payload.new;
+                    updateNotificationBadge();
+                    
+                    // Only reload if dropdown is open
+                    const dropdown = document.getElementById('notif-dropdown');
+                    if (!dropdown.classList.contains('hidden')) {
+                        loadNotifications();
+                    }
+
+                    showToast(newNotif.title, newNotif.message, getNotifIcon(newNotif.type));
+                    
+                    // Browser notifications (only if previously granted)
+                    if ("Notification" in window && Notification.permission === "granted") {
+                        new Notification(newNotif.title, {
+                            body: newNotif.message,
+                            icon: 'https://cdn-icons-png.flaticon.com/512/3135/3135715.png',
+                            badge: 'https://cdn-icons-png.flaticon.com/512/3135/3135715.png',
+                            tag: newNotif.id
+                        });
+                    }
+                }
+            )
+            .subscribe();
+    }
+
+    async function handleNotifClick(link, notifId) {
+        try {
+            await supabase.from('notifications').update({ is_read: true }).eq('id', notifId);
+            updateNotificationBadge();
+            
+            // Reload list to reflect read state
+            const dropdown = document.getElementById('notif-dropdown');
+            if (!dropdown.classList.contains('hidden')) {
+                loadNotifications();
+            }
+
+            if (link && isValidUrl(link)) {
+                window.location.href = link;
+            }
+        } catch (err) {
+            console.error('Error handling notif click:', err);
+        }
+        
+        document.getElementById('notif-dropdown').classList.add('hidden');
+    }
+
+    async function markAllRead() {
+        try {
+            await supabase
+                .from('notifications')
+                .update({ is_read: true })
+                .eq('agent_id', state.user.id)
+                .eq('is_read', false);
+            
+            updateNotificationBadge();
+            loadNotifications();
+        } catch (err) {
+            console.error('Mark all read error:', err);
+        }
+    }
+
+    // ==========================================
+    // 6. UI INTERACTIONS & EVENT DELEGATION
+    // ==========================================
+    function toggleMobileMenu() {
+        const sidebar = document.getElementById('sidebar');
+        const overlay = document.getElementById('mobile-overlay');
+        sidebar.classList.toggle('mobile-open');
+        overlay.classList.toggle('hidden');
+    }
+
+    async function logout() {
+        await supabase.auth.signOut();
+        window.location.href = 'login.html';
+    }
+
+    function initEventListeners() {
+        // Mobile menu
+        document.getElementById('mobile-menu-btn').addEventListener('click', toggleMobileMenu);
+        document.getElementById('mobile-overlay').addEventListener('click', toggleMobileMenu);
+
+        // Logout
+        document.getElementById('logout-btn').addEventListener('click', (e) => {
+            e.preventDefault();
+            logout();
+        });
+
+        // Notifications Bell
+        const bellBtn = document.getElementById('notif-bell-btn');
+        const dropdown = document.getElementById('notif-dropdown');
+        
+        bellBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            dropdown.classList.toggle('hidden');
+            if (!dropdown.classList.contains('hidden')) {
+                loadNotifications();
+                
+                // Request permission on first user interaction if not decided
+                if ("Notification" in window && Notification.permission === "default") {
+                    Notification.requestPermission();
                 }
             }
-        )
-        .subscribe();
-}
+        });
 
-function toggleNotifications() {
-    const dropdown = document.getElementById('notif-dropdown');
-    dropdown.classList.toggle('hidden');
-    if (!dropdown.classList.contains('hidden')) {
-        loadNotifications();
+        // Mark all read
+        document.getElementById('mark-all-read-btn').addEventListener('click', (e) => {
+            e.stopPropagation();
+            markAllRead();
+        });
+
+        // Notification item clicks (Event Delegation)
+        document.getElementById('notif-list').addEventListener('click', (e) => {
+            const item = e.target.closest('.notif-item');
+            if (item) {
+                const link = item.dataset.link;
+                const id = item.dataset.id;
+                handleNotifClick(link, id);
+            }
+        });
+
+        // Close dropdown when clicking outside
+        document.addEventListener('click', (e) => {
+            if (!dropdown.contains(e.target) && !bellBtn.contains(e.target) && !dropdown.classList.contains('hidden')) {
+                dropdown.classList.add('hidden');
+            }
+        });
+
+        // Close dropdown on Escape key
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && !dropdown.classList.contains('hidden')) {
+                dropdown.classList.add('hidden');
+            }
+        });
     }
-}
 
-async function markAllRead() {
-    await supabase
-        .from('notifications')
-        .update({ is_read: true })
-        .eq('agent_id', currentUser.id)
-        .eq('is_read', false);
-    updateNotificationBadge();
-    loadNotifications();
-}
+    // ==========================================
+    // 7. INITIALIZATION
+    // ==========================================
+    document.addEventListener('DOMContentLoaded', () => {
+        initEventListeners();
+        checkAuth();
+    });
 
-async function handleNotifClick(link, notifId) {
-    await supabase.from('notifications').update({ is_read: true }).eq('id', notifId);
-    updateNotificationBadge();
-    if (link) {
-        window.location.href = link;
-    }
-    document.getElementById('notif-dropdown').classList.add('hidden');
-}
-
-function showToast(title, message, icon = 'fa-bell') {
-    const container = document.getElementById('toast-container');
-    const toast = document.createElement('div');
-    toast.className = 'pointer-events-auto bg-gray-900 text-white px-4 py-3 rounded-xl shadow-2xl flex items-center gap-3 min-w-[300px] animate-slide-up';
-    toast.innerHTML = `
-        <i class="fas ${icon} text-amber-400"></i>
-        <div class="flex-1">
-            <p class="text-sm font-bold">${title}</p>
-            <p class="text-xs text-gray-300">${message}</p>
-        </div>
-    `;
-    container.appendChild(toast);
-    setTimeout(() => {
-        toast.style.opacity = '0';
-        toast.style.transform = 'translateY(20px)';
-        setTimeout(() => toast.remove(), 300);
-    }, 4000);
-}
-
-function getNotifIcon(type) {
-    const icons = {
-        'new_lead': 'fa-user-plus',
-        'new_message': 'fa-comment-dots',
-        'collaboration_request': 'fa-handshake',
-        'commission_update': 'fa-wallet',
-        'property_match': 'fa-bolt'
-    };
-    return icons[type] || 'fa-bell';
-}
-
-function getNotifIconColor(type) {
-    const colors = {
-        'new_lead': 'bg-green-100 text-green-600',
-        'new_message': 'bg-blue-100 text-blue-600',
-        'collaboration_request': 'bg-purple-100 text-purple-600',
-        'commission_update': 'bg-amber-100 text-amber-600',
-        'property_match': 'bg-rose-100 text-rose-600'
-    };
-    return colors[type] || 'bg-gray-100 text-gray-600';
-}
-
-// Mobile menu toggle
-function toggleMobileMenu() {
-    const sidebar = document.getElementById('sidebar');
-    const overlay = document.getElementById('mobile-overlay');
-    sidebar.classList.toggle('mobile-open');
-    overlay.classList.toggle('hidden');
-}
-
-// Logout
-async function logout() {
-    await supabase.auth.signOut();
-    window.location.href = 'login.html';
-}
-
-// Close dropdown when clicking outside
-document.addEventListener('click', (e) => {
-    const dropdown = document.getElementById('notif-dropdown');
-    const bell = e.target.closest('button[onclick="toggleNotifications()"]');
-    if (dropdown && !dropdown.contains(e.target) && !bell && !dropdown.classList.contains('hidden')) {
-        dropdown.classList.add('hidden');
-    }
-});
-
-// Initialize
-checkAuth();
+})();
 </script>
 
 </body>
