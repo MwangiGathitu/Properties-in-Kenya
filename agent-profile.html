@@ -425,11 +425,12 @@ textarea.input { resize: vertical; min-height: 70px; }
 
     <section class="card">
       <h2 class="card-title"><i class="fas fa-building"></i> Agent's Listings</h2>
+      <!-- 🔒 FIX: Added data-filter attributes for robust JS targeting -->
       <div class="tabs">
-        <button class="tab active" onclick="filter('all', this)">All</button>
-        <button class="tab" onclick="filter('for sale', this)">For Sale</button>
-        <button class="tab" onclick="filter('for rent', this)">For Rent</button>
-        <button class="tab" onclick="filter('lease', this)">Lease</button>
+        <button class="tab active" data-filter="all">All</button>
+        <button class="tab" data-filter="for sale">For Sale</button>
+        <button class="tab" data-filter="for rent">For Rent</button>
+        <button class="tab" data-filter="lease">Lease</button>
       </div>
       <div class="scroll" id="listings"></div>
     </section>
@@ -487,7 +488,8 @@ textarea.input { resize: vertical; min-height: 70px; }
         <input class="input" id="mEmail" placeholder="Your email">
         <input class="input" id="mPhone" placeholder="Phone number">
         <textarea class="input" id="mMsg" placeholder="I'm interested in..."></textarea>
-        <button class="btn btn-purple" style="width:100%;" onclick="sendMsg()">
+        <!-- 🔒 FIX: Removed inline onclick, using ID for JS event listener -->
+        <button id="sendMsgBtn" class="btn btn-purple" style="width:100%;">
           <i class="fas fa-paper-plane"></i> Send
         </button>
       </div>
@@ -502,12 +504,21 @@ textarea.input { resize: vertical; min-height: 70px; }
   <a href="#" id="mWA" target="_blank" class="btn btn-wa">
     <i class="fab fa-whatsapp"></i> WA
   </a>
-  <button class="btn btn-outline" onclick="scrollTo({top:document.body.scrollHeight,behavior:'smooth'})">
+  <!-- 🔒 FIX: Removed inline onclick -->
+  <button id="scrollBottomBtn" class="btn btn-outline">
     <i class="fas fa-envelope"></i> Msg
   </button>
 </div>
 
 <script>
+// ==========================================
+// 1. DEPENDENCY CHECK & CONFIGURATION
+// ==========================================
+if (typeof supabase === 'undefined') {
+    document.body.innerHTML = '<div style="padding:40px; text-align:center; font-family:sans-serif;"><h2>Connection Error</h2><p>Failed to load required scripts. Please refresh the page.</p></div>';
+    throw new Error('Supabase SDK not loaded');
+}
+
 const sb = supabase.createClient(
   "https://nqwvsmuvltbiekfnvovx.supabase.co",
   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5xd3ZzbXV2bHRiaWVrZm52b3Z4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA1NjU4MDAsImV4cCI6MjA5NjE0MTgwMH0.Xrc-bbAuWdvKSPHnVhTaLiQphV61xeYtDepWePqsrdo"
@@ -516,7 +527,11 @@ const sb = supabase.createClient(
 let profile = null;
 let listings = [];
 let reviews = [];
+let formLoadTime = Date.now(); // Anti-spam timestamp
 
+// ==========================================
+// 2. UTILITIES
+// ==========================================
 const esc = t => {
   const d = document.createElement('div');
   d.textContent = t || '';
@@ -531,97 +546,84 @@ const toast = (t, m) => {
   setTimeout(() => el.remove(), 3500);
 };
 
-// ==========================================================
-// FIXED LOAD FUNCTION (Extracts slug from URL path)
-// ==========================================================
-async function load() {
-  console.log("=== 🕵️ AGENT PROFILE DEBUG START ===");
-  console.log("Current Full URL:", window.location.href);
-  console.log("Pathname:", location.pathname);
-  console.log("Search (query string):", location.search);
-
-  const params = new URLSearchParams(location.search);
-  let id = params.get('id');
-  let slug = params.get('slug');
-
-  // 🔑 THE FIX: If slug isn't in the query string, extract it from the URL path /agent/:slug
-  if (!id && !slug) {
-    // Remove leading/trailing slashes and split by /
-    const cleanPath = location.pathname.replace(/^\/|\/$/g, '');
-    const parts = cleanPath.split('/');
-    
-    // Check if path matches /agent/...
-    if (parts[0] === 'agent' && parts[1]) {
-      slug = decodeURIComponent(parts[1]);
-      console.log("🔍 SUCCESS: Extracted slug from URL path:", slug);
-    }
-  }
-
-  console.log("1. Final ID parameter:", id);
-  console.log("2. Final Slug parameter:", slug);
-
-  // If no ID or slug, show all agents
-  if (!id && !slug) {
-    console.log("⚠️ No ID or Slug found in URL. Showing all agents.");
-    await showAllAgents();
-    return;
-  }
-
-  let profileData = null;
-  let queryError = null;
-
-  if (id) {
-    console.log("3. Querying database by ID:", id);
-    const res = await sb.from('profiles').select('*').eq('id', id).maybeSingle();
-    profileData = res.data;
-    queryError = res.error;
-  } else if (slug) {
-    console.log("3. Querying database by Slug:", slug);
-    const res = await sb.from('profiles').select('*').eq('slug', slug).maybeSingle();
-    profileData = res.data;
-    queryError = res.error;
-  }
-
-  console.log("4. Database Query Result Data:", profileData);
-  console.log("5. Database Query Error:", queryError);
-
-  if (!profileData) {
-    console.log("❌ FAILED: Profile data is null. Falling back to all agents.");
-    document.getElementById('agentName').textContent = 'Agent not found';
-    document.getElementById('bio').textContent = `System looked for slug: "${slug}" or id: "${id}" but found nothing in the database. Showing all agents below.`;
-    await showAllAgents();
-    return;
-  }
-
-  console.log("✅ SUCCESS: Profile found! Rendering page...");
-  profile = profileData;
-
-  // Load listings
-  const { data: l } = await sb.from('properties').select('*')
-    .eq('agent_id', profile.id).eq('approval_status', 'approved')
-    .order('created_at', { ascending: false });
-  listings = l || [];
-
-  // Load reviews
-  const { data: r } = await sb.from('reviews').select('*')
-    .eq('agent_id', profile.id).eq('is_approved', true)
-    .order('created_at', { ascending: false });
-  reviews = r || [];
-
-  // Increment views
-  sb.from('profiles').update({ profile_views: (profile.profile_views || 0) + 1 }).eq('id', profile.id);
-
-  render();
+function formatWhatsApp(phone) {
+  let clean = (phone || '').replace(/[^0-9]/g, '');
+  if (clean.startsWith('0')) clean = '254' + clean.substring(1);
+  if (clean.startsWith('+')) clean = clean.substring(1);
+  return clean;
 }
 
+// ==========================================
+// 3. MAIN LOAD FUNCTION
+// ==========================================
+async function load() {
+  try {
+    const params = new URLSearchParams(location.search);
+    let id = params.get('id');
+    let slug = params.get('slug');
+
+    if (!id && !slug) {
+      const cleanPath = location.pathname.replace(/^\/|\/$/g, '');
+      const parts = cleanPath.split('/');
+      if (parts[0] === 'agent' && parts[1]) {
+        slug = decodeURIComponent(parts[1]);
+      }
+    }
+
+    if (!id && !slug) {
+      await showAllAgents();
+      return;
+    }
+
+    let profileData = null;
+    if (id) {
+      const res = await sb.from('profiles').select('*').eq('id', id).maybeSingle();
+      profileData = res.data;
+    } else if (slug) {
+      const res = await sb.from('profiles').select('*').eq('slug', slug).maybeSingle();
+      profileData = res.data;
+    }
+
+    if (!profileData) {
+      document.getElementById('agentName').textContent = 'Agent not found';
+      document.getElementById('bio').textContent = 'The agent you are looking for does not exist. Showing all agents below.';
+      await showAllAgents();
+      return;
+    }
+
+    profile = profileData;
+
+    const [listingsRes, reviewsRes] = await Promise.all([
+      sb.from('properties').select('*').eq('agent_id', profile.id).eq('approval_status', 'approved').order('created_at', { ascending: false }),
+      sb.from('reviews').select('*').eq('agent_id', profile.id).eq('is_approved', true).order('created_at', { ascending: false })
+    ]);
+
+    listings = listingsRes.data || [];
+    reviews = reviewsRes.data || [];
+
+    // Secure RPC call
+    sb.rpc('increment_profile_views', { p_id: profile.id }).then(({ error }) => {
+      if (error) console.warn('View increment failed:', error.message);
+    });
+
+    render();
+    initEventListeners();
+
+  } catch (error) {
+    console.error('Load failed:', error);
+    document.getElementById('agentName').textContent = 'Error Loading Profile';
+    document.getElementById('bio').textContent = 'We couldn\'t connect to the server. Please refresh the page.';
+  }
+}
+
+// ==========================================
+// 4. RENDERING
+// ==========================================
 function render() {
   const p = profile;
-
-  // SEO
   const name = p.full_name || 'Agent';
   document.title = `${name} | ${p.company || 'Agent'} | Properties in Kenya`;
 
-  // Hero
   document.getElementById('agentName').textContent = name;
   document.getElementById('company').textContent = p.company || 'Independent Agent';
   document.getElementById('exp').textContent = p.years_experience || 0;
@@ -629,35 +631,32 @@ function render() {
   document.getElementById('revCnt').textContent = p.total_reviews || 0;
   document.getElementById('location').textContent = p.location || 'Kenya';
 
-  // Avatar
-  const av = document.getElementById('avatar');
-  const init = (name || 'A').charAt(0).toUpperCase();
-  av.innerHTML = p.avatar_url
-    ? `<img src="${p.avatar_url}" onerror="this.parentElement.innerHTML='${init}'">`
-    : `<span>${init}</span>`;
+  const fallbackAvatar = `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=6b21a8&color=fff&size=256`;
+  const avatarUrl = p.avatar_url || fallbackAvatar;
+  document.getElementById('avatar').innerHTML = `<img src="${esc(avatarUrl)}" data-fallback="${fallbackAvatar}" style="width:100%;height:100%;object-fit:cover;">`;
 
   if ((p.total_deals_closed || 0) >= 50 || p.is_featured_agent) {
     document.getElementById('ribbon').style.display = 'inline-block';
   }
 
-  // Stats
   document.getElementById('sList').textContent = listings.length;
   document.getElementById('sDeals').textContent = p.total_deals_closed || 0;
   const sat = p.average_rating ? Math.round((p.average_rating / 5) * 100) : 95;
   document.getElementById('sSat').textContent = sat + '%';
   document.getElementById('sResp').textContent = p.avg_response_minutes ? `${p.avg_response_minutes}m` : '<2h';
 
-  // Contact
+  // 🔒 FIX: Use encodeURIComponent for URIs
   const phone = p.phone || p.whatsapp_number || '';
-  const waPhone = (p.whatsapp_number || phone).replace(/[^0-9]/g, '');
-  document.getElementById('btnCall').href = `tel:${phone}`;
+  const waPhone = formatWhatsApp(p.whatsapp_number || phone);
+  
+  document.getElementById('btnCall').href = `tel:${encodeURIComponent(phone)}`;
   document.getElementById('btnWA').href = `https://wa.me/${waPhone}?text=${encodeURIComponent(`Hi ${name}, I found you on Properties in Kenya.`)}`;
-  document.getElementById('btnEmail').href = `mailto:${p.email || ''}`;
-  document.getElementById('mCall').href = `tel:${phone}`;
+  document.getElementById('btnEmail').href = `mailto:${encodeURIComponent(p.email || '')}`;
+  
+  document.getElementById('mCall').href = `tel:${encodeURIComponent(phone)}`;
   document.getElementById('mWA').href = `https://wa.me/${waPhone}`;
-  document.getElementById('cName').textContent = `Contact ${name.split(' ')[0]}`;
+  document.getElementById('cName').textContent = `Contact ${esc(name.split(' ')[0])}`;
 
-  // Trust
   const items = [
     { k: 'is_verified_identity', l: 'Verified Identity', i: 'fa-id-card' },
     { k: 'is_verified_phone', l: 'Verified Phone', i: 'fa-phone' },
@@ -683,13 +682,10 @@ function render() {
   document.getElementById('scoreTitle').textContent = title;
   document.getElementById('scoreDesc').textContent = desc;
 
-  // Bio
   document.getElementById('bio').textContent = p.bio || 'Experienced real estate professional dedicated to helping clients find their perfect property.';
 
-  // Listings
   renderListings('all');
 
-  // Reviews
   const rating = p.average_rating || 0;
   document.getElementById('rBig').textContent = rating.toFixed(1);
   document.getElementById('rCnt').textContent = reviews.length;
@@ -701,15 +697,15 @@ function render() {
   if (reviews.length > 0) {
     document.getElementById('reviews').innerHTML = reviews.slice(0, 5).map(r => {
       const init = (r.reviewer_name || 'A').split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
-      const stars = '<i class="fas fa-star"></i>'.repeat(r.rating) + '<i class="far fa-star"></i>'.repeat(5 - r.rating);
+      const rStars = '<i class="fas fa-star"></i>'.repeat(r.rating) + '<i class="far fa-star"></i>'.repeat(5 - r.rating);
       return `<div class="review-card">
         <div class="review-head">
-          <div class="review-avatar">${init}</div>
+          <div class="review-avatar">${esc(init)}</div>
           <div class="review-info">
             <div class="review-name">${esc(r.reviewer_name)}</div>
             <div class="review-date">${new Date(r.created_at).toLocaleDateString()}</div>
           </div>
-          <div style="color:#fbbf24; font-size:12px;">${stars}</div>
+          <div style="color:#fbbf24; font-size:12px;">${rStars}</div>
         </div>
         <div class="review-text">${esc(r.review_text || '')}</div>
       </div>`;
@@ -720,16 +716,20 @@ function render() {
 function renderListings(filterType) {
   const list = filterType === 'all' ? listings : listings.filter(p => p.property_type === filterType);
   const c = document.getElementById('listings');
+  
   if (list.length === 0) {
     c.innerHTML = `<div class="empty" style="width:100%;"><i class="fas fa-building"></i><p>No ${filterType === 'all' ? '' : filterType + ' '}listings</p></div>`;
     return;
   }
+
+  const fallbackPropImg = 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=600&q=80';
+
   c.innerHTML = list.map(p => {
-    const img = p.images?.[0] || p.image_url || 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=600&q=80';
-    return `<div class="prop" onclick="location.href='/?property=${p.id}'">
+    const img = p.images?.[0] || p.image_url || fallbackPropImg;
+    return `<div class="prop" data-id="${esc(p.id)}">
       <div class="prop-img">
-        <img src="${img}" onerror="this.src='https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=600&q=80'">
-        <span class="prop-badge">${(p.property_type || 'FOR SALE').toUpperCase()}</span>
+        <img src="${esc(img)}" data-fallback="${fallbackPropImg}" loading="lazy">
+        <span class="prop-badge">${esc((p.property_type || 'FOR SALE').toUpperCase())}</span>
       </div>
       <div class="prop-body">
         <div class="prop-price">KSh ${Number(p.price || 0).toLocaleString()}</div>
@@ -738,18 +738,79 @@ function renderListings(filterType) {
       </div>
     </div>`;
   }).join('');
+  
+  attachImageErrorHandlers();
 }
 
-function filter(type, btn) {
-  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-  btn.classList.add('active');
-  renderListings(type);
+// ==========================================
+// 5. EVENT DELEGATION & INTERACTIONS
+// ==========================================
+function attachImageErrorHandlers() {
+  // Prevents infinite loops and avoids inline onerror CSP violations
+  document.querySelectorAll('img[data-fallback]').forEach(img => {
+    if (img.dataset.errorHandled) return;
+    img.dataset.errorHandled = 'true';
+    
+    img.addEventListener('error', function() {
+      if (this.src !== this.dataset.fallback) {
+        this.src = this.dataset.fallback;
+      } else {
+        this.style.display = 'none'; // Final fallback to prevent infinite loop
+      }
+    }, { once: true });
+  });
 }
 
-async function sendMsg() {
+function initEventListeners() {
+  // Property Card Clicks
+  document.getElementById('listings').addEventListener('click', (e) => {
+    const propCard = e.target.closest('.prop');
+    if (propCard && propCard.dataset.id) {
+      window.location.href = `/?property=${encodeURIComponent(propCard.dataset.id)}`;
+    }
+  });
+
+  // 🔒 FIX: Tabs using data-filter
+  document.querySelectorAll('.tab').forEach(tab => {
+    tab.addEventListener('click', (e) => {
+      document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+      const clickedTab = e.target.closest('.tab');
+      clickedTab.classList.add('active');
+      renderListings(clickedTab.dataset.filter);
+    });
+  });
+
+  // 🔒 FIX: Send Message using Event Delegation
+  const sendBtn = document.getElementById('sendMsgBtn');
+  if (sendBtn) {
+    sendBtn.addEventListener('click', handleSendMsg);
+  }
+
+  // Mobile scroll button
+  const scrollBtn = document.getElementById('scrollBottomBtn');
+  if (scrollBtn) {
+    scrollBtn.addEventListener('click', () => {
+      window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+    });
+  }
+}
+
+async function handleSendMsg(e) {
+  e.preventDefault();
+  const btn = e.currentTarget;
+  
+  // 🛡️ ANTI-SPAM: Timestamp check (bot fills form in < 2 seconds)
+  if (Date.now() - formLoadTime < 2000) {
+    return toast('Error', 'Please take a moment to fill out the form.');
+  }
+
   const name = document.getElementById('mName').value.trim();
   const msg = document.getElementById('mMsg').value.trim();
   if (!name || !msg) return toast('Error', 'Please fill in your name and message');
+  
+  btn.disabled = true;
+  btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
+
   const { error } = await sb.from('inquiries').insert([{
     agent_id: profile.id,
     property_id: listings[0]?.id || null,
@@ -759,11 +820,20 @@ async function sendMsg() {
     message: msg,
     read: false
   }]);
+
+  btn.disabled = false;
+  btn.innerHTML = '<i class="fas fa-paper-plane"></i> Send';
+
   if (error) return toast('Error', error.message);
   toast('Sent!', `${profile.full_name?.split(' ')[0]} will respond soon`);
   ['mName','mEmail','mPhone','mMsg'].forEach(id => document.getElementById(id).value = '');
+  
+  formLoadTime = Date.now(); // Reset timer for next message
 }
 
+// ==========================================
+// 6. FALLBACK: SHOW ALL AGENTS
+// ==========================================
 async function showAllAgents() {
   const { data: agents, error } = await sb.from('profiles')
     .select('*')
@@ -780,7 +850,7 @@ async function showAllAgents() {
           <i class="fas fa-users"></i>
           <h3>No Agents Yet</h3>
           <p>Be the first to register as an agent!</p>
-          <a href="/list-property.html" class="btn btn-purple" style="display:inline-flex; margin-top:16px;">
+          <a href="/agent-dashboard.html" class="btn btn-purple" style="display:inline-flex; margin-top:16px;">
             <i class="fas fa-user-plus"></i> Register as Agent
           </a>
         </div>
@@ -798,15 +868,17 @@ async function showAllAgents() {
       </p>
       <div class="agent-grid">
         ${agents.map(a => {
-          const init = (a.full_name || 'A').charAt(0).toUpperCase();
-          const avatar = a.avatar_url
-            ? `<img src="${a.avatar_url}" onerror="this.parentElement.innerHTML='${init}'">`
-            : init;
-          const agentUrl = a.slug ? `/agent/${a.slug}` : `?id=${a.id}`;
+          const name = a.full_name || 'Agent';
+          const fallbackAvatar = `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=6b21a8&color=fff&size=128`;
+          const avatarUrl = a.avatar_url || fallbackAvatar;
+          const agentUrl = a.slug ? `/agent/${encodeURIComponent(a.slug)}` : `?id=${a.id}`;
+          
           return `
             <a href="${agentUrl}" class="agent-card">
-              <div class="agent-avatar">${avatar}</div>
-              <div class="agent-name-small">${esc(a.full_name)}</div>
+              <div class="agent-avatar">
+                <img src="${esc(avatarUrl)}" data-fallback="${fallbackAvatar}" style="width:100%;height:100%;object-fit:cover;">
+              </div>
+              <div class="agent-name-small">${esc(name)}</div>
               <div class="agent-company-small">${esc(a.company || 'Independent Agent')}</div>
               <div class="agent-stats-small">
                 <span><i class="fas fa-star" style="color:#fbbf24;"></i> ${(a.average_rating || 0).toFixed(1)}</span>
@@ -821,8 +893,10 @@ async function showAllAgents() {
   `;
 
   document.getElementById('sidebar').style.display = 'none';
+  attachImageErrorHandlers(); 
 }
 
+// Initialize
 load();
 </script>
 </body>
