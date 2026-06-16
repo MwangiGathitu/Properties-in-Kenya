@@ -98,11 +98,12 @@
 </div>
 
 <!-- ADD/EDIT PROPERTY MODAL -->
-<div id="property-modal" class="fixed inset-0 bg-black/60 hidden flex items-center justify-center z-50 p-4">
+<!-- 🔒 FIX: Added ARIA attributes for accessibility -->
+<div id="property-modal" class="fixed inset-0 bg-black/60 hidden flex items-center justify-center z-50 p-4" role="dialog" aria-modal="true" aria-labelledby="modal-title">
     <div class="modal bg-white rounded-3xl w-full max-w-3xl max-h-[90vh] overflow-y-auto">
         <div class="p-6 border-b flex items-center justify-between sticky top-0 bg-white z-10">
             <h2 class="heading-font text-xl font-bold" id="modal-title">Add New Property</h2>
-            <button id="close-modal-btn" class="w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100"><i class="fas fa-times text-xl"></i></button>
+            <button id="close-modal-btn" class="w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100" aria-label="Close modal"><i class="fas fa-times text-xl"></i></button>
         </div>
         
         <form id="property-form" class="p-6 space-y-6">
@@ -222,8 +223,7 @@
     
     const state = {
         user: null,
-        allProperties: [],
-        searchTimeout: null
+        allProperties: []
     };
 
     // ==========================================
@@ -249,11 +249,38 @@
         return new Intl.NumberFormat('en-KE', { style: 'currency', currency: 'KES', maximumFractionDigits: 0 }).format(amount || 0);
     }
 
+    // 🔒 FIX: Standard debounce using local closure variable
     function debounce(func, wait) {
+        let timeout;
         return (...args) => {
-            clearTimeout(state.searchTimeout);
-            state.searchTimeout = setTimeout(() => func.apply(this, args), wait);
+            clearTimeout(timeout);
+            timeout = setTimeout(() => func(...args), wait);
         };
+    }
+
+    // 🔒 FIX: Safe number parsing that preserves `0`
+    function getNumOrNull(id) {
+        const val = document.getElementById(id).value;
+        return val === '' ? null : parseInt(val, 10);
+    }
+
+    function getNumOrDefault(id, defaultVal) {
+        const val = document.getElementById(id).value;
+        return val === '' ? defaultVal : parseFloat(val);
+    }
+
+    // 🔒 FIX: Non-blocking Toast notification instead of alert()
+    function showToast(message, type = 'success') {
+        const toast = document.createElement('div');
+        const bgColor = type === 'error' ? 'bg-red-500' : 'bg-green-500';
+        toast.className = `fixed bottom-6 right-6 ${bgColor} text-white px-6 py-3 rounded-xl shadow-lg z-[100] transition-opacity duration-300 flex items-center gap-2`;
+        toast.innerHTML = `<i class="fas ${type === 'error' ? 'fa-exclamation-circle' : 'fa-check-circle'}"></i> ${esc(message)}`;
+        document.body.appendChild(toast);
+        
+        setTimeout(() => {
+            toast.style.opacity = '0';
+            setTimeout(() => toast.remove(), 300);
+        }, 3000);
     }
 
     // ==========================================
@@ -269,21 +296,36 @@
         loadProperties();
     }
 
+    // 🔒 FIX: Listen for auth state changes to handle session expiry
+    supabase.auth.onAuthStateChange((event, session) => {
+        if (event === 'SIGNED_OUT' || !session) {
+            window.location.href = 'login.html';
+        }
+    });
+
     async function loadProperties() {
         const grid = document.getElementById('properties-grid');
         try {
             const { data, error } = await supabase
                 .from('properties')
                 .select('*')
-                .eq('agent_id', state.user.id) // 🔒 SECURITY: Explicit ownership check
+                .eq('agent_id', state.user.id) 
                 .order('created_at', { ascending: false });
 
-            if (error) throw error;
+            if (error) {
+                // 🔒 FIX: Redirect to login if JWT is invalid/expired
+                if (error.status === 401 || error.message.includes('JWT')) {
+                    window.location.href = 'login.html';
+                    return;
+                }
+                throw error;
+            }
+            
             state.allProperties = data || [];
-            applyFilters(); // Render with current filters
+            applyFilters(); 
         } catch (err) {
             console.error(err);
-            grid.innerHTML = `<div class="col-span-full text-center text-red-500 py-8">Error loading properties. Please try again.</div>`;
+            grid.innerHTML = `<div class="col-span-full text-center text-red-500 py-8"><i class="fas fa-exclamation-triangle mb-2 text-2xl"></i><p>Error loading properties. Please try again.</p></div>`;
         }
     }
 
@@ -330,14 +372,18 @@
 
         grid.innerHTML = properties.map(prop => {
             const imgSrc = (prop.images && prop.images[0] && isValidUrl(prop.images[0])) ? prop.images[0] : FALLBACK_IMG;
-            const commissionBadge = prop.visibility === 'co-broker' && prop.commission_split 
-                ? `<div class="absolute top-3 right-3 bg-amber-500 text-white px-3 py-1 rounded-full text-xs font-bold"><i class="fas fa-percentage mr-1"></i>${prop.commission_split}% Split</div>` 
+            
+            // 🔒 FIX: Correctly check for null/undefined instead of falsy (allows 0% commission)
+            const hasCommission = prop.visibility === 'co-broker' && prop.commission_split !== undefined && prop.commission_split !== null;
+            const commissionBadge = hasCommission 
+                ? `<div class="absolute top-3 right-3 bg-amber-500 text-white px-3 py-1 rounded-full text-xs font-bold"><i class="fas fa-percentage mr-1"></i>${esc(String(prop.commission_split))}% Split</div>` 
                 : '';
 
             return `
             <div class="bg-white rounded-2xl border border-gray-100 overflow-hidden hover:shadow-xl transition-shadow duration-300 group">
                 <div class="relative h-48 bg-gray-200">
-                    <img src="${esc(imgSrc)}" class="prop-img w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" alt="Property">
+                    <!-- 🔒 FIX: Added loading="lazy" for performance -->
+                    <img src="${esc(imgSrc)}" loading="lazy" class="prop-img w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" alt="Property">
                     <div class="absolute top-3 left-3 flex gap-2">
                         <span class="px-3 py-1 rounded-full text-xs font-bold uppercase ${visibilityColors[prop.visibility] || 'bg-gray-100'}">${esc(prop.visibility)}</span>
                         <span class="px-3 py-1 rounded-full text-xs font-bold uppercase ${statusColors[prop.status] || 'bg-gray-100'}">${esc(prop.status)}</span>
@@ -349,8 +395,8 @@
                     <p class="text-sm text-gray-500 mb-3"><i class="fas fa-map-marker-alt mr-1 text-amber-500"></i> ${esc(prop.town || prop.county)}, ${esc(prop.county)}</p>
                     
                     <div class="flex items-center gap-4 text-sm text-gray-600 mb-4">
-                        ${prop.bedrooms ? `<span><i class="fas fa-bed mr-1"></i> ${prop.bedrooms} Beds</span>` : ''}
-                        ${prop.bathrooms ? `<span><i class="fas fa-bath mr-1"></i> ${prop.bathrooms} Baths</span>` : ''}
+                        ${prop.bedrooms !== null && prop.bedrooms !== undefined ? `<span><i class="fas fa-bed mr-1"></i> ${prop.bedrooms} Beds</span>` : ''}
+                        ${prop.bathrooms !== null && prop.bathrooms !== undefined ? `<span><i class="fas fa-bath mr-1"></i> ${prop.bathrooms} Baths</span>` : ''}
                         <span><i class="fas fa-home mr-1"></i> ${esc(prop.property_type)}</span>
                     </div>
 
@@ -390,23 +436,21 @@
         document.getElementById('prop-county').value = prop.county || 'Nairobi';
         document.getElementById('prop-town').value = prop.town || '';
         document.getElementById('prop-location').value = prop.location || '';
-        document.getElementById('prop-beds').value = prop.bedrooms || '';
-        document.getElementById('prop-baths').value = prop.bathrooms || '';
+        
+        // 🔒 FIX: Correctly handle 0 values when populating form
+        document.getElementById('prop-beds').value = prop.bedrooms !== null && prop.bedrooms !== undefined ? prop.bedrooms : '';
+        document.getElementById('prop-baths').value = prop.bathrooms !== null && prop.bathrooms !== undefined ? prop.bathrooms : '';
+        
         document.getElementById('prop-status').value = prop.status || 'available';
         document.getElementById('prop-visibility').value = prop.visibility || 'private';
-        document.getElementById('prop-commission').value = prop.commission_split || 50;
+        document.getElementById('prop-commission').value = prop.commission_split !== null && prop.commission_split !== undefined ? prop.commission_split : 50;
         document.getElementById('prop-notes').value = prop.agent_notes || '';
         document.getElementById('prop-description').value = prop.description || '';
         
         const imgUrl = (prop.images && prop.images[0] && isValidUrl(prop.images[0])) ? prop.images[0] : '';
         document.getElementById('prop-image').value = imgUrl;
 
-        if (prop.visibility === 'co-broker') {
-            document.getElementById('collab-settings').classList.remove('hidden');
-        } else {
-            document.getElementById('collab-settings').classList.add('hidden');
-        }
-        
+        document.getElementById('collab-settings').classList.toggle('hidden', prop.visibility !== 'co-broker');
         document.getElementById('property-modal').classList.remove('hidden');
     }
 
@@ -414,16 +458,15 @@
         e.preventDefault();
         const submitBtn = document.getElementById('save-property-btn');
         
-        // Validation
         const price = parseFloat(document.getElementById('prop-price').value);
         if (isNaN(price) || price < 0) {
-            alert('Please enter a valid positive number for the price.');
+            showToast('Please enter a valid positive number for the price.', 'error');
             return;
         }
 
         const imgUrl = document.getElementById('prop-image').value.trim();
         if (imgUrl && !isValidUrl(imgUrl)) {
-            alert('Please enter a valid HTTP or HTTPS image URL.');
+            showToast('Please enter a valid HTTP or HTTPS image URL.', 'error');
             return;
         }
 
@@ -438,36 +481,35 @@
             county: document.getElementById('prop-county').value,
             town: document.getElementById('prop-town').value.trim(),
             location: document.getElementById('prop-location').value.trim(),
-            bedrooms: parseInt(document.getElementById('prop-beds').value) || null,
-            bathrooms: parseInt(document.getElementById('prop-baths').value) || null,
+            // 🔒 FIX: Use safe parsers that preserve `0`
+            bedrooms: getNumOrNull('prop-beds'),
+            bathrooms: getNumOrNull('prop-baths'),
             status: document.getElementById('prop-status').value,
             visibility: document.getElementById('prop-visibility').value,
-            commission_split: parseFloat(document.getElementById('prop-commission').value) || 50,
+            commission_split: getNumOrDefault('prop-commission', 50),
             agent_notes: document.getElementById('prop-notes').value.trim(),
             description: document.getElementById('prop-description').value.trim(),
             images: imgUrl ? [imgUrl] : []
         };
 
         const propId = document.getElementById('prop-id').value;
-        let error;
 
         try {
             if (propId) {
-                // 🔒 SECURITY: Explicit ownership check on update
-                const res = await supabase.from('properties').update(propData).eq('id', propId).eq('agent_id', state.user.id);
-                error = res.error;
+                const { error } = await supabase.from('properties').update(propData).eq('id', propId).eq('agent_id', state.user.id);
+                if (error) throw error;
+                showToast('Property updated successfully!');
             } else {
-                const res = await supabase.from('properties').insert([propData]);
-                error = res.error;
+                const { error } = await supabase.from('properties').insert([propData]);
+                if (error) throw error;
+                showToast('Property added successfully!');
             }
-
-            if (error) throw error;
 
             closePropertyModal();
             loadProperties();
         } catch (err) {
             console.error(err);
-            alert('Error saving property: ' + err.message);
+            showToast('Error saving property: ' + err.message, 'error');
         } finally {
             submitBtn.disabled = false;
             submitBtn.innerHTML = 'Save Property';
@@ -478,13 +520,13 @@
         if (!confirm('Are you sure you want to delete this property? This cannot be undone.')) return;
         
         try {
-            // 🔒 SECURITY: Explicit ownership check on delete
             const { error } = await supabase.from('properties').delete().eq('id', id).eq('agent_id', state.user.id);
             if (error) throw error;
+            showToast('Property deleted successfully!');
             loadProperties();
         } catch (err) {
             console.error(err);
-            alert('Error deleting: ' + err.message);
+            showToast('Error deleting property: ' + err.message, 'error');
         }
     }
 
@@ -492,7 +534,6 @@
     // 6. EVENT DELEGATION & INITIALIZATION
     // ==========================================
     function initEventListeners() {
-        // Mobile Menu
         document.getElementById('mobile-menu-btn').addEventListener('click', () => {
             document.getElementById('sidebar').classList.toggle('mobile-open');
             document.getElementById('mobile-overlay').classList.toggle('hidden');
@@ -502,33 +543,27 @@
             document.getElementById('mobile-overlay').classList.add('hidden');
         });
 
-        // Logout
         document.getElementById('logout-btn').addEventListener('click', async (e) => {
             e.preventDefault();
             await supabase.auth.signOut();
             window.location.href = 'login.html';
         });
 
-        // Modal Controls
         document.getElementById('add-property-btn').addEventListener('click', openPropertyModal);
         document.getElementById('close-modal-btn').addEventListener('click', closePropertyModal);
         document.getElementById('cancel-modal-btn').addEventListener('click', closePropertyModal);
         
-        // Visibility Toggle
         document.getElementById('prop-visibility').addEventListener('change', function() {
             document.getElementById('collab-settings').classList.toggle('hidden', this.value !== 'co-broker');
         });
 
-        // Form Submission
         document.getElementById('property-form').addEventListener('submit', handleFormSubmit);
 
-        // Filters (Debounced)
         const debouncedFilter = debounce(applyFilters, 300);
         document.getElementById('search-input').addEventListener('input', debouncedFilter);
         document.getElementById('filter-status').addEventListener('change', applyFilters);
         document.getElementById('filter-visibility').addEventListener('change', applyFilters);
 
-        // 🔒 SECURE EVENT DELEGATION for Property Cards
         document.getElementById('properties-grid').addEventListener('click', (e) => {
             const editBtn = e.target.closest('.btn-edit');
             if (editBtn) {
@@ -544,15 +579,18 @@
             }
         });
 
-        // 🔒 GLOBAL IMAGE ERROR HANDLER (CSP Compliant)
+        // 🔒 FIX: Prevent infinite loop if fallback image also fails
         document.addEventListener('error', (e) => {
             if (e.target.tagName === 'IMG' && e.target.classList.contains('prop-img')) {
-                e.target.src = FALLBACK_IMG;
+                if (e.target.src !== FALLBACK_IMG) {
+                    e.target.src = FALLBACK_IMG;
+                } else {
+                    e.target.style.display = 'none'; 
+                }
             }
         }, true);
     }
 
-    // Start App
     document.addEventListener('DOMContentLoaded', () => {
         initEventListeners();
         checkAuth();
