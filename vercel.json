@@ -1,13 +1,27 @@
 {
   "rewrites": [
-    { "source": "/agent/:slug", "destination": "/agent-profile.html?slug=:slug" },
-    { "source": "/agents", "destination": "/agents.html" },
-    { "source": "/property/:id", "destination": "/?property=:id" }
-  ]
-}
-{
-  "rewrites": [
     { "source": "/sitemap.xml", "destination": "/api/sitemap" },
-    { "source": "/agent/:slug", "destination": "/agent-profile.html" }
+    { "source": "/agents", "destination": "/agents.html" },
+    { "source": "/agent/:slug", "destination": "/agent-profile.html?slug=:slug" },
+    { "source": "/agent/:slug/", "destination": "/agent-profile.html?slug=:slug" },
+    { "source": "/property/:id", "destination": "/property.html?id=:id" },
+    { "source": "/property/:id/", "destination": "/property.html?id=:id" }
+  ],
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        { "key": "X-Content-Type-Options", "value": "nosniff" },
+        { "key": "X-Frame-Options", "value": "DENY" },
+        { "key": "Referrer-Policy", "value": "strict-origin-when-cross-origin" },
+        { "key": "Permissions-Policy", "value": "camera=(), microphone=(), geolocation=()" }
+      ]
+    },
+    {
+      "source": "/api/(.*)",
+      "headers": [
+        { "key": "Cache-Control", "value": "public, s-maxage=3600, stale-while-revalidate=600" }
+      ]
+    }
   ]
 }
