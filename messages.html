@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Messages & Network - Properties in Kenya</td>
+    <!-- 🔒 FIX: Corrected closing tag from </td> to </title> -->
+    <title>Messages & Network - Properties in Kenya</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -15,7 +16,6 @@
         .sidebar-link:hover:not(.active) { background-color: #fef3c7; color: #d97706; }
         @media (max-width: 1024px) { .sidebar { display: none; } .sidebar.mobile-open { display: block; } }
         
-        /* Chat specific styles */
         .chat-container { height: calc(100vh - 80px); }
         .messages-area { scroll-behavior: smooth; }
         .msg-bubble { max-width: 80%; word-wrap: break-word; }
@@ -25,7 +25,6 @@
         .hide-scrollbar::-webkit-scrollbar { display: none; }
         .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
         
-        /* Mobile chat view toggle */
         .mobile-chat-hidden { display: none; }
         @media (min-width: 1024px) {
             .mobile-chat-hidden { display: flex !important; }
@@ -34,10 +33,11 @@
 </head>
 <body class="bg-gray-50">
 
-<button onclick="toggleMobileMenu()" class="lg:hidden fixed top-4 left-4 z-50 bg-white p-3 rounded-xl shadow-lg">
+<!-- 🔒 FIX: Removed inline onclick, added IDs for event delegation -->
+<button id="mobile-menu-btn" class="lg:hidden fixed top-4 left-4 z-50 bg-white p-3 rounded-xl shadow-lg" aria-label="Toggle menu">
     <i class="fas fa-bars text-gray-700"></i>
 </button>
-<div id="mobile-overlay" onclick="toggleMobileMenu()" class="hidden lg:hidden fixed inset-0 bg-black/50 z-40"></div>
+<div id="mobile-overlay" class="hidden lg:hidden fixed inset-0 bg-black/50 z-40"></div>
 
 <div class="flex min-h-screen">
     <!-- SIDEBAR -->
@@ -58,31 +58,28 @@
             <a href="messages.html" class="sidebar-link active flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium"><i class="fas fa-comment-dots w-5"></i> Messages</a>
             <a href="commissions.html" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-gray-700"><i class="fas fa-wallet w-5"></i> Commissions</a>
             <div class="pt-4 mt-4 border-t border-gray-200">
-                <a href="#" onclick="logout()" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-gray-700"><i class="fas fa-sign-out-alt w-5"></i> Logout</a>
+                <a href="#" id="logout-btn" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-gray-700"><i class="fas fa-sign-out-alt w-5"></i> Logout</a>
             </div>
         </nav>
     </aside>
 
     <!-- MAIN CONTENT -->
     <main class="flex-1 lg:ml-0 w-full h-screen overflow-hidden flex flex-col">
-        
-        <!-- Desktop/Tablet Split View -->
         <div class="flex flex-1 overflow-hidden">
             
-            <!-- LEFT PANE: Conversations & Network -->
+            <!-- LEFT PANE -->
             <div id="left-pane" class="w-full lg:w-1/3 bg-white border-r border-gray-200 flex flex-col mobile-chat-hidden">
-                <!-- Tabs -->
                 <div class="flex border-b border-gray-200">
-                    <button onclick="switchTab('chats')" id="tab-chats" class="flex-1 py-4 text-sm font-bold text-blue-600 border-b-2 border-blue-600">Chats</button>
-                    <button onclick="switchTab('network')" id="tab-network" class="flex-1 py-4 text-sm font-semibold text-gray-500 hover:text-gray-700">Network</button>
+                    <!-- 🔒 FIX: Replaced inline onclick with data attributes -->
+                    <button data-tab="chats" id="tab-chats" class="flex-1 py-4 text-sm font-bold text-blue-600 border-b-2 border-blue-600">Chats</button>
+                    <button data-tab="network" id="tab-network" class="flex-1 py-4 text-sm font-semibold text-gray-500 hover:text-gray-700">Network</button>
                 </div>
 
-                <!-- Chats List -->
                 <div id="chats-list" class="flex-1 overflow-y-auto hide-scrollbar">
                     <div class="p-4 text-center text-gray-400"><i class="fas fa-spinner fa-spin"></i> Loading...</div>
                 </div>
 
-                <!-- Network List (Hidden by default) -->
+                <!-- 🔒 FIX: Corrected missing closing '>' on div -->
                 <div id="network-list" class="hidden flex-1 overflow-y-auto hide-scrollbar p-4 space-y-3">
                     <div class="relative mb-4">
                         <i class="fas fa-search absolute left-3 top-3 text-gray-400"></i>
@@ -90,13 +87,12 @@
                     </div>
                     <div id="agents-directory" class="space-y-3">
                         <div class="text-center text-gray-400 py-8"><i class="fas fa-spinner fa-spin"></i> Loading agents...</div>
-                    </div
+                    </div>
                 </div>
             </div>
 
-            <!-- RIGHT PANE: Active Chat -->
+            <!-- RIGHT PANE -->
             <div id="right-pane" class="hidden lg:flex flex-1 flex-col bg-gray-50 mobile-chat-hidden">
-                <!-- Empty State -->
                 <div id="chat-empty-state" class="flex-1 flex flex-col items-center justify-center text-gray-400">
                     <div class="w-20 h-20 bg-gray-200 rounded-full flex items-center justify-center mb-4">
                         <i class="fas fa-comments text-3xl"></i>
@@ -104,12 +100,10 @@
                     <p class="font-semibold">Select a conversation to start messaging</p>
                 </div>
 
-                <!-- Active Chat Interface -->
                 <div id="chat-interface" class="hidden flex-col h-full">
-                    <!-- Chat Header -->
                     <div class="bg-white border-b border-gray-200 p-4 flex items-center justify-between flex-shrink-0">
                         <div class="flex items-center gap-3">
-                            <button onclick="closeChatMobile()" class="lg:hidden p-2 -ml-2 text-gray-600"><i class="fas fa-arrow-left"></i></button>
+                            <button id="close-chat-mobile-btn" class="lg:hidden p-2 -ml-2 text-gray-600" aria-label="Back to chats"><i class="fas fa-arrow-left"></i></button>
                             <div class="w-10 h-10 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-full flex items-center justify-center text-white font-bold" id="chat-avatar">A</div>
                             <div>
                                 <h3 class="font-bold text-gray-900" id="chat-name">Agent Name</h3>
@@ -118,19 +112,15 @@
                         </div>
                     </div>
 
-                    <!-- Messages Area -->
-                    <div id="messages-area" class="flex-1 overflow-y-auto p-4 space-y-4 messages-area bg-gray-50">
-                        <!-- Messages injected here -->
-                    </div>
+                    <div id="messages-area" class="flex-1 overflow-y-auto p-4 space-y-4 messages-area bg-gray-50"></div>
 
-                    <!-- Input Area -->
                     <div class="bg-white border-t border-gray-200 p-4 flex-shrink-0">
                         <div class="flex items-end gap-2">
-                            <button onclick="openSharePropertyModal()" class="p-3 text-gray-500 hover:text-amber-600 hover:bg-amber-50 rounded-xl transition" title="Share Property">
+                            <button id="share-property-btn" class="p-3 text-gray-500 hover:text-amber-600 hover:bg-amber-50 rounded-xl transition" title="Share Property" aria-label="Share property">
                                 <i class="fas fa-building"></i>
                             </button>
                             <textarea id="message-input" rows="1" class="flex-1 bg-gray-100 border-0 rounded-2xl px-4 py-3 focus:ring-2 focus:ring-blue-500 focus:outline-none resize-none max-h-32" placeholder="Type a message..."></textarea>
-                            <button onclick="sendMessage()" class="p-3 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition shadow-md">
+                            <button id="send-message-btn" class="p-3 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition shadow-md" aria-label="Send message">
                                 <i class="fas fa-paper-plane"></i>
                             </button>
                         </div>
@@ -142,11 +132,11 @@
 </div>
 
 <!-- SHARE PROPERTY MODAL -->
-<div id="share-modal" class="fixed inset-0 bg-black/60 hidden flex items-center justify-center z-50 p-4">
+<div id="share-modal" class="fixed inset-0 bg-black/60 hidden flex items-center justify-center z-50 p-4" role="dialog" aria-modal="true">
     <div class="modal bg-white rounded-3xl w-full max-w-lg max-h-[80vh] overflow-y-auto">
         <div class="p-6 border-b flex items-center justify-between sticky top-0 bg-white z-10">
             <h2 class="heading-font text-xl font-bold">Share a Property</h2>
-            <button onclick="closeShareModal()" class="w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100"><i class="fas fa-times text-xl"></i></button>
+            <button id="close-share-modal-btn" class="w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100" aria-label="Close modal"><i class="fas fa-times text-xl"></i></button>
         </div>
         <div class="p-6">
             <p class="text-sm text-gray-500 mb-4">Select one of your properties to share in this chat:</p>
@@ -158,385 +148,477 @@
 </div>
 
 <script>
-const supabase = window.supabase.createClient(
-    'https://nqvsmuvltbiekfnvovx.supabase.co',
-    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5xd3ZzbXV2bHRiaWVrZm52b3Z4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA1NjU4MDAsImV4cCI6MjA5NjE0MTgwMH0.Xrc-bbAuWdvKSPHnVhTaLiQphV61xeYtDepWePqsrdo'
-);
+(function() {
+    'use strict';
 
-let currentUser = null;
-let currentConversationId = null;
-let otherAgentId = null;
-let messageChannel = null;
-
-async function checkAuth() {
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) { window.location.href = 'login.html'; return; }
-    currentUser = user;
-    loadConversations();
-    loadNetworkAgents();
-}
-
-function formatTime(dateString) {
-    const date = new Date(dateString);
-    return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-}
-
-function getTimeAgo(dateString) {
-    const date = new Date(dateString);
-    const now = new Date();
-    const seconds = Math.floor((now - date) / 1000);
-    if (seconds < 60) return 'Just now';
-    if (seconds < 3600) return `${Math.floor(seconds / 60)}m ago`;
-    if (seconds < 86400) return `${Math.floor(seconds / 3600)}h ago`;
-    return `${Math.floor(seconds / 86400)}d ago`;
-}
-
-// --- TABS ---
-function switchTab(tab) {
-    const chatsList = document.getElementById('chats-list');
-    const networkList = document.getElementById('network-list');
-    const tabChats = document.getElementById('tab-chats');
-    const tabNetwork = document.getElementById('tab-network');
-
-    if (tab === 'chats') {
-        chatsList.classList.remove('hidden');
-        networkList.classList.add('hidden');
-        tabChats.className = 'flex-1 py-4 text-sm font-bold text-blue-600 border-b-2 border-blue-600';
-        tabNetwork.className = 'flex-1 py-4 text-sm font-semibold text-gray-500 hover:text-gray-700';
-    } else {
-        chatsList.classList.add('hidden');
-        networkList.classList.remove('hidden');
-        tabNetwork.className = 'flex-1 py-4 text-sm font-bold text-blue-600 border-b-2 border-blue-600';
-        tabChats.className = 'flex-1 py-4 text-sm font-semibold text-gray-500 hover:text-gray-700';
-    }
-}
-
-// --- CONVERSATIONS ---
-async function loadConversations() {
-    const { data, error } = await supabase
-        .from('conversations')
-        .select(`
-            id,
-            participant_1,
-            participant_2,
-            messages (content, sender_id, created_at)
-        `)
-        .or(`participant_1.eq.${currentUser.id},participant_2.eq.${currentUser.id}`)
-        .order('created_at', { ascending: false });
-
-    if (error) { console.error(error); return; }
-
-    const list = document.getElementById('chats-list');
-    if (!data || data.length === 0) {
-        list.innerHTML = '<div class="p-8 text-center text-gray-400 text-sm">No conversations yet.<br>Go to the Network tab to message an agent!</div>';
-        return;
-    }
-
-    // Fetch other agent details for each conversation
-    const conversationsWithDetails = await Promise.all(data.map(async (conv) => {
-        const otherId = conv.participant_1 === currentUser.id ? conv.participant_2 : conv.participant_1;
-        const { data: profile } = await supabase.from('profiles').select('full_name, agency').eq('id', otherId).single();
-        
-        const lastMsg = conv.messages && conv.messages.length > 0 
-            ? conv.messages.sort((a, b) => new Date(b.created_at) - new Date(a.created_at))[0] 
-            : null;
-
-        return { ...conv, otherId, otherName: profile?.full_name || 'Unknown Agent', otherAgency: profile?.agency || '', lastMsg };
-    }));
-
-    list.innerHTML = conversationsWithDetails.map(conv => `
-        <div onclick="openChat('${conv.id}', '${conv.otherId}', '${conv.otherName}')" class="p-4 border-b border-gray-100 hover:bg-gray-50 cursor-pointer transition flex items-center gap-3">
-            <div class="w-12 h-12 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-full flex items-center justify-center text-white font-bold flex-shrink-0">
-                ${conv.otherName.charAt(0)}
-            </div>
-            <div class="flex-1 min-w-0">
-                <div class="flex justify-between items-baseline mb-1">
-                    <h4 class="font-bold text-gray-900 text-sm truncate">${conv.otherName}</h4>
-                    ${conv.lastMsg ? `<span class="text-[10px] text-gray-400 flex-shrink-0">${getTimeAgo(conv.lastMsg.created_at)}</span>` : ''}
-                </div>
-                <p class="text-xs text-gray-500 truncate mb-1">${conv.otherAgency}</p>
-                <p class="text-xs text-gray-600 truncate font-medium">
-                    ${conv.lastMsg ? (conv.lastMsg.sender_id === currentUser.id ? 'You: ' : '') + (conv.lastMsg.content.substring(0, 30) + '...') : 'Start a conversation'}
-                </p>
-            </div>
-        </div>
-    `).join('');
-}
-
-// --- NETWORK DIRECTORY ---
-async function loadNetworkAgents() {
-    const { data, error } = await supabase
-        .from('profiles')
-        .select('id, full_name, agency, county, specialization, is_verified')
-        .neq('id', currentUser.id)
-        .eq('is_verified', true); // Only show verified agents
-
-    if (error) { console.error(error); return; }
-
-    const container = document.getElementById('agents-directory');
-    if (!data || data.length === 0) {
-        container.innerHTML = '<div class="text-center text-gray-400 py-8">No other verified agents found.</div>';
-        return;
-    }
-
-    window.allAgents = data; // Store for search
-    renderAgents(data);
-}
-
-function renderAgents(agents) {
-    const container = document.getElementById('agents-directory');
-    container.innerHTML = agents.map(agent => `
-        <div class="bg-white p-4 rounded-xl border border-gray-100 flex items-center gap-3">
-            <div class="w-12 h-12 bg-gray-200 rounded-full flex items-center justify-center text-gray-600 font-bold flex-shrink-0 relative">
-                ${agent.full_name.charAt(0)}
-                ${agent.is_verified ? '<i class="fas fa-check-circle absolute -bottom-1 -right-1 text-blue-500 bg-white rounded-full text-xs"></i>' : ''}
-            </div>
-            <div class="flex-1 min-w-0">
-                <h4 class="font-bold text-gray-900 text-sm truncate">${agent.full_name}</h4>
-                <p class="text-xs text-gray-500 truncate">${agent.agency || 'Independent'} • ${agent.county || 'Kenya'}</p>
-                ${agent.specialization ? `<p class="text-[10px] text-amber-600 font-semibold mt-1"><i class="fas fa-star mr-1"></i>${agent.specialization}</p>` : ''}
-            </div>
-            <button onclick="startConversation('${agent.id}', '${agent.full_name}')" class="px-4 py-2 bg-blue-600 text-white text-xs font-bold rounded-lg hover:bg-blue-700 transition flex-shrink-0">
-                Message
-            </button>
-        </div>
-    `).join('');
-}
-
-document.getElementById('network-search').addEventListener('input', (e) => {
-    const term = e.target.value.toLowerCase();
-    const filtered = window.allAgents.filter(a => 
-        a.full_name.toLowerCase().includes(term) || 
-        (a.county && a.county.toLowerCase().includes(term))
+    // ==========================================
+    // 1. CONFIGURATION & STATE
+    // ==========================================
+    const supabase = window.supabase.createClient(
+        'https://nqvsmuvltbiekfnvovx.supabase.co',
+        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5xd3ZzbXV2bHRiaWVrZm52b3Z4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA1NjU4MDAsImV4cCI6MjA5NjE0MTgwMH0.Xrc-bbAuWdvKSPHnVhTaLiQphV61xeYtDepWePqsrdo'
     );
-    renderAgents(filtered);
-});
 
-// --- CHAT LOGIC ---
-async function startConversation(otherId, otherName) {
-    // Check if conversation exists
-    const { data: existing } = await supabase
-        .from('conversations')
-        .select('id')
-        .or(`and(participant_1.eq.${currentUser.id},participant_2.eq.${otherId}),and(participant_1.eq.${otherId},participant_2.eq.${currentUser.id})`)
-        .single();
+    const state = {
+        user: null,
+        currentConversationId: null,
+        otherAgentId: null,
+        messageChannel: null,
+        allAgents: [],
+        searchTimeout: null
+    };
 
-    let convId = existing?.id;
+    // ==========================================
+    // 2. UTILITIES
+    // ==========================================
+    function esc(str) {
+        if (!str) return '';
+        const div = document.createElement('div');
+        div.textContent = str;
+        return div.innerHTML;
+    }
 
-    if (!convId) {
-        // Create new conversation
-        const { data: newConv, error } = await supabase
-            .from('conversations')
-            .insert({ participant_1: currentUser.id, participant_2: otherId })
-            .select()
-            .single();
+    function formatKES(amount) {
+        return new Intl.NumberFormat('en-KE', { style: 'currency', currency: 'KES', maximumFractionDigits: 0 }).format(amount || 0);
+    }
+
+    function formatTime(dateString) {
+        return new Date(dateString).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    }
+
+    function getTimeAgo(dateString) {
+        const seconds = Math.floor((new Date() - new Date(dateString)) / 1000);
+        if (seconds < 60) return 'Just now';
+        if (seconds < 3600) return `${Math.floor(seconds / 60)}m ago`;
+        if (seconds < 86400) return `${Math.floor(seconds / 3600)}h ago`;
+        return `${Math.floor(seconds / 86400)}d ago`;
+    }
+
+    function debounce(func, wait) {
+        return (...args) => {
+            clearTimeout(state.searchTimeout);
+            state.searchTimeout = setTimeout(() => func(...args), wait);
+        };
+    }
+
+    // ==========================================
+    // 3. AUTH & INITIALIZATION
+    // ==========================================
+    async function checkAuth() {
+        const { data: { user } } = await supabase.auth.getUser();
+        if (!user) { window.location.href = 'login.html'; return; }
+        state.user = user;
         
-        if (error) { alert('Error starting chat'); return; }
-        convId = newConv.id;
+        supabase.auth.onAuthStateChange((event) => {
+            if (event === 'SIGNED_OUT') window.location.href = 'login.html';
+        });
+
+        loadConversations();
+        loadNetworkAgents();
     }
 
-    openChat(convId, otherId, otherName);
-}
+    // ==========================================
+    // 4. CONVERSATIONS (Fixed N+1 Query)
+    // ==========================================
+    async function loadConversations() {
+        const { data, error } = await supabase
+            .from('conversations')
+            .select(`id, participant_1, participant_2, messages (content, sender_id, created_at)`)
+            .or(`participant_1.eq.${state.user.id},participant_2.eq.${state.user.id}`)
+            .order('created_at', { ascending: false });
 
-async function openChat(convId, agentId, agentName) {
-    currentConversationId = convId;
-    otherAgentId = agentId;
+        if (error) { console.error(error); return; }
 
-    // Mobile UI toggle
-    if (window.innerWidth < 1024) {
-        document.getElementById('left-pane').classList.add('mobile-chat-hidden');
-        document.getElementById('right-pane').classList.remove('mobile-chat-hidden');
-        document.getElementById('right-pane').classList.add('flex');
+        const list = document.getElementById('chats-list');
+        if (!data || data.length === 0) {
+            list.innerHTML = '<div class="p-8 text-center text-gray-400 text-sm">No conversations yet.<br>Go to the Network tab to message an agent!</div>';
+            return;
+        }
+
+        // 🔥 PERFORMANCE FIX: Fetch all profiles in ONE query instead of N+1
+        const otherIds = data.map(conv => conv.participant_1 === state.user.id ? conv.participant_2 : conv.participant_1);
+        const { data: profiles } = await supabase
+            .from('profiles')
+            .select('id, full_name, agency')
+            .in('id', otherIds);
+        
+        const profileMap = new Map(profiles.map(p => [p.id, p]));
+
+        const conversationsWithDetails = data.map(conv => {
+            const otherId = conv.participant_1 === state.user.id ? conv.participant_2 : conv.participant_1;
+            const profile = profileMap.get(otherId) || {};
+            const lastMsg = conv.messages && conv.messages.length > 0 
+                ? conv.messages.sort((a, b) => new Date(b.created_at) - new Date(a.created_at))[0] 
+                : null;
+
+            return { ...conv, otherId, otherName: profile.full_name || 'Unknown', otherAgency: profile.agency || '', lastMsg };
+        });
+
+        list.innerHTML = conversationsWithDetails.map(conv => `
+            <div data-conv-id="${esc(conv.id)}" data-agent-id="${esc(conv.otherId)}" data-agent-name="${esc(conv.otherName)}" class="chat-item p-4 border-b border-gray-100 hover:bg-gray-50 cursor-pointer transition flex items-center gap-3">
+                <div class="w-12 h-12 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-full flex items-center justify-center text-white font-bold flex-shrink-0">
+                    ${esc(conv.otherName.charAt(0))}
+                </div>
+                <div class="flex-1 min-w-0">
+                    <div class="flex justify-between items-baseline mb-1">
+                        <h4 class="font-bold text-gray-900 text-sm truncate">${esc(conv.otherName)}</h4>
+                        ${conv.lastMsg ? `<span class="text-[10px] text-gray-400 flex-shrink-0">${getTimeAgo(conv.lastMsg.created_at)}</span>` : ''}
+                    </div>
+                    <p class="text-xs text-gray-500 truncate mb-1">${esc(conv.otherAgency)}</p>
+                    <p class="text-xs text-gray-600 truncate font-medium">
+                        ${conv.lastMsg ? (conv.lastMsg.sender_id === state.user.id ? 'You: ' : '') + esc(conv.lastMsg.content.substring(0, 30) + '...') : 'Start a conversation'}
+                    </p>
+                </div>
+            </div>
+        `).join('');
     }
 
-    document.getElementById('chat-empty-state').classList.add('hidden');
-    document.getElementById('chat-interface').classList.remove('hidden');
-    document.getElementById('chat-interface').classList.add('flex');
-    
-    document.getElementById('chat-name').textContent = agentName;
-    document.getElementById('chat-avatar').textContent = agentName.charAt(0);
+    // ==========================================
+    // 5. NETWORK DIRECTORY
+    // ==========================================
+    async function loadNetworkAgents() {
+        const { data, error } = await supabase
+            .from('profiles')
+            .select('id, full_name, agency, county, specialization, is_verified')
+            .neq('id', state.user.id)
+            .eq('is_verified', true);
 
-    // Load messages
-    await loadMessages();
+        if (error) { console.error(error); return; }
 
-    // Setup Realtime Subscription
-    if (messageChannel) supabase.removeChannel(messageChannel);
-    
-    messageChannel = supabase
-        .channel(`chat-${convId}`)
-        .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'messages', filter: `conversation_id=eq.${convId}` }, payload => {
-            appendMessage(payload.new);
-            scrollToBottom();
-        })
-        .subscribe();
-}
+        const container = document.getElementById('agents-directory');
+        if (!data || data.length === 0) {
+            container.innerHTML = '<div class="text-center text-gray-400 py-8">No other verified agents found.</div>';
+            return;
+        }
 
-async function loadMessages() {
-    const { data, error } = await supabase
-        .from('messages')
-        .select('*, properties(title, price, images)')
-        .eq('conversation_id', currentConversationId)
-        .order('created_at', { ascending: true });
+        state.allAgents = data; 
+        renderAgents(data);
+    }
 
-    if (error) { console.error(error); return; }
+    function renderAgents(agents) {
+        const container = document.getElementById('agents-directory');
+        container.innerHTML = agents.map(agent => `
+            <div class="bg-white p-4 rounded-xl border border-gray-100 flex items-center gap-3">
+                <div class="w-12 h-12 bg-gray-200 rounded-full flex items-center justify-center text-gray-600 font-bold flex-shrink-0 relative">
+                    ${esc(agent.full_name.charAt(0))}
+                    ${agent.is_verified ? '<i class="fas fa-check-circle absolute -bottom-1 -right-1 text-blue-500 bg-white rounded-full text-xs"></i>' : ''}
+                </div>
+                <div class="flex-1 min-w-0">
+                    <h4 class="font-bold text-gray-900 text-sm truncate">${esc(agent.full_name)}</h4>
+                    <p class="text-xs text-gray-500 truncate">${esc(agent.agency || 'Independent')} • ${esc(agent.county || 'Kenya')}</p>
+                    ${agent.specialization ? `<p class="text-[10px] text-amber-600 font-semibold mt-1"><i class="fas fa-star mr-1"></i>${esc(agent.specialization)}</p>` : ''}
+                </div>
+                <button data-agent-id="${esc(agent.id)}" data-agent-name="${esc(agent.full_name)}" class="msg-agent-btn px-4 py-2 bg-blue-600 text-white text-xs font-bold rounded-lg hover:bg-blue-700 transition flex-shrink-0">
+                    Message
+                </button>
+            </div>
+        `).join('');
+    }
 
-    const area = document.getElementById('messages-area');
-    area.innerHTML = ''; // Clear before loading
-    
-    data.forEach(msg => appendMessage(msg, false));
-    scrollToBottom();
+    // ==========================================
+    // 6. CHAT LOGIC & REALTIME
+    // ==========================================
+    async function startConversation(otherId, otherName) {
+        const { data: existing } = await supabase
+            .from('conversations')
+            .select('id')
+            .or(`and(participant_1.eq.${state.user.id},participant_2.eq.${otherId}),and(participant_1.eq.${otherId},participant_2.eq.${state.user.id})`)
+            .single();
 
-    // Mark as read
-    await supabase
-        .from('messages')
-        .update({ is_read: true })
-        .eq('conversation_id', currentConversationId)
-        .neq('sender_id', currentUser.id)
-        .eq('is_read', false);
-}
+        let convId = existing?.id;
 
-function appendMessage(msg, animate = true) {
-    const area = document.getElementById('messages-area');
-    const isSent = msg.sender_id === currentUser.id;
-    
-    let propertyCard = '';
-    if (msg.property_id && msg.properties) {
-        const img = msg.properties.images && msg.properties.images[0] ? msg.properties.images[0] : 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=400';
-        const price = new Intl.NumberFormat('en-KE', { style: 'currency', currency: 'KES', maximumFractionDigits: 0 }).format(msg.properties.price);
-        propertyCard = `
-            <div class="mt-2 bg-white rounded-lg overflow-hidden border border-gray-200 shadow-sm max-w-xs">
-                <img src="${img}" class="w-full h-24 object-cover">
-                <div class="p-2">
-                    <p class="text-xs font-bold text-gray-800 truncate">${msg.properties.title}</p>
-                    <p class="text-xs text-amber-600 font-semibold">${price}</p>
+        if (!convId) {
+            const { data: newConv, error } = await supabase
+                .from('conversations')
+                .insert({ participant_1: state.user.id, participant_2: otherId })
+                .select()
+                .single();
+            
+            if (error) { alert('Error starting chat'); return; }
+            convId = newConv.id;
+        }
+
+        openChat(convId, otherId, otherName);
+    }
+
+    async function openChat(convId, agentId, agentName) {
+        state.currentConversationId = convId;
+        state.otherAgentId = agentId;
+
+        if (window.innerWidth < 1024) {
+            document.getElementById('left-pane').classList.add('mobile-chat-hidden');
+            document.getElementById('right-pane').classList.remove('mobile-chat-hidden');
+            document.getElementById('right-pane').classList.add('flex');
+        }
+
+        document.getElementById('chat-empty-state').classList.add('hidden');
+        document.getElementById('chat-interface').classList.remove('hidden');
+        document.getElementById('chat-interface').classList.add('flex');
+        
+        document.getElementById('chat-name').textContent = agentName;
+        document.getElementById('chat-avatar').textContent = agentName.charAt(0);
+
+        await loadMessages();
+
+        if (state.messageChannel) supabase.removeChannel(state.messageChannel);
+        
+        state.messageChannel = supabase
+            .channel(`chat-${convId}`)
+            .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'messages', filter: `conversation_id=eq.${convId}` }, payload => {
+                appendMessage(payload.new);
+                scrollToBottom();
+            })
+            .subscribe();
+    }
+
+    async function loadMessages() {
+        // 🔥 PERFORMANCE FIX: Limit messages to prevent DOM freezing
+        const { data, error } = await supabase
+            .from('messages')
+            .select('*, properties(title, price, images)')
+            .eq('conversation_id', state.currentConversationId)
+            .order('created_at', { ascending: true })
+            .limit(100); 
+
+        if (error) { console.error(error); return; }
+
+        const area = document.getElementById('messages-area');
+        area.innerHTML = ''; 
+        
+        data.forEach(msg => appendMessage(msg, false));
+        scrollToBottom();
+
+        await supabase
+            .from('messages')
+            .update({ is_read: true })
+            .eq('conversation_id', state.currentConversationId)
+            .neq('sender_id', state.user.id)
+            .eq('is_read', false);
+    }
+
+    function appendMessage(msg, animate = true) {
+        // 🔒 FIX: Prevent duplicate messages from Realtime
+        if (document.getElementById(`msg-${msg.id}`)) return; 
+
+        const area = document.getElementById('messages-area');
+        const isSent = msg.sender_id === state.user.id;
+        
+        let propertyCard = '';
+        if (msg.property_id && msg.properties) {
+            const img = Array.isArray(msg.properties.images) && msg.properties.images.length > 0 
+                ? msg.properties.images[0] 
+                : 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=400';
+            
+            propertyCard = `
+                <div class="mt-2 bg-white rounded-lg overflow-hidden border border-gray-200 shadow-sm max-w-xs">
+                    <img src="${esc(img)}" class="w-full h-24 object-cover">
+                    <div class="p-2">
+                        <p class="text-xs font-bold text-gray-800 truncate">${esc(msg.properties.title)}</p>
+                        <p class="text-xs text-amber-600 font-semibold">${formatKES(msg.properties.price)}</p>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Handle empty text content gracefully
+        const textContent = msg.content ? `<p class="text-sm">${esc(msg.content)}</p>` : '';
+
+        const html = `
+            <div id="msg-${esc(msg.id)}" class="flex ${isSent ? 'justify-end' : 'justify-start'} ${animate ? 'animate-slide-up' : ''}">
+                <div class="msg-bubble ${isSent ? 'msg-sent' : 'msg-received'} rounded-2xl px-4 py-2.5 shadow-sm">
+                    ${textContent}
+                    ${propertyCard}
+                    <p class="text-[10px] ${isSent ? 'text-blue-800' : 'text-gray-500'} text-right mt-1">${formatTime(msg.created_at)}</p>
                 </div>
             </div>
         `;
+        
+        area.insertAdjacentHTML('beforeend', html);
     }
 
-    const html = `
-        <div class="flex ${isSent ? 'justify-end' : 'justify-start'} ${animate ? 'animate-slide-up' : ''}">
-            <div class="msg-bubble ${isSent ? 'msg-sent' : 'msg-received'} rounded-2xl px-4 py-2.5 shadow-sm">
-                <p class="text-sm">${msg.content}</p>
-                ${propertyCard}
-                <p class="text-[10px] ${isSent ? 'text-blue-800' : 'text-gray-500'} text-right mt-1">${formatTime(msg.created_at)}</p>
-            </div>
-        </div>
-    `;
-    
-    area.insertAdjacentHTML('beforeend', html);
-}
+    function scrollToBottom() {
+        const area = document.getElementById('messages-area');
+        area.scrollTop = area.scrollHeight;
+    }
 
-function scrollToBottom() {
-    const area = document.getElementById('messages-area');
-    area.scrollTop = area.scrollHeight;
-}
+    async function sendMessage() {
+        const input = document.getElementById('message-input');
+        const content = input.value.trim();
+        if (!content || !state.currentConversationId) return;
 
-async function sendMessage() {
-    const input = document.getElementById('message-input');
-    const content = input.value.trim();
-    if (!content || !currentConversationId) return;
+        const { error } = await supabase
+            .from('messages')
+            .insert({
+                conversation_id: state.currentConversationId,
+                sender_id: state.user.id,
+                content: content,
+                is_read: false
+            });
 
-    const { error } = await supabase
-        .from('messages')
-        .insert({
-            conversation_id: currentConversationId,
-            sender_id: currentUser.id,
-            content: content,
-            is_read: false
+        if (!error) {
+            input.value = '';
+            input.style.height = 'auto';
+        }
+    }
+
+    // ==========================================
+    // 7. SHARE PROPERTY
+    // ==========================================
+    async function openSharePropertyModal() {
+        document.getElementById('share-modal').classList.remove('hidden');
+        const list = document.getElementById('share-properties-list');
+        
+        const { data } = await supabase
+            .from('properties')
+            .select('id, title, price, images')
+            .eq('agent_id', state.user.id)
+            .order('created_at', { ascending: false })
+            .limit(5);
+
+        if (!data || data.length === 0) {
+            list.innerHTML = '<p class="text-center text-gray-500 text-sm py-4">You have no properties to share yet.</p>';
+            return;
+        }
+
+        list.innerHTML = data.map(prop => {
+            const img = Array.isArray(prop.images) && prop.images.length > 0 ? prop.images[0] : 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=400';
+            return `
+            <div data-prop-id="${esc(prop.id)}" class="share-prop-item flex items-center gap-3 p-3 border border-gray-200 rounded-xl hover:bg-amber-50 hover:border-amber-300 cursor-pointer transition">
+                <img src="${esc(img)}" class="w-16 h-16 object-cover rounded-lg flex-shrink-0">
+                <div class="flex-1 min-w-0">
+                    <p class="font-bold text-sm text-gray-900 truncate">${esc(prop.title)}</p>
+                    <p class="text-xs text-amber-600 font-semibold">${formatKES(prop.price)}</p>
+                </div>
+                <i class="fas fa-share text-gray-400"></i>
+            </div>`;
+        }).join('');
+    }
+
+    async function shareProperty(propertyId) {
+        const { error } = await supabase
+            .from('messages')
+            .insert({
+                conversation_id: state.currentConversationId,
+                sender_id: state.user.id,
+                content: "Check out this property I think might be a good match:",
+                property_id: propertyId,
+                is_read: false
+            });
+
+        if (!error) {
+            document.getElementById('share-modal').classList.add('hidden');
+        }
+    }
+
+    // ==========================================
+    // 8. EVENT DELEGATION & INIT
+    // ==========================================
+    function initEventListeners() {
+        // Mobile Menu & Logout
+        document.getElementById('mobile-menu-btn').addEventListener('click', () => {
+            document.getElementById('sidebar').classList.toggle('mobile-open');
+            document.getElementById('mobile-overlay').classList.toggle('hidden');
+        });
+        document.getElementById('mobile-overlay').addEventListener('click', () => {
+            document.getElementById('sidebar').classList.remove('mobile-open');
+            document.getElementById('mobile-overlay').classList.add('hidden');
+        });
+        document.getElementById('logout-btn').addEventListener('click', async (e) => {
+            e.preventDefault();
+            await supabase.auth.signOut();
+            window.location.href = 'login.html';
         });
 
-    if (!error) {
-        input.value = '';
-        input.style.height = 'auto'; // Reset height
-    }
-}
-
-// Auto-resize textarea
-document.getElementById('message-input').addEventListener('input', function() {
-    this.style.height = 'auto';
-    this.style.height = (this.scrollHeight) + 'px';
-});
-document.getElementById('message-input').addEventListener('keydown', function(e) {
-    if (e.key === 'Enter' && !e.shiftKey) {
-        e.preventDefault();
-        sendMessage();
-    }
-});
-
-// --- SHARE PROPERTY ---
-async function openSharePropertyModal() {
-    document.getElementById('share-modal').classList.remove('hidden');
-    const list = document.getElementById('share-properties-list');
-    
-    const { data } = await supabase
-        .from('properties')
-        .select('id, title, price, images')
-        .eq('agent_id', currentUser.id)
-        .order('created_at', { ascending: false })
-        .limit(5);
-
-    if (!data || data.length === 0) {
-        list.innerHTML = '<p class="text-center text-gray-500 text-sm py-4">You have no properties to share yet.</p>';
-        return;
-    }
-
-    list.innerHTML = data.map(prop => {
-        const img = prop.images && prop.images[0] ? prop.images[0] : 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=400';
-        const price = new Intl.NumberFormat('en-KE', { style: 'currency', currency: 'KES', maximumFractionDigits: 0 }).format(prop.price);
-        return `
-        <div onclick="shareProperty('${prop.id}')" class="flex items-center gap-3 p-3 border border-gray-200 rounded-xl hover:bg-amber-50 hover:border-amber-300 cursor-pointer transition">
-            <img src="${img}" class="w-16 h-16 object-cover rounded-lg flex-shrink-0">
-            <div class="flex-1 min-w-0">
-                <p class="font-bold text-sm text-gray-900 truncate">${prop.title}</p>
-                <p class="text-xs text-amber-600 font-semibold">${price}</p>
-            </div>
-            <i class="fas fa-share text-gray-400"></i>
-        </div>`;
-    }).join('');
-}
-
-async function shareProperty(propertyId) {
-    const { error } = await supabase
-        .from('messages')
-        .insert({
-            conversation_id: currentConversationId,
-            sender_id: currentUser.id,
-            content: "Check out this property I think might be a good match:",
-            property_id: propertyId,
-            is_read: false
+        // Tabs
+        document.querySelectorAll('[data-tab]').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const tab = btn.dataset.tab;
+                document.getElementById('chats-list').classList.toggle('hidden', tab !== 'chats');
+                document.getElementById('network-list').classList.toggle('hidden', tab !== 'network');
+                
+                document.getElementById('tab-chats').className = tab === 'chats' 
+                    ? 'flex-1 py-4 text-sm font-bold text-blue-600 border-b-2 border-blue-600' 
+                    : 'flex-1 py-4 text-sm font-semibold text-gray-500 hover:text-gray-700';
+                document.getElementById('tab-network').className = tab === 'network' 
+                    ? 'flex-1 py-4 text-sm font-bold text-blue-600 border-b-2 border-blue-600' 
+                    : 'flex-1 py-4 text-sm font-semibold text-gray-500 hover:text-gray-700';
+            });
         });
 
-    if (!error) {
-        closeShareModal();
+        // 🔒 SECURE EVENT DELEGATION: Chats List
+        document.getElementById('chats-list').addEventListener('click', (e) => {
+            const item = e.target.closest('.chat-item');
+            if (item) {
+                openChat(item.dataset.convId, item.dataset.agentId, item.dataset.agentName);
+            }
+        });
+
+        // 🔒 SECURE EVENT DELEGATION: Network Directory
+        document.getElementById('agents-directory').addEventListener('click', (e) => {
+            const btn = e.target.closest('.msg-agent-btn');
+            if (btn) {
+                startConversation(btn.dataset.agentId, btn.dataset.agentName);
+            }
+        });
+
+        // 🔒 SECURE EVENT DELEGATION: Share Modal
+        document.getElementById('share-properties-list').addEventListener('click', (e) => {
+            const item = e.target.closest('.share-prop-item');
+            if (item) {
+                shareProperty(item.dataset.propId);
+            }
+        });
+
+        // Chat UI
+        document.getElementById('close-chat-mobile-btn').addEventListener('click', () => {
+            document.getElementById('right-pane').classList.add('mobile-chat-hidden');
+            document.getElementById('right-pane').classList.remove('flex');
+            document.getElementById('left-pane').classList.remove('mobile-chat-hidden');
+            state.currentConversationId = null;
+            if (state.messageChannel) supabase.removeChannel(state.messageChannel);
+        });
+
+        document.getElementById('share-property-btn').addEventListener('click', openSharePropertyModal);
+        document.getElementById('close-share-modal-btn').addEventListener('click', () => {
+            document.getElementById('share-modal').classList.add('hidden');
+        });
+
+        document.getElementById('send-message-btn').addEventListener('click', sendMessage);
+
+        // Message Input
+        const msgInput = document.getElementById('message-input');
+        msgInput.addEventListener('input', function() {
+            this.style.height = 'auto';
+            this.style.height = (this.scrollHeight) + 'px';
+        });
+        msgInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                sendMessage();
+            }
+        });
+
+        // 🔥 PERFORMANCE: Debounced Network Search
+        const debouncedSearch = debounce((term) => {
+            const filtered = state.allAgents.filter(a => 
+                a.full_name.toLowerCase().includes(term) || 
+                (a.county && a.county.toLowerCase().includes(term))
+            );
+            renderAgents(filtered);
+        }, 300);
+
+        document.getElementById('network-search').addEventListener('input', (e) => {
+            debouncedSearch(e.target.value.toLowerCase());
+        });
     }
-}
 
-function closeShareModal() {
-    document.getElementById('share-modal').classList.add('hidden');
-}
+    // Start App
+    document.addEventListener('DOMContentLoaded', () => {
+        initEventListeners();
+        checkAuth();
+    });
 
-// --- MOBILE UI HELPERS ---
-function closeChatMobile() {
-    document.getElementById('right-pane').classList.add('mobile-chat-hidden');
-    document.getElementById('right-pane').classList.remove('flex');
-    document.getElementById('left-pane').classList.remove('mobile-chat-hidden');
-    currentConversationId = null;
-    if (messageChannel) supabase.removeChannel(messageChannel);
-}
-
-function toggleMobileMenu() {
-    document.getElementById('sidebar').classList.toggle('mobile-open');
-    document.getElementById('mobile-overlay').classList.toggle('hidden');
-}
-
-async function logout() {
-    await supabase.auth.signOut();
-    window.location.href = 'login.html';
-}
-
-// Init
-checkAuth();
+})();
 </script>
 </body>
 </html>
