@@ -20,453 +20,105 @@
 <style>
 * { margin: 0; padding: 0; box-sizing: border-box; }
 html { scroll-behavior: smooth; }
-body {
-  font-family: 'Inter', -apple-system, sans-serif;
-  color: #111827; background: #f4f4f7;
-  line-height: 1.6;
-}
-.nav {
-  position: sticky; top: 0; z-index: 100;
-  background: rgba(255,255,255,0.95);
-  backdrop-filter: blur(20px);
-  border-bottom: 1px solid #e5e7eb;
-  padding: 14px 24px;
-  display: flex; justify-content: space-between; align-items: center;
-}
-.logo {
-  font-size: 16px; font-weight: 700; color: #6b21a8;
-  display: flex; align-items: center; gap: 8px;
-  text-decoration: none;
-}
+body { font-family: 'Inter', -apple-system, sans-serif; color: #111827; background: #f4f4f7; line-height: 1.6; }
+.nav { position: sticky; top: 0; z-index: 100; background: rgba(255,255,255,0.95); backdrop-filter: blur(20px); border-bottom: 1px solid #e5e7eb; padding: 14px 24px; display: flex; justify-content: space-between; align-items: center; }
+.logo { font-size: 16px; font-weight: 700; color: #6b21a8; display: flex; align-items: center; gap: 8px; text-decoration: none; }
 .nav-links { display: flex; gap: 24px; align-items: center; }
-.nav-links a {
-  font-size: 14px; color: #6b7280;
-  text-decoration: none; font-weight: 500;
-  transition: color 0.2s;
-}
+.nav-links a { font-size: 14px; color: #6b7280; text-decoration: none; font-weight: 500; transition: color 0.2s; }
 .nav-links a:hover { color: #6b21a8; }
-.nav-cta {
-  background: #6b21a8; color: white !important;
-  padding: 8px 16px; border-radius: 8px;
-  font-weight: 600;
-}
+.nav-cta { background: #6b21a8; color: white !important; padding: 8px 16px; border-radius: 8px; font-weight: 600; }
 .nav-cta:hover { background: #581c87; }
-.hero {
-  background: linear-gradient(135deg, #6b21a8 0%, #a855f7 100%);
-  padding: 60px 24px 80px;
-  text-align: center;
-  color: white;
-  position: relative;
-  overflow: hidden;
-}
-.hero::before {
-  content: '';
-  position: absolute;
-  top: -50%; right: -20%;
-  width: 600px; height: 600px;
-  background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
-  pointer-events: none;
-}
-.hero h1 {
-  font-size: 40px; font-weight: 800;
-  letter-spacing: -0.5px;
-  margin-bottom: 12px;
-  position: relative;
-}
-.hero p {
-  font-size: 16px;
-  opacity: 0.95;
-  max-width: 600px;
-  margin: 0 auto 32px;
-  position: relative;
-}
+.hero { background: linear-gradient(135deg, #6b21a8 0%, #a855f7 100%); padding: 60px 24px 80px; text-align: center; color: white; position: relative; overflow: hidden; }
+.hero::before { content: ''; position: absolute; top: -50%; right: -20%; width: 600px; height: 600px; background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%); pointer-events: none; }
+.hero h1 { font-size: 40px; font-weight: 800; letter-spacing: -0.5px; margin-bottom: 12px; position: relative; }
+.hero p { font-size: 16px; opacity: 0.95; max-width: 600px; margin: 0 auto 32px; position: relative; }
 .search-wrap { max-width: 640px; margin: 0 auto; position: relative; }
-.search-box {
-  width: 100%;
-  padding: 16px 20px 16px 50px;
-  border: none;
-  border-radius: 14px;
-  font-size: 15px;
-  font-family: inherit;
-  background: white;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.15);
-  outline: none;
-}
-.search-box:focus {
-  box-shadow: 0 10px 30px rgba(0,0,0,0.2), 0 0 0 3px rgba(255,255,255,0.3);
-}
-.search-icon {
-  position: absolute;
-  left: 18px; top: 50%;
-  transform: translateY(-50%);
-  color: #9ca3af;
-  font-size: 16px;
-}
-.stats-bar {
-  max-width: 1400px;
-  margin: -40px auto 0;
-  padding: 0 24px;
-  position: relative;
-  z-index: 10;
-}
-.stats-grid {
-  background: white;
-  border-radius: 16px;
-  padding: 24px;
-  box-shadow: 0 4px 20px rgba(0,0,0,0.08);
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 16px;
-}
+.search-box { width: 100%; padding: 16px 20px 16px 50px; border: none; border-radius: 14px; font-size: 15px; font-family: inherit; background: white; box-shadow: 0 10px 30px rgba(0,0,0,0.15); outline: none; }
+.search-box:focus { box-shadow: 0 10px 30px rgba(0,0,0,0.2), 0 0 0 3px rgba(255,255,255,0.3); }
+.search-icon { position: absolute; left: 18px; top: 50%; transform: translateY(-50%); color: #9ca3af; font-size: 16px; }
+.stats-bar { max-width: 1400px; margin: -40px auto 0; padding: 0 24px; position: relative; z-index: 10; }
+.stats-grid { background: white; border-radius: 16px; padding: 24px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
 .stat-item { text-align: center; padding: 8px; }
 .stat-val { font-size: 28px; font-weight: 800; color: #6b21a8; letter-spacing: -0.5px; }
-.stat-lbl {
-  font-size: 12px; color: #6b7280;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  margin-top: 4px;
-  font-weight: 600;
-}
+.stat-lbl { font-size: 12px; color: #6b7280; text-transform: uppercase; letter-spacing: 0.5px; margin-top: 4px; font-weight: 600; }
 .container { max-width: 1400px; margin: 32px auto; padding: 0 24px; }
 .section { margin-bottom: 40px; }
-.section-head {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 20px;
-  flex-wrap: wrap;
-  gap: 12px;
-}
-.section-title {
-  font-size: 22px; font-weight: 800;
-  color: #111827;
-  display: flex; align-items: center; gap: 10px;
-  letter-spacing: -0.3px;
-}
+.section-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 12px; }
+.section-title { font-size: 22px; font-weight: 800; color: #111827; display: flex; align-items: center; gap: 10px; letter-spacing: -0.3px; }
 .section-title i { color: #6b21a8; }
 .section-sub { font-size: 13px; color: #6b7280; margin-top: 4px; }
-.top-agents {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 16px;
-}
-.top-card {
-  background: linear-gradient(135deg, #fff 0%, #faf5ff 100%);
-  border: 2px solid #e9d5ff;
-  border-radius: 16px;
-  padding: 24px;
-  text-align: center;
-  transition: all 0.3s;
-  cursor: pointer;
-  text-decoration: none;
-  color: inherit;
-  display: block;
-  position: relative;
-  overflow: hidden;
-}
-.top-card::before {
-  content: '';
-  position: absolute;
-  top: 0; left: 0; right: 0;
-  height: 4px;
-  background: linear-gradient(90deg, #fbbf24, #f59e0b);
-}
-.top-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 12px 30px rgba(107,33,168,0.15);
-  border-color: #a855f7;
-}
-.top-badge {
-  position: absolute;
-  top: 12px; right: 12px;
-  background: linear-gradient(135deg, #fbbf24, #f59e0b);
-  color: white;
-  font-size: 10px; font-weight: 700;
-  padding: 4px 10px;
-  border-radius: 9999px;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  display: flex; align-items: center; gap: 4px;
-}
-.top-avatar {
-  width: 80px; height: 80px;
-  border-radius: 50%;
-  background: linear-gradient(135deg, #6b21a8, #a855f7);
-  color: white; font-size: 30px; font-weight: 800;
-  display: flex; align-items: center; justify-content: center;
-  margin: 0 auto 14px;
-  overflow: hidden;
-  border: 4px solid white;
-  box-shadow: 0 6px 20px rgba(107,33,168,0.25);
-}
-.top-avatar img { width: 100%; height: 100%; object-fit: cover; }
-.top-name {
-  font-size: 16px; font-weight: 700;
-  margin-bottom: 4px;
-  display: flex; align-items: center; justify-content: center; gap: 6px;
-}
-.top-company { font-size: 12px; color: #6b21a8; font-weight: 600; margin-bottom: 6px; }
-.top-loc {
-  font-size: 11px; color: #6b7280;
-  margin-bottom: 14px;
-  display: flex; align-items: center; justify-content: center; gap: 4px;
-}
-.top-stats {
-  display: flex; justify-content: center; gap: 16px;
-  padding-top: 14px;
-  border-top: 1px solid #e9d5ff;
-  font-size: 11px;
-}
-.top-stat { display: flex; flex-direction: column; align-items: center; }
-.top-stat-val { font-size: 15px; font-weight: 800; color: #111827; }
-.top-stat-lbl {
-  color: #6b7280;
-  text-transform: uppercase;
-  letter-spacing: 0.3px;
-  font-size: 9px;
-  font-weight: 600;
-}
-.filters {
-  background: white;
-  border-radius: 14px;
-  padding: 16px 20px;
-  margin-bottom: 24px;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.06);
-  display: flex;
-  gap: 12px;
-  flex-wrap: wrap;
-  align-items: center;
-}
-.filter-group { display: flex; align-items: center; gap: 8px; }
-.filter-label {
-  font-size: 12px; font-weight: 600;
-  color: #6b7280;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-}
-.filter-select {
-  padding: 8px 12px;
-  border: 1px solid #e5e7eb;
-  border-radius: 8px;
-  font-size: 13px;
-  font-family: inherit;
-  background: white;
-  cursor: pointer;
-  font-weight: 500;
-  color: #374151;
-  outline: none;
-}
-.filter-select:focus { border-color: #6b21a8; }
-.filter-reset {
-  margin-left: auto;
-  background: none;
-  border: none;
-  color: #6b21a8;
-  font-size: 13px;
-  font-weight: 600;
-  cursor: pointer;
-  display: flex; align-items: center; gap: 4px;
-}
-.filter-reset:hover { color: #581c87; }
-.agent-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 16px;
-}
-.agent-card {
-  background: white;
-  border: 1px solid #e5e7eb;
-  border-radius: 14px;
-  padding: 22px;
-  text-align: center;
-  transition: all 0.3s;
-  cursor: pointer;
-  text-decoration: none;
-  color: inherit;
-  display: block;
-}
-.agent-card:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 10px 24px rgba(0,0,0,0.08);
-  border-color: #a855f7;
-}
-.agent-avatar {
-  width: 72px; height: 72px;
-  border-radius: 50%;
-  background: linear-gradient(135deg, #6b21a8, #a855f7);
-  color: white; font-size: 28px; font-weight: 800;
-  display: flex; align-items: center; justify-content: center;
-  margin: 0 auto 12px;
-  overflow: hidden;
-  border: 3px solid white;
-  box-shadow: 0 4px 12px rgba(107,33,168,0.2);
-}
-.agent-avatar img { width: 100%; height: 100%; object-fit: cover; }
-.agent-name {
-  font-size: 15px; font-weight: 700;
-  margin-bottom: 4px;
-  display: flex; align-items: center; justify-content: center; gap: 6px;
-}
+.top-agents { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; }
+.top-card { background: linear-gradient(135deg, #fff 0%, #faf5ff 100%); border: 2px solid #e9d5ff; border-radius: 16px; padding: 24px; text-align: center; transition: all 0.3s; cursor: pointer; text-decoration: none; color: inherit; display: block; position: relative; overflow: hidden; }
+.top-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 4px; background: linear-gradient(90deg, #fbbf24, #f59e0b); }
+.top-card:hover { transform: translateY(-4px); box-shadow: 0 12px 30px rgba(107,33,168,0.15); border-color: #a855f7; }
+.top-badge { position: absolute; top: 12px; right: 12px; background: linear-gradient(135deg, #fbbf24, #f59e0b); color: white; font-size: 10px; font-weight: 700; padding: 4px 10px; border-radius: 9999px; text-transform: uppercase; letter-spacing: 0.5px; display: flex; align-items: center; gap: 4px; }
+.top-avatar, .agent-avatar { border-radius: 50%; background: linear-gradient(135deg, #6b21a8, #a855f7); color: white; font-weight: 800; display: flex; align-items: center; justify-content: center; margin: 0 auto 14px; overflow: hidden; border: 4px solid white; box-shadow: 0 6px 20px rgba(107,33,168,0.25); }
+.top-avatar { width: 80px; height: 80px; font-size: 30px; }
+.agent-avatar { width: 72px; height: 72px; font-size: 28px; border-width: 3px; box-shadow: 0 4px 12px rgba(107,33,168,0.2); }
+.top-avatar img, .agent-avatar img { width: 100%; height: 100%; object-fit: cover; }
+.top-name, .agent-name { font-weight: 700; margin-bottom: 4px; display: flex; align-items: center; justify-content: center; gap: 6px; }
+.top-name { font-size: 16px; }
+.agent-name { font-size: 15px; }
 .verified-tick { color: #10b981; font-size: 12px; }
-.agent-company { font-size: 12px; color: #6b21a8; font-weight: 600; margin-bottom: 4px; }
-.agent-loc {
-  font-size: 11px; color: #6b7280;
-  margin-bottom: 14px;
-  display: flex; align-items: center; justify-content: center; gap: 4px;
-}
-.agent-stats {
-  display: flex; justify-content: center; gap: 14px;
-  padding-top: 12px;
-  border-top: 1px solid #f3f4f6;
-  font-size: 11px;
-}
-.agent-stat { display: flex; flex-direction: column; align-items: center; }
-.agent-stat-val { font-size: 14px; font-weight: 800; color: #111827; }
-.agent-stat-lbl {
-  color: #6b7280;
-  font-size: 9px;
-  text-transform: uppercase;
-  letter-spacing: 0.3px;
-  font-weight: 600;
-}
-.agent-btn {
-  margin-top: 14px;
-  width: 100%;
-  padding: 10px;
-  background: #f9fafb;
-  border: 1px solid #e5e7eb;
-  border-radius: 8px;
-  color: #6b21a8;
-  font-weight: 600;
-  font-size: 12px;
-  display: flex; align-items: center; justify-content: center; gap: 6px;
-  transition: all 0.2s;
-}
-.agent-card:hover .agent-btn {
-  background: #6b21a8;
-  color: white;
-  border-color: #6b21a8;
-}
-.empty {
-  text-align: center;
-  padding: 60px 20px;
-  color: #9ca3af;
-  grid-column: 1 / -1;
-}
+.top-company, .agent-company { font-size: 12px; color: #6b21a8; font-weight: 600; margin-bottom: 6px; }
+.agent-company { margin-bottom: 4px; }
+.top-loc, .agent-loc { font-size: 11px; color: #6b7280; margin-bottom: 14px; display: flex; align-items: center; justify-content: center; gap: 4px; }
+.top-stats, .agent-stats { display: flex; justify-content: center; gap: 16px; padding-top: 14px; border-top: 1px solid #e9d5ff; font-size: 11px; }
+.agent-stats { border-top-color: #f3f4f6; }
+.top-stat, .agent-stat { display: flex; flex-direction: column; align-items: center; }
+.top-stat-val, .agent-stat-val { font-size: 15px; font-weight: 800; color: #111827; }
+.agent-stat-val { font-size: 14px; }
+.top-stat-lbl, .agent-stat-lbl { color: #6b7280; text-transform: uppercase; letter-spacing: 0.3px; font-weight: 600; }
+.top-stat-lbl { font-size: 9px; }
+.agent-stat-lbl { font-size: 9px; }
+.agent-btn { margin-top: 14px; width: 100%; padding: 10px; background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 8px; color: #6b21a8; font-weight: 600; font-size: 12px; display: flex; align-items: center; justify-content: center; gap: 6px; transition: all 0.2s; }
+.agent-card:hover .agent-btn { background: #6b21a8; color: white; border-color: #6b21a8; }
+.filters { background: white; border-radius: 14px; padding: 16px 20px; margin-bottom: 24px; box-shadow: 0 1px 3px rgba(0,0,0,0.06); display: flex; gap: 12px; flex-wrap: wrap; align-items: center; }
+.filter-group { display: flex; align-items: center; gap: 8px; }
+.filter-label { font-size: 12px; font-weight: 600; color: #6b7280; text-transform: uppercase; letter-spacing: 0.5px; }
+.filter-select { padding: 8px 12px; border: 1px solid #e5e7eb; border-radius: 8px; font-size: 13px; font-family: inherit; background: white; cursor: pointer; font-weight: 500; color: #374151; outline: none; }
+.filter-select:focus { border-color: #6b21a8; }
+.filter-reset { margin-left: auto; background: none; border: none; color: #6b21a8; font-size: 13px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 4px; }
+.filter-reset:hover { color: #581c87; }
+.agent-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; }
+.agent-card { background: white; border: 1px solid #e5e7eb; border-radius: 14px; padding: 22px; text-align: center; transition: all 0.3s; cursor: pointer; text-decoration: none; color: inherit; display: block; }
+.agent-card:hover { transform: translateY(-3px); box-shadow: 0 10px 24px rgba(0,0,0,0.08); border-color: #a855f7; }
+.empty { text-align: center; padding: 60px 20px; color: #9ca3af; grid-column: 1 / -1; }
 .empty i { font-size: 48px; margin-bottom: 16px; display: block; }
 .empty h3 { color: #6b7280; margin-bottom: 8px; font-size: 18px; }
-.skeleton-card {
-  background: white;
-  border: 1px solid #e5e7eb;
-  border-radius: 14px;
-  padding: 22px;
-  text-align: center;
-}
-.skeleton-avatar {
-  width: 72px; height: 72px;
-  border-radius: 50%;
-  background: linear-gradient(90deg, #f3f4f6 0%, #e5e7eb 50%, #f3f4f6 100%);
-  background-size: 200% 100%;
-  animation: shimmer 1.5s infinite;
-  margin: 0 auto 12px;
-}
-.skeleton-line {
-  height: 14px;
-  background: linear-gradient(90deg, #f3f4f6 0%, #e5e7eb 50%, #f3f4f6 100%);
-  background-size: 200% 100%;
-  animation: shimmer 1.5s infinite;
-  border-radius: 6px;
-  margin: 8px auto;
-}
-.skeleton-line.w60 { width: 60%; }
-.skeleton-line.w40 { width: 40%; }
-.skeleton-line.w80 { width: 80%; }
-@keyframes shimmer {
-  0% { background-position: 200% 0; }
-  100% { background-position: -200% 0; }
-}
-.cta-section {
-  background: linear-gradient(135deg, #6b21a8 0%, #a855f7 100%);
-  border-radius: 20px;
-  padding: 48px 32px;
-  text-align: center;
-  color: white;
-  margin: 40px 0;
-  position: relative;
-  overflow: hidden;
-}
-.cta-section::before {
-  content: '';
-  position: absolute;
-  top: -50%; right: -20%;
-  width: 500px; height: 500px;
-  background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
-  pointer-events: none;
-}
+.skeleton-card { background: white; border: 1px solid #e5e7eb; border-radius: 14px; padding: 22px; text-align: center; }
+.skeleton-avatar { width: 72px; height: 72px; border-radius: 50%; background: linear-gradient(90deg, #f3f4f6 0%, #e5e7eb 50%, #f3f4f6 100%); background-size: 200% 100%; animation: shimmer 1.5s infinite; margin: 0 auto 12px; }
+.skeleton-line { height: 14px; background: linear-gradient(90deg, #f3f4f6 0%, #e5e7eb 50%, #f3f4f6 100%); background-size: 200% 100%; animation: shimmer 1.5s infinite; border-radius: 6px; margin: 8px auto; }
+.skeleton-line.w60 { width: 60%; } .skeleton-line.w40 { width: 40%; } .skeleton-line.w80 { width: 80%; }
+@keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+.cta-section { background: linear-gradient(135deg, #6b21a8 0%, #a855f7 100%); border-radius: 20px; padding: 48px 32px; text-align: center; color: white; margin: 40px 0; position: relative; overflow: hidden; }
+.cta-section::before { content: ''; position: absolute; top: -50%; right: -20%; width: 500px; height: 500px; background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%); pointer-events: none; }
 .cta-section h2 { font-size: 28px; font-weight: 800; margin-bottom: 12px; position: relative; }
-.cta-section p {
-  font-size: 15px;
-  opacity: 0.95;
-  max-width: 500px;
-  margin: 0 auto 24px;
-  position: relative;
-}
-.cta-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  background: white;
-  color: #6b21a8;
-  padding: 14px 28px;
-  border-radius: 12px;
-  font-weight: 700;
-  font-size: 15px;
-  text-decoration: none;
-  transition: all 0.2s;
-  position: relative;
-}
-.cta-btn:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 10px 24px rgba(0,0,0,0.2);
-}
-.footer {
-  background: white;
-  border-top: 1px solid #e5e7eb;
-  padding: 32px 24px;
-  text-align: center;
-  color: #6b7280;
-  font-size: 13px;
-  margin-top: 40px;
-}
+.cta-section p { font-size: 15px; opacity: 0.95; max-width: 500px; margin: 0 auto 24px; position: relative; }
+.cta-btn { display: inline-flex; align-items: center; gap: 8px; background: white; color: #6b21a8; padding: 14px 28px; border-radius: 12px; font-weight: 700; font-size: 15px; text-decoration: none; transition: all 0.2s; position: relative; }
+.cta-btn:hover { transform: translateY(-2px); box-shadow: 0 10px 24px rgba(0,0,0,0.2); }
+.footer { background: white; border-top: 1px solid #e5e7eb; padding: 32px 24px; text-align: center; color: #6b7280; font-size: 13px; margin-top: 40px; }
 @media (max-width: 768px) {
   .nav-links a:not(.nav-cta) { display: none; }
-  .hero { padding: 40px 20px 60px; }
-  .hero h1 { font-size: 28px; }
-  .hero p { font-size: 14px; }
-  .stats-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; padding: 20px; }
-  .stat-val { font-size: 22px; }
-  .container { padding: 0 16px; }
-  .section-title { font-size: 18px; }
-  .filters { padding: 12px; }
-  .filter-group { flex: 1; min-width: 140px; }
-  .filter-select { width: 100%; }
+  .hero { padding: 40px 20px 60px; } .hero h1 { font-size: 28px; } .hero p { font-size: 14px; }
+  .stats-grid { grid-template-columns: repeat(2, 1fr); gap: 12px; padding: 20px; } .stat-val { font-size: 22px; }
+  .container { padding: 0 16px; } .section-title { font-size: 18px; }
+  .filters { padding: 12px; } .filter-group { flex: 1; min-width: 140px; } .filter-select { width: 100%; }
   .agent-grid, .top-agents { grid-template-columns: 1fr; }
-  .cta-section { padding: 32px 20px; }
-  .cta-section h2 { font-size: 22px; }
+  .cta-section { padding: 32px 20px; } .cta-section h2 { font-size: 22px; }
 }
 </style>
 </head>
 <body>
 
 <nav class="nav">
-  <a href="/" class="logo">
-    <i class="fas fa-home"></i> Properties in Kenya
-  </a>
+  <a href="/" class="logo"><i class="fas fa-home"></i> Properties in Kenya</a>
   <div class="nav-links">
     <a href="/">Buy</a>
     <a href="/#category=for-rent">Rent</a>
     <a href="/agents.html" style="color:#6b21a8; font-weight:600;">Agents</a>
-    <a href="/list-property.html" class="nav-cta">List Property</a>
+    <!-- FIX: Changed from /list-property.html (404) to /agent-dashboard.html -->
+    <a href="/agent-dashboard.html" class="nav-cta">List Property</a>
   </div>
 </nav>
 
@@ -475,33 +127,20 @@ body {
   <p>Connect with verified, trusted real estate agents across Kenya. Browse ratings, reviews, and specializations.</p>
   <div class="search-wrap">
     <i class="fas fa-search search-icon"></i>
-    <input type="text" class="search-box" id="searchBox" placeholder="Search by name, location, or specialization...">
+    <input type="text" class="search-box" id="searchBox" placeholder="Search by name, location, or specialization..." aria-label="Search agents">
   </div>
 </section>
 
 <div class="stats-bar">
   <div class="stats-grid">
-    <div class="stat-item">
-      <div class="stat-val" id="totalAgents">—</div>
-      <div class="stat-lbl">Verified Agents</div>
-    </div>
-    <div class="stat-item">
-      <div class="stat-val" id="totalListings">—</div>
-      <div class="stat-lbl">Active Listings</div>
-    </div>
-    <div class="stat-item">
-      <div class="stat-val" id="totalDeals">—</div>
-      <div class="stat-lbl">Deals Closed</div>
-    </div>
-    <div class="stat-item">
-      <div class="stat-val" id="avgRating">—</div>
-      <div class="stat-lbl">Avg Rating</div>
-    </div>
+    <div class="stat-item"><div class="stat-val" id="totalAgents">—</div><div class="stat-lbl">Verified Agents</div></div>
+    <div class="stat-item"><div class="stat-val" id="totalListings">—</div><div class="stat-lbl">Active Listings</div></div>
+    <div class="stat-item"><div class="stat-val" id="totalDeals">—</div><div class="stat-lbl">Deals Closed</div></div>
+    <div class="stat-item"><div class="stat-val" id="avgRating">—</div><div class="stat-lbl">Avg Rating</div></div>
   </div>
 </div>
 
 <div class="container">
-
   <section class="section" id="topSection">
     <div class="section-head">
       <div>
@@ -516,20 +155,20 @@ body {
     <div class="section-head">
       <div>
         <h2 class="section-title"><i class="fas fa-users"></i> All Agents</h2>
-        <p class="section-sub" id="resultsCount">Loading agents...</p>
+        <p class="section-sub" id="resultsCount" aria-live="polite">Loading agents...</p>
       </div>
     </div>
 
     <div class="filters">
       <div class="filter-group">
         <span class="filter-label">Location</span>
-        <select class="filter-select" id="filterLocation">
+        <select class="filter-select" id="filterLocation" aria-label="Filter by location">
           <option value="">All Locations</option>
         </select>
       </div>
       <div class="filter-group">
         <span class="filter-label">Sort By</span>
-        <select class="filter-select" id="sortBy">
+        <select class="filter-select" id="sortBy" aria-label="Sort agents by">
           <option value="trust">Trust Score</option>
           <option value="rating">Highest Rating</option>
           <option value="deals">Most Deals</option>
@@ -537,7 +176,8 @@ body {
           <option value="name">Name (A-Z)</option>
         </select>
       </div>
-      <button class="filter-reset" onclick="resetFilters()">
+      <!-- FIX: Removed inline onclick -->
+      <button class="filter-reset" id="resetBtn" aria-label="Reset filters">
         <i class="fas fa-undo"></i> Reset
       </button>
     </div>
@@ -553,11 +193,11 @@ body {
   <section class="cta-section">
     <h2>Are You a Real Estate Agent?</h2>
     <p>Join Kenya's fastest-growing property marketplace. Build your reputation, get leads, and close more deals.</p>
-    <a href="/list-property.html" class="cta-btn">
+    <!-- FIX: Changed from /list-property.html (404) to /agent-dashboard.html -->
+    <a href="/agent-dashboard.html" class="cta-btn">
       <i class="fas fa-user-plus"></i> Register as an Agent
     </a>
   </section>
-
 </div>
 
 <footer class="footer">
@@ -565,220 +205,287 @@ body {
 </footer>
 
 <script>
-const sb = supabase.createClient(
-  "https://nqwvsmuvltbiekfnvovx.supabase.co",
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5xd3ZzbXV2bHRiaWVrZm52b3Z4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA1NjU4MDAsImV4cCI6MjA5NjE0MTgwMH0.Xrc-bbAuWdvKSPHnVhTaLiQphV61xeYtDepWePqsrdo"
-);
+(function() {
+    'use strict';
 
-let allAgents = [];
-let agentListingsCount = {};
+    // ==========================================
+    // 1. CONFIGURATION & STATE
+    // ==========================================
+    const sb = supabase.createClient(
+        "https://nqwvsmuvltbiekfnvovx.supabase.co",
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5xd3ZzbXV2bHRiaWVrZm52b3Z4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA1NjU4MDAsImV4cCI6MjA5NjE0MTgwMH0.Xrc-bbAuWdvKSPHnVhTaLiQphV61xeYtDepWePqsrdo"
+    );
 
-const esc = t => {
-  const d = document.createElement('div');
-  d.textContent = t || '';
-  return d.innerHTML;
-};
+    const state = {
+        allAgents: [],
+        agentListingsCount: {}
+    };
 
-async function loadAgents() {
-  try {
-    const { data: agents, error } = await sb
-      .from('profiles')
-      .select('*')
-      .eq('role', 'agent')
-      .order('trust_score', { ascending: false });
-
-    if (error) throw error;
-    allAgents = agents || [];
-
-    const { data: listings } = await sb
-      .from('properties')
-      .select('agent_id, id')
-      .eq('approval_status', 'approved');
-
-    if (listings) {
-      listings.forEach(listing => {
-        agentListingsCount[listing.agent_id] = (agentListingsCount[listing.agent_id] || 0) + 1;
-      });
+    // ==========================================
+    // 2. UTILITIES
+    // ==========================================
+    function esc(str) {
+        if (str === null || str === undefined) return '';
+        const div = document.createElement('div');
+        div.textContent = String(str);
+        return div.innerHTML;
     }
 
-    updateStats();
-    populateLocationFilter();
-    renderTopAgents();
-    renderAllAgents();
-
-  } catch (err) {
-    console.error('Error loading agents:', err);
-    document.getElementById('agentGrid').innerHTML = `
-      <div class="empty">
-        <i class="fas fa-exclamation-circle"></i>
-        <h3>Unable to load agents</h3>
-        <p>Please refresh the page to try again.</p>
-      </div>
-    `;
-  }
-}
-
-function updateStats() {
-  document.getElementById('totalAgents').textContent = allAgents.length;
-
-  const totalListings = Object.values(agentListingsCount).reduce((a, b) => a + b, 0);
-  document.getElementById('totalListings').textContent = totalListings.toLocaleString();
-
-  const totalDeals = allAgents.reduce((sum, a) => sum + (a.total_deals_closed || 0), 0);
-  document.getElementById('totalDeals').textContent = totalDeals.toLocaleString();
-
-  const ratedAgents = allAgents.filter(a => a.average_rating > 0);
-  const avg = ratedAgents.length > 0
-    ? (ratedAgents.reduce((sum, a) => sum + parseFloat(a.average_rating), 0) / ratedAgents.length).toFixed(1)
-    : '—';
-  document.getElementById('avgRating').textContent = avg;
-}
-
-function populateLocationFilter() {
-  const locations = [...new Set(allAgents.map(a => a.location).filter(loc => loc))].sort();
-  const select = document.getElementById('filterLocation');
-  locations.forEach(loc => {
-    const opt = document.createElement('option');
-    opt.value = loc;
-    opt.textContent = loc;
-    select.appendChild(opt);
-  });
-}
-
-function renderTopAgents() {
-  const top = allAgents
-    .filter(a => (a.trust_score || 0) >= 50 || (a.average_rating || 0) >= 4.5)
-    .slice(0, 4);
-
-  const container = document.getElementById('topAgents');
-
-  if (top.length === 0) {
-    document.getElementById('topSection').style.display = 'none';
-    return;
-  }
-
-  container.innerHTML = top.map(a => renderAgentCard(a, true)).join('');
-}
-
-function renderAllAgents() {
-  const search = document.getElementById('searchBox').value.toLowerCase().trim();
-  const location = document.getElementById('filterLocation').value;
-  const sortBy = document.getElementById('sortBy').value;
-
-  let filtered = allAgents.filter(a => {
-    if (search) {
-      const haystack = `${a.full_name || ''} ${a.company || ''} ${a.location || ''} ${(a.specializations || []).join(' ')} ${(a.bio || '')}`.toLowerCase();
-      if (!haystack.includes(search)) return false;
+    function isValidUrl(string) {
+        try {
+            const url = new URL(string);
+            return url.protocol === 'http:' || url.protocol === 'https:';
+        } catch (_) {
+            return false;
+        }
     }
-    if (location && a.location !== location) return false;
-    return true;
-  });
 
-  filtered.sort((a, b) => {
-    switch (sortBy) {
-      case 'rating': return (b.average_rating || 0) - (a.average_rating || 0);
-      case 'deals': return (b.total_deals_closed || 0) - (a.total_deals_closed || 0);
-      case 'listings': return (agentListingsCount[b.id] || 0) - (agentListingsCount[a.id] || 0);
-      case 'name': return (a.full_name || '').localeCompare(b.full_name || '');
-      default: return (b.trust_score || 0) - (a.trust_score || 0);
+    // 🔒 SECURITY: Strict slug validation to prevent attribute injection
+    function isValidSlug(slug) {
+        return typeof slug === 'string' && /^[a-z0-9-]+$/i.test(slug);
     }
-  });
 
-  const container = document.getElementById('agentGrid');
-  document.getElementById('resultsCount').textContent =
-    `Showing ${filtered.length} of ${allAgents.length} agents`;
+    function debounce(func, wait) {
+        let timeout;
+        return (...args) => {
+            clearTimeout(timeout);
+            timeout = setTimeout(() => func(...args), wait);
+        };
+    }
 
-  if (filtered.length === 0) {
-    container.innerHTML = `
-      <div class="empty">
-        <i class="fas fa-search"></i>
-        <h3>No agents found</h3>
-        <p>Try adjusting your filters or search terms</p>
-      </div>
-    `;
-    return;
-  }
+    // ==========================================
+    // 3. DATA LOADING
+    // ==========================================
+    async function loadAgents() {
+        try {
+            const { data: agents, error } = await sb
+                .from('profiles')
+                .select('*')
+                .eq('role', 'agent')
+                .order('trust_score', { ascending: false });
 
-  container.innerHTML = filtered.map(a => renderAgentCard(a, false)).join('');
-}
+            if (error) throw error;
+            state.allAgents = agents || [];
 
-// ==========================================================
-// BULLETPROOF RENDER FUNCTION
-// ==========================================================
-function renderAgentCard(a, isTop) {
-  const init = (a.full_name || 'A').charAt(0).toUpperCase();
-  const avatar = a.avatar_url
-    ? `<img src="${a.avatar_url}" onerror="this.parentElement.innerHTML='${init}'">`
-    : init;
+            // 🔒 PERFORMANCE FIX: Only select agent_id to reduce payload size
+            const { data: listings, error: listErr } = await sb
+                .from('properties')
+                .select('agent_id') 
+                .eq('approval_status', 'approved');
 
-  const listings = agentListingsCount[a.id] || 0;
-  const rating = (a.average_rating || 0).toFixed(1);
-  const trust = a.trust_score || 0;
-  const verified = a.is_verified_identity || trust >= 50;
+            if (listErr) {
+                console.warn('Failed to load listing counts:', listErr.message);
+            } else if (listings) {
+                listings.forEach(listing => {
+                    state.agentListingsCount[listing.agent_id] = (state.agentListingsCount[listing.agent_id] || 0) + 1;
+                });
+            }
 
-  const cardClass = isTop ? 'top-card' : 'agent-card';
-  const avatarClass = isTop ? 'top-avatar' : 'agent-avatar';
-  const nameClass = isTop ? 'top-name' : 'agent-name';
-  const companyClass = isTop ? 'top-company' : 'agent-company';
-  const locClass = isTop ? 'top-loc' : 'agent-loc';
-  const statsClass = isTop ? 'top-stats' : 'agent-stats';
-  const statClass = isTop ? 'top-stat' : 'agent-stat';
-  const statValClass = isTop ? 'top-stat-val' : 'agent-stat-val';
-  const statLblClass = isTop ? 'top-stat-lbl' : 'agent-stat-lbl';
+            updateStats();
+            populateLocationFilter();
+            renderTopAgents();
+            renderAllAgents();
 
-  const topBadge = isTop ? `<div class="top-badge"><i class="fas fa-crown"></i> Top Agent</div>` : '';
+        } catch (err) {
+            console.error('Error loading agents:', err);
+            document.getElementById('agentGrid').innerHTML = `
+                <div class="empty">
+                    <i class="fas fa-exclamation-circle"></i>
+                    <h3>Unable to load agents</h3>
+                    <p>Please refresh the page to try again.</p>
+                </div>
+            `;
+        }
+    }
 
-  // BULLETPROOF ABSOLUTE URL GENERATION
-  const baseUrl = window.location.origin;
-  const agentUrl = (a.slug && String(a.slug).trim() !== '') 
-    ? `${baseUrl}/agent/${a.slug}` 
-    : `${baseUrl}/agent-profile.html?id=${a.id}`;
+    // ==========================================
+    // 4. RENDERING & FILTERING
+    // ==========================================
+    function updateStats() {
+        document.getElementById('totalAgents').textContent = state.allAgents.length;
 
-  console.log('Rendering card for:', a.full_name, '| Slug:', a.slug, '| Final URL:', agentUrl);
+        const totalListings = Object.values(state.agentListingsCount).reduce((a, b) => a + b, 0);
+        document.getElementById('totalListings').textContent = totalListings.toLocaleString();
 
-  return `
-    <a href="${agentUrl}" class="${cardClass}">
-      ${topBadge}
-      <div class="${avatarClass}">${avatar}</div>
-      <div class="${nameClass}">
-        ${esc(a.full_name || 'Agent')}
-        ${verified ? '<i class="fas fa-check-circle verified-tick"></i>' : ''}
-      </div>
-      <div class="${companyClass}">${esc(a.company || 'Independent Agent')}</div>
-      <div class="${locClass}">
-        <i class="fas fa-map-marker-alt"></i> ${esc(a.location || 'Kenya')}
-      </div>
-      <div class="${statsClass}">
-        <div class="${statClass}">
-          <div class="${statValClass}">${rating}</div>
-          <div class="${statLblClass}">Rating</div>
-        </div>
-        <div class="${statClass}">
-          <div class="${statValClass}">${trust}</div>
-          <div class="${statLblClass}">Trust</div>
-        </div>
-        <div class="${statClass}">
-          <div class="${statValClass}">${listings}</div>
-          <div class="${statLblClass}">Listings</div>
-        </div>
-      </div>
-      ${!isTop ? `<div class="agent-btn"><i class="fas fa-arrow-right"></i> View Profile</div>` : ''}
-    </a>
-  `;
-}
+        const totalDeals = state.allAgents.reduce((sum, a) => sum + (a.total_deals_closed || 0), 0);
+        document.getElementById('totalDeals').textContent = totalDeals.toLocaleString();
 
-function resetFilters() {
-  document.getElementById('searchBox').value = '';
-  document.getElementById('filterLocation').value = '';
-  document.getElementById('sortBy').value = 'trust';
-  renderAllAgents();
-}
+        const ratedAgents = state.allAgents.filter(a => a.average_rating > 0);
+        const avg = ratedAgents.length > 0
+            ? (ratedAgents.reduce((sum, a) => sum + parseFloat(a.average_rating), 0) / ratedAgents.length).toFixed(1)
+            : '—';
+        document.getElementById('avgRating').textContent = avg;
+    }
 
-document.getElementById('searchBox').addEventListener('input', renderAllAgents);
-document.getElementById('filterLocation').addEventListener('change', renderAllAgents);
-document.getElementById('sortBy').addEventListener('change', renderAllAgents);
+    function populateLocationFilter() {
+        const locations = [...new Set(state.allAgents.map(a => a.location).filter(loc => loc))].sort();
+        const select = document.getElementById('filterLocation');
+        
+        // FIX: Build HTML string first to prevent multiple DOM reflows
+        const optionsHtml = locations.map(loc => `<option value="${esc(loc)}">${esc(loc)}</option>`).join('');
+        select.insertAdjacentHTML('beforeend', optionsHtml);
+    }
 
-loadAgents();
+    function renderTopAgents() {
+        const top = state.allAgents
+            .filter(a => (a.trust_score || 0) >= 50 || (a.average_rating || 0) >= 4.5)
+            .slice(0, 4);
+
+        const container = document.getElementById('topAgents');
+
+        if (top.length === 0) {
+            document.getElementById('topSection').style.display = 'none';
+            return;
+        }
+
+        container.innerHTML = top.map(a => renderAgentCard(a, true)).join('');
+        attachImageFallbacks();
+    }
+
+    function renderAllAgents() {
+        const search = document.getElementById('searchBox').value.toLowerCase().trim();
+        const location = document.getElementById('filterLocation').value;
+        const sortBy = document.getElementById('sortBy').value;
+
+        let filtered = state.allAgents.filter(a => {
+            if (search) {
+                const haystack = `${a.full_name || ''} ${a.company || ''} ${a.location || ''} ${(a.specializations || []).join(' ')} ${(a.bio || '')}`.toLowerCase();
+                if (!haystack.includes(search)) return false;
+            }
+            if (location && a.location !== location) return false;
+            return true;
+        });
+
+        filtered.sort((a, b) => {
+            switch (sortBy) {
+                case 'rating': return (b.average_rating || 0) - (a.average_rating || 0);
+                case 'deals': return (b.total_deals_closed || 0) - (a.total_deals_closed || 0);
+                case 'listings': return (state.agentListingsCount[b.id] || 0) - (state.agentListingsCount[a.id] || 0);
+                case 'name': return (a.full_name || '').localeCompare(b.full_name || '');
+                default: return (b.trust_score || 0) - (a.trust_score || 0);
+            }
+        });
+
+        const container = document.getElementById('agentGrid');
+        document.getElementById('resultsCount').textContent = `Showing ${filtered.length} of ${state.allAgents.length} agents`;
+
+        if (filtered.length === 0) {
+            container.innerHTML = `
+                <div class="empty">
+                    <i class="fas fa-search"></i>
+                    <h3>No agents found</h3>
+                    <p>Try adjusting your filters or search terms</p>
+                </div>
+            `;
+            return;
+        }
+
+        container.innerHTML = filtered.map(a => renderAgentCard(a, false)).join('');
+        attachImageFallbacks();
+    }
+
+    function renderAgentCard(a, isTop) {
+        const init = (a.full_name || 'A').charAt(0).toUpperCase();
+        
+        // 🔒 SECURITY: Validate URL before using in src attribute
+        const hasValidAvatar = a.avatar_url && isValidUrl(a.avatar_url);
+        const avatarHtml = hasValidAvatar 
+            ? `<img src="${esc(a.avatar_url)}" alt="Avatar of ${esc(a.full_name)}" data-name="${esc(a.full_name)}" style="width:100%;height:100%;object-fit:cover;">`
+            : `<span>${esc(init)}</span>`;
+
+        const listings = state.agentListingsCount[a.id] || 0;
+        const rating = (a.average_rating || 0).toFixed(1);
+        const trust = a.trust_score || 0;
+        const verified = a.is_verified_identity || trust >= 50;
+
+        const cardClass = isTop ? 'top-card' : 'agent-card';
+        const avatarClass = isTop ? 'top-avatar' : 'agent-avatar';
+        const nameClass = isTop ? 'top-name' : 'agent-name';
+        const companyClass = isTop ? 'top-company' : 'agent-company';
+        const locClass = isTop ? 'top-loc' : 'agent-loc';
+        const statsClass = isTop ? 'top-stats' : 'agent-stats';
+        const statClass = isTop ? 'top-stat' : 'agent-stat';
+        const statValClass = isTop ? 'top-stat-val' : 'agent-stat-val';
+        const statLblClass = isTop ? 'top-stat-lbl' : 'agent-stat-lbl';
+
+        const topBadge = isTop ? `<div class="top-badge"><i class="fas fa-crown"></i> Top Agent</div>` : '';
+
+        // 🔒 SECURITY: Validate slug to prevent attribute injection in href
+        const baseUrl = window.location.origin;
+        const agentUrl = isValidSlug(a.slug) 
+            ? `${baseUrl}/agent/${encodeURIComponent(a.slug)}` 
+            : `${baseUrl}/agent-profile.html?id=${encodeURIComponent(a.id)}`;
+
+        return `
+            <a href="${esc(agentUrl)}" class="${cardClass}">
+                ${topBadge}
+                <div class="${avatarClass}">${avatarHtml}</div>
+                <div class="${nameClass}">
+                    ${esc(a.full_name || 'Agent')}
+                    ${verified ? '<i class="fas fa-check-circle verified-tick"></i>' : ''}
+                </div>
+                <div class="${companyClass}">${esc(a.company || 'Independent Agent')}</div>
+                <div class="${locClass}">
+                    <i class="fas fa-map-marker-alt"></i> ${esc(a.location || 'Kenya')}
+                </div>
+                <div class="${statsClass}">
+                    <div class="${statClass}">
+                        <div class="${statValClass}">${rating}</div>
+                        <div class="${statLblClass}">Rating</div>
+                    </div>
+                    <div class="${statClass}">
+                        <div class="${statValClass}">${trust}</div>
+                        <div class="${statLblClass}">Trust</div>
+                    </div>
+                    <div class="${statClass}">
+                        <div class="${statValClass}">${listings}</div>
+                        <div class="${statLblClass}">Listings</div>
+                    </div>
+                </div>
+                ${!isTop ? `<div class="agent-btn"><i class="fas fa-arrow-right"></i> View Profile</div>` : ''}
+            </a>
+        `;
+    }
+
+    // 🔒 PERFORMANCE & SECURITY: CSP-compliant image fallback handler
+    function attachImageFallbacks() {
+        document.querySelectorAll('.agent-avatar img, .top-avatar img').forEach(img => {
+            if (img.dataset.fallbackAttached) return;
+            img.dataset.fallbackAttached = 'true';
+            
+            img.addEventListener('error', function() {
+                const name = this.dataset.name || 'A';
+                this.parentElement.innerHTML = `<span>${esc(name.charAt(0).toUpperCase())}</span>`;
+            }, { once: true });
+        });
+    }
+
+    // ==========================================
+    // 5. EVENT LISTENERS & INITIALIZATION
+    // ==========================================
+    function initEventListeners() {
+        // 🔒 PERFORMANCE: Debounce search input to prevent DOM thrashing
+        const debouncedRender = debounce(renderAllAgents, 300);
+        document.getElementById('searchBox').addEventListener('input', debouncedRender);
+        
+        document.getElementById('filterLocation').addEventListener('change', renderAllAgents);
+        document.getElementById('sortBy').addEventListener('change', renderAllAgents);
+        
+        document.getElementById('resetBtn').addEventListener('click', () => {
+            document.getElementById('searchBox').value = '';
+            document.getElementById('filterLocation').value = '';
+            document.getElementById('sortBy').value = 'trust';
+            renderAllAgents();
+        });
+    }
+
+    // Start App
+    document.addEventListener('DOMContentLoaded', () => {
+        initEventListeners();
+        loadAgents();
+    });
+
+})();
 </script>
 
 </body>
