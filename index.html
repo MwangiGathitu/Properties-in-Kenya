@@ -1643,7 +1643,7 @@ Saved
 </a>
 </div>
 <div style="display: flex; align-items: center; gap: 12px;">
-<button class="nav-cta desktop-only" onclick="window.location.href='agent.html'">
+<button class="nav-cta desktop-only" onclick="window.location.href='agent-dashboard.html'">
 List Property
 </button>
 <button class="hamburger-btn" id="hamburgerBtn" onclick="toggleMobileMenu()" aria-label="Open menu" aria-expanded="false">
@@ -1695,20 +1695,21 @@ Saved Properties
 <div class="mobile-menu-divider"></div>
 <div class="mobile-menu-section">
 <div class="mobile-menu-section-title">Account</div>
-<a href="agent.html" class="mobile-menu-link">
+<!-- 🔒 FIX: Corrected broken HTML nesting here. The original had the Agents link nested inside the Login link. -->
+<a href="agent-dashboard.html" class="mobile-menu-link">
 <i class="fas fa-user" aria-hidden="true"></i>
 Agent Portal
 </a>
 <a href="login.html" class="mobile-menu-link">
 <i class="fas fa-sign-in-alt" aria-hidden="true"></i>
-<a href="/agents.html" class="mobile-menu-link">
-  <i class="fas fa-users"></i>
-  Browse Agents
-</a>
 Login
 </a>
+<a href="/agents.html" class="mobile-menu-link">
+<i class="fas fa-users" aria-hidden="true"></i>
+Browse Agents
+</a>
 </div>
-<a href="agent.html" class="mobile-menu-cta">
+<a href="agent-dashboard.html" class="mobile-menu-cta">
 <i class="fas fa-plus" aria-hidden="true" style="margin-right: 6px;"></i>
 List Your Property
 </a>
@@ -1948,7 +1949,7 @@ Powered by The Caretaker Intelligence
 <div class="footer-links">
 <a href="#" class="footer-link">About Us</a>
 <a href="#" class="footer-link">Contact</a>
-<a href="agent.html" class="footer-link">For Agents</a>
+<a href="agent-dashboard.html" class="footer-link">For Agents</a>
 </div>
 </div>
 <div>
@@ -1965,615 +1966,566 @@ Powered by The Caretaker Intelligence
 </div>
 </footer>
 <script>
-const supabaseClient = supabase.createClient(
-"https://nqwvsmuvltbiekfnvovx.supabase.co",
-"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5xd3ZzbXV2bHRiaWVrZm52b3Z4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA1NjU4MDAsImV4cCI6MjA5NjE0MTgwMH0.Xrc-bbAuWdvKSPHnVhTaLiQphV61xeYtDepWePqsrdo"
-);
-let allProperties = [];
-let currentProperty = null;
-let currentImages = [];
-let currentImageIndex = 0;
-// ===== SEO: Store original meta values to restore on modal close =====
-const ORIGINAL_SEO = {
-title: document.title,
-description: document.querySelector('meta[name="description"]').content,
-ogTitle: document.querySelector('meta[property="og:title"]').content,
-ogDescription: document.querySelector('meta[property="og:description"]').content,
-ogImage: document.querySelector('meta[property="og:image"]').content,
-ogUrl: document.querySelector('meta[property="og:url"]').content,
-twitterTitle: document.querySelector('meta[name="twitter:title"]').content,
-twitterDescription: document.querySelector('meta[name="twitter:description"]').content,
-twitterImage: document.querySelector('meta[name="twitter:image"]').content,
-canonical: document.querySelector('link[rel="canonical"]').href
-};
-// ===== ANALYTICS (Plausible) =====
-function trackEvent(eventName, props = {}) {
-try {
-if (typeof plausible === 'function') {
-plausible(eventName, { props: props });
-}
-} catch (e) {
-console.debug('Analytics:', eventName, props);
-}
-}
-// ===== FAVORITES SYSTEM =====
-const FAVORITES_KEY = 'propertiesinkenya_favorites';
-function getFavorites() {
-try {
-const favorites = localStorage.getItem(FAVORITES_KEY);
-return favorites ? JSON.parse(favorites) : [];
-} catch (error) {
-console.error('Error loading favorites:', error);
-return [];
-}
-}
-function saveFavorites(favorites) {
-try {
-localStorage.setItem(FAVORITES_KEY, JSON.stringify(favorites));
-updateFavoritesCount();
-} catch (error) {
-console.error('Error saving favorites:', error);
-}
-}
-function isFavorite(propertyId) {
-const favorites = getFavorites();
-return favorites.includes(propertyId);
-}
-function toggleFavorite(propertyId, event) {
-if (event) {
-event.stopPropagation();
-}
-const favorites = getFavorites();
-const index = favorites.indexOf(propertyId);
-const action = index > -1 ? 'remove' : 'add';
-if (index > -1) {
-favorites.splice(index, 1);
-} else {
-favorites.push(propertyId);
-}
-saveFavorites(favorites);
-updateFavoriteButtons();
-updateFavoritesCount();
-trackEvent('Favorite Toggle', { action: action, propertyId: propertyId });
-}
-function updateFavoriteButtons() {
-const favorites = getFavorites();
-document.querySelectorAll('.favorite-btn').forEach(btn => {
-const propertyId = btn.dataset.propertyId;
-if (favorites.includes(propertyId)) {
-btn.classList.add('active');
-btn.innerHTML = '<i class="fas fa-heart"></i>';
-} else {
-btn.classList.remove('active');
-btn.innerHTML = '<i class="far fa-heart"></i>';
-}
-});
-}
-function updateFavoritesCount() {
-const favorites = getFavorites();
-const count = favorites.length;
-const countEl = document.getElementById('favoritesCount');
-const mobileCountEl = document.getElementById('mobileFavoritesCount');
-if (count > 0) {
-countEl.textContent = count;
-countEl.style.display = 'flex';
-if (mobileCountEl) {
-mobileCountEl.textContent = count;
-mobileCountEl.style.display = 'flex';
-}
-} else {
-countEl.style.display = 'none';
-if (mobileCountEl) {
-mobileCountEl.style.display = 'none';
-}
-}
-}
-function renderFavorites() {
-const favorites = getFavorites();
-const section = document.getElementById('favoritesSection');
-const grid = document.getElementById('favoritesGrid');
-if (favorites.length === 0) {
-section.classList.add('active');
-grid.innerHTML = `
-<div class="favorites-empty" style="grid-column: 1 / -1;">
-<div class="favorites-empty-icon">
-<i class="far fa-heart"></i>
-</div>
-<h3>No saved properties yet</h3>
-<p>Click the heart icon on any property to save it here</p>
-<button class="nav-cta" onclick="hideFavorites()">Browse Properties</button>
-</div>
-`;
-return;
-}
-const favoriteProperties = allProperties.filter(p => favorites.includes(p.id));
-if (favoriteProperties.length === 0) {
-section.classList.add('active');
-grid.innerHTML = `
-<div class="favorites-empty" style="grid-column: 1 / -1;">
-<div class="favorites-empty-icon">
-<i class="far fa-heart"></i>
-</div>
-<h3>No saved properties yet</h3>
-<p>Click the heart icon on any property to save it here</p>
-<button class="nav-cta" onclick="hideFavorites()">Browse Properties</button>
-</div>
-`;
-return;
-}
-section.classList.add('active');
-grid.innerHTML = favoriteProperties.map(p => createFeaturedCard(p)).join('');
-updateFavoriteButtons();
-}
-function showFavorites() {
-renderFavorites();
-setTimeout(() => {
-document.getElementById('favoritesSection').scrollIntoView({ behavior: 'smooth', block: 'start' });
-}, 100);
-}
-function hideFavorites() {
-document.getElementById('favoritesSection').classList.remove('active');
-window.scrollTo({ top: 0, behavior: 'smooth' });
-}
-function toggleMobileMenu() {
-const overlay = document.getElementById('mobileMenuOverlay');
-const drawer = document.getElementById('mobileMenuDrawer');
-const btn = document.getElementById('hamburgerBtn');
-const isActive = drawer.classList.contains('active');
-if (isActive) {
-overlay.classList.remove('active');
-drawer.classList.remove('active');
-btn.classList.remove('active');
-btn.setAttribute('aria-expanded', 'false');
-document.body.style.overflow = '';
-} else {
-overlay.classList.add('active');
-drawer.classList.add('active');
-btn.classList.add('active');
-btn.setAttribute('aria-expanded', 'true');
-document.body.style.overflow = 'hidden';
-}
-}
-function navigateToCategory(category) {
-const drawer = document.getElementById('mobileMenuDrawer');
-if (drawer.classList.contains('active')) {
-toggleMobileMenu();
-}
-document.getElementById('favoritesSection').classList.remove('active');
-const categoryCard = document.querySelector(`.category-card[data-category="${category}"]`);
-if (categoryCard) {
-filterCategory(category, categoryCard);
-}
-}
-// ===== SKELETON LOADERS =====
-function createFeaturedSkeleton() {
-return `
-<div class="skeleton-featured-card">
-<div class="skeleton-featured-image"></div>
-<div class="skeleton-featured-info">
-<div class="skeleton-title"></div>
-<div class="skeleton-location"></div>
-<div class="skeleton-price"></div>
-<div class="skeleton-meta">
-<div class="skeleton-meta-item"></div>
-<div class="skeleton-meta-item"></div>
-<div class="skeleton-meta-item"></div>
-</div>
-</div>
-</div>
-`;
-}
-function createAISkeleton() {
-return `
-<div class="skeleton-ai-card">
-<div class="skeleton-ai-image"></div>
-<div class="skeleton-ai-info">
-<div class="skeleton-ai-title"></div>
-<div class="skeleton-ai-location"></div>
-<div class="skeleton-ai-price"></div>
-<div class="skeleton-ai-tags">
-<div class="skeleton-ai-tag"></div>
-<div class="skeleton-ai-tag"></div>
-</div>
-</div>
-</div>
-`;
-}
-function showFeaturedSkeletons() {
-const carousel = document.getElementById('featuredCarousel');
-const skeletonCount = 4;
-carousel.innerHTML = Array(skeletonCount).fill(createFeaturedSkeleton()).join('');
-}
-function showAISkeletons() {
-const carousel = document.getElementById('aiResultsCarousel');
-const skeletonCount = 4;
-carousel.innerHTML = Array(skeletonCount).fill(createAISkeleton()).join('');
-}
-async function loadTrustStats() {
-try {
-const totalProps = allProperties.length;
-const propEl = document.getElementById('statProperties');
-propEl.textContent = totalProps.toLocaleString();
-propEl.classList.remove('loading');
-const uniqueAgents = new Set(
-allProperties
-.map(p => p.agent_phone)
-.filter(phone => phone && phone.trim() !== '')
-).size;
-const agentEl = document.getElementById('statAgents');
-agentEl.textContent = uniqueAgents.toLocaleString();
-agentEl.classList.remove('loading');
-const searchesEl = document.getElementById('statSearches');
-try {
-const { count, error: countError } = await supabaseClient
-.from('search_logs')
-.select('*', { count: 'exact', head: true })
-.gte('created_at', new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString());
-if (!countError && typeof count === 'number') {
-searchesEl.textContent = count.toLocaleString();
-} else {
-searchesEl.innerHTML = '&mdash;';
-}
-} catch (e) {
-searchesEl.innerHTML = '&mdash;';
-}
-searchesEl.classList.remove('loading');
-} catch (error) {
-console.error('Error loading trust stats:', error);
-}
-}
-async function loadProperties() {
-showFeaturedSkeletons();
-try {
-const { data, error } = await supabaseClient
-.from("properties")
-.select("*")
-.eq("approval_status", "approved")
-.order("created_at", { ascending: false });
-if (error) throw error;
-allProperties = data || [];
-updateCategoryCounts();
-renderFeatured(allProperties);
-updateFavoritesCount();
-loadTrustStats();
-// ===== SEO: Generate dynamic JSON-LD for all properties =====
-injectPropertyListSchema();
-// ===== SEO: Handle hash-based deep linking =====
-handleInitialHash();
-} catch (error) {
-console.error('Error loading properties:', error);
-document.getElementById('featuredCarousel').innerHTML =
-'<div style="padding:40px; text-align:center; color:#9CA3AF; width:100%;">Failed to load properties</div>';
-loadTrustStats();
-}
-}
-// ===== SEO: Inject RealEstateListing JSON-LD for all properties =====
-function injectPropertyListSchema() {
-// Remove existing dynamic schema if present
-const existing = document.getElementById('dynamic-property-list-schema');
-if (existing) existing.remove();
-if (allProperties.length === 0) return;
-const listings = allProperties.slice(0, 50).map(p => {
-const img = p.images?.[0] || p.image_url || 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=800&q=80';
-return {
-"@type": "RealEstateListing",
-"name": p.title,
-"description": (p.description || '').substring(0, 200),
-"url": `https://propertiesinkenya.co.ke/#property=${p.id}`,
-"image": img,
-"address": {
-"@type": "PostalAddress",
-"addressLocality": p.location || "Nairobi",
-"addressCountry": "KE"
-},
-"offers": {
-"@type": "Offer",
-"price": p.price,
-"priceCurrency": "KES",
-"availability": "https://schema.org/InStock"
-},
-"numberOfRooms": p.bedrooms || undefined,
-"numberOfBathroomsTotal": p.bathrooms || undefined
-};
-});
-const schema = {
-"@context": "https://schema.org",
-"@type": "ItemList",
-"name": "Properties in Kenya Listings",
-"numberOfItems": allProperties.length,
-"itemListElement": listings.map((listing, idx) => ({
-"@type": "ListItem",
-"position": idx + 1,
-"item": listing
-}))
-};
-const script = document.createElement('script');
-script.type = 'application/ld+json';
-script.id = 'dynamic-property-list-schema';
-script.textContent = JSON.stringify(schema);
-document.head.appendChild(script);
-}
-// ===== SEO: Handle hash-based deep linking =====
-function handleInitialHash() {
-const hash = window.location.hash;
-const propertyMatch = hash.match(/property=([^&]+)/);
-if (propertyMatch && propertyMatch[1]) {
-const propertyId = propertyMatch[1];
-// Wait a tick for rendering
-setTimeout(() => openPropertyDetail(propertyId, false), 300);
-}
-const categoryMatch = hash.match(/category=([^&]+)/);
-if (categoryMatch && categoryMatch[1]) {
-const category = categoryMatch[1].replace(/-/g, ' ');
-const categoryCard = document.querySelector(`.category-card[data-category="${category}"]`);
-if (categoryCard) {
-setTimeout(() => filterCategory(category, categoryCard), 300);
-}
-}
-}
-function updateCategoryCounts() {
-document.getElementById('count-all').textContent = `${allProperties.length} properties`;
-document.getElementById('count-sale').textContent = `${allProperties.filter(p => p.property_type === 'for sale').length} properties`;
-document.getElementById('count-rent').textContent = `${allProperties.filter(p => p.property_type === 'for rent').length} properties`;
-document.getElementById('count-lease').textContent = `${allProperties.filter(p => p.property_type === 'lease').length} properties`;
-}
-function renderFeatured(properties) {
-const carousel = document.getElementById('featuredCarousel');
-if (properties.length === 0) {
-carousel.innerHTML = '<div style="padding:40px; text-align:center; color:#9CA3AF; width:100%;">No properties yet</div>';
-return;
-}
-carousel.innerHTML = properties.map(p => createFeaturedCard(p)).join('');
-updateFavoriteButtons();
-}
-function createFeaturedCard(p) {
-const img = p.images?.[0] || p.image_url || 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=600&q=80';
-const isFav = isFavorite(p.id);
-return `
-<article class="featured-card" onclick="openPropertyDetail('${p.id}')" role="listitem" itemscope itemtype="https://schema.org/RealEstateListing">
-<div class="featured-image-wrapper">
-<img src="${img}" class="featured-image" alt="${escapeHtml(p.title)} - ${escapeHtml(p.location || 'Kenya')}" loading="lazy" itemprop="image">
-<div class="featured-badge">${(p.property_type || 'FOR SALE').toUpperCase()}</div>
-<button class="favorite-btn ${isFav ? 'active' : ''}" data-property-id="${p.id}" onclick="toggleFavorite('${p.id}', event)" aria-label="${isFav ? 'Remove from' : 'Save to'} favorites">
-<i class="${isFav ? 'fas' : 'far'} fa-heart" aria-hidden="true"></i>
-</button>
-</div>
-<div class="featured-info" itemprop="offers" itemscope itemtype="https://schema.org/Offer">
-<h3 class="featured-title" itemprop="name">${escapeHtml(p.title)}</h3>
-<div class="featured-location">
-<i class="fas fa-map-marker-alt" aria-hidden="true"></i>
-<span itemprop="address">${escapeHtml(p.location || 'Kenya')}</span>
-</div>
-<div class="featured-price" itemprop="price" content="${p.price}">KSh ${Number(p.price).toLocaleString()}</div>
-<meta itemprop="priceCurrency" content="KES">
-<div class="featured-meta">
-${p.bedrooms ? `<div class="featured-meta-item"><i class="fas fa-bed" aria-hidden="true"></i> ${p.bedrooms} Bed</div>` : ''}
-${p.bathrooms ? `<div class="featured-meta-item"><i class="fas fa-bath" aria-hidden="true"></i> ${p.bathrooms} Bath</div>` : ''}
-${p.area ? `<div class="featured-meta-item"><i class="fas fa-ruler-combined" aria-hidden="true"></i> ${p.area} sqm</div>` : ''}
-</div>
-</div>
-</article>
-`;
-}
-function createAIResultCard(p) {
-const img = p.images?.[0] || p.image_url || 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=600&q=80';
-const tags = [];
-if (p.bedrooms) tags.push(`${p.bedrooms} Bed`);
-if (p.location) tags.push(p.location);
-const isFav = isFavorite(p.id);
-return `
-<article class="ai-result-card" onclick="openPropertyDetail('${p.id}')" role="listitem">
-<img src="${img}" class="ai-result-image" alt="${escapeHtml(p.title)}" loading="lazy">
-<button class="favorite-btn ${isFav ? 'active' : ''}" data-property-id="${p.id}" onclick="toggleFavorite('${p.id}', event)" aria-label="${isFav ? 'Remove from' : 'Save to'} favorites">
-<i class="${isFav ? 'fas' : 'far'} fa-heart" aria-hidden="true"></i>
-</button>
-<div class="ai-result-info">
-<h3 class="ai-result-title">${escapeHtml(p.title)}</h3>
-<div class="ai-result-location">${escapeHtml(p.location || 'Kenya')}</div>
-<div class="ai-result-price">KSh ${Number(p.price).toLocaleString()}</div>
-<div class="ai-result-tags">
-${tags.map(tag => `<span class="ai-result-tag">${tag}</span>`).join('')}
-</div>
-</div>
-</article>
-`;
-}
-window.filterCategory = function(category, element) {
-document.querySelectorAll('.category-card').forEach(c => {
-c.classList.remove('active');
-c.setAttribute('aria-selected', 'false');
-});
-element.classList.add('active');
-element.setAttribute('aria-selected', 'true');
-document.getElementById('favoritesSection').classList.remove('active');
-let filtered = category === 'all' ? allProperties : allProperties.filter(p => p.property_type === category);
-renderFeatured(filtered);
-// ===== SEO: Update URL hash for category =====
-const hashCategory = category === 'all' ? '' : category.replace(/\s+/g, '-');
-if (hashCategory) {
-history.replaceState(null, '', `#category=${hashCategory}`);
-} else {
-history.replaceState(null, '', window.location.pathname + window.location.search);
-}
-setTimeout(() => {
-document.getElementById('featured').scrollIntoView({ behavior: 'smooth', block: 'start' });
-}, 100);
-};
-function renderAIResults(properties) {
-const section = document.getElementById('aiResultsSection');
-const carousel = document.getElementById('aiResultsCarousel');
-const countText = document.getElementById('aiResultsCount');
-if (properties.length === 0) {
-section.classList.remove('active');
-return;
-}
-countText.textContent = `Found ${properties.length} ${properties.length === 1 ? 'property' : 'properties'}`;
-carousel.innerHTML = properties.map(p => createAIResultCard(p)).join('');
-updateFavoriteButtons();
-section.classList.add('active');
-setTimeout(() => {
-section.scrollIntoView({ behavior: 'smooth', block: 'start' });
-}, 300);
-}
-window.scrollCarousel = function(id, direction) {
-const container = document.getElementById(id);
-const card = container.querySelector('[class*="card"]');
-const scrollAmount = card ? (card.offsetWidth + 16) : 300;
-container.scrollBy({ left: direction * scrollAmount, behavior: 'smooth' });
-};
-// ===== SEO: Inject per-property JSON-LD schema =====
-function injectPropertySchema(p) {
-// Remove existing dynamic property schema
-const existing = document.getElementById('dynamic-property-schema');
-if (existing) existing.remove();
-const img = p.images?.[0] || p.image_url || 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=800&q=80';
-const schema = {
-"@context": "https://schema.org",
-"@type": "RealEstateListing",
-"name": p.title,
-"description": (p.description || `Verified ${p.property_type || 'property'} in ${p.location || 'Kenya'}. Listed on Properties in Kenya.`).substring(0, 500),
-"url": `https://propertiesinkenya.co.ke/#property=${p.id}`,
-"image": img,
-"datePosted": p.created_at || new Date().toISOString(),
-"address": {
-"@type": "PostalAddress",
-"addressLocality": p.location || "Nairobi",
-"addressRegion": "Nairobi",
-"addressCountry": "KE"
-},
-"offers": {
-"@type": "Offer",
-"price": p.price,
-"priceCurrency": "KES",
-"availability": "https://schema.org/InStock",
-"url": `https://propertiesinkenya.co.ke/#property=${p.id}`
-},
-"numberOfRooms": p.bedrooms || undefined,
-"numberOfBathroomsTotal": p.bathrooms || undefined,
-"floorSize": p.area ? {
-"@type": "QuantitativeValue",
-"value": p.area,
-"unitCode": "SQM"
-} : undefined,
-"broker": {
-"@type": "RealEstateAgent",
-"name": p.agent_name || "Verified Agent"
-}
-};
-const script = document.createElement('script');
-script.type = 'application/ld+json';
-script.id = 'dynamic-property-schema';
-script.textContent = JSON.stringify(schema);
-document.head.appendChild(script);
-}
+(function() {
+    'use strict';
 
-function openPropertyDetail(propertyId) {
-    window.location.href = `property.html?id=${propertyId}`;
-}
+    const supabaseClient = supabase.createClient(
+        "https://nqwvsmuvltbiekfnvovx.supabase.co",
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5xd3ZzbXV2bHRiaWVrZm52b3Z4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA1NjU4MDAsImV4cCI6MjA5NjE0MTgwMH0.Xrc-bbAuWdvKSPHnVhTaLiQphV61xeYtDepWePqsrdo"
+    );
 
-// ===== SEO: Helper to set meta content =====
-function setMeta(attr, value) {
-const selector = attr.startsWith('og:')
-? `meta[property="${attr}"]`
-: attr.startsWith('twitter:')
-? `meta[name="${attr}"]`
-: `meta[name="${attr}"]`;
-const el = document.querySelector(selector);
-if (el) el.setAttribute('content', value);
-}
+    let allProperties = [];
 
-window.useSuggestion = function(text) {
-document.getElementById('aiQuery').value = text;
-askAI();
-};
-async function askAI() {
-const input = document.getElementById('aiQuery');
-const query = input.value.trim();
-if (!query) return;
-const btn = document.getElementById('askBtn');
-const messagesDiv = document.getElementById('chatMessages');
-btn.disabled = true;
-btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
-messagesDiv.classList.add('active');
-addChatMessage(query, true);
-input.value = '';
-const section = document.getElementById('aiResultsSection');
-section.classList.add('active');
-showAISkeletons();
-trackEvent('AI Search', { query: query });
-try {
-const response = await fetch('/api/ai-assistant', {
-method: 'POST',
-headers: { 'Content-Type': 'application/json' },
-body: JSON.stringify({ query })
-});
-const result = await response.json();
-if (!response.ok) throw new Error(result.error);
-const filteredProperties = applyAIFilters(result.filters);
-let aiResponse = filteredProperties.length === 0
-? `No properties found matching "${query}".`
-: `✨ Found ${filteredProperties.length} ${filteredProperties.length === 1 ? 'property' : 'properties'}!`;
-addChatMessage(aiResponse, false);
-if (filteredProperties.length > 0) {
-renderAIResults(filteredProperties);
-} else {
-section.classList.remove('active');
-}
-} catch (error) {
-addChatMessage("Sorry, having trouble connecting.", false);
-section.classList.remove('active');
-} finally {
-btn.disabled = false;
-btn.innerHTML = '<i class="fas fa-search"></i><span>Search</span>';
-}
-}
-
-function applyAIFilters(filters) {
-    return allProperties.filter(p => {
-        if (filters.max_price && p.price > filters.max_price) return false;
-        if (filters.min_price && p.price < filters.min_price) return false;
-        if (filters.location && !(p.location || '').toLowerCase()
-            .includes(filters.location.toLowerCase())) return false;
-        if (filters.bedrooms && Number(p.bedrooms) !== Number(filters.bedrooms)) return false;
-        if (filters.transaction) {
-            if (!(p.property_type || '').toLowerCase()
-                .includes(filters.transaction.toLowerCase())) return false;
+    // ===== ANALYTICS (Plausible) =====
+    function trackEvent(eventName, props = {}) {
+        try {
+            if (typeof plausible === 'function') {
+                plausible(eventName, { props: props });
+            }
+        } catch (e) {
+            console.debug('Analytics:', eventName, props);
         }
-        if (filters.property_type) {
-            const pCat = (p.property_category || p.title || '').toLowerCase();
-            if (!pCat.includes(filters.property_type.toLowerCase())) return false;
+    }
+
+    // ===== FAVORITES SYSTEM =====
+    const FAVORITES_KEY = 'propertiesinkenya_favorites';
+    function getFavorites() {
+        try {
+            const favorites = localStorage.getItem(FAVORITES_KEY);
+            return favorites ? JSON.parse(favorites) : [];
+        } catch (error) {
+            console.error('Error loading favorites:', error);
+            return [];
         }
-        return true;
+    }
+    function saveFavorites(favorites) {
+        try {
+            localStorage.setItem(FAVORITES_KEY, JSON.stringify(favorites));
+            updateFavoritesCount();
+        } catch (error) {
+            console.error('Error saving favorites:', error);
+        }
+    }
+    function isFavorite(propertyId) {
+        const favorites = getFavorites();
+        return favorites.includes(propertyId);
+    }
+    function toggleFavorite(propertyId, event) {
+        if (event) {
+            event.stopPropagation();
+        }
+        const favorites = getFavorites();
+        const index = favorites.indexOf(propertyId);
+        const action = index > -1 ? 'remove' : 'add';
+        if (index > -1) {
+            favorites.splice(index, 1);
+        } else {
+            favorites.push(propertyId);
+        }
+        saveFavorites(favorites);
+        updateFavoriteButtons();
+        updateFavoritesCount();
+        trackEvent('Favorite Toggle', { action: action, propertyId: propertyId });
+    }
+    function updateFavoriteButtons() {
+        const favorites = getFavorites();
+        document.querySelectorAll('.favorite-btn').forEach(btn => {
+            const propertyId = btn.dataset.propertyId;
+            if (favorites.includes(propertyId)) {
+                btn.classList.add('active');
+                btn.innerHTML = '<i class="fas fa-heart"></i>';
+            } else {
+                btn.classList.remove('active');
+                btn.innerHTML = '<i class="far fa-heart"></i>';
+            }
+        });
+    }
+    function updateFavoritesCount() {
+        const favorites = getFavorites();
+        const count = favorites.length;
+        const countEl = document.getElementById('favoritesCount');
+        const mobileCountEl = document.getElementById('mobileFavoritesCount');
+        if (count > 0) {
+            countEl.textContent = count;
+            countEl.style.display = 'flex';
+            if (mobileCountEl) {
+                mobileCountEl.textContent = count;
+                mobileCountEl.style.display = 'flex';
+            }
+        } else {
+            countEl.style.display = 'none';
+            if (mobileCountEl) {
+                mobileCountEl.style.display = 'none';
+            }
+        }
+    }
+    function renderFavorites() {
+        const favorites = getFavorites();
+        const section = document.getElementById('favoritesSection');
+        const grid = document.getElementById('favoritesGrid');
+        if (favorites.length === 0) {
+            section.classList.add('active');
+            grid.innerHTML = `
+            <div class="favorites-empty" style="grid-column: 1 / -1;">
+                <div class="favorites-empty-icon">
+                    <i class="far fa-heart"></i>
+                </div>
+                <h3>No saved properties yet</h3>
+                <p>Click the heart icon on any property to save it here</p>
+                <button class="nav-cta" onclick="hideFavorites()">Browse Properties</button>
+            </div>
+            `;
+            return;
+        }
+        const favoriteProperties = allProperties.filter(p => favorites.includes(p.id));
+        if (favoriteProperties.length === 0) {
+            section.classList.add('active');
+            grid.innerHTML = `
+            <div class="favorites-empty" style="grid-column: 1 / -1;">
+                <div class="favorites-empty-icon">
+                    <i class="far fa-heart"></i>
+                </div>
+                <h3>No saved properties yet</h3>
+                <p>Click the heart icon on any property to save it here</p>
+                <button class="nav-cta" onclick="hideFavorites()">Browse Properties</button>
+            </div>
+            `;
+            return;
+        }
+        section.classList.add('active');
+        grid.innerHTML = favoriteProperties.map(p => createFeaturedCard(p)).join('');
+        updateFavoriteButtons();
+    }
+    function showFavorites() {
+        renderFavorites();
+        setTimeout(() => {
+            document.getElementById('favoritesSection').scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }, 100);
+    }
+    function hideFavorites() {
+        document.getElementById('favoritesSection').classList.remove('active');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+    function toggleMobileMenu() {
+        const overlay = document.getElementById('mobileMenuOverlay');
+        const drawer = document.getElementById('mobileMenuDrawer');
+        const btn = document.getElementById('hamburgerBtn');
+        const isActive = drawer.classList.contains('active');
+        if (isActive) {
+            overlay.classList.remove('active');
+            drawer.classList.remove('active');
+            btn.classList.remove('active');
+            btn.setAttribute('aria-expanded', 'false');
+            document.body.style.overflow = '';
+        } else {
+            overlay.classList.add('active');
+            drawer.classList.add('active');
+            btn.classList.add('active');
+            btn.setAttribute('aria-expanded', 'true');
+            document.body.style.overflow = 'hidden';
+        }
+    }
+    function navigateToCategory(category) {
+        const drawer = document.getElementById('mobileMenuDrawer');
+        if (drawer.classList.contains('active')) {
+            toggleMobileMenu();
+        }
+        document.getElementById('favoritesSection').classList.remove('active');
+        const categoryCard = document.querySelector(`.category-card[data-category="${category}"]`);
+        if (categoryCard) {
+            filterCategory(category, categoryCard);
+        }
+    }
+
+    // ===== SKELETON LOADERS =====
+    function createFeaturedSkeleton() {
+        return `
+        <div class="skeleton-featured-card">
+            <div class="skeleton-featured-image"></div>
+            <div class="skeleton-featured-info">
+                <div class="skeleton-title"></div>
+                <div class="skeleton-location"></div>
+                <div class="skeleton-price"></div>
+                <div class="skeleton-meta">
+                    <div class="skeleton-meta-item"></div>
+                    <div class="skeleton-meta-item"></div>
+                    <div class="skeleton-meta-item"></div>
+                </div>
+            </div>
+        </div>
+        `;
+    }
+    function createAISkeleton() {
+        return `
+        <div class="skeleton-ai-card">
+            <div class="skeleton-ai-image"></div>
+            <div class="skeleton-ai-info">
+                <div class="skeleton-ai-title"></div>
+                <div class="skeleton-ai-location"></div>
+                <div class="skeleton-ai-price"></div>
+                <div class="skeleton-ai-tags">
+                    <div class="skeleton-ai-tag"></div>
+                    <div class="skeleton-ai-tag"></div>
+                </div>
+            </div>
+        </div>
+        `;
+    }
+    function showFeaturedSkeletons() {
+        const carousel = document.getElementById('featuredCarousel');
+        const skeletonCount = 4;
+        carousel.innerHTML = Array(skeletonCount).fill(createFeaturedSkeleton()).join('');
+    }
+    function showAISkeletons() {
+        const carousel = document.getElementById('aiResultsCarousel');
+        const skeletonCount = 4;
+        carousel.innerHTML = Array(skeletonCount).fill(createAISkeleton()).join('');
+    }
+
+    async function loadTrustStats() {
+        try {
+            const totalProps = allProperties.length;
+            const propEl = document.getElementById('statProperties');
+            propEl.textContent = totalProps.toLocaleString();
+            propEl.classList.remove('loading');
+            const uniqueAgents = new Set(
+                allProperties
+                    .map(p => p.agent_phone)
+                    .filter(phone => phone && phone.trim() !== '')
+            ).size;
+            const agentEl = document.getElementById('statAgents');
+            agentEl.textContent = uniqueAgents.toLocaleString();
+            agentEl.classList.remove('loading');
+            const searchesEl = document.getElementById('statSearches');
+            try {
+                const { count, error: countError } = await supabaseClient
+                    .from('search_logs')
+                    .select('*', { count: 'exact', head: true })
+                    .gte('created_at', new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString());
+                if (!countError && typeof count === 'number') {
+                    searchesEl.textContent = count.toLocaleString();
+                } else {
+                    searchesEl.innerHTML = '&mdash;';
+                }
+            } catch (e) {
+                searchesEl.innerHTML = '&mdash;';
+            }
+            searchesEl.classList.remove('loading');
+        } catch (error) {
+            console.error('Error loading trust stats:', error);
+        }
+    }
+
+    async function loadProperties() {
+        showFeaturedSkeletons();
+        try {
+            const { data, error } = await supabaseClient
+                .from("properties")
+                .select("*")
+                .eq("approval_status", "approved")
+                .order("created_at", { ascending: false });
+            if (error) throw error;
+            allProperties = data || [];
+            updateCategoryCounts();
+            renderFeatured(allProperties);
+            updateFavoritesCount();
+            loadTrustStats();
+            injectPropertyListSchema();
+            handleInitialHash();
+        } catch (error) {
+            console.error('Error loading properties:', error);
+            document.getElementById('featuredCarousel').innerHTML =
+                '<div style="padding:40px; text-align:center; color:#9CA3AF; width:100%;">Failed to load properties</div>';
+            loadTrustStats();
+        }
+    }
+
+    // ===== SEO: Inject RealEstateListing JSON-LD for all properties =====
+    function injectPropertyListSchema() {
+        const existing = document.getElementById('dynamic-property-list-schema');
+        if (existing) existing.remove();
+        if (allProperties.length === 0) return;
+        const listings = allProperties.slice(0, 50).map(p => {
+            const img = p.images?.[0] || p.image_url || 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=800&q=80';
+            return {
+                "@type": "RealEstateListing",
+                "name": p.title,
+                "description": (p.description || '').substring(0, 200),
+                // 🔒 SEO FIX: Use clean URLs instead of hash fragments so Google indexes them properly
+                "url": `https://propertiesinkenya.co.ke/property/${p.id}`,
+                "image": img,
+                "address": {
+                    "@type": "PostalAddress",
+                    "addressLocality": p.location || "Nairobi",
+                    "addressCountry": "KE"
+                },
+                "offers": {
+                    "@type": "Offer",
+                    "price": p.price,
+                    "priceCurrency": "KES",
+                    "availability": "https://schema.org/InStock"
+                },
+                "numberOfRooms": p.bedrooms || undefined,
+                "numberOfBathroomsTotal": p.bathrooms || undefined
+            };
+        });
+        const schema = {
+            "@context": "https://schema.org",
+            "@type": "ItemList",
+            "name": "Properties in Kenya Listings",
+            "numberOfItems": allProperties.length,
+            "itemListElement": listings.map((listing, idx) => ({
+                "@type": "ListItem",
+                "position": idx + 1,
+                "item": listing
+            }))
+        };
+        const script = document.createElement('script');
+        script.type = 'application/ld+json';
+        script.id = 'dynamic-property-list-schema';
+        script.textContent = JSON.stringify(schema);
+        document.head.appendChild(script);
+    }
+
+    // ===== SEO: Handle hash-based deep linking =====
+    function handleInitialHash() {
+        const hash = window.location.hash;
+        const propertyMatch = hash.match(/property=([^&]+)/);
+        if (propertyMatch && propertyMatch[1]) {
+            const propertyId = propertyMatch[1];
+            setTimeout(() => openPropertyDetail(propertyId, false), 300);
+        }
+        const categoryMatch = hash.match(/category=([^&]+)/);
+        if (categoryMatch && categoryMatch[1]) {
+            const category = categoryMatch[1].replace(/-/g, ' ');
+            const categoryCard = document.querySelector(`.category-card[data-category="${category}"]`);
+            if (categoryCard) {
+                setTimeout(() => filterCategory(category, categoryCard), 300);
+            }
+        }
+    }
+
+    function updateCategoryCounts() {
+        document.getElementById('count-all').textContent = `${allProperties.length} properties`;
+        document.getElementById('count-sale').textContent = `${allProperties.filter(p => p.property_type === 'for sale').length} properties`;
+        document.getElementById('count-rent').textContent = `${allProperties.filter(p => p.property_type === 'for rent').length} properties`;
+        document.getElementById('count-lease').textContent = `${allProperties.filter(p => p.property_type === 'lease').length} properties`;
+    }
+
+    function renderFeatured(properties) {
+        const carousel = document.getElementById('featuredCarousel');
+        if (properties.length === 0) {
+            carousel.innerHTML = '<div style="padding:40px; text-align:center; color:#9CA3AF; width:100%;">No properties yet</div>';
+            return;
+        }
+        carousel.innerHTML = properties.map(p => createFeaturedCard(p)).join('');
+        updateFavoriteButtons();
+    }
+
+    function createFeaturedCard(p) {
+        const img = p.images?.[0] || p.image_url || 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=600&q=80';
+        const isFav = isFavorite(p.id);
+        return `
+        <article class="featured-card" onclick="openPropertyDetail('${p.id}')" role="listitem" itemscope itemtype="https://schema.org/RealEstateListing">
+            <div class="featured-image-wrapper">
+                <img src="${img}" class="featured-image" alt="${escapeHtml(p.title)} - ${escapeHtml(p.location || 'Kenya')}" loading="lazy" itemprop="image">
+                <div class="featured-badge">${(p.property_type || 'FOR SALE').toUpperCase()}</div>
+                <button class="favorite-btn ${isFav ? 'active' : ''}" data-property-id="${p.id}" onclick="toggleFavorite('${p.id}', event)" aria-label="${isFav ? 'Remove from' : 'Save to'} favorites">
+                    <i class="${isFav ? 'fas' : 'far'} fa-heart" aria-hidden="true"></i>
+                </button>
+            </div>
+            <div class="featured-info" itemprop="offers" itemscope itemtype="https://schema.org/Offer">
+                <h3 class="featured-title" itemprop="name">${escapeHtml(p.title)}</h3>
+                <div class="featured-location">
+                    <i class="fas fa-map-marker-alt" aria-hidden="true"></i>
+                    <span itemprop="address">${escapeHtml(p.location || 'Kenya')}</span>
+                </div>
+                <div class="featured-price" itemprop="price" content="${p.price}">KSh ${Number(p.price).toLocaleString()}</div>
+                <meta itemprop="priceCurrency" content="KES">
+                <div class="featured-meta">
+                    ${p.bedrooms ? `<div class="featured-meta-item"><i class="fas fa-bed" aria-hidden="true"></i> ${p.bedrooms} Bed</div>` : ''}
+                    ${p.bathrooms ? `<div class="featured-meta-item"><i class="fas fa-bath" aria-hidden="true"></i> ${p.bathrooms} Bath</div>` : ''}
+                    ${p.area ? `<div class="featured-meta-item"><i class="fas fa-ruler-combined" aria-hidden="true"></i> ${p.area} sqm</div>` : ''}
+                </div>
+            </div>
+        </article>
+        `;
+    }
+
+    function createAIResultCard(p) {
+        const img = p.images?.[0] || p.image_url || 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=600&q=80';
+        const tags = [];
+        if (p.bedrooms) tags.push(`${p.bedrooms} Bed`);
+        if (p.location) tags.push(p.location);
+        const isFav = isFavorite(p.id);
+        return `
+        <article class="ai-result-card" onclick="openPropertyDetail('${p.id}')" role="listitem">
+            <img src="${img}" class="ai-result-image" alt="${escapeHtml(p.title)}" loading="lazy">
+            <button class="favorite-btn ${isFav ? 'active' : ''}" data-property-id="${p.id}" onclick="toggleFavorite('${p.id}', event)" aria-label="${isFav ? 'Remove from' : 'Save to'} favorites">
+                <i class="${isFav ? 'fas' : 'far'} fa-heart" aria-hidden="true"></i>
+            </button>
+            <div class="ai-result-info">
+                <h3 class="ai-result-title">${escapeHtml(p.title)}</h3>
+                <div class="ai-result-location">${escapeHtml(p.location || 'Kenya')}</div>
+                <div class="ai-result-price">KSh ${Number(p.price).toLocaleString()}</div>
+                <div class="ai-result-tags">
+                    ${tags.map(tag => `<span class="ai-result-tag">${tag}</span>`).join('')}
+                </div>
+            </div>
+        </article>
+        `;
+    }
+
+    window.filterCategory = function(category, element) {
+        document.querySelectorAll('.category-card').forEach(c => {
+            c.classList.remove('active');
+            c.setAttribute('aria-selected', 'false');
+        });
+        element.classList.add('active');
+        element.setAttribute('aria-selected', 'true');
+        document.getElementById('favoritesSection').classList.remove('active');
+        let filtered = category === 'all' ? allProperties : allProperties.filter(p => p.property_type === category);
+        renderFeatured(filtered);
+        const hashCategory = category === 'all' ? '' : category.replace(/\s+/g, '-');
+        if (hashCategory) {
+            history.replaceState(null, '', `#category=${hashCategory}`);
+        } else {
+            history.replaceState(null, '', window.location.pathname + window.location.search);
+        }
+        setTimeout(() => {
+            document.getElementById('featured').scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }, 100);
+    };
+
+    function renderAIResults(properties) {
+        const section = document.getElementById('aiResultsSection');
+        const carousel = document.getElementById('aiResultsCarousel');
+        const countText = document.getElementById('aiResultsCount');
+        if (properties.length === 0) {
+            section.classList.remove('active');
+            return;
+        }
+        countText.textContent = `Found ${properties.length} ${properties.length === 1 ? 'property' : 'properties'}`;
+        carousel.innerHTML = properties.map(p => createAIResultCard(p)).join('');
+        updateFavoriteButtons();
+        section.classList.add('active');
+        setTimeout(() => {
+            section.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }, 300);
+    }
+
+    window.scrollCarousel = function(id, direction) {
+        const container = document.getElementById(id);
+        const card = container.querySelector('[class*="card"]');
+        const scrollAmount = card ? (card.offsetWidth + 16) : 300;
+        container.scrollBy({ left: direction * scrollAmount, behavior: 'smooth' });
+    };
+
+    function openPropertyDetail(propertyId) {
+        window.location.href = `property.html?id=${propertyId}`;
+    }
+
+    window.useSuggestion = function(text) {
+        document.getElementById('aiQuery').value = text;
+        askAI();
+    };
+
+    async function askAI() {
+        const input = document.getElementById('aiQuery');
+        const query = input.value.trim();
+        if (!query) return;
+        const btn = document.getElementById('askBtn');
+        const messagesDiv = document.getElementById('chatMessages');
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+        messagesDiv.classList.add('active');
+        addChatMessage(query, true);
+        input.value = '';
+        const section = document.getElementById('aiResultsSection');
+        section.classList.add('active');
+        showAISkeletons();
+        trackEvent('AI Search', { query: query });
+        try {
+            const response = await fetch('/api/ai-assistant', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ query })
+            });
+            
+            // 🔒 FIX: Handle non-JSON error responses from API to prevent crash
+            if (!response.ok) {
+                throw new Error(`API Error: ${response.status}`);
+            }
+
+            const result = await response.json();
+            const filteredProperties = applyAIFilters(result.filters);
+            let aiResponse = filteredProperties.length === 0
+                ? `No properties found matching "${query}".`
+                : `✨ Found ${filteredProperties.length} ${filteredProperties.length === 1 ? 'property' : 'properties'}!`;
+            addChatMessage(aiResponse, false);
+            if (filteredProperties.length > 0) {
+                renderAIResults(filteredProperties);
+            } else {
+                section.classList.remove('active');
+            }
+        } catch (error) {
+            addChatMessage("Sorry, having trouble connecting.", false);
+            section.classList.remove('active');
+        } finally {
+            btn.disabled = false;
+            btn.innerHTML = '<i class="fas fa-search"></i><span>Search</span>';
+        }
+    }
+
+    function applyAIFilters(filters) {
+        return allProperties.filter(p => {
+            if (filters.max_price && p.price > filters.max_price) return false;
+            if (filters.min_price && p.price < filters.min_price) return false;
+            if (filters.location && !(p.location || '').toLowerCase()
+                .includes(filters.location.toLowerCase())) return false;
+            if (filters.bedrooms && Number(p.bedrooms) !== Number(filters.bedrooms)) return false;
+            if (filters.transaction) {
+                if (!(p.property_type || '').toLowerCase()
+                    .includes(filters.transaction.toLowerCase())) return false;
+            }
+            if (filters.property_type) {
+                const pCat = (p.property_category || p.title || '').toLowerCase();
+                if (!pCat.includes(filters.property_type.toLowerCase())) return false;
+            }
+            return true;
+        });
+    }
+
+    function addChatMessage(message, isUser) {
+        const messagesDiv = document.getElementById('chatMessages');
+        const messageDiv = document.createElement('div');
+        messageDiv.className = 'ai-chat-message';
+        // 🔒 SECURITY FIX: Escape the AI response to prevent XSS if the API reflects malicious data
+        messageDiv.innerHTML = isUser
+            ? `<div class="ai-chat-bubble user">${escapeHtml(message)}</div><div class="ai-chat-avatar user"><i class="fas fa-user"></i></div>`
+            : `<div class="ai-chat-avatar ai"><i class="fas fa-robot"></i></div><div class="ai-chat-bubble ai">${escapeHtml(message)}</div>`;
+        messagesDiv.appendChild(messageDiv);
+        messagesDiv.scrollTop = messagesDiv.scrollHeight;
+    }
+
+    function escapeHtml(text) {
+        if (!text) return '';
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
+    }
+
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+            const drawer = document.getElementById('mobileMenuDrawer');
+            if (drawer.classList.contains('active')) {
+                toggleMobileMenu();
+            }
+        }
     });
-}
 
-function addChatMessage(message, isUser) {
-const messagesDiv = document.getElementById('chatMessages');
-const messageDiv = document.createElement('div');
-messageDiv.className = 'ai-chat-message';
-messageDiv.innerHTML = isUser
-? `<div class="ai-chat-bubble user">${escapeHtml(message)}</div><div class="ai-chat-avatar user"><i class="fas fa-user"></i></div>`
-: `<div class="ai-chat-avatar ai"><i class="fas fa-robot"></i></div><div class="ai-chat-bubble ai">${message}</div>`;
-messagesDiv.appendChild(messageDiv);
-messagesDiv.scrollTop = messagesDiv.scrollHeight;
-}
-function escapeHtml(text) {
-if (!text) return '';
-const div = document.createElement('div');
-div.textContent = text;
-return div.innerHTML;
-}
-
-document.addEventListener('keydown', (e) => {
-if (e.key === 'Escape') {
-const drawer = document.getElementById('mobileMenuDrawer');
-if (drawer.classList.contains('active')) {
-toggleMobileMenu();
-}
-}
-});
-
-loadProperties();
+    loadProperties();
+})();
 </script>
 </body>
 </html>
