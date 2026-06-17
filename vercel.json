@@ -5,3 +5,9 @@
     { "source": "/property/:id", "destination": "/?property=:id" }
   ]
 }
+{
+  "rewrites": [
+    { "source": "/sitemap.xml", "destination": "/api/sitemap" },
+    { "source": "/agent/:slug", "destination": "/agent-profile.html" }
+  ]
+}
