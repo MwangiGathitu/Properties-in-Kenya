@@ -1,13 +1,49 @@
 # robots.txt for Properties in Kenya
 # https://propertiesinkenya.co.ke/
 
+# ==========================================
+# BLOCK AI TRAINING SCRAPERS
+# Prevents AI bots from scraping property data and draining bandwidth
+# ==========================================
+User-agent: GPTBot
+User-agent: ChatGPT-User
+User-agent: CCBot
+User-agent: Google-Extended
+User-agent: anthropic-ai
+User-agent: Claude-Web
+User-agent: cohere-ai
+User-agent: Bytespider
+User-agent: FacebookBot
+User-agent: Applebot-Extended
+User-agent: PetalBot
+Disallow: /
+
+# ==========================================
+# STANDARD CRAWLERS (Google, Bing, DuckDuckGo, etc.)
+# ==========================================
 User-agent: *
-Allow: /
+
+# Block authentication and internal dashboard pages to prevent 
+# duplicate content issues and crawl budget waste.
 Disallow: /login.html
+Disallow: /admin.html
+Disallow: /agent-dashboard.html
+Disallow: /agent-properties.html
+Disallow: /shared-listings.html
+Disallow: /buyer-requests.html
+Disallow: /lead-center.html
+Disallow: /agent-network.html
+Disallow: /messages.html
+Disallow: /commissions.html
+
+# Block internal API routes (if hosted locally via Vercel Edge Functions)
 Disallow: /api/
 
+# ==========================================
+# SITEMAP & META
+# ==========================================
 # Sitemap location
 Sitemap: https://propertiesinkenya.co.ke/sitemap.xml
 
-# Crawl-delay for respectful crawling
-Crawl-delay: 1
+# Note: Crawl-delay has been removed as it is ignored by Google/Bing.
+# Rely on Vercel Edge Caching for performance optimization.
