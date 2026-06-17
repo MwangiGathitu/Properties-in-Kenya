@@ -23,8 +23,7 @@ Disallow: /
 # ==========================================
 User-agent: *
 
-# Block authentication and internal dashboard pages to prevent 
-# duplicate content issues and crawl budget waste.
+# Block authentication and internal dashboard pages
 Disallow: /login.html
 Disallow: /admin.html
 Disallow: /agent-dashboard.html
@@ -36,14 +35,10 @@ Disallow: /agent-network.html
 Disallow: /messages.html
 Disallow: /commissions.html
 
-# Block internal API routes (if hosted locally via Vercel Edge Functions)
+# Block internal API routes
 Disallow: /api/
 
 # ==========================================
-# SITEMAP & META
+# SITEMAP
 # ==========================================
-# Sitemap location
 Sitemap: https://propertiesinkenya.co.ke/sitemap.xml
-
-# Note: Crawl-delay has been removed as it is ignored by Google/Bing.
-# Rely on Vercel Edge Caching for performance optimization.
