@@ -167,6 +167,11 @@
 </head>
 <body>
 
+  <!-- 🔒 FIX: Full screen loader to prevent visual flipping/flickering -->
+  <div id="auth-loader" style="position:fixed; inset:0; background:linear-gradient(135deg, #6b21a8, #a855f7); z-index:9999; display:flex; align-items:center; justify-content:center;">
+      <i class="fas fa-spinner fa-spin text-4xl text-white"></i>
+  </div>
+
   <div class="login-box" id="loginBox">
     <div class="logo">
       <i class="fas fa-home"></i>
@@ -305,6 +310,7 @@
             // 1. Check if user clicked a "Reset Password" link from their email
             const hash = window.location.hash;
             if (hash && hash.includes('access_token') && hash.includes('type=recovery')) {
+                document.getElementById('auth-loader').style.display = 'none';
                 document.getElementById('loginBox').style.display = 'block';
                 document.getElementById('mainTabs').style.display = 'none'; // Hide tabs during recovery
                 showForm('recoveryForm');
@@ -312,24 +318,45 @@
                 return; // Stop here, let user reset password
             }
 
-            // 2. Normal Auto-Login Check
-            const { data: { session } } = await supabaseClient.auth.getSession();
-            if (session?.user) {
-                const { data: profile } = await supabaseClient
-                    .from('profiles')
-                    .select('role')
-                    .eq('id', session.user.id)
-                    .single();
+            // 2. Normal Auto-Login Check (Bulletproof)
+            try {
+                const { data: { session } } = await supabaseClient.auth.getSession();
+                
+                if (session?.user) {
+                    // 🔒 BULLETPROOF FIX: Verify the session is actually valid on the server.
+                    // This kills the "Ghost Session" redirect loop.
+                    const { data: { user }, error } = await supabaseClient.auth.getUser();
+                    
+                    if (error || !user) {
+                        // Ghost session detected. Clear it completely.
+                        await supabaseClient.auth.signOut();
+                        // Fall through to show login box
+                    } else {
+                        // Session is 100% valid. Check role and redirect.
+                        const { data: profile } = await supabaseClient
+                            .from('profiles')
+                            .select('role')
+                            .eq('id', user.id)
+                            .single();
 
-                // Redirect if already logged in
-                if (profile?.role === 'admin') window.location.href = 'admin.html';
-                else if (profile?.role === 'buyer') window.location.href = 'index.html';
-                else window.location.href = 'agent-dashboard.html';
-            } else {
-                // Not logged in, show login box
-                document.getElementById('loginBox').style.display = 'block';
-                updateSubtitle(currentRole === 'buyer' ? 'Buyer Login' : 'Agent Login');
+                        // Redirect based on role
+                        if (profile?.role === 'admin') window.location.href = 'admin.html';
+                        else if (profile?.role === 'buyer') window.location.href = 'index.html';
+                        else window.location.href = 'agent-dashboard.html';
+                        
+                        return; // Stop execution, they are being redirected
+                    }
+                }
+            } catch (err) {
+                console.error('Auth check failed:', err);
+                // If anything fails, clear session and show login
+                await supabaseClient.auth.signOut().catch(() => {});
             }
+
+            // 3. If we reach here, they are truly logged out. Hide loader and show login box.
+            document.getElementById('auth-loader').style.display = 'none';
+            document.getElementById('loginBox').style.display = 'block';
+            updateSubtitle(currentRole === 'buyer' ? 'Buyer Login' : 'Agent Login');
         })();
 
         // ===== TAB SWITCHING =====
