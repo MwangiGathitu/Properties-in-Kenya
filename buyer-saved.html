@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Saved Homes - Properties in Kenya</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap');
+        body { font-family: 'Inter', system_ui, sans-serif; }
+        .heading-font { font-family: 'Space Grotesk', sans-serif; }
+        
+        /* Buyer Theme: Elegant Blue/Teal */
+        .sidebar-link.active { background: linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%); color: white; }
+        .sidebar-link:hover:not(.active) { background-color: #e0f2fe; color: #0284c7; }
+        
+        @media (max-width: 1024px) { .sidebar { display: none; } .sidebar.mobile-open { display: block; } }
+
+        .stat-card { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+        .stat-card:hover { transform: translateY(-4px); box-shadow: 0 20px 40px -12px rgb(0 0 0 / 0.15); }
+        
+        /* Toast Notification */
+        .toast {
+            position: fixed; bottom: 20px; right: 20px;
+            background: #111827; color: white;
+            padding: 12px 20px; border-radius: 10px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            z-index: 9999; display: flex; align-items: center; gap: 10px;
+            animation: slideIn 0.3s ease-out;
+        }
+        @keyframes slideIn { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+    </style>
+</head>
+<body class="bg-gray-50">
+
+<!-- 🔒 FIX: Full screen loader to prevent visual flipping/flickering -->
+<div id="auth-loader" style="position:fixed; inset:0; background:white; z-index:9999; display:flex; align-items:center; justify-content:center;">
+    <i class="fas fa-spinner fa-spin text-4xl text-sky-500"></i>
+</div>
+
+<button id="mobile-menu-btn" class="lg:hidden fixed top-4 left-4 z-50 bg-white p-3 rounded-xl shadow-lg" aria-label="Toggle menu">
+    <i class="fas fa-bars text-gray-700"></i>
+</button>
+<div id="mobile-overlay" class="hidden lg:hidden fixed inset-0 bg-black/50 z-40"></div>
+
+<div class="flex min-h-screen">
+    <!-- SIDEBAR -->
+    <aside id="sidebar" class="sidebar fixed lg:sticky top-0 left-0 h-screen w-72 bg-white border-r border-gray-200 z-40 overflow-y-auto">
+        <div class="p-6 border-b border-gray-200">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 bg-gradient-to-br from-sky-400 to-blue-600 rounded-xl flex items-center justify-center text-white font-bold text-xl">🏡</div>
+                <div>
+                    <h1 class="heading-font text-xl font-bold">Buyer Portal</h1>
+                    <p class="text-xs text-gray-500">Properties in Kenya</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Profile Card -->
+        <div class="p-4 border-b border-gray-200">
+            <div class="bg-gradient-to-br from-sky-50 to-blue-50 rounded-2xl p-4">
+                <div class="flex items-center gap-3">
+                    <div class="w-12 h-12 bg-gradient-to-br from-sky-400 to-blue-600 rounded-full flex items-center justify-center text-white font-bold text-lg" id="profile-initial">B</div>
+                    <div class="flex-1 min-w-0">
+                        <p class="font-semibold text-sm truncate" id="profile-name">Loading...</p>
+                        <p class="text-xs text-gray-500 truncate">Property Buyer</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Navigation -->
+        <nav class="p-4 space-y-1">
+            <a href="buyer-dashboard.html" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-gray-700">
+                <i class="fas fa-chart-line w-5"></i> Dashboard
+            </a>
+            <a href="buyer-saved.html" class="sidebar-link active flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium">
+                <i class="fas fa-heart w-5"></i> Saved Homes
+            </a>
+            <a href="buyer-inquiries.html" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-gray-700">
+                <i class="fas fa-envelope w-5"></i> My Inquiries
+            </a>
+            <a href="buyer-requests.html" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-gray-700">
+                <i class="fas fa-search w-5"></i> Property Alerts
+            </a>
+            
+            <div class="pt-4 mt-4 border-t border-gray-200">
+                <a href="buyer-profile.html" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-gray-700">
+                    <i class="fas fa-user-circle w-5"></i> My Profile
+                </a>
+                <a href="#" id="logout-btn" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-gray-700">
+                    <i class="fas fa-sign-out-alt w-5"></i> Logout
+                </a>
+            </div>
+        </nav>
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <main class="flex-1 lg:ml-0">
+        <header class="bg-white border-b border-gray-200 sticky top-0 z-30">
+            <div class="px-6 py-4 flex items-center justify-between">
+                <div class="lg:pl-0 pl-12">
+                    <h1 class="heading-font text-2xl font-bold">Saved Homes</h1>
+                    <p class="text-sm text-gray-500">Properties you've shortlisted for viewing</p>
+                </div>
+                <a href="/" class="hidden sm:flex items-center gap-2 bg-white border border-gray-200 text-gray-700 px-4 py-2.5 rounded-xl font-semibold text-sm hover:bg-gray-50 transition">
+                    <i class="fas fa-search"></i> Browse More
+                </a>
+            </div>
+        </header>
+
+        <div class="p-6">
+            <!-- Grid Container -->
+            <div id="saved-grid" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+                <div class="col-span-full text-center py-12 text-gray-400">
+                    <i class="fas fa-spinner fa-spin text-3xl mb-3"></i>
+                    <p>Loading your saved homes...</p>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+
+<script>
+(function() {
+    'use strict';
+
+    const supabase = window.supabase.createClient(
+        'https://nqwvsmuvltbiekfnvovx.supabase.co',
+        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5xd3ZzbXV2bHRiaWVrZm52b3Z4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA1NjU4MDAsImV4cCI6MjA5NjE0MTgwMH0.Xrc-bbAuWdvKSPHnVhTaLiQphV61xeYtDepWePqsrdo'
+    );
+
+    const FALLBACK_IMG = 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=800&auto=format&fit=crop';
+    const state = { user: null, savedProperties: [] };
+
+    // ==========================================
+    // UTILITIES
+    // ==========================================
+    function esc(str) {
+        if (!str) return '';
+        const div = document.createElement('div');
+        div.textContent = str;
+        return div.innerHTML;
+    }
+
+    function isValidUrl(string) {
+        try {
+            const url = new URL(string);
+            return url.protocol === 'http:' || url.protocol === 'https:';
+        } catch (_) { return false; }
+    }
+
+    function formatKES(amount) {
+        return new Intl.NumberFormat('en-KE', { style: 'currency', currency: 'KES', maximumFractionDigits: 0 }).format(amount || 0);
+    }
+
+    function showToast(message) {
+        const toast = document.createElement('div');
+        toast.className = 'toast';
+        toast.innerHTML = `<i class="fas fa-check-circle text-green-400"></i> ${esc(message)}`;
+        document.body.appendChild(toast);
+        setTimeout(() => {
+            toast.style.opacity = '0';
+            toast.style.transform = 'translateY(20px)';
+            setTimeout(() => toast.remove(), 300);
+        }, 3000);
+    }
+
+    // ==========================================
+    // BULLETPROOF AUTH
+    // ==========================================
+    async function checkAuth() {
+        try {
+            const { data: { session } } = await supabase.auth.getSession();
+            if (!session) {
+                window.location.href = 'login.html?role=buyer';
+                return;
+            }
+
+            const { data: { user }, error } = await supabase.auth.getUser();
+            if (error || !user) {
+                await supabase.auth.signOut();
+                window.location.href = 'login.html?role=buyer';
+                return;
+            }
+
+            const { data: profile } = await supabase.from('profiles').select('role, full_name').eq('id', user.id).single();
+            if (profile?.role !== 'buyer' && profile?.role !== 'admin') {
+                window.location.href = 'agent-dashboard.html';
+                return;
+            }
+
+            state.user = user;
+            document.getElementById('profile-name').textContent = profile?.full_name || 'Buyer';
+            document.getElementById('profile-initial').textContent = (profile?.full_name || 'B').charAt(0).toUpperCase();
+            document.getElementById('auth-loader').style.display = 'none';
+            
+            loadSavedProperties();
+
+        } catch (err) {
+            console.error('Auth check failed:', err);
+            window.location.href = 'login.html?role=buyer';
+        }
+    }
+
+    // ==========================================
+    // DATA LOADING & RENDERING
+    // ==========================================
+    async function loadSavedProperties() {
+        const grid = document.getElementById('saved-grid');
+        
+        // 1. Get IDs from localStorage (Synced with index.html heart icon)
+        const savedIds = JSON.parse(localStorage.getItem('propertiesinkenya_favorites') || '[]');
+        
+        if (savedIds.length === 0) {
+            renderEmptyState();
+            return;
+        }
+
+        try {
+            // 2. 🔥 PERFORMANCE FIX: Fetch all saved properties in ONE single query
+            const { data, error } = await supabase
+                .from('properties')
+                .select('*')
+                .in('id', savedIds)
+                .eq('approval_status', 'approved'); // Only show approved properties
+
+            if (error) throw error;
+
+            state.savedProperties = data || [];
+            
+            if (state.savedProperties.length === 0) {
+                renderEmptyState();
+                return;
+            }
+
+            renderGrid(state.savedProperties);
+
+        } catch (err) {
+            console.error(err);
+            grid.innerHTML = `<div class="col-span-full text-center text-red-500 py-8"><i class="fas fa-exclamation-triangle mb-2 text-2xl"></i><p>Error loading saved homes.</p></div>`;
+        }
+    }
+
+    function renderEmptyState() {
+        const grid = document.getElementById('saved-grid');
+        grid.innerHTML = `
+            <div class="col-span-full text-center py-16 bg-white rounded-2xl border border-gray-100">
+                <div class="w-20 h-20 bg-sky-50 rounded-full flex items-center justify-center mx-auto mb-6">
+                    <i class="fas fa-heart text-4xl text-sky-300"></i>
+                </div>
+                <h3 class="text-xl font-bold text-gray-800 mb-2">No saved homes yet</h3>
+                <p class="text-gray-500 mb-6 max-w-md mx-auto">Start browsing our verified listings and click the heart icon on any property to save it here for quick access.</p>
+                <a href="/" class="inline-flex items-center gap-2 bg-sky-500 text-white px-6 py-3 rounded-xl font-semibold hover:bg-sky-600 transition">
+                    <i class="fas fa-search"></i> Browse Properties
+                </a>
+            </div>
+        `;
+    }
+
+    function renderGrid(properties) {
+        const grid = document.getElementById('saved-grid');
+        
+        grid.innerHTML = properties.map(prop => {
+            const imgSrc = (prop.images && prop.images[0] && isValidUrl(prop.images[0])) ? prop.images[0] : FALLBACK_IMG;
+            
+            return `
+            <div class="bg-white rounded-2xl border border-gray-100 overflow-hidden hover:shadow-xl transition-shadow duration-300 group relative">
+                <div class="relative h-56 bg-gray-200">
+                    <img src="${esc(imgSrc)}" loading="lazy" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" alt="Property">
+                    
+                    <!-- Status Badge -->
+                    <div class="absolute top-3 left-3">
+                        <span class="px-3 py-1 rounded-full text-xs font-bold uppercase bg-white/90 backdrop-blur text-gray-800 shadow-sm">
+                            ${esc(prop.property_type || 'For Sale')}
+                        </span>
+                    </div>
+
+                    <!-- Remove Button -->
+                    <button class="btn-remove absolute top-3 right-3 w-9 h-9 flex items-center justify-center rounded-full bg-white/90 backdrop-blur text-rose-500 hover:bg-rose-500 hover:text-white transition shadow-sm" 
+                            data-id="${esc(prop.id)}" aria-label="Remove from saved">
+                        <i class="fas fa-heart"></i>
+                    </button>
+                </div>
+                
+                <div class="p-5">
+                    <div class="flex items-start justify-between mb-2">
+                        <h3 class="font-bold text-lg text-gray-900 line-clamp-1 pr-2">${esc(prop.title)}</h3>
+                    </div>
+                    <p class="text-sm text-gray-500 mb-4 flex items-center gap-1">
+                        <i class="fas fa-map-marker-alt text-sky-500"></i> ${esc(prop.town || prop.county)}, ${esc(prop.county)}
+                    </p>
+                    
+                    <div class="flex items-center gap-4 text-sm text-gray-600 mb-4">
+                        ${prop.bedrooms ? `<span><i class="fas fa-bed mr-1 text-gray-400"></i> ${prop.bedrooms} Beds</span>` : ''}
+                        ${prop.bathrooms ? `<span><i class="fas fa-bath mr-1 text-gray-400"></i> ${prop.bathrooms} Baths</span>` : ''}
+                    </div>
+
+                    <div class="flex items-center justify-between pt-4 border-t border-gray-100">
+                        <span class="text-xl font-bold text-sky-600">${formatKES(prop.price)}</span>
+                        <a href="/property/${prop.id}" class="px-4 py-2 bg-sky-50 text-sky-600 rounded-lg text-sm font-semibold hover:bg-sky-100 transition">
+                            View Details
+                        </a>
+                    </div>
+                </div>
+            </div>`;
+        }).join('');
+    }
+
+    // ==========================================
+    // ACTIONS
+    // ==========================================
+    function removeSaved(propertyId) {
+        // 1. Remove from localStorage
+        let savedIds = JSON.parse(localStorage.getItem('propertiesinkenya_favorites') || '[]');
+        savedIds = savedIds.filter(id => id !== propertyId);
+        localStorage.setItem('propertiesinkenya_favorites', JSON.stringify(savedIds));
+        
+        // 2. Update UI instantly
+        state.savedProperties = state.savedProperties.filter(p => p.id !== propertyId);
+        
+        if (state.savedProperties.length === 0) {
+            renderEmptyState();
+        } else {
+            renderGrid(state.savedProperties);
+        }
+        
+        showToast('Removed from saved homes');
+    }
+
+    // ==========================================
+    // EVENT LISTENERS
+    // ==========================================
+    function initEventListeners() {
+        document.getElementById('mobile-menu-btn').addEventListener('click', () => {
+            document.getElementById('sidebar').classList.toggle('mobile-open');
+            document.getElementById('mobile-overlay').classList.toggle('hidden');
+        });
+        document.getElementById('mobile-overlay').addEventListener('click', () => {
+            document.getElementById('sidebar').classList.remove('mobile-open');
+            document.getElementById('mobile-overlay').classList.add('hidden');
+        });
+
+        document.getElementById('logout-btn').addEventListener('click', async (e) => {
+            e.preventDefault();
+            await supabase.auth.signOut();
+            window.location.href = 'login.html?role=buyer';
+        });
+
+        // 🔒 SECURE EVENT DELEGATION for Remove Buttons
+        document.getElementById('saved-grid').addEventListener('click', (e) => {
+            const removeBtn = e.target.closest('.btn-remove');
+            if (removeBtn) {
+                e.stopPropagation(); // Prevent triggering card click
+                removeSaved(removeBtn.dataset.id);
+            }
+        });
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        initEventListeners();
+        checkAuth();
+    });
+
+})();
+</script>
+
+</body>
+</html>
