@@ -273,7 +273,16 @@ body { font-family: 'Inter', -apple-system, sans-serif; color: #111827; backgrou
     // ==========================================
     async function loadProperty() {
         const params = new URLSearchParams(location.search);
-        const id = params.get('id');
+        let id = params.get('id');
+
+        // 🔒 FIX: Fallback for clean URLs like /property/abc-123-id
+        if (!id) {
+            const pathParts = window.location.pathname.split('/');
+            // Handles URLs like /property/abc-123-id
+            if (pathParts.length >= 3 && pathParts[1] === 'property') {
+                id = pathParts[2];
+            }
+        }
 
         if (!id) {
             showErrorState("No property ID provided");
