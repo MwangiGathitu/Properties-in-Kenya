@@ -16,7 +16,6 @@
         @media (max-width: 1024px) { .sidebar { display: none; } .sidebar.mobile-open { display: block; } }
         .modal { animation: modalPop 0.3s cubic-bezier(0.34, 1.56, 0.64, 1); }
         @keyframes modalPop { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
-        
         .match-score-high { background-color: #dcfce7; color: #166534; border: 1px solid #86efac; }
         .match-score-med { background-color: #fef9c3; color: #854d0e; border: 1px solid #fde047; }
         .match-score-low { background-color: #fee2e2; color: #991b1b; border: 1px solid #fca5a5; }
@@ -24,10 +23,10 @@
 </head>
 <body class="bg-gray-50">
 
-<button onclick="toggleMobileMenu()" class="lg:hidden fixed top-4 left-4 z-50 bg-white p-3 rounded-xl shadow-lg">
+<button id="mobile-menu-btn" class="lg:hidden fixed top-4 left-4 z-50 bg-white p-3 rounded-xl shadow-lg" aria-label="Toggle menu">
     <i class="fas fa-bars text-gray-700"></i>
 </button>
-<div id="mobile-overlay" onclick="toggleMobileMenu()" class="hidden lg:hidden fixed inset-0 bg-black/50 z-40"></div>
+<div id="mobile-overlay" class="hidden lg:hidden fixed inset-0 bg-black/50 z-40"></div>
 
 <div class="flex min-h-screen">
     <!-- SIDEBAR -->
@@ -48,7 +47,7 @@
             <a href="messages.html" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-gray-700"><i class="fas fa-comment-dots w-5"></i> Messages</a>
             <a href="commissions.html" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-gray-700"><i class="fas fa-wallet w-5"></i> Commissions</a>
             <div class="pt-4 mt-4 border-t border-gray-200">
-                <a href="#" onclick="logout()" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-gray-700"><i class="fas fa-sign-out-alt w-5"></i> Logout</a>
+                <a href="#" id="logout-btn" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-gray-700"><i class="fas fa-sign-out-alt w-5"></i> Logout</a>
             </div>
         </nav>
     </aside>
@@ -61,7 +60,7 @@
                     <h1 class="heading-font text-2xl font-bold">Buyer Requests</h1>
                     <p class="text-sm text-gray-500">Post buyer needs and let AI find matching properties</p>
                 </div>
-                <button onclick="openRequestModal()" class="flex items-center gap-2 bg-gradient-to-r from-purple-600 to-indigo-600 text-white px-4 py-2.5 rounded-xl font-semibold text-sm hover:shadow-lg transition">
+                <button id="new-request-btn" class="flex items-center gap-2 bg-gradient-to-r from-purple-600 to-indigo-600 text-white px-4 py-2.5 rounded-xl font-semibold text-sm hover:shadow-lg transition">
                     <i class="fas fa-plus"></i> New Buyer Request
                 </button>
             </div>
@@ -94,29 +93,29 @@
 </div>
 
 <!-- ADD BUYER REQUEST MODAL -->
-<div id="request-modal" class="fixed inset-0 bg-black/60 hidden flex items-center justify-center z-50 p-4">
+<div id="request-modal" class="fixed inset-0 bg-black/60 hidden flex items-center justify-center z-50 p-4" role="dialog" aria-modal="true">
     <div class="modal bg-white rounded-3xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
         <div class="p-6 border-b flex items-center justify-between sticky top-0 bg-white z-10">
             <h2 class="heading-font text-xl font-bold">New Buyer Request</h2>
-            <button onclick="closeRequestModal()" class="w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100"><i class="fas fa-times text-xl"></i></button>
+            <button id="close-modal-btn" class="w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100" aria-label="Close modal"><i class="fas fa-times text-xl"></i></button>
         </div>
         
         <form id="request-form" class="p-6 space-y-5">
             <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
                 <div>
                     <label class="block text-sm font-semibold text-gray-700 mb-2">Buyer Name</label>
-                    <input type="text" id="req-buyer-name" required class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-purple-500 focus:outline-none" placeholder="e.g., Jane Wanjiku">
+                    <input type="text" id="req-buyer-name" required maxlength="100" class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-purple-500 focus:outline-none" placeholder="e.g., Jane Wanjiku">
                 </div>
                 <div>
                     <label class="block text-sm font-semibold text-gray-700 mb-2">Buyer Phone</label>
-                    <input type="tel" id="req-buyer-phone" required class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-purple-500 focus:outline-none" placeholder="0712345678">
+                    <input type="tel" id="req-buyer-phone" required pattern="[0-9+\s-]{10,}" class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-purple-500 focus:outline-none" placeholder="0712345678">
                 </div>
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
                 <div>
                     <label class="block text-sm font-semibold text-gray-700 mb-2">Max Budget (KES)</label>
-                    <input type="number" id="req-budget" required class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-purple-500 focus:outline-none" placeholder="15000000">
+                    <input type="number" id="req-budget" required min="1" class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-purple-500 focus:outline-none" placeholder="15000000">
                 </div>
                 <div>
                     <label class="block text-sm font-semibold text-gray-700 mb-2">Preferred County</label>
@@ -126,7 +125,7 @@
                 </div>
                 <div>
                     <label class="block text-sm font-semibold text-gray-700 mb-2">Preferred Town/Area</label>
-                    <input type="text" id="req-town" class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-purple-500 focus:outline-none" placeholder="e.g., Kilimani">
+                    <input type="text" id="req-town" maxlength="50" class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-purple-500 focus:outline-none" placeholder="e.g., Kilimani">
                 </div>
             </div>
 
@@ -157,30 +156,27 @@
 
             <div>
                 <label class="block text-sm font-semibold text-gray-700 mb-2">Additional Notes</label>
-                <textarea id="req-notes" rows="3" class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-purple-500 focus:outline-none" placeholder="e.g., Must have a garden, close to international schools, ready to buy in 30 days."></textarea>
+                <textarea id="req-notes" rows="3" maxlength="500" class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-purple-500 focus:outline-none" placeholder="e.g., Must have a garden, close to international schools, ready to buy in 30 days."></textarea>
             </div>
 
+            <!-- 🔒 FIX: Removed the literal typo and duplicate buttons -->
             <div class="flex gap-4 pt-4 border-t">
-                <button type="button" onclick="closeRequestModal()" class="flex-1 py-3 border border-gray-300 rounded-xl font-semibold hover:bg-gray-50">Cancel</button>
-                <button type="submit" class="flex-1 py-3 bg-gradient-to-r from-purple-600 to-indigo-600 text-white rounded-xl font-semibold hover:shadow-lg">Save & Find Matches</button>
-            </div is a typo, fixing below.
-            <div class="flex gap-4 pt-4 border-t">
-                <button type="button" onclick="closeRequestModal()" class="flex-1 py-3 border border-gray-300 rounded-xl font-semibold hover:bg-gray-50">Cancel</button>
-                <button type="submit" class="flex-1 py-3 bg-gradient-to-r from-purple-600 to-indigo-600 text-white rounded-xl font-semibold hover:shadow-lg">Save & Find Matches</button>
+                <button type="button" id="cancel-modal-btn" class="flex-1 py-3 border border-gray-300 rounded-xl font-semibold hover:bg-gray-50">Cancel</button>
+                <button type="submit" id="submit-request-btn" class="flex-1 py-3 bg-gradient-to-r from-purple-600 to-indigo-600 text-white rounded-xl font-semibold hover:shadow-lg">Save & Find Matches</button>
             </div>
         </form>
     </div>
 </div>
 
 <!-- AI MATCHES MODAL -->
-<div id="matches-modal" class="fixed inset-0 bg-black/60 hidden flex items-center justify-center z-50 p-4">
+<div id="matches-modal" class="fixed inset-0 bg-black/60 hidden flex items-center justify-center z-50 p-4" role="dialog" aria-modal="true">
     <div class="modal bg-white rounded-3xl w-full max-w-3xl max-h-[90vh] overflow-y-auto">
         <div class="p-6 border-b bg-purple-50 flex items-center justify-between sticky top-0 bg-white z-10">
             <div>
                 <h2 class="heading-font text-xl font-bold text-gray-900">AI Property Matches</h2>
                 <p class="text-sm text-gray-600 mt-1" id="matches-request-title">Loading...</p>
             </div>
-            <button onclick="closeMatchesModal()" class="w-8 h-8 flex items-center justify-center rounded-full hover:bg-purple-100"><i class="fas fa-times text-xl text-gray-600"></i></button>
+            <button id="close-matches-btn" class="w-8 h-8 flex items-center justify-center rounded-full hover:bg-purple-100" aria-label="Close modal"><i class="fas fa-times text-xl text-gray-600"></i></button>
         </div>
         
         <div class="p-6">
@@ -188,327 +184,457 @@
                 <i class="fas fa-brain fa-spin text-4xl text-purple-600 mb-3"></i>
                 <p class="text-gray-600 font-medium">AI is scanning the marketplace...</p>
             </div>
-            <div id="matches-results" class="space-y-4 hidden">
-                <!-- Matches populated here -->
-            </div>
+            <div id="matches-results" class="space-y-4 hidden"></div>
         </div>
     </div>
 </div>
 
+<!-- Toast Container -->
+<div id="toast-container" class="fixed bottom-6 right-6 z-[100] flex flex-col gap-3"></div>
+
 <script>
-const supabase = window.supabase.createClient(
-    'https://nqvsmuvltbiekfnvovx.supabase.co',
-    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5xd3ZzbXV2bHRiaWVrZm52b3Z4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA1NjU4MDAsImV4cCI6MjA5NjE0MTgwMH0.Xrc-bbAuWdvKSPHnVhTaLiQphV61xeYtDepWePqsrdo'
-);
+(function() {
+    'use strict';
 
-let currentUser = null;
-let allRequests = [];
-let allProperties = []; // Cache for matching
+    // ==========================================
+    // 1. CONFIGURATION & STATE
+    // ==========================================
+    const supabase = window.supabase.createClient(
+        'https://nqvsmuvltbiekfnvovx.supabase.co',
+        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5xd3ZzbXV2bHRiaWVrZm52b3Z4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA1NjU4MDAsImV4cCI6MjA5NjE0MTgwMH0.Xrc-bbAuWdvKSPHnVhTaLiQphV61xeYtDepWePqsrdo'
+    );
 
-async function checkAuth() {
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) { window.location.href = 'login.html'; return; }
-    currentUser = user;
-    await loadAllProperties(); // Pre-fetch for AI matching
-    loadBuyerRequests();
-}
-
-function formatKES(amount) {
-    return new Intl.NumberFormat('en-KE', { style: 'currency', currency: 'KES', maximumFractionDigits: 0 }).format(amount || 0);
-}
-
-// Pre-fetch all available properties for the AI matching engine
-async function loadAllProperties() {
-    const { data } = await supabase
-        .from('properties')
-        .select('*')
-        .in('status', ['available', 'pending'])
-        .in('visibility', ['public', 'co-broker']);
-    allProperties = data || [];
-}
-
-async function loadBuyerRequests() {
-    const list = document.getElementById('requests-list');
-    try {
-        const { data, error } = await supabase
-            .from('buyer_requests')
-            .select('*')
-            .eq('agent_id', currentUser.id)
-            .order('created_at', { ascending: false });
-
-        if (error) throw error;
-        allRequests = data || [];
-        renderRequests(allRequests);
-    } catch (err) {
-        console.error(err);
-        list.innerHTML = `<div class="text-center text-red-500 py-8">Error loading requests.</div>`;
-    }
-}
-
-function renderRequests(requests) {
-    const list = document.getElementById('requests-list');
-    if (requests.length === 0) {
-        list.innerHTML = `
-            <div class="text-center py-12 bg-white rounded-2xl border border-gray-100">
-                <div class="w-20 h-20 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <i class="fas fa-user-tie text-3xl text-purple-600"></i>
-                </div>
-                <h3 class="text-lg font-semibold text-gray-700">No buyer requests yet</h3>
-                <p class="text-gray-500 mb-4">Post a buyer's requirements and let AI find matches.</p>
-                <button onclick="openRequestModal()" class="bg-purple-600 text-white px-6 py-2 rounded-xl font-semibold">Create Request</button>
-            </div>`;
-        return;
-    }
-
-    list.innerHTML = requests.map(req => {
-        const statusColors = { 'open': 'bg-blue-100 text-blue-700', 'matched': 'bg-green-100 text-green-700', 'closed': 'bg-gray-100 text-gray-600' };
-        
-        return `
-        <div class="bg-white rounded-2xl border border-gray-100 p-5 hover:shadow-md transition">
-            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-4">
-                <div>
-                    <div class="flex items-center gap-3 mb-1">
-                        <h3 class="font-bold text-lg text-gray-900">${req.buyer_name || 'Anonymous Buyer'}</h3>
-                        <span class="px-2.5 py-0.5 rounded-full text-xs font-bold uppercase ${statusColors[req.status]}">${req.status}</span>
-                    </div>
-                    <p class="text-sm text-gray-500">
-                        <i class="fas fa-phone mr-1"></i> ${req.buyer_phone} • 
-                        <i class="fas fa-wallet mr-1"></i> Up to ${formatKES(req.budget)} • 
-                        <i class="fas fa-map-marker-alt mr-1"></i> ${req.county}${req.town ? ', ' + req.town : ''}
-                    </p>
-                    ${req.property_type || req.bedrooms ? `<p class="text-xs text-gray-600 mt-1 font-medium"><i class="fas fa-home mr-1"></i> ${req.property_type || 'Any'} • ${req.bedrooms ? req.bedrooms + ' Beds' : 'Any Beds'}</p>` : ''}
-                    ${req.notes ? `<p class="text-sm text-gray-600 mt-2 italic bg-gray-50 p-2 rounded-lg">"${req.notes}"</p>` : ''}
-                </div>
-                <div class="flex gap-2 md:flex-col">
-                    <button onclick="findMatches('${req.id}')" class="flex-1 md:flex-none px-4 py-2 bg-purple-600 text-white rounded-xl text-sm font-semibold hover:bg-purple-700 transition flex items-center justify-center gap-2">
-                        <i class="fas fa-wand-magic-sparkles"></i> Find Matches
-                    </button>
-                    <button onclick="deleteRequest('${req.id}')" class="flex-1 md:flex-none px-4 py-2 border border-gray-200 text-gray-600 rounded-xl text-sm font-semibold hover:bg-red-50 hover:text-red-600 transition flex items-center justify-center gap-2">
-                        <i class="fas fa-trash"></i>
-                    </button>
-                </div>
-            </div>
-        </div>`;
-    }).join('');
-}
-
-// --- AI MATCHING ENGINE ---
-async function findMatches(requestId) {
-    const request = allRequests.find(r => r.id === requestId);
-    if (!request) return;
-
-    document.getElementById('matches-request-title').textContent = `Finding matches for: ${request.buyer_name} (${request.county})`;
-    document.getElementById('matches-modal').classList.remove('hidden');
-    document.getElementById('matches-loading').classList.remove('hidden');
-    document.getElementById('matches-results').classList.add('hidden');
-    document.getElementById('matches-results').innerHTML = '';
-
-    // Simulate AI processing time for effect
-    setTimeout(() => {
-        const matches = calculateMatches(request);
-        displayMatches(matches, request);
-    }, 1200);
-}
-
-function calculateMatches(request) {
-    const scoredProperties = allProperties.map(prop => {
-        let score = 0;
-        let reasons = [];
-
-        // 1. County Match (High weight: 40 pts)
-        if (prop.county?.toLowerCase() === request.county?.toLowerCase()) {
-            score += 40;
-            reasons.push("Same county");
-        }
-
-        // 2. Town Match (Medium weight: 20 pts)
-        if (request.town && prop.town?.toLowerCase().includes(request.town.toLowerCase())) {
-            score += 20;
-            reasons.push("Exact town match");
-        } else if (request.town && prop.county?.toLowerCase() === request.county?.toLowerCase()) {
-            score += 10; // Partial credit for being in the same county
-            reasons.push("Same county, different town");
-        }
-
-        // 3. Property Type Match (20 pts)
-        if (request.property_type && prop.property_type?.toLowerCase() === request.property_type?.toLowerCase()) {
-            score += 20;
-            reasons.push("Property type matches");
-        } else if (!request.property_type) {
-            score += 10; // No preference, give partial
-        }
-
-        // 4. Bedrooms Match (10 pts)
-        if (request.bedrooms) {
-            if (prop.bedrooms === parseInt(request.bedrooms)) {
-                score += 10;
-                reasons.push("Bedroom count matches");
-            } else if (Math.abs(prop.bedrooms - parseInt(request.bedrooms)) <= 1) {
-                score += 5;
-                reasons.push("Close bedroom count");
-            }
-        } else {
-            score += 5;
-        }
-
-        // 5. Budget Match (10 pts) - Allow 10% flexibility
-        if (prop.price <= (request.budget * 1.1)) {
-            score += 10;
-            if (prop.price <= request.budget) reasons.push("Within budget");
-            else reasons.push("Slightly above budget but negotiable");
-        }
-
-        return { property: prop, score: Math.min(score, 100), reasons };
-    });
-
-    // Sort by score descending, filter out very low scores (< 30)
-    return scoredProperties.filter(m => m.score >= 30).sort((a, b) => b.score - a.score).slice(0, 5); // Top 5 matches
-}
-
-function displayMatches(matches, request) {
-    document.getElementById('matches-loading').classList.add('hidden');
-    const resultsDiv = document.getElementById('matches-results');
-    resultsDiv.classList.remove('hidden');
-
-    if (matches.length === 0) {
-        resultsDiv.innerHTML = `
-            <div class="text-center py-8">
-                <i class="fas fa-search text-4xl text-gray-300 mb-3"></i>
-                <p class="text-gray-600 font-medium">No strong matches found.</p>
-                <p class="text-sm text-gray-500 mt-1">Try expanding the budget or location criteria.</p>
-            </div>`;
-        return;
-    }
-
-    resultsDiv.innerHTML = matches.map(match => {
-        const prop = match.property;
-        const scoreClass = match.score >= 80 ? 'match-score-high' : match.score >= 50 ? 'match-score-med' : 'match-score-low';
-        const isCoBroker = prop.visibility === 'co-broker';
-        
-        return `
-        <div class="border border-gray-200 rounded-xl p-4 flex flex-col sm:flex-row gap-4 hover:shadow-md transition bg-white">
-            <img src="${prop.images && prop.images[0] ? prop.images[0] : 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=400&auto=format&fit=crop'}" class="w-full sm:w-32 h-32 object-cover rounded-lg" alt="Property">
-            <div class="flex-1">
-                <div class="flex justify-between items-start mb-2">
-                    <div>
-                        <h4 class="font-bold text-gray-900">${prop.title}</h4>
-                        <p class="text-sm text-gray-500"><i class="fas fa-map-marker-alt mr-1 text-amber-500"></i> ${prop.town || prop.county}, ${prop.county}</p>
-                    </div>
-                    <div class="text-right">
-                        <div class="inline-flex items-center gap-1 px-3 py-1 rounded-full text-sm font-bold ${scoreClass}">
-                            <i class="fas fa-bolt text-xs"></i> ${match.score}% Match
-                        </div>
-                        <p class="text-lg font-bold text-amber-600 mt-1">${formatKES(prop.price)}</p>
-                    </div>
-                </div>
-                
-                <div class="flex flex-wrap gap-2 mb-3">
-                    ${match.reasons.map(r => `<span class="text-[10px] bg-gray-100 text-gray-600 px-2 py-1 rounded-md font-medium">${r}</span>`).join('')}
-                </div>
-
-                <div class="flex gap-2">
-                    ${isCoBroker ? `
-                        <button onclick="requestCollabFromMatch('${prop.id}', '${request.buyer_name}', '${request.buyer_phone}')" class="flex-1 bg-purple-600 text-white py-2 rounded-lg text-sm font-semibold hover:bg-purple-700 transition">
-                            <i class="fas fa-handshake mr-1"></i> Request Co-Broker
-                        </button>
-                    ` : `
-                        <a href="tel:${prop.agent_id}" class="flex-1 bg-gray-100 text-gray-700 py-2 rounded-lg text-sm font-semibold hover:bg-gray-200 transition text-center">
-                            <i class="fas fa-phone mr-1"></i> Contact Listing Agent
-                        </a>
-                    `}
-                    <a href="https://wa.me/?text=Hi, I have a buyer for your property: ${encodeURIComponent(prop.title)}" target="_blank" class="px-3 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition">
-                        <i class="fab fa-whatsapp text-lg"></i>
-                    </a>
-                </div>
-            </div>
-        </div>`;
-    }).join('');
-}
-
-// Helper to pre-fill collab modal from matches (simplified)
-function requestCollabFromMatch(propId, buyerName, buyerPhone) {
-    closeMatchesModal();
-    // In a real app, this would open the collab modal pre-filled. 
-    // For now, we'll redirect to shared listings or show an alert.
-    alert(`Redirecting to collaboration request for ${buyerName}...`);
-    window.location.href = `shared-listings.html`;
-}
-
-// Form Submission
-document.getElementById('request-form').addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const submitBtn = e.target.querySelector('button[type="submit"]');
-    submitBtn.disabled = true;
-    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Saving...';
-
-    const requestData = {
-        agent_id: currentUser.id,
-        buyer_name: document.getElementById('req-buyer-name').value,
-        buyer_phone: document.getElementById('req-buyer-phone').value,
-        budget: parseFloat(document.getElementById('req-budget').value),
-        county: document.getElementById('req-county').value,
-        town: document.getElementById('req-town').value,
-        property_type: document.getElementById('req-type').value,
-        bedrooms: document.getElementById('req-beds').value ? parseInt(document.getElementById('req-beds').value) : null,
-        status: document.getElementById('req-status').value,
-        notes: document.getElementById('req-notes').value
+    const state = {
+        user: null,
+        allRequests: [],
+        allProperties: [],
+        searchTimeout: null
     };
 
-    const { error } = await supabase.from('buyer_requests').insert([requestData]);
+    // ==========================================
+    // 2. UTILITIES
+    // ==========================================
+    function esc(str) {
+        if (!str) return '';
+        const div = document.createElement('div');
+        div.textContent = str;
+        return div.innerHTML;
+    }
 
-    submitBtn.disabled = false;
-    submitBtn.innerHTML = 'Save & Find Matches';
+    function formatKES(amount) {
+        return new Intl.NumberFormat('en-KE', { style: 'currency', currency: 'KES', maximumFractionDigits: 0 }).format(amount || 0);
+    }
 
-    if (error) {
-        alert('Error saving request: ' + error.message);
-    } else {
-        closeRequestModal();
-        loadAllProperties(); // Refresh properties cache
+    function showToast(message, type = 'success') {
+        const container = document.getElementById('toast-container');
+        const toast = document.createElement('div');
+        const bgColor = type === 'error' ? 'bg-red-500' : 'bg-green-500';
+        toast.className = `${bgColor} text-white px-6 py-3 rounded-xl shadow-lg flex items-center gap-2 transition-opacity duration-300`;
+        toast.innerHTML = `<i class="fas ${type === 'error' ? 'fa-exclamation-circle' : 'fa-check-circle'}"></i> ${esc(message)}`;
+        container.appendChild(toast);
+        setTimeout(() => {
+            toast.style.opacity = '0';
+            setTimeout(() => toast.remove(), 300);
+        }, 3000);
+    }
+
+    function debounce(func, wait) {
+        return (...args) => {
+            clearTimeout(state.searchTimeout);
+            state.searchTimeout = setTimeout(() => func(...args), wait);
+        };
+    }
+
+    // ==========================================
+    // 3. AUTH & DATA LOADING
+    // ==========================================
+    async function checkAuth() {
+        const { data: { user } } = await supabase.auth.getUser();
+        if (!user) { window.location.href = 'login.html'; return; }
+        state.user = user;
+        
+        supabase.auth.onAuthStateChange((event) => {
+            if (event === 'SIGNED_OUT') window.location.href = 'login.html';
+        });
+
+        await loadAllProperties(); 
         loadBuyerRequests();
     }
-});
 
-async function deleteRequest(id) {
-    if (!confirm('Delete this buyer request?')) return;
-    const { error } = await supabase.from('buyer_requests').delete().eq('id', id);
-    if (!error) loadBuyerRequests();
-}
+    // 🔒 SECURITY & PERFORMANCE: Only fetch columns needed for matching. 
+    // DO NOT use select('*') as it leaks private data (agent_notes, etc) to the client.
+    async function loadAllProperties() {
+        const { data } = await supabase
+            .from('properties')
+            .select(`id, title, price, county, town, property_type, bedrooms, visibility, images, agent_id`)
+            .in('status', ['available', 'pending'])
+            .in('visibility', ['public', 'co-broker']);
+        state.allProperties = data || [];
+    }
 
-// Modal Helpers
-function openRequestModal() {
-    document.getElementById('request-form').reset();
-    document.getElementById('request-modal').classList.remove('hidden');
-}
-function closeRequestModal() { document.getElementById('request-modal').classList.add('hidden'); }
-function closeMatchesModal() { document.getElementById('matches-modal').classList.add('hidden'); }
+    async function loadBuyerRequests() {
+        const list = document.getElementById('requests-list');
+        try {
+            const { data, error } = await supabase
+                .from('buyer_requests')
+                .select('*')
+                .eq('agent_id', state.user.id)
+                .order('created_at', { ascending: false });
 
-function toggleMobileMenu() {
-    document.getElementById('sidebar').classList.toggle('mobile-open');
-    document.getElementById('mobile-overlay').classList.toggle('hidden');
-}
+            if (error) throw error;
+            state.allRequests = data || [];
+            applyFilters();
+        } catch (err) {
+            console.error(err);
+            list.innerHTML = `<div class="text-center text-red-500 py-8">Error loading requests.</div>`;
+        }
+    }
 
-async function logout() {
-    await supabase.auth.signOut();
-    window.location.href = 'login.html';
-}
+    // ==========================================
+    // 4. RENDERING & FILTERING
+    // ==========================================
+    function applyFilters() {
+        const search = document.getElementById('search-input').value.toLowerCase();
+        const status = document.getElementById('filter-status').value;
 
-// Search & Filter
-function applyFilters() {
-    const search = document.getElementById('search-input').value.toLowerCase();
-    const status = document.getElementById('filter-status').value;
+        const filtered = state.allRequests.filter(req => {
+            const matchesSearch = !search || 
+                (req.buyer_name && req.buyer_name.toLowerCase().includes(search)) || 
+                (req.county && req.county.toLowerCase().includes(search));
+            const matchesStatus = status === 'all' || req.status === status;
+            return matchesSearch && matchesStatus;
+        });
+        renderRequests(filtered);
+    }
 
-    const filtered = allRequests.filter(req => {
-        const matchesSearch = !search || (req.buyer_name && req.buyer_name.toLowerCase().includes(search)) || (req.county && req.county.toLowerCase().includes(search));
-        const matchesStatus = status === 'all' || req.status === status;
-        return matchesSearch && matchesStatus;
+    function renderRequests(requests) {
+        const list = document.getElementById('requests-list');
+        if (requests.length === 0) {
+            list.innerHTML = `
+                <div class="text-center py-12 bg-white rounded-2xl border border-gray-100">
+                    <div class="w-20 h-20 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-user-tie text-3xl text-purple-600"></i>
+                    </div>
+                    <h3 class="text-lg font-semibold text-gray-700">No buyer requests yet</h3>
+                    <p class="text-gray-500 mb-4">Post a buyer's requirements and let AI find matches.</p>
+                    <button id="empty-create-btn" class="bg-purple-600 text-white px-6 py-2 rounded-xl font-semibold">Create Request</button>
+                </div>`;
+            return;
+        }
+
+        const statusColors = { 'open': 'bg-blue-100 text-blue-700', 'matched': 'bg-green-100 text-green-700', 'closed': 'bg-gray-100 text-gray-600' };
+
+        list.innerHTML = requests.map(req => {
+            return `
+            <div class="bg-white rounded-2xl border border-gray-100 p-5 hover:shadow-md transition">
+                <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-4">
+                    <div>
+                        <div class="flex items-center gap-3 mb-1">
+                            <h3 class="font-bold text-lg text-gray-900">${esc(req.buyer_name || 'Anonymous Buyer')}</h3>
+                            <span class="px-2.5 py-0.5 rounded-full text-xs font-bold uppercase ${statusColors[req.status] || 'bg-gray-100'}">${esc(req.status)}</span>
+                        </div>
+                        <p class="text-sm text-gray-500">
+                            <i class="fas fa-phone mr-1"></i> ${esc(req.buyer_phone)} • 
+                            <i class="fas fa-wallet mr-1"></i> Up to ${formatKES(req.budget)} • 
+                            <i class="fas fa-map-marker-alt mr-1"></i> ${esc(req.county)}${req.town ? ', ' + esc(req.town) : ''}
+                        </p>
+                        ${req.property_type || req.bedrooms ? `<p class="text-xs text-gray-600 mt-1 font-medium"><i class="fas fa-home mr-1"></i> ${esc(req.property_type || 'Any')} • ${req.bedrooms ? req.bedrooms + ' Beds' : 'Any Beds'}</p>` : ''}
+                        ${req.notes ? `<p class="text-sm text-gray-600 mt-2 italic bg-gray-50 p-2 rounded-lg">"${esc(req.notes)}"</p>` : ''}
+                    </div>
+                    <div class="flex gap-2 md:flex-col">
+                        <button class="btn-find-matches flex-1 md:flex-none px-4 py-2 bg-purple-600 text-white rounded-xl text-sm font-semibold hover:bg-purple-700 transition flex items-center justify-center gap-2" data-id="${esc(req.id)}">
+                            <i class="fas fa-wand-magic-sparkles"></i> Find Matches
+                        </button>
+                        <button class="btn-delete-request flex-1 md:flex-none px-4 py-2 border border-gray-200 text-gray-600 rounded-xl text-sm font-semibold hover:bg-red-50 hover:text-red-600 transition flex items-center justify-center gap-2" data-id="${esc(req.id)}" aria-label="Delete request">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>`;
+        }).join('');
+    }
+
+    // ==========================================
+    // 5. AI MATCHING ENGINE
+    // ==========================================
+    async function findMatches(requestId) {
+        const request = state.allRequests.find(r => r.id === requestId);
+        if (!request) return;
+
+        document.getElementById('matches-request-title').textContent = `Finding matches for: ${esc(request.buyer_name)} (${esc(request.county)})`;
+        document.getElementById('matches-modal').classList.remove('hidden');
+        document.getElementById('matches-loading').classList.remove('hidden');
+        const resultsDiv = document.getElementById('matches-results');
+        resultsDiv.classList.add('hidden');
+        resultsDiv.innerHTML = '';
+
+        // Simulate AI processing time for UX effect
+        setTimeout(() => {
+            const matches = calculateMatches(request);
+            displayMatches(matches, request);
+        }, 1200);
+    }
+
+    function calculateMatches(request) {
+        const scoredProperties = state.allProperties.map(prop => {
+            let score = 0;
+            let reasons = [];
+
+            if (prop.county?.toLowerCase() === request.county?.toLowerCase()) {
+                score += 40;
+                reasons.push("Same county");
+            }
+
+            if (request.town && prop.town?.toLowerCase().includes(request.town.toLowerCase())) {
+                score += 20;
+                reasons.push("Exact town match");
+            } else if (request.town && prop.county?.toLowerCase() === request.county?.toLowerCase()) {
+                score += 10;
+                reasons.push("Same county, different town");
+            }
+
+            if (request.property_type && prop.property_type?.toLowerCase() === request.property_type?.toLowerCase()) {
+                score += 20;
+                reasons.push("Property type matches");
+            } else if (!request.property_type) {
+                score += 10;
+            }
+
+            if (request.bedrooms) {
+                const reqBeds = parseInt(request.bedrooms);
+                if (prop.bedrooms === reqBeds) {
+                    score += 10;
+                    reasons.push("Bedroom count matches");
+                } else if (Math.abs(prop.bedrooms - reqBeds) <= 1) {
+                    score += 5;
+                    reasons.push("Close bedroom count");
+                }
+            } else {
+                score += 5;
+            }
+
+            if (prop.price <= (request.budget * 1.1)) {
+                score += 10;
+                if (prop.price <= request.budget) reasons.push("Within budget");
+                else reasons.push("Slightly above budget");
+            }
+
+            return { property: prop, score: Math.min(score, 100), reasons };
+        });
+
+        return scoredProperties.filter(m => m.score >= 30).sort((a, b) => b.score - a.score).slice(0, 5);
+    }
+
+    function displayMatches(matches, request) {
+        document.getElementById('matches-loading').classList.add('hidden');
+        const resultsDiv = document.getElementById('matches-results');
+        resultsDiv.classList.remove('hidden');
+
+        if (matches.length === 0) {
+            resultsDiv.innerHTML = `
+                <div class="text-center py-8">
+                    <i class="fas fa-search text-4xl text-gray-300 mb-3"></i>
+                    <p class="text-gray-600 font-medium">No strong matches found.</p>
+                    <p class="text-sm text-gray-500 mt-1">Try expanding the budget or location criteria.</p>
+                </div>`;
+            return;
+        }
+
+        const fallbackImg = 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=400&auto=format&fit=crop';
+        const propertyLinkBase = window.location.origin + '/?property=';
+
+        resultsDiv.innerHTML = matches.map(match => {
+            const prop = match.property;
+            const scoreClass = match.score >= 80 ? 'match-score-high' : match.score >= 50 ? 'match-score-med' : 'match-score-low';
+            const isCoBroker = prop.visibility === 'co-broker';
+            const imgSrc = (prop.images && prop.images[0]) ? prop.images[0] : fallbackImg;
+            
+            // 🔒 FIX: Changed "Contact Agent" to "View Property" because we don't have the agent's phone number here.
+            // The WhatsApp link now shares the property URL instead of trying to message a blank number.
+            const shareText = encodeURIComponent(`Hi, I have a buyer for this property: ${propertyLinkBase}${prop.id}`);
+
+            return `
+            <div class="border border-gray-200 rounded-xl p-4 flex flex-col sm:flex-row gap-4 hover:shadow-md transition bg-white">
+                <img src="${esc(imgSrc)}" class="w-full sm:w-32 h-32 object-cover rounded-lg" alt="Property" onerror="this.src='${fallbackImg}'">
+                <div class="flex-1">
+                    <div class="flex justify-between items-start mb-2">
+                        <div>
+                            <h4 class="font-bold text-gray-900">${esc(prop.title)}</h4>
+                            <p class="text-sm text-gray-500"><i class="fas fa-map-marker-alt mr-1 text-amber-500"></i> ${esc(prop.town || prop.county)}, ${esc(prop.county)}</p>
+                        </div>
+                        <div class="text-right">
+                            <div class="inline-flex items-center gap-1 px-3 py-1 rounded-full text-sm font-bold ${scoreClass}">
+                                <i class="fas fa-bolt text-xs"></i> ${match.score}% Match
+                            </div>
+                            <p class="text-lg font-bold text-amber-600 mt-1">${formatKES(prop.price)}</p>
+                        </div>
+                    </div>
+                    
+                    <div class="flex flex-wrap gap-2 mb-3">
+                        ${match.reasons.map(r => `<span class="text-[10px] bg-gray-100 text-gray-600 px-2 py-1 rounded-md font-medium">${esc(r)}</span>`).join('')}
+                    </div>
+
+                    <div class="flex gap-2">
+                        ${isCoBroker ? `
+                            <button class="btn-request-collab flex-1 bg-purple-600 text-white py-2 rounded-lg text-sm font-semibold hover:bg-purple-700 transition" data-prop-id="${esc(prop.id)}" data-buyer-name="${esc(request.buyer_name)}" data-buyer-phone="${esc(request.buyer_phone)}">
+                                <i class="fas fa-handshake mr-1"></i> Request Co-Broker
+                            </button>
+                        ` : `
+                            <a href="${propertyLinkBase}${esc(prop.id)}" class="flex-1 bg-gray-100 text-gray-700 py-2 rounded-lg text-sm font-semibold hover:bg-gray-200 transition text-center">
+                                <i class="fas fa-eye mr-1"></i> View Property
+                            </a>
+                        `}
+                        <a href="https://wa.me/?text=${shareText}" target="_blank" rel="noopener noreferrer" class="px-3 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition flex items-center justify-center" aria-label="Share via WhatsApp">
+                            <i class="fab fa-whatsapp text-lg"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>`;
+        }).join('');
+    }
+
+    function requestCollabFromMatch(propId, buyerName, buyerPhone) {
+        closeMatchesModal();
+        showToast(`Redirecting to collaboration request for ${buyerName}...`);
+        // In a real app, pass these params via URL to shared-listings.html
+        window.location.href = `shared-listings.html?collab_prop=${propId}&buyer=${encodeURIComponent(buyerName)}`;
+    }
+
+    // ==========================================
+    // 6. FORM & ACTIONS
+    // ==========================================
+    async function handleFormSubmit(e) {
+        e.preventDefault();
+        const submitBtn = document.getElementById('submit-request-btn');
+        
+        const budget = parseFloat(document.getElementById('req-budget').value);
+        if (isNaN(budget) || budget <= 0) {
+            showToast('Please enter a valid budget greater than 0.', 'error');
+            return;
+        }
+
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Saving...';
+
+        const requestData = {
+            agent_id: state.user.id,
+            buyer_name: document.getElementById('req-buyer-name').value.trim(),
+            buyer_phone: document.getElementById('req-buyer-phone').value.trim(),
+            budget: budget,
+            county: document.getElementById('req-county').value,
+            town: document.getElementById('req-town').value.trim(),
+            property_type: document.getElementById('req-type').value,
+            bedrooms: document.getElementById('req-beds').value ? parseInt(document.getElementById('req-beds').value) : null,
+            status: document.getElementById('req-status').value,
+            notes: document.getElementById('req-notes').value.trim()
+        };
+
+        const { error } = await supabase.from('buyer_requests').insert([requestData]);
+
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = 'Save & Find Matches';
+
+        if (error) {
+            showToast('Error saving request: ' + error.message, 'error');
+        } else {
+            showToast('Request saved successfully!');
+            closeRequestModal();
+            loadBuyerRequests();
+        }
+    }
+
+    async function deleteRequest(id) {
+        if (!confirm('Delete this buyer request?')) return;
+        
+        // 🔒 SECURITY: Defense-in-depth ownership check
+        const { error } = await supabase
+            .from('buyer_requests')
+            .delete()
+            .eq('id', id)
+            .eq('agent_id', state.user.id); 
+            
+        if (error) {
+            showToast('Error deleting request.', 'error');
+        } else {
+            showToast('Request deleted.');
+            loadBuyerRequests();
+        }
+    }
+
+    function openRequestModal() {
+        document.getElementById('request-form').reset();
+        document.getElementById('request-modal').classList.remove('hidden');
+    }
+    function closeRequestModal() { document.getElementById('request-modal').classList.add('hidden'); }
+    function closeMatchesModal() { document.getElementById('matches-modal').classList.add('hidden'); }
+
+    // ==========================================
+    // 7. EVENT DELEGATION & INIT
+    // ==========================================
+    function initEventListeners() {
+        // Mobile Menu
+        document.getElementById('mobile-menu-btn').addEventListener('click', () => {
+            document.getElementById('sidebar').classList.toggle('mobile-open');
+            document.getElementById('mobile-overlay').classList.toggle('hidden');
+        });
+        document.getElementById('mobile-overlay').addEventListener('click', () => {
+            document.getElementById('sidebar').classList.remove('mobile-open');
+            document.getElementById('mobile-overlay').classList.add('hidden');
+        });
+
+        // Logout
+        document.getElementById('logout-btn').addEventListener('click', async (e) => {
+            e.preventDefault();
+            await supabase.auth.signOut();
+            window.location.href = 'login.html';
+        });
+
+        // Modals
+        document.getElementById('new-request-btn').addEventListener('click', openRequestModal);
+        document.getElementById('close-modal-btn').addEventListener('click', closeRequestModal);
+        document.getElementById('cancel-modal-btn').addEventListener('click', closeRequestModal);
+        document.getElementById('close-matches-btn').addEventListener('click', closeMatchesModal);
+
+        // Form
+        document.getElementById('request-form').addEventListener('submit', handleFormSubmit);
+
+        // Filters
+        const debouncedFilter = debounce(applyFilters, 300);
+        document.getElementById('search-input').addEventListener('input', debouncedFilter);
+        document.getElementById('filter-status').addEventListener('change', applyFilters);
+
+        // 🔒 SECURE EVENT DELEGATION: Requests List
+        document.getElementById('requests-list').addEventListener('click', (e) => {
+            const findBtn = e.target.closest('.btn-find-matches');
+            if (findBtn) { findMatches(findBtn.dataset.id); return; }
+
+            const delBtn = e.target.closest('.btn-delete-request');
+            if (delBtn) { deleteRequest(delBtn.dataset.id); return; }
+
+            const createBtn = e.target.closest('#empty-create-btn');
+            if (createBtn) { openRequestModal(); return; }
+        });
+
+        // 🔒 SECURE EVENT DELEGATION: Matches Modal
+        document.getElementById('matches-results').addEventListener('click', (e) => {
+            const collabBtn = e.target.closest('.btn-request-collab');
+            if (collabBtn) {
+                requestCollabFromMatch(
+                    collabBtn.dataset.propId, 
+                    collabBtn.dataset.buyerName, 
+                    collabBtn.dataset.buyerPhone
+                );
+            }
+        });
+    }
+
+    // Start App
+    document.addEventListener('DOMContentLoaded', () => {
+        initEventListeners();
+        checkAuth();
     });
-    renderRequests(filtered);
-}
 
-document.getElementById('search-input').addEventListener('input', applyFilters);
-document.getElementById('filter-status').addEventListener('change', applyFilters);
-
-checkAuth();
+})();
 </script>
 </body>
 </html>
