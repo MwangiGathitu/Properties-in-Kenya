@@ -17,23 +17,21 @@
         .modal { animation: modalPop 0.3s cubic-bezier(0.34, 1.56, 0.64, 1); }
         @keyframes modalPop { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
         
-        /* Kanban specific styles */
         .kanban-column { min-height: 200px; }
         .kanban-card { cursor: grab; transition: all 0.2s; }
         .kanban-card:active { cursor: grabbing; }
         .kanban-card.dragging { opacity: 0.5; transform: scale(0.95); }
         
-        /* Hide scrollbar for clean horizontal scroll on mobile */
         .hide-scrollbar::-webkit-scrollbar { display: none; }
         .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
     </style>
 </head>
 <body class="bg-gray-100">
 
-<button onclick="toggleMobileMenu()" class="lg:hidden fixed top-4 left-4 z-50 bg-white p-3 rounded-xl shadow-lg">
+<button id="mobile-menu-btn" class="lg:hidden fixed top-4 left-4 z-50 bg-white p-3 rounded-xl shadow-lg" aria-label="Toggle menu">
     <i class="fas fa-bars text-gray-700"></i>
 </button>
-<div id="mobile-overlay" onclick="toggleMobileMenu()" class="hidden lg:hidden fixed inset-0 bg-black/50 z-40"></div>
+<div id="mobile-overlay" class="hidden lg:hidden fixed inset-0 bg-black/50 z-40"></div>
 
 <div class="flex min-h-screen">
     <!-- SIDEBAR -->
@@ -54,7 +52,7 @@
             <a href="messages.html" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-gray-700"><i class="fas fa-comment-dots w-5"></i> Messages</a>
             <a href="commissions.html" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-gray-700"><i class="fas fa-wallet w-5"></i> Commissions</a>
             <div class="pt-4 mt-4 border-t border-gray-200">
-                <a href="#" onclick="logout()" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-gray-700"><i class="fas fa-sign-out-alt w-5"></i> Logout</a>
+                <a href="#" id="logout-btn" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-gray-700"><i class="fas fa-sign-out-alt w-5"></i> Logout</a>
             </div>
         </nav>
     </aside>
@@ -66,7 +64,7 @@
                 <h1 class="heading-font text-2xl font-bold">Lead Center</h1>
                 <p class="text-sm text-gray-500">Drag and drop leads or use the move button</p>
             </div>
-            <button onclick="openAddLeadModal()" class="flex items-center gap-2 bg-gradient-to-r from-blue-600 to-indigo-600 text-white px-4 py-2.5 rounded-xl font-semibold text-sm hover:shadow-lg transition">
+            <button id="add-lead-btn" class="flex items-center gap-2 bg-gradient-to-r from-blue-600 to-indigo-600 text-white px-4 py-2.5 rounded-xl font-semibold text-sm hover:shadow-lg transition">
                 <i class="fas fa-plus"></i> <span class="hidden sm:inline">Add Lead</span>
             </button>
         </header>
@@ -74,34 +72,34 @@
         <!-- Kanban Board -->
         <div class="flex-1 overflow-x-auto overflow-y-hidden p-6 hide-scrollbar">
             <div class="flex gap-6 h-full min-w-max" id="kanban-board">
-                <!-- Columns will be injected here by JS -->
+                <!-- Columns injected by JS -->
             </div>
         </div>
     </main>
 </div>
 
 <!-- ADD LEAD MODAL -->
-<div id="add-lead-modal" class="fixed inset-0 bg-black/60 hidden flex items-center justify-center z-50 p-4">
+<div id="add-lead-modal" class="fixed inset-0 bg-black/60 hidden flex items-center justify-center z-50 p-4" role="dialog" aria-modal="true">
     <div class="modal bg-white rounded-3xl w-full max-w-lg overflow-hidden">
         <div class="p-6 border-b flex items-center justify-between">
             <h2 class="heading-font text-xl font-bold">Add New Lead</h2>
-            <button onclick="closeAddLeadModal()" class="w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100"><i class="fas fa-times text-xl"></i></button>
+            <button id="close-add-modal-btn" class="w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100" aria-label="Close"><i class="fas fa-times text-xl"></i></button>
         </div>
         <form id="add-lead-form" class="p-6 space-y-4">
             <div class="grid grid-cols-2 gap-4">
                 <div>
                     <label class="block text-sm font-semibold text-gray-700 mb-2">Buyer Name *</label>
-                    <input type="text" id="lead-name" required class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:outline-none">
+                    <input type="text" id="lead-name" required maxlength="100" class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:outline-none">
                 </div>
                 <div>
                     <label class="block text-sm font-semibold text-gray-700 mb-2">Phone Number *</label>
-                    <input type="tel" id="lead-phone" required class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:outline-none" placeholder="0712345678">
+                    <input type="tel" id="lead-phone" required pattern="[0-9+\s-]{10,}" class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:outline-none" placeholder="0712345678">
                 </div>
             </div>
             <div class="grid grid-cols-2 gap-4">
                 <div>
                     <label class="block text-sm font-semibold text-gray-700 mb-2">Budget (KES)</label>
-                    <input type="number" id="lead-budget" class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:outline-none" placeholder="10000000">
+                    <input type="number" id="lead-budget" min="0" class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:outline-none" placeholder="10000000">
                 </div>
                 <div>
                     <label class="block text-sm font-semibold text-gray-700 mb-2">Source</label>
@@ -112,29 +110,29 @@
             </div>
             <div>
                 <label class="block text-sm font-semibold text-gray-700 mb-2">Property Interest</label>
-                <input type="text" id="lead-interest" class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:outline-none" placeholder="e.g., 3BR in Kilimani">
+                <input type="text" id="lead-interest" maxlength="100" class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:outline-none" placeholder="e.g., 3BR in Kilimani">
             </div>
             <div>
                 <label class="block text-sm font-semibold text-gray-700 mb-2">Initial Notes</label>
-                <textarea id="lead-notes" rows="3" class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:outline-none" placeholder="e.g., Pre-approved for mortgage, wants to view this weekend."></textarea>
+                <textarea id="lead-notes" rows="3" maxlength="500" class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:outline-none" placeholder="e.g., Pre-approved for mortgage."></textarea>
             </div>
             <div class="flex gap-4 pt-2">
-                <button type="button" onclick="closeAddLeadModal()" class="flex-1 py-3 border border-gray-300 rounded-xl font-semibold hover:bg-gray-50">Cancel</button>
-                <button type="submit" class="flex-1 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-xl font-semibold hover:shadow-lg">Save Lead</button>
+                <button type="button" id="cancel-add-btn" class="flex-1 py-3 border border-gray-300 rounded-xl font-semibold hover:bg-gray-50">Cancel</button>
+                <button type="submit" id="save-lead-btn" class="flex-1 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-xl font-semibold hover:shadow-lg">Save Lead</button>
             </div>
         </form>
     </div>
 </div>
 
-<!-- LEAD DETAILS & ACTIVITY MODAL -->
-<div id="lead-details-modal" class="fixed inset-0 bg-black/60 hidden flex items-center justify-center z-50 p-4">
+<!-- LEAD DETAILS MODAL -->
+<div id="lead-details-modal" class="fixed inset-0 bg-black/60 hidden flex items-center justify-center z-50 p-4" role="dialog" aria-modal="true">
     <div class="modal bg-white rounded-3xl w-full max-w-lg max-h-[90vh] overflow-y-auto">
         <div class="p-6 border-b bg-gray-50 flex items-center justify-between sticky top-0">
             <div>
                 <h2 class="heading-font text-xl font-bold" id="detail-name">Lead Name</h2>
                 <p class="text-sm text-gray-500" id="detail-phone">0712345678</p>
             </div>
-            <button onclick="closeDetailsModal()" class="w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-200"><i class="fas fa-times text-xl"></i></button>
+            <button id="close-details-btn" class="w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-200" aria-label="Close"><i class="fas fa-times text-xl"></i></button>
         </div>
         <div class="p-6 space-y-6">
             <div class="grid grid-cols-2 gap-4 text-sm">
@@ -148,9 +146,8 @@
                 </div>
             </div>
 
-            <!-- Quick Actions -->
             <div class="flex gap-2">
-                <a id="detail-wa-link" href="#" target="_blank" class="flex-1 bg-green-500 text-white py-2.5 rounded-xl text-center font-semibold text-sm hover:bg-green-600 transition">
+                <a id="detail-wa-link" href="#" target="_blank" rel="noopener noreferrer" class="flex-1 bg-green-500 text-white py-2.5 rounded-xl text-center font-semibold text-sm hover:bg-green-600 transition">
                     <i class="fab fa-whatsapp mr-1"></i> WhatsApp
                 </a>
                 <a id="detail-call-link" href="#" class="flex-1 bg-blue-600 text-white py-2.5 rounded-xl text-center font-semibold text-sm hover:bg-blue-700 transition">
@@ -158,27 +155,22 @@
                 </a>
             </div>
 
-            <!-- Add Activity -->
             <div>
                 <label class="block text-sm font-semibold text-gray-700 mb-2">Add Activity / Note</label>
                 <div class="flex gap-2">
-                    <input type="text" id="new-activity-text" class="flex-1 px-4 py-2 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:outline-none text-sm" placeholder="e.g., Called, left voicemail">
-                    <button onclick="addActivity()" class="bg-gray-900 text-white px-4 py-2 rounded-xl text-sm font-semibold hover:bg-gray-800">Add</button>
+                    <input type="text" id="new-activity-text" maxlength="200" class="flex-1 px-4 py-2 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:outline-none text-sm" placeholder="e.g., Called, left voicemail">
+                    <button id="add-activity-btn" class="bg-gray-900 text-white px-4 py-2 rounded-xl text-sm font-semibold hover:bg-gray-800">Add</button>
                 </div>
             </div>
 
-            <!-- Activity Timeline -->
             <div>
                 <h3 class="text-sm font-semibold text-gray-700 mb-3">History</h3>
-                <div id="activity-timeline" class="space-y-3 max-h-48 overflow-y-auto pr-2">
-                    <!-- Populated by JS -->
-                </div>
+                <div id="activity-timeline" class="space-y-3 max-h-48 overflow-y-auto pr-2"></div>
             </div>
             
-            <!-- Move Lead -->
             <div class="pt-4 border-t">
                 <label class="block text-sm font-semibold text-gray-700 mb-2">Move to Stage:</label>
-                <select id="detail-status-select" onchange="updateLeadStatusFromModal(this.value)" class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:outline-none bg-white font-medium">
+                <select id="detail-status-select" class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:outline-none bg-white font-medium">
                     <option value="new">New Lead</option>
                     <option value="contacted">Contacted</option>
                     <option value="viewing">Viewing Scheduled</option>
@@ -192,306 +184,486 @@
     </div>
 </div>
 
+<!-- Toast Container -->
+<div id="toast-container" class="fixed bottom-6 right-6 z-[100] flex flex-col gap-3"></div>
+
 <script>
-const supabase = window.supabase.createClient(
-    'https://nqvsmuvltbiekfnvovx.supabase.co',
-    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5xd3ZzbXV2bHRiaWVrZm52b3Z4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA1NjU4MDAsImV4cCI6MjA5NjE0MTgwMH0.Xrc-bbAuWdvKSPHnVhTaLiQphV61xeYtDepWePqsrdo'
-);
+(function() {
+    'use strict';
 
-let currentUser = null;
-let allLeads = [];
-let currentDetailLeadId = null;
+    // ==========================================
+    // 1. CONFIGURATION & STATE
+    // ==========================================
+    const supabase = window.supabase.createClient(
+        'https://nqvsmuvltbiekfnvovx.supabase.co',
+        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5xd3ZzbXV2bHRiaWVrZm52b3Z4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA1NjU4MDAsImV4cCI6MjA5NjE0MTgwMH0.Xrc-bbAuWdvKSPHnVhTaLiQphV61xeYtDepWePqsrdo'
+    );
 
-const columns = [
-    { id: 'new', title: 'New Leads', color: 'blue', icon: 'fa-inbox' },
-    { id: 'contacted', title: 'Contacted', color: 'amber', icon: 'fa-phone' },
-    { id: 'viewing', title: 'Viewing', color: 'purple', icon: 'fa-calendar-check' },
-    { id: 'negotiating', title: 'Negotiating', color: 'orange', icon: 'fa-handshake' },
-    { id: 'offer', title: 'Offer Made', color: 'indigo', icon: 'fa-file-contract' },
-    { id: 'closed_won', title: 'Closed Won', color: 'green', icon: 'fa-trophy' },
-    { id: 'closed_lost', title: 'Closed Lost', color: 'gray', icon: 'fa-times-circle' }
-];
-
-async function checkAuth() {
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) { window.location.href = 'login.html'; return; }
-    currentUser = user;
-    loadLeads();
-}
-
-function formatKES(amount) {
-    return new Intl.NumberFormat('en-KE', { style: 'currency', currency: 'KES', maximumFractionDigits: 0 }).format(amount || 0);
-}
-
-function getTimeAgo(dateString) {
-    const date = new Date(dateString);
-    const now = new Date();
-    const seconds = Math.floor((now - date) / 1000);
-    if (seconds < 60) return 'Just now';
-    if (seconds < 3600) return `${Math.floor(seconds / 60)}m ago`;
-    if (seconds < 86400) return `${Math.floor(seconds / 3600)}h ago`;
-    return `${Math.floor(seconds / 86400)}d ago`;
-}
-
-async function loadLeads() {
-    try {
-        const { data, error } = await supabase
-            .from('leads')
-            .select('*')
-            .eq('agent_id', currentUser.id)
-            .order('updated_at', { ascending: false });
-        
-        if (error) throw error;
-        allLeads = data || [];
-        renderKanban();
-    } catch (err) {
-        console.error('Error loading leads:', err);
-    }
-}
-
-function renderKanban() {
-    const board = document.getElementById('kanban-board');
-    board.innerHTML = columns.map(col => {
-        const colLeads = allLeads.filter(l => l.status === col.id);
-        return `
-        <div class="flex flex-col w-80 flex-shrink-0">
-            <div class="flex items-center justify-between mb-3 px-1">
-                <div class="flex items-center gap-2">
-                    <div class="w-3 h-3 rounded-full bg-${col.color}-500"></div>
-                    <h3 class="font-bold text-gray-700 text-sm uppercase tracking-wide">${col.title}</h3>
-                    <span class="bg-gray-200 text-gray-600 text-xs font-bold px-2 py-0.5 rounded-full">${colLeads.length}</span>
-                </div>
-            </div>
-            
-            <div class="kanban-column bg-gray-200/50 rounded-2xl p-3 flex-1 overflow-y-auto space-y-3 border-2 border-transparent transition-colors" 
-                 id="col-${col.id}"
-                 ondragover="handleDragOver(event)" 
-                 ondrop="handleDrop(event, '${col.id}')">
-                
-                ${colLeads.length === 0 ? '<p class="text-center text-gray-400 text-xs py-8">Drop leads here</p>' : ''}
-                
-                ${colLeads.map(lead => `
-                    <div class="kanban-card bg-white p-4 rounded-xl shadow-sm border border-gray-100 relative group" 
-                         draggable="true" 
-                         ondragstart="handleDragStart(event, '${lead.id}')"
-                         onclick="openLeadDetails('${lead.id}')">
-                        
-                        <!-- Mobile Move Dropdown (Always visible but subtle) -->
-                        <select onchange="event.stopPropagation(); moveLead('${lead.id}', this.value); this.value='';" 
-                                class="absolute top-2 right-2 opacity-0 group-hover:opacity-100 md:opacity-0 opacity-100 w-24 text-xs bg-gray-50 border border-gray-200 rounded-lg py-1 px-1 z-10"
-                                onclick="event.stopPropagation()">
-                            <option value="" disabled selected>Move to...</option>
-                            ${columns.filter(c => c.id !== col.id).map(c => `<option value="${c.id}">${c.title}</option>`).join('')}
-                        </select>
-
-                        <div class="flex items-start justify-between mb-2">
-                            <h4 class="font-bold text-gray-900 text-sm leading-tight pr-20">${lead.buyer_name}</h4>
-                        </div>
-                        
-                        ${lead.property_interest ? `<p class="text-xs text-gray-500 mb-2 line-clamp-2"><i class="fas fa-home mr-1 text-gray-400"></i> ${lead.property_interest}</p>` : ''}
-                        
-                        <div class="flex items-center justify-between mt-3 pt-3 border-t border-gray-50">
-                            <span class="text-xs font-semibold text-gray-600">${lead.budget ? formatKES(lead.budget) : 'No budget'}</span>
-                            <span class="text-[10px] text-gray-400">${getTimeAgo(lead.updated_at)}</span>
-                        </div>
-                    </div>
-                `).join('')}
-            </div>
-        </div>`;
-    }).join('');
-}
-
-// --- Drag and Drop Logic ---
-let draggedLeadId = null;
-
-function handleDragStart(event, leadId) {
-    draggedLeadId = leadId;
-    event.target.classList.add('dragging');
-    event.dataTransfer.effectAllowed = 'move';
-}
-
-function handleDragOver(event) {
-    event.preventDefault(); // Necessary to allow dropping
-    event.dataTransfer.dropEffect = 'move';
-    const column = event.currentTarget;
-    column.classList.add('border-blue-300', 'bg-blue-50');
-}
-
-// Clean up drag styles when leaving
-document.addEventListener('dragleave', (e) => {
-    if (e.target.classList.contains('kanban-column')) {
-        e.target.classList.remove('border-blue-300', 'bg-blue-50');
-    }
-});
-
-async function handleDrop(event, newStatus) {
-    event.preventDefault();
-    const column = event.currentTarget;
-    column.classList.remove('border-blue-300', 'bg-blue-50');
-    
-    if (draggedLeadId) {
-        await moveLead(draggedLeadId, newStatus);
-        draggedLeadId = null;
-        // Remove dragging class from all elements just in case
-        document.querySelectorAll('.dragging').forEach(el => el.classList.remove('dragging'));
-    }
-}
-
-// --- Core Move Logic (Used by both Drag & Drop and Mobile Dropdown) ---
-async function moveLead(leadId, newStatus) {
-    if (!newStatus) return;
-    
-    // Optimistic UI update
-    const lead = allLeads.find(l => l.id === leadId);
-    if (lead) lead.status = newStatus;
-    renderKanban();
-
-    // Update Supabase
-    const { error } = await supabase
-        .from('leads')
-        .update({ status: newStatus, updated_at: new Date().toISOString() })
-        .eq('id', leadId);
-
-    if (error) {
-        console.error('Error moving lead:', error);
-        alert('Failed to update lead status. Please try again.');
-        loadLeads(); // Revert on error
-    } else {
-        // Log activity
-        await supabase.from('lead_activities').insert({
-            lead_id: leadId,
-            activity_type: 'status_change',
-            description: `Moved to ${newStatus.replace('_', ' ').toUpperCase()}`
-        });
-    }
-}
-
-// --- Lead Details Modal ---
-async function openLeadDetails(leadId) {
-    const lead = allLeads.find(l => l.id === leadId);
-    if (!lead) return;
-    
-    currentDetailLeadId = leadId;
-    document.getElementById('detail-name').textContent = lead.buyer_name;
-    document.getElementById('detail-phone').textContent = lead.buyer_phone;
-    document.getElementById('detail-budget').textContent = lead.budget ? formatKES(lead.budget) : 'Not specified';
-    document.getElementById('detail-interest').textContent = lead.property_interest || 'Any';
-    document.getElementById('detail-status-select').value = lead.status;
-    
-    // Clean phone for links
-    const cleanPhone = lead.buyer_phone.replace(/\D/g, '');
-    const waNumber = cleanPhone.startsWith('0') ? `254${cleanPhone.slice(1)}` : cleanPhone;
-    document.getElementById('detail-wa-link').href = `https://wa.me/${waNumber}?text=${encodeURIComponent(`Hi ${lead.buyer_name}, this is your agent from Properties in Kenya.`)}`;
-    document.getElementById('detail-call-link').href = `tel:${lead.buyer_phone}`;
-
-    // Load activities
-    const { data: activities } = await supabase
-        .from('lead_activities')
-        .select('*')
-        .eq('lead_id', leadId)
-        .order('created_at', { ascending: false });
-
-    const timeline = document.getElementById('activity-timeline');
-    if (!activities || activities.length === 0) {
-        timeline.innerHTML = '<p class="text-xs text-gray-400 text-center py-4">No activity logged yet.</p>';
-    } else {
-        timeline.innerHTML = activities.map(act => `
-            <div class="flex gap-3 text-sm">
-                <div class="w-2 h-2 rounded-full bg-blue-500 mt-1.5 flex-shrink-0"></div>
-                <div>
-                    <p class="text-gray-800 font-medium">${act.description || act.activity_type}</p>
-                    <p class="text-xs text-gray-400">${getTimeAgo(act.created_at)}</p>
-                </div>
-            </div>
-        `).join('');
-    }
-
-    document.getElementById('lead-details-modal').classList.remove('hidden');
-}
-
-async function addActivity() {
-    const text = document.getElementById('new-activity-text').value.trim();
-    if (!text || !currentDetailLeadId) return;
-
-    const { error } = await supabase.from('lead_activities').insert({
-        lead_id: currentDetailLeadId,
-        activity_type: 'note',
-        description: text
-    });
-
-    if (!error) {
-        document.getElementById('new-activity-text').value = '';
-        openLeadDetails(currentDetailLeadId); // Refresh modal
-    }
-}
-
-async function updateLeadStatusFromModal(newStatus) {
-    await moveLead(currentDetailLeadId, newStatus);
-    closeDetailsModal();
-}
-
-function closeDetailsModal() {
-    document.getElementById('lead-details-modal').classList.add('hidden');
-    currentDetailLeadId = null;
-}
-
-// --- Add Lead Modal ---
-function openAddLeadModal() {
-    document.getElementById('add-lead-modal').classList.remove('hidden');
-}
-function closeAddLeadModal() {
-    document.getElementById('add-lead-modal').classList.add('hidden');
-    document.getElementById('add-lead-form').reset();
-}
-
-document.getElementById('add-lead-form').addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const btn = e.target.querySelector('button[type="submit"]');
-    btn.disabled = true;
-    btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Saving...';
-
-    const newLead = {
-        agent_id: currentUser.id,
-        buyer_name: document.getElementById('lead-name').value,
-        buyer_phone: document.getElementById('lead-phone').value,
-        budget: parseFloat(document.getElementById('lead-budget').value) || null,
-        source: document.getElementById('lead-source').value,
-        property_interest: document.getElementById('lead-interest').value,
-        notes: document.getElementById('lead-notes').value,
-        status: 'new'
+    const state = {
+        user: null,
+        allLeads: [],
+        currentDetailLeadId: null,
+        draggedLeadId: null
     };
 
-    const { data, error } = await supabase.from('leads').insert([newLead]).select();
-    
-    btn.disabled = false;
-    btn.innerHTML = 'Save Lead';
+    const columns = [
+        { id: 'new', title: 'New Leads', color: 'blue', icon: 'fa-inbox' },
+        { id: 'contacted', title: 'Contacted', color: 'amber', icon: 'fa-phone' },
+        { id: 'viewing', title: 'Viewing', color: 'purple', icon: 'fa-calendar-check' },
+        { id: 'negotiating', title: 'Negotiating', color: 'orange', icon: 'fa-handshake' },
+        { id: 'offer', title: 'Offer Made', color: 'indigo', icon: 'fa-file-contract' },
+        { id: 'closed_won', title: 'Closed Won', color: 'green', icon: 'fa-trophy' },
+        { id: 'closed_lost', title: 'Closed Lost', color: 'gray', icon: 'fa-times-circle' }
+    ];
 
-    if (!error && data) {
-        // Log initial activity
-        await supabase.from('lead_activities').insert({
-            lead_id: data[0].id,
-            activity_type: 'created',
-            description: `Lead created from ${newLead.source}`
-        });
-        closeAddLeadModal();
-        loadLeads();
-    } else {
-        alert('Error saving lead: ' + error.message);
+    // ==========================================
+    // 2. UTILITIES
+    // ==========================================
+    function esc(str) {
+        if (!str) return '';
+        const div = document.createElement('div');
+        div.textContent = str;
+        return div.innerHTML;
     }
-});
 
-// --- UI Helpers ---
-function toggleMobileMenu() {
-    document.getElementById('sidebar').classList.toggle('mobile-open');
-    document.getElementById('mobile-overlay').classList.toggle('hidden');
-}
+    function formatKES(amount) {
+        return new Intl.NumberFormat('en-KE', { style: 'currency', currency: 'KES', maximumFractionDigits: 0 }).format(amount || 0);
+    }
 
-async function logout() {
-    await supabase.auth.signOut();
-    window.location.href = 'login.html';
-}
+    function getTimeAgo(dateString) {
+        if (!dateString) return 'Unknown';
+        const date = new Date(dateString);
+        if (isNaN(date.getTime())) return 'Unknown';
+        
+        const now = new Date();
+        const seconds = Math.floor((now - date) / 1000);
+        if (seconds < 60) return 'Just now';
+        if (seconds < 3600) return `${Math.floor(seconds / 60)}m ago`;
+        if (seconds < 86400) return `${Math.floor(seconds / 3600)}h ago`;
+        return `${Math.floor(seconds / 86400)}d ago`;
+    }
 
-checkAuth();
+    function formatWhatsApp(phone) {
+        if (!phone) return '';
+        let clean = phone.replace(/\D/g, '');
+        if (clean.startsWith('0')) clean = '254' + clean.substring(1);
+        return clean;
+    }
+
+    function showToast(message, type = 'success') {
+        const container = document.getElementById('toast-container');
+        const toast = document.createElement('div');
+        const bgColor = type === 'error' ? 'bg-red-500' : 'bg-green-500';
+        toast.className = `${bgColor} text-white px-6 py-3 rounded-xl shadow-lg flex items-center gap-2 transition-opacity duration-300`;
+        toast.innerHTML = `<i class="fas ${type === 'error' ? 'fa-exclamation-circle' : 'fa-check-circle'}"></i> ${esc(message)}`;
+        container.appendChild(toast);
+        setTimeout(() => {
+            toast.style.opacity = '0';
+            setTimeout(() => toast.remove(), 300);
+        }, 3000);
+    }
+
+    // ==========================================
+    // 3. AUTH & DATA LOADING
+    // ==========================================
+    async function checkAuth() {
+        const { data: { user } } = await supabase.auth.getUser();
+        if (!user) { window.location.href = 'login.html'; return; }
+        state.user = user;
+        
+        supabase.auth.onAuthStateChange((event) => {
+            if (event === 'SIGNED_OUT') window.location.href = 'login.html';
+        });
+
+        loadLeads();
+    }
+
+    async function loadLeads() {
+        const board = document.getElementById('kanban-board');
+        try {
+            const { data, error } = await supabase
+                .from('leads')
+                .select('*')
+                .eq('agent_id', state.user.id)
+                .order('updated_at', { ascending: false });
+            
+            if (error) throw error;
+            state.allLeads = data || [];
+            renderKanban();
+        } catch (err) {
+            console.error('Error loading leads:', err);
+            board.innerHTML = `<div class="text-center text-red-500 py-12 col-span-full"><i class="fas fa-exclamation-triangle text-3xl mb-3"></i><p>Failed to load leads. Please refresh.</p></div>`;
+            showToast('Failed to load leads.', 'error');
+        }
+    }
+
+    // ==========================================
+    // 4. RENDERING (Optimized)
+    // ==========================================
+    function renderKanban() {
+        const board = document.getElementById('kanban-board');
+        board.innerHTML = columns.map(col => {
+            const colLeads = state.allLeads.filter(l => l.status === col.id);
+            return `
+            <div class="flex flex-col w-80 flex-shrink-0">
+                <div class="flex items-center justify-between mb-3 px-1">
+                    <div class="flex items-center gap-2">
+                        <div class="w-3 h-3 rounded-full bg-${col.color}-500"></div>
+                        <h3 class="font-bold text-gray-700 text-sm uppercase tracking-wide">${esc(col.title)}</h3>
+                        <span class="col-count bg-gray-200 text-gray-600 text-xs font-bold px-2 py-0.5 rounded-full">${colLeads.length}</span>
+                    </div>
+                </div>
+                
+                <div class="kanban-column bg-gray-200/50 rounded-2xl p-3 flex-1 overflow-y-auto space-y-3 border-2 border-transparent transition-colors" 
+                     id="col-${col.id}"
+                     data-status="${col.id}">
+                    
+                    ${colLeads.length === 0 ? '<p class="empty-col-msg text-center text-gray-400 text-xs py-8">Drop leads here</p>' : ''}
+                    
+                    ${colLeads.map(lead => renderLeadCard(lead, col.id)).join('')}
+                </div>
+            </div>`;
+        }).join('');
+    }
+
+    function renderLeadCard(lead, colId) {
+        return `
+            <div class="kanban-card bg-white p-4 rounded-xl shadow-sm border border-gray-100 relative group" 
+                 draggable="true" 
+                 data-lead-id="${esc(lead.id)}">
+                
+                <!-- 🔒 FIX: Corrected Tailwind classes for mobile/desktop visibility -->
+                <select class="mobile-move-select absolute top-2 right-2 opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity w-24 text-xs bg-gray-50 border border-gray-200 rounded-lg py-1 px-1 z-10">
+                    <option value="" disabled selected>Move...</option>
+                    ${columns.filter(c => c.id !== colId).map(c => `<option value="${esc(c.id)}">${esc(c.title)}</option>`).join('')}
+                </select>
+
+                <div class="flex items-start justify-between mb-2">
+                    <h4 class="font-bold text-gray-900 text-sm leading-tight pr-20 cursor-pointer">${esc(lead.buyer_name)}</h4>
+                </div>
+                
+                ${lead.property_interest ? `<p class="text-xs text-gray-500 mb-2 line-clamp-2"><i class="fas fa-home mr-1 text-gray-400"></i> ${esc(lead.property_interest)}</p>` : ''}
+                
+                <div class="flex items-center justify-between mt-3 pt-3 border-t border-gray-50">
+                    <span class="text-xs font-semibold text-gray-600">${lead.budget ? formatKES(lead.budget) : 'No budget'}</span>
+                    <span class="text-[10px] text-gray-400">${getTimeAgo(lead.updated_at)}</span>
+                </div>
+            </div>
+        `;
+    }
+
+    function updateColumnCount(status) {
+        const col = document.getElementById(`col-${status}`);
+        if (!col) return;
+        
+        const count = col.querySelectorAll('.kanban-card').length;
+        const countBadge = col.closest('.flex-col').querySelector('.col-count');
+        if (countBadge) countBadge.textContent = count;
+        
+        let emptyMsg = col.querySelector('.empty-col-msg');
+        if (count === 0 && !emptyMsg) {
+            col.insertAdjacentHTML('beforeend', '<p class="empty-col-msg text-center text-gray-400 text-xs py-8">Drop leads here</p>');
+        } else if (count > 0 && emptyMsg) {
+            emptyMsg.remove();
+        }
+    }
+
+    // ==========================================
+    // 5. DRAG & DROP + MOBILE DROPDOWN
+    // ==========================================
+    async function updateLeadStatusInDB(leadId, newStatus) {
+        // 🔒 SECURITY: Defense-in-depth ownership check
+        const { error } = await supabase
+            .from('leads')
+            .update({ status: newStatus, updated_at: new Date().toISOString() })
+            .eq('id', leadId)
+            .eq('agent_id', state.user.id);
+
+        if (error) {
+            console.error('Error moving lead:', error);
+            showToast('Failed to update lead status.', 'error');
+            loadLeads(); // Revert UI on error
+        } else {
+            showToast('Lead status updated!');
+            await supabase.from('lead_activities').insert({
+                lead_id: leadId,
+                activity_type: 'status_change',
+                description: `Moved to ${newStatus.replace('_', ' ').toUpperCase()}`
+            });
+        }
+    }
+
+    function initDragAndDrop() {
+        const board = document.getElementById('kanban-board');
+
+        board.addEventListener('dragstart', (e) => {
+            const card = e.target.closest('.kanban-card');
+            if (card) {
+                state.draggedLeadId = card.dataset.leadId;
+                card.classList.add('dragging');
+                e.dataTransfer.effectAllowed = 'move';
+            }
+        });
+
+        board.addEventListener('dragend', (e) => {
+            const card = e.target.closest('.kanban-card');
+            if (card) card.classList.remove('dragging');
+            state.draggedLeadId = null;
+        });
+
+        board.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            const column = e.target.closest('.kanban-column');
+            if (column) column.classList.add('border-blue-300', 'bg-blue-50');
+        });
+
+        board.addEventListener('dragleave', (e) => {
+            const column = e.target.closest('.kanban-column');
+            if (column && !column.contains(e.relatedTarget)) {
+                column.classList.remove('border-blue-300', 'bg-blue-50');
+            }
+        });
+
+        board.addEventListener('drop', async (e) => {
+            e.preventDefault();
+            const column = e.target.closest('.kanban-column');
+            if (column) {
+                column.classList.remove('border-blue-300', 'bg-blue-50');
+                const newStatus = column.dataset.status;
+                
+                if (state.draggedLeadId && newStatus) {
+                    const card = document.querySelector(`[data-lead-id="${state.draggedLeadId}"]`);
+                    const oldColumn = card.closest('.kanban-column');
+                    
+                    if (oldColumn !== column) {
+                        // 🔒 PERFORMANCE: Move DOM node instead of re-rendering entire board
+                        const emptyMsg = column.querySelector('.empty-col-msg');
+                        if (emptyMsg) emptyMsg.remove();
+                        column.appendChild(card);
+                        
+                        updateColumnCount(oldColumn.dataset.status);
+                        updateColumnCount(newStatus);
+                        
+                        await updateLeadStatusInDB(state.draggedLeadId, newStatus);
+                    }
+                }
+            }
+        });
+
+        // 🔒 FIX: Unified mobile dropdown logic
+        board.addEventListener('change', async (e) => {
+            if (e.target.classList.contains('mobile-move-select')) {
+                const select = e.target;
+                const newStatus = select.value;
+                if (!newStatus) return;
+                
+                const card = select.closest('.kanban-card');
+                const leadId = card.dataset.leadId;
+                const oldColumn = card.closest('.kanban-column');
+                const targetColumn = document.getElementById(`col-${newStatus}`);
+                
+                if (targetColumn && oldColumn !== targetColumn) {
+                    const emptyMsg = targetColumn.querySelector('.empty-col-msg');
+                    if (emptyMsg) emptyMsg.remove();
+                    targetColumn.appendChild(card);
+                    
+                    updateColumnCount(oldColumn.dataset.status);
+                    updateColumnCount(newStatus);
+                    
+                    await updateLeadStatusInDB(leadId, newStatus);
+                }
+                select.value = ""; // Reset dropdown
+            }
+        });
+    }
+
+    // ==========================================
+    // 6. MODALS & ACTIONS
+    // ==========================================
+    async function openLeadDetails(leadId) {
+        const lead = state.allLeads.find(l => l.id === leadId);
+        if (!lead) return;
+        
+        state.currentDetailLeadId = leadId;
+        document.getElementById('detail-name').textContent = lead.buyer_name;
+        document.getElementById('detail-phone').textContent = lead.buyer_phone;
+        document.getElementById('detail-budget').textContent = lead.budget ? formatKES(lead.budget) : 'Not specified';
+        document.getElementById('detail-interest').textContent = lead.property_interest || 'Any';
+        document.getElementById('detail-status-select').value = lead.status;
+        
+        // 🔒 SECURITY: Validate phone before creating links
+        const waNumber = formatWhatsApp(lead.buyer_phone);
+        document.getElementById('detail-wa-link').href = waNumber 
+            ? `https://wa.me/${waNumber}?text=${encodeURIComponent(`Hi ${lead.buyer_name}, this is your agent from Properties in Kenya.`)}` 
+            : '#';
+        document.getElementById('detail-call-link').href = `tel:${encodeURIComponent(lead.buyer_phone || '')}`;
+
+        const { data: activities } = await supabase
+            .from('lead_activities')
+            .select('*')
+            .eq('lead_id', leadId)
+            .order('created_at', { ascending: false });
+
+        const timeline = document.getElementById('activity-timeline');
+        if (!activities || activities.length === 0) {
+            timeline.innerHTML = '<p class="text-xs text-gray-400 text-center py-4">No activity logged yet.</p>';
+        } else {
+            timeline.innerHTML = activities.map(act => `
+                <div class="flex gap-3 text-sm">
+                    <div class="w-2 h-2 rounded-full bg-blue-500 mt-1.5 flex-shrink-0"></div>
+                    <div>
+                        <p class="text-gray-800 font-medium">${esc(act.description || act.activity_type)}</p>
+                        <p class="text-xs text-gray-400">${getTimeAgo(act.created_at)}</p>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        document.getElementById('lead-details-modal').classList.remove('hidden');
+    }
+
+    async function addActivity() {
+        const textInput = document.getElementById('new-activity-text');
+        const text = textInput.value.trim();
+        if (!text || !state.currentDetailLeadId) return;
+
+        const btn = document.getElementById('add-activity-btn');
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+
+        const { error } = await supabase.from('lead_activities').insert({
+            lead_id: state.currentDetailLeadId,
+            activity_type: 'note',
+            description: text
+        });
+
+        btn.disabled = false;
+        btn.innerHTML = 'Add';
+
+        if (error) {
+            showToast('Failed to add activity.', 'error');
+        } else {
+            textInput.value = '';
+            openLeadDetails(state.currentDetailLeadId); // Refresh modal
+        }
+    }
+
+    async function updateLeadStatusFromModal(newStatus) {
+        await updateLeadStatusInDB(state.currentDetailLeadId, newStatus);
+        closeDetailsModal();
+    }
+
+    function closeDetailsModal() {
+        document.getElementById('lead-details-modal').classList.add('hidden');
+        state.currentDetailLeadId = null;
+    }
+
+    function openAddLeadModal() {
+        document.getElementById('add-lead-modal').classList.remove('hidden');
+    }
+
+    function closeAddLeadModal() {
+        document.getElementById('add-lead-modal').classList.add('hidden');
+        document.getElementById('add-lead-form').reset();
+    }
+
+    async function handleFormSubmit(e) {
+        e.preventDefault();
+        const btn = document.getElementById('save-lead-btn');
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Saving...';
+
+        const budgetVal = document.getElementById('lead-budget').value;
+        const budget = budgetVal ? parseFloat(budgetVal) : null;
+        if (budget !== null && (isNaN(budget) || budget < 0)) {
+            showToast('Please enter a valid budget.', 'error');
+            btn.disabled = false;
+            btn.innerHTML = 'Save Lead';
+            return;
+        }
+
+        const newLead = {
+            agent_id: state.user.id,
+            buyer_name: document.getElementById('lead-name').value.trim(),
+            buyer_phone: document.getElementById('lead-phone').value.trim(),
+            budget: budget,
+            source: document.getElementById('lead-source').value,
+            property_interest: document.getElementById('lead-interest').value.trim(),
+            notes: document.getElementById('lead-notes').value.trim(),
+            status: 'new'
+        };
+
+        const { data, error } = await supabase.from('leads').insert([newLead]).select();
+        
+        btn.disabled = false;
+        btn.innerHTML = 'Save Lead';
+
+        if (!error && data) {
+            await supabase.from('lead_activities').insert({
+                lead_id: data[0].id,
+                activity_type: 'created',
+                description: `Lead created from ${newLead.source}`
+            });
+            closeAddLeadModal();
+            loadLeads();
+            showToast('Lead added successfully!');
+        } else {
+            showToast('Error saving lead: ' + (error?.message || 'Unknown error'), 'error');
+        }
+    }
+
+    // ==========================================
+    // 7. EVENT DELEGATION & INIT
+    // ==========================================
+    function initEventListeners() {
+        // Mobile Menu
+        document.getElementById('mobile-menu-btn').addEventListener('click', () => {
+            document.getElementById('sidebar').classList.toggle('mobile-open');
+            document.getElementById('mobile-overlay').classList.toggle('hidden');
+        });
+        document.getElementById('mobile-overlay').addEventListener('click', () => {
+            document.getElementById('sidebar').classList.remove('mobile-open');
+            document.getElementById('mobile-overlay').classList.add('hidden');
+        });
+
+        // Logout
+        document.getElementById('logout-btn').addEventListener('click', async (e) => {
+            e.preventDefault();
+            await supabase.auth.signOut();
+            window.location.href = 'login.html';
+        });
+
+        // Add Lead Modal
+        document.getElementById('add-lead-btn').addEventListener('click', openAddLeadModal);
+        document.getElementById('close-add-modal-btn').addEventListener('click', closeAddLeadModal);
+        document.getElementById('cancel-add-btn').addEventListener('click', closeAddLeadModal);
+        document.getElementById('add-lead-form').addEventListener('submit', handleFormSubmit);
+
+        // Details Modal
+        document.getElementById('close-details-btn').addEventListener('click', closeDetailsModal);
+        document.getElementById('add-activity-btn').addEventListener('click', addActivity);
+        document.getElementById('detail-status-select').addEventListener('change', (e) => updateLeadStatusFromModal(e.target.value));
+
+        // 🔒 SECURE EVENT DELEGATION: Kanban Board
+        const board = document.getElementById('kanban-board');
+        board.addEventListener('click', (e) => {
+            const card = e.target.closest('.kanban-card');
+            // Ensure we didn't click the dropdown or its options
+            if (card && !e.target.closest('.mobile-move-select')) {
+                openLeadDetails(card.dataset.leadId);
+            }
+        });
+
+        initDragAndDrop();
+    }
+
+    // Start App
+    document.addEventListener('DOMContentLoaded', () => {
+        initEventListeners();
+        checkAuth();
+    });
+
+})();
 </script>
 </body>
 </html>
