@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Inquiries - Properties in Kenya</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap');
+        body { font-family: 'Inter', system_ui, sans-serif; }
+        .heading-font { font-family: 'Space Grotesk', sans-serif; }
+        
+        /* Buyer Theme: Elegant Blue/Teal */
+        .sidebar-link.active { background: linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%); color: white; }
+        .sidebar-link:hover:not(.active) { background-color: #e0f2fe; color: #0284c7; }
+        
+        @media (max-width: 1024px) { .sidebar { display: none; } .sidebar.mobile-open { display: block; } }
+
+        .stat-card { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+        .stat-card:hover { transform: translateY(-4px); box-shadow: 0 20px 40px -12px rgb(0 0 0 / 0.15); }
+    </style>
+</head>
+<body class="bg-gray-50">
+
+<!-- 🔒 FIX: Full screen loader to prevent visual flipping/flickering -->
+<div id="auth-loader" style="position:fixed; inset:0; background:white; z-index:9999; display:flex; align-items:center; justify-content:center;">
+    <i class="fas fa-spinner fa-spin text-4xl text-sky-500"></i>
+</div>
+
+<button id="mobile-menu-btn" class="lg:hidden fixed top-4 left-4 z-50 bg-white p-3 rounded-xl shadow-lg" aria-label="Toggle menu">
+    <i class="fas fa-bars text-gray-700"></i>
+</button>
+<div id="mobile-overlay" class="hidden lg:hidden fixed inset-0 bg-black/50 z-40"></div>
+
+<div class="flex min-h-screen">
+    <!-- SIDEBAR -->
+    <aside id="sidebar" class="sidebar fixed lg:sticky top-0 left-0 h-screen w-72 bg-white border-r border-gray-200 z-40 overflow-y-auto">
+        <div class="p-6 border-b border-gray-200">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 bg-gradient-to-br from-sky-400 to-blue-600 rounded-xl flex items-center justify-center text-white font-bold text-xl">🏡</div>
+                <div>
+                    <h1 class="heading-font text-xl font-bold">Buyer Portal</h1>
+                    <p class="text-xs text-gray-500">Properties in Kenya</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Profile Card -->
+        <div class="p-4 border-b border-gray-200">
+            <div class="bg-gradient-to-br from-sky-50 to-blue-50 rounded-2xl p-4">
+                <div class="flex items-center gap-3">
+                    <div class="w-12 h-12 bg-gradient-to-br from-sky-400 to-blue-600 rounded-full flex items-center justify-center text-white font-bold text-lg" id="profile-initial">B</div>
+                    <div class="flex-1 min-w-0">
+                        <p class="font-semibold text-sm truncate" id="profile-name">Loading...</p>
+                        <p class="text-xs text-gray-500 truncate">Property Buyer</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Navigation -->
+        <nav class="p-4 space-y-1">
+            <a href="buyer-dashboard.html" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-gray-700">
+                <i class="fas fa-chart-line w-5"></i> Dashboard
+            </a>
+            <a href="buyer-saved.html" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-gray-700">
+                <i class="fas fa-heart w-5"></i> Saved Homes
+            </a>
+            <a href="buyer-inquiries.html" class="sidebar-link active flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium">
+                <i class="fas fa-envelope w-5"></i> My Inquiries
+            </a>
+            <a href="buyer-requests.html" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-gray-700">
+                <i class="fas fa-search w-5"></i> Property Alerts
+            </a>
+            
+            <div class="pt-4 mt-4 border-t border-gray-200">
+                <a href="buyer-profile.html" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-gray-700">
+                    <i class="fas fa-user-circle w-5"></i> My Profile
+                </a>
+                <a href="#" id="logout-btn" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-gray-700">
+                    <i class="fas fa-sign-out-alt w-5"></i> Logout
+                </a>
+            </div>
+        </nav>
+    </aside>
+
+    <!-- MAIN CONTENT -->
+    <main class="flex-1 lg:ml-0">
+        <header class="bg-white border-b border-gray-200 sticky top-0 z-30">
+            <div class="px-6 py-4 flex items-center justify-between">
+                <div class="lg:pl-0 pl-12">
+                    <h1 class="heading-font text-2xl font-bold">My Inquiries</h1>
+                    <p class="text-sm text-gray-500">Track your messages to agents and property owners</p>
+                </div>
+                <a href="/" class="hidden sm:flex items-center gap-2 bg-white border border-gray-200 text-gray-700 px-4 py-2.5 rounded-xl font-semibold text-sm hover:bg-gray-50 transition">
+                    <i class="fas fa-search"></i> Browse Properties
+                </a>
+            </div>
+        </header>
+
+        <div class="p-6">
+            <!-- Inquiries List Container -->
+            <div id="inquiries-list" class="flex flex-col gap-5">
+                <div class="text-center py-12 text-gray-400">
+                    <i class="fas fa-spinner fa-spin text-3xl mb-3"></i>
+                    <p>Loading your inquiries...</p>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+
+<script>
+(function() {
+    'use strict';
+
+    const supabase = window.supabase.createClient(
+        'https://nqwvsmuvltbiekfnvovx.supabase.co',
+        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5xd3ZzbXV2bHRiaWVrZm52b3Z4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA1NjU4MDAsImV4cCI6MjA5NjE0MTgwMH0.Xrc-bbAuWdvKSPHnVhTaLiQphV61xeYtDepWePqsrdo'
+    );
+
+    const FALLBACK_IMG = 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=800&auto=format&fit=crop';
+    const state = { user: null };
+
+    // ==========================================
+    // UTILITIES
+    // ==========================================
+    function esc(str) {
+        if (!str) return '';
+        const div = document.createElement('div');
+        div.textContent = str;
+        return div.innerHTML;
+    }
+
+    function isValidUrl(string) {
+        try {
+            const url = new URL(string);
+            return url.protocol === 'http:' || url.protocol === 'https:';
+        } catch (_) { return false; }
+    }
+
+    function formatWhatsApp(phone) {
+        if (!phone) return '';
+        let clean = phone.replace(/\D/g, '');
+        if (clean.startsWith('0')) clean = '254' + clean.substring(1);
+        if (clean.startsWith('+')) clean = clean.substring(1);
+        return clean;
+    }
+
+    function formatDate(dateString) {
+        return new Date(dateString).toLocaleDateString('en-KE', { day: 'numeric', month: 'short', year: 'numeric' });
+    }
+
+    // ==========================================
+    // BULLETPROOF AUTH
+    // ==========================================
+    async function checkAuth() {
+        try {
+            const { data: { session } } = await supabase.auth.getSession();
+            if (!session) {
+                window.location.href = 'login.html?role=buyer';
+                return;
+            }
+
+            const { data: { user }, error } = await supabase.auth.getUser();
+            if (error || !user) {
+                await supabase.auth.signOut();
+                window.location.href = 'login.html?role=buyer';
+                return;
+            }
+
+            const { data: profile } = await supabase.from('profiles').select('role, full_name').eq('id', user.id).single();
+            if (profile?.role !== 'buyer' && profile?.role !== 'admin') {
+                window.location.href = 'agent-dashboard.html';
+                return;
+            }
+
+            state.user = user;
+            document.getElementById('profile-name').textContent = profile?.full_name || 'Buyer';
+            document.getElementById('profile-initial').textContent = (profile?.full_name || 'B').charAt(0).toUpperCase();
+            document.getElementById('auth-loader').style.display = 'none';
+            
+            loadInquiries();
+
+        } catch (err) {
+            console.error('Auth check failed:', err);
+            window.location.href = 'login.html?role=buyer';
+        }
+    }
+
+    // ==========================================
+    // DATA LOADING & RENDERING
+    // ==========================================
+    async function loadInquiries() {
+        const container = document.getElementById('inquiries-list');
+        
+        try {
+            // Fetch inquiries sent by this buyer's email, joining property and agent details
+            const { data, error } = await supabase
+                .from('inquiries')
+                .select(`
+                    id,
+                    message,
+                    created_at,
+                    read,
+                    properties ( title, images ),
+                    profiles ( full_name, agency, phone, whatsapp_number )
+                `)
+                .eq('buyer_email', state.user.email)
+                .order('created_at', { ascending: false });
+
+            if (error) throw error;
+
+            if (!data || data.length === 0) {
+                renderEmptyState();
+                return;
+            }
+
+            renderInquiries(data);
+
+        } catch (err) {
+            console.error(err);
+            container.innerHTML = `<div class="text-center text-red-500 py-8 bg-white rounded-2xl border border-gray-100"><i class="fas fa-exclamation-triangle mb-2 text-2xl"></i><p>Error loading inquiries.</p></div>`;
+        }
+    }
+
+    function renderEmptyState() {
+        const container = document.getElementById('inquiries-list');
+        container.innerHTML = `
+            <div class="text-center py-16 bg-white rounded-2xl border border-gray-100">
+                <div class="w-20 h-20 bg-sky-50 rounded-full flex items-center justify-center mx-auto mb-6">
+                    <i class="fas fa-envelope text-4xl text-sky-300"></i>
+                </div>
+                <h3 class="text-xl font-bold text-gray-800 mb-2">No inquiries yet</h3>
+                <p class="text-gray-500 mb-6 max-w-md mx-auto">When you contact an agent about a property, your messages will appear here.</p>
+                <a href="/" class="inline-flex items-center gap-2 bg-sky-500 text-white px-6 py-3 rounded-xl font-semibold hover:bg-sky-600 transition">
+                    <i class="fas fa-search"></i> Browse Properties
+                </a>
+            </div>
+        `;
+    }
+
+    function renderInquiries(inquiries) {
+        const container = document.getElementById('inquiries-list');
+        
+        container.innerHTML = inquiries.map(inq => {
+            const prop = inq.properties || {};
+            const agent = inq.profiles || {};
+            
+            const imgSrc = (prop.images && prop.images[0] && isValidUrl(prop.images[0])) ? prop.images[0] : FALLBACK_IMG;
+            const propTitle = prop.title || 'Property Inquiry';
+            const agentName = agent.full_name || 'Agent';
+            const agency = agent.agency || 'Independent';
+            
+            const waPhone = formatWhatsApp(agent.whatsapp_number || agent.phone);
+            const phone = agent.phone || '';
+            
+            return `
+            <div class="bg-white rounded-2xl border border-gray-100 p-5 flex flex-col sm:flex-row gap-5 hover:shadow-lg transition">
+                <div class="w-full sm:w-32 h-32 rounded-xl overflow-hidden bg-gray-100 flex-shrink-0">
+                    <img src="${esc(imgSrc)}" loading="lazy" class="w-full h-full object-cover" alt="Property">
+                </div>
+                
+                <div class="flex-1 flex flex-col justify-between">
+                    <div>
+                        <div class="flex items-start justify-between mb-2">
+                            <div>
+                                <h3 class="font-bold text-gray-900 line-clamp-1">${esc(propTitle)}</h3>
+                                <p class="text-sm text-gray-500 flex items-center gap-1 mt-1">
+                                    <i class="fas fa-user-tie text-sky-500"></i> ${esc(agentName)} • ${esc(agency)}
+                                </p>
+                            </div>
+                            <span class="text-xs text-gray-400 whitespace-nowrap ml-4">${formatDate(inq.created_at)}</span>
+                        </div>
+                        <div class="bg-gray-50 rounded-lg p-3 mt-3">
+                            <p class="text-sm text-gray-700 italic line-clamp-2">"${esc(inq.message)}"</p>
+                        </div>
+                    </div>
+                    
+                    <div class="flex items-center gap-3 mt-4">
+                        ${waPhone ? `
+                        <a href="https://wa.me/${waPhone}?text=${encodeURIComponent(`Hi ${agentName}, I previously inquired about ${propTitle}...`)}" target="_blank" class="flex items-center gap-2 px-4 py-2 bg-green-50 text-green-600 rounded-lg text-sm font-semibold hover:bg-green-100 transition">
+                            <i class="fab fa-whatsapp"></i> WhatsApp
+                        </a>` : ''}
+                        ${phone ? `
+                        <a href="tel:${esc(phone)}" class="flex items-center gap-2 px-4 py-2 bg-sky-50 text-sky-600 rounded-lg text-sm font-semibold hover:bg-sky-100 transition">
+                            <i class="fas fa-phone"></i> Call
+                        </a>` : ''}
+                    </div>
+                </div>
+            </div>`;
+        }).join('');
+    }
+
+    // ==========================================
+    // EVENT LISTENERS
+    // ==========================================
+    function initEventListeners() {
+        document.getElementById('mobile-menu-btn').addEventListener('click', () => {
+            document.getElementById('sidebar').classList.toggle('mobile-open');
+            document.getElementById('mobile-overlay').classList.toggle('hidden');
+        });
+        document.getElementById('mobile-overlay').addEventListener('click', () => {
+            document.getElementById('sidebar').classList.remove('mobile-open');
+            document.getElementById('mobile-overlay').classList.add('hidden');
+        });
+
+        document.getElementById('logout-btn').addEventListener('click', async (e) => {
+            e.preventDefault();
+            await supabase.auth.signOut();
+            window.location.href = 'login.html?role=buyer';
+        });
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        initEventListeners();
+        checkAuth();
+    });
+
+})();
+</script>
+
+</body>
+</html>
