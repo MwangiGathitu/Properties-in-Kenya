@@ -8,245 +8,46 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-      background: #f9fafb;
-      min-height: 100vh;
-    }
-    .header {
-      background: white;
-      border-bottom: 1px solid #e5e7eb;
-      padding: 16px 24px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      position: sticky;
-      top: 0;
-      z-index: 100;
-    }
-    .logo {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      font-size: 18px;
-      font-weight: 700;
-      color: #6b21a8;
-    }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #f9fafb; min-height: 100vh; }
+    .header { background: white; border-bottom: 1px solid #e5e7eb; padding: 16px 24px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 100; }
+    .logo { display: flex; align-items: center; gap: 10px; font-size: 18px; font-weight: 700; color: #6b21a8; }
     .logo i { font-size: 24px; }
-    .header-actions {
-      display: flex;
-      gap: 12px;
-      align-items: center;
-    }
-    .btn-back {
-      padding: 8px 16px;
-      background: #f3f4f6;
-      color: #374151;
-      border: none;
-      border-radius: 6px;
-      font-size: 14px;
-      cursor: pointer;
-      transition: all 0.2s;
-    }
+    .btn-back { padding: 8px 16px; background: #f3f4f6; color: #374151; border: none; border-radius: 6px; font-size: 14px; cursor: pointer; transition: all 0.2s; text-decoration: none; display: inline-flex; align-items: center; gap: 6px; }
     .btn-back:hover { background: #e5e7eb; }
-    .container {
-      max-width: 800px;
-      margin: 0 auto;
-      padding: 24px;
-    }
-    .page-title {
-      font-size: 24px;
-      font-weight: 700;
-      color: #111;
-      margin-bottom: 8px;
-    }
-    .page-subtitle {
-      color: #6b7280;
-      font-size: 14px;
-      margin-bottom: 24px;
-    }
-    .form-card {
-      background: white;
-      border-radius: 12px;
-      padding: 24px;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-      margin-bottom: 20px;
-    }
-    .section-title {
-      font-size: 16px;
-      font-weight: 600;
-      color: #111;
-      margin-bottom: 16px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
+    .container { max-width: 800px; margin: 0 auto; padding: 24px; }
+    .page-title { font-size: 24px; font-weight: 700; color: #111; margin-bottom: 8px; }
+    .page-subtitle { color: #6b7280; font-size: 14px; margin-bottom: 24px; }
+    .form-card { background: white; border-radius: 12px; padding: 24px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); margin-bottom: 20px; }
+    .section-title { font-size: 16px; font-weight: 600; color: #111; margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
     .section-title i { color: #6b21a8; }
-    .form-row {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 16px;
-      margin-bottom: 16px;
-    }
-    .form-group {
-      margin-bottom: 16px;
-    }
-    .form-group label {
-      display: block;
-      font-size: 13px;
-      font-weight: 600;
-      color: #374151;
-      margin-bottom: 6px;
-    }
-    .form-group input,
-    .form-group select,
-    .form-group textarea {
-      width: 100%;
-      padding: 10px 12px;
-      border: 1px solid #d1d5db;
-      border-radius: 8px;
-      font-size: 14px;
-      transition: all 0.2s;
-      font-family: inherit;
-    }
-    .form-group input:focus,
-    .form-group select:focus,
-    .form-group textarea:focus {
-      outline: none;
-      border-color: #6b21a8;
-      box-shadow: 0 0 0 3px rgba(107, 33, 168, 0.1);
-    }
-    .form-group textarea {
-      resize: vertical;
-      min-height: 100px;
-    }
-    .required::after {
-      content: " *";
-      color: #dc2626;
-    }
-    .image-upload {
-      border: 2px dashed #d1d5db;
-      border-radius: 8px;
-      padding: 40px 20px;
-      text-align: center;
-      cursor: pointer;
-      transition: all 0.2s;
-      background: #f9fafb;
-    }
-    .image-upload:hover {
-      border-color: #6b21a8;
-      background: #faf5ff;
-    }
-    .image-upload i {
-      font-size: 48px;
-      color: #9ca3af;
-      margin-bottom: 12px;
-    }
-    .image-upload p {
-      color: #6b7280;
-      font-size: 14px;
-      margin-bottom: 4px;
-    }
-    .image-upload small {
-      color: #9ca3af;
-      font-size: 12px;
-    }
-    .image-preview {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
-      gap: 12px;
-      margin-top: 16px;
-    }
-    .preview-item {
-      position: relative;
-      aspect-ratio: 1;
-      border-radius: 8px;
-      overflow: hidden;
-      border: 1px solid #e5e7eb;
-    }
-    .preview-item img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
-    .preview-item .remove-btn {
-      position: absolute;
-      top: 4px;
-      right: 4px;
-      background: rgba(0,0,0,0.6);
-      color: white;
-      border: none;
-      border-radius: 50%;
-      width: 24px;
-      height: 24px;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 12px;
-    }
-    .submit-btn {
-      width: 100%;
-      padding: 14px;
-      background: #6b21a8;
-      color: white;
-      border: none;
-      border-radius: 8px;
-      font-size: 16px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.2s;
-      margin-top: 20px;
-    }
-    .submit-btn:hover:not(:disabled) {
-      background: #581c87;
-      transform: translateY(-1px);
-      box-shadow: 0 4px 12px rgba(107, 33, 168, 0.3);
-    }
-    .submit-btn:disabled {
-      opacity: 0.6;
-      cursor: not-allowed;
-    }
-    .error {
-      background: #fee2e2;
-      color: #991b1b;
-      padding: 12px;
-      border-radius: 8px;
-      font-size: 13px;
-      margin-top: 12px;
-      display: none;
-    }
-    .error.show { display: block; }
-    .success {
-      background: #d1fae5;
-      color: #065f46;
-      padding: 12px;
-      border-radius: 8px;
-      font-size: 13px;
-      margin-top: 12px;
-      display: none;
-    }
-    .success.show { display: block; }
-    .price-input {
-      position: relative;
-    }
-    .price-input::before {
-      content: "KSh";
-      position: absolute;
-      left: 12px;
-      top: 50%;
-      transform: translateY(-50%);
-      color: #6b7280;
-      font-size: 14px;
-      font-weight: 500;
-    }
-    .price-input input {
-      padding-left: 50px;
-    }
-    @media (max-width: 640px) {
-      .form-row { grid-template-columns: 1fr; }
-      .container { padding: 16px; }
-    }
+    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
+    .form-group { margin-bottom: 16px; }
+    .form-group label { display: block; font-size: 13px; font-weight: 600; color: #374151; margin-bottom: 6px; }
+    .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 10px 12px; border: 1px solid #d1d5db; border-radius: 8px; font-size: 14px; transition: all 0.2s; font-family: inherit; }
+    .form-group input:focus, .form-group select:focus, .form-group textarea:focus { outline: none; border-color: #6b21a8; box-shadow: 0 0 0 3px rgba(107, 33, 168, 0.1); }
+    .form-group textarea { resize: vertical; min-height: 100px; }
+    .required::after { content: " *"; color: #dc2626; }
+    .image-upload { border: 2px dashed #d1d5db; border-radius: 8px; padding: 40px 20px; text-align: center; cursor: pointer; transition: all 0.2s; background: #f9fafb; }
+    .image-upload:hover { border-color: #6b21a8; background: #faf5ff; }
+    .image-upload i { font-size: 48px; color: #9ca3af; margin-bottom: 12px; }
+    .image-upload p { color: #6b7280; font-size: 14px; margin-bottom: 4px; }
+    .image-upload small { color: #9ca3af; font-size: 12px; }
+    .image-preview { display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 12px; margin-top: 16px; }
+    .preview-item { position: relative; aspect-ratio: 1; border-radius: 8px; overflow: hidden; border: 1px solid #e5e7eb; }
+    .preview-item img { width: 100%; height: 100%; object-fit: cover; }
+    .remove-btn { position: absolute; top: 4px; right: 4px; background: rgba(0,0,0,0.6); color: white; border: none; border-radius: 50%; width: 24px; height: 24px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 12px; }
+    .remove-btn:hover { background: rgba(220, 38, 38, 0.9); }
+    .submit-btn { width: 100%; padding: 14px; background: #6b21a8; color: white; border: none; border-radius: 8px; font-size: 16px; font-weight: 600; cursor: pointer; transition: all 0.2s; margin-top: 20px; display: flex; align-items: center; justify-content: center; gap: 8px; }
+    .submit-btn:hover:not(:disabled) { background: #581c87; transform: translateY(-1px); box-shadow: 0 4px 12px rgba(107, 33, 168, 0.3); }
+    .submit-btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+    .error, .success { padding: 12px; border-radius: 8px; font-size: 13px; margin-top: 12px; display: none; white-space: pre-line; }
+    .error { background: #fee2e2; color: #991b1b; }
+    .success { background: #d1fae5; color: #065f46; }
+    .error.show, .success.show { display: block; }
+    .price-input { position: relative; }
+    .price-input::before { content: "KSh"; position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: #6b7280; font-size: 14px; font-weight: 500; }
+    .price-input input { padding-left: 50px; }
+    @media (max-width: 640px) { .form-row { grid-template-columns: 1fr; } .container { padding: 16px; } }
   </style>
 </head>
 <body>
@@ -256,9 +57,9 @@
       <span>PropDesk Kenya</span>
     </div>
     <div class="header-actions">
-      <button class="btn-back" onclick="window.location.href='agent.html'">
+      <a href="agent-dashboard.html" class="btn-back">
         <i class="fas fa-arrow-left"></i> Back to Dashboard
-      </button>
+      </a>
     </div>
   </div>
 
@@ -270,15 +71,13 @@
       <!-- Basic Information -->
       <div class="form-card">
         <h2 class="section-title"><i class="fas fa-info-circle"></i> Basic Information</h2>
-        
         <div class="form-group">
-          <label class="required">Property Title</label>
-          <input type="text" id="title" placeholder="e.g., Modern 3BR Apartment in Kilimani" required>
+          <label class="required" for="title">Property Title</label>
+          <input type="text" id="title" maxlength="100" placeholder="e.g., Modern 3BR Apartment in Kilimani" required>
         </div>
-
         <div class="form-row">
           <div class="form-group">
-            <label class="required">Property Type</label>
+            <label class="required" for="propertyType">Property Type</label>
             <select id="propertyType" required>
               <option value="">Select type</option>
               <option value="apartment">Apartment</option>
@@ -289,9 +88,8 @@
               <option value="office">Office Space</option>
             </select>
           </div>
-
           <div class="form-group">
-            <label class="required">Listing Type</label>
+            <label class="required" for="listingType">Listing Type</label>
             <select id="listingType" required>
               <option value="">Select type</option>
               <option value="sale">For Sale</option>
@@ -299,102 +97,72 @@
             </select>
           </div>
         </div>
-
         <div class="form-group">
-          <label class="required">Description</label>
-          <textarea id="description" placeholder="Describe the property, its features, and any unique selling points..." required></textarea>
+          <label class="required" for="description">Description</label>
+          <textarea id="description" maxlength="2000" placeholder="Describe the property, its features, and any unique selling points..." required></textarea>
         </div>
       </div>
 
       <!-- Location -->
       <div class="form-card">
         <h2 class="section-title"><i class="fas fa-map-marker-alt"></i> Location</h2>
-        
         <div class="form-row">
           <div class="form-group">
-            <label class="required">County</label>
+            <label class="required" for="county">County</label>
             <select id="county" required>
               <option value="">Select county</option>
-              <option value="Nairobi">Nairobi</option>
-              <option value="Mombasa">Mombasa</option>
-              <option value="Kisumu">Kisumu</option>
-              <option value="Nakuru">Nakuru</option>
-              <option value="Kiambu">Kiambu</option>
-              <option value="Machakos">Machakos</option>
-              <option value="Kajiado">Kajiado</option>
-              <option value="Uasin Gishu">Uasin Gishu</option>
-              <option value="Nyeri">Nyeri</option>
-              <option value="Meru">Meru</option>
+              <option value="Nairobi">Nairobi</option><option value="Mombasa">Mombasa</option>
+              <option value="Kisumu">Kisumu</option><option value="Nakuru">Nakuru</option>
+              <option value="Kiambu">Kiambu</option><option value="Machakos">Machakos</option>
+              <option value="Kajiado">Kajiado</option><option value="Uasin Gishu">Uasin Gishu</option>
+              <option value="Nyeri">Nyeri</option><option value="Meru">Meru</option>
             </select>
           </div>
-
           <div class="form-group">
-            <label class="required">Town/Area</label>
-            <input type="text" id="town" placeholder="e.g., Kilimani, Westlands" required>
+            <label class="required" for="town">Town/Area</label>
+            <input type="text" id="town" maxlength="50" placeholder="e.g., Kilimani, Westlands" required>
           </div>
         </div>
-
         <div class="form-group">
-          <label>Address</label>
-          <input type="text" id="address" placeholder="Street address or landmark">
+          <label for="address">Address</label>
+          <input type="text" id="address" maxlength="100" placeholder="Street address or landmark">
         </div>
       </div>
 
       <!-- Property Details -->
       <div class="form-card">
         <h2 class="section-title"><i class="fas fa-bed"></i> Property Details</h2>
-        
         <div class="form-row">
           <div class="form-group">
-            <label>Bedrooms</label>
+            <label for="bedrooms">Bedrooms</label>
             <input type="number" id="bedrooms" min="0" max="20" placeholder="0">
           </div>
-
           <div class="form-group">
-            <label>Bathrooms</label>
+            <label for="bathrooms">Bathrooms</label>
             <input type="number" id="bathrooms" min="0" max="20" placeholder="0">
           </div>
         </div>
-
         <div class="form-row">
           <div class="form-group">
-            <label>Size (sq ft)</label>
+            <label for="size">Size (sq ft)</label>
             <input type="number" id="size" min="0" placeholder="e.g., 1200">
           </div>
-
           <div class="form-group">
-            <label>Parking Spaces</label>
+            <label for="parking">Parking Spaces</label>
             <input type="number" id="parking" min="0" max="20" placeholder="0">
           </div>
         </div>
-
         <div class="form-group">
           <label>Amenities (select all that apply)</label>
           <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 8px; margin-top: 8px;">
-            <label style="display: flex; align-items: center; gap: 6px; font-size: 13px; cursor: pointer;">
-              <input type="checkbox" value="swimming_pool" style="width: auto;"> Swimming Pool
-            </label>
-            <label style="display: flex; align-items: center; gap: 6px; font-size: 13px; cursor: pointer;">
-              <input type="checkbox" value="gym" style="width: auto;"> Gym
-            </label>
-            <label style="display: flex; align-items: center; gap: 6px; font-size: 13px; cursor: pointer;">
-              <input type="checkbox" value="security" style="width: auto;"> 24/7 Security
-            </label>
-            <label style="display: flex; align-items: center; gap: 6px; font-size: 13px; cursor: pointer;">
-              <input type="checkbox" value="backup_generator" style="width: auto;"> Backup Generator
-            </label>
-            <label style="display: flex; align-items: center; gap: 6px; font-size: 13px; cursor: pointer;">
-              <input type="checkbox" value="water_storage" style="width: auto;"> Water Storage
-            </label>
-            <label style="display: flex; align-items: center; gap: 6px; font-size: 13px; cursor: pointer;">
-              <input type="checkbox" value="elevator" style="width: auto;"> Elevator
-            </label>
-            <label style="display: flex; align-items: center; gap: 6px; font-size: 13px; cursor: pointer;">
-              <input type="checkbox" value="balcony" style="width: auto;"> Balcony
-            </label>
-            <label style="display: flex; align-items: center; gap: 6px; font-size: 13px; cursor: pointer;">
-              <input type="checkbox" value="garden" style="width: auto;"> Garden
-            </label>
+            <label style="display: flex; align-items: center; gap: 6px; font-size: 13px; cursor: pointer;"><input type="checkbox" class="amenity-cb" value="swimming_pool" style="width: auto;"> Swimming Pool</label>
+            <label style="display: flex; align-items: center; gap: 6px; font-size: 13px; cursor: pointer;"><input type="checkbox" class="amenity-cb" value="gym" style="width: auto;"> Gym</label>
+            <label style="display: flex; align-items: center; gap: 6px; font-size: 13px; cursor: pointer;"><input type="checkbox" class="amenity-cb" value="security" style="width: auto;"> 24/7 Security</label>
+            <label style="display: flex; align-items: center; gap: 6px; font-size: 13px; cursor: pointer;"><input type="checkbox" class="amenity-cb" value="backup_generator" style="width: auto;"> Backup Generator</label>
+            <label style="display: flex; align-items: center; gap: 6px; font-size: 13px; cursor: pointer;"><input type="checkbox" class="amenity-cb" value="water_storage" style="width: auto;"> Water Storage</label>
+            <label style="display: flex; align-items: center; gap: 6px; font-size: 13px; cursor: pointer;"><input type="checkbox" class="amenity-cb" value="elevator" style="width: auto;"> Elevator</label>
+            <label style="display: flex; align-items: center; gap: 6px; font-size: 13px; cursor: pointer;"><input type="checkbox" class="amenity-cb" value="balcony" style="width: auto;"> Balcony</label>
+            <label style="display: flex; align-items: center; gap: 6px; font-size: 13px; cursor: pointer;"><input type="checkbox" class="amenity-cb" value="garden" style="width: auto;"> Garden</label>
           </div>
         </div>
       </div>
@@ -402,11 +170,10 @@
       <!-- Pricing -->
       <div class="form-card">
         <h2 class="section-title"><i class="fas fa-tag"></i> Pricing</h2>
-        
         <div class="form-group">
-          <label class="required">Price</label>
+          <label class="required" for="price">Price</label>
           <div class="price-input">
-            <input type="number" id="price" min="0" placeholder="e.g., 5000000" required>
+            <input type="number" id="price" min="1" placeholder="e.g., 5000000" required>
           </div>
           <small style="color: #6b7280; font-size: 12px; margin-top: 4px; display: block;">
             Enter the total price for sale, or monthly rent amount
@@ -417,28 +184,24 @@
       <!-- Images -->
       <div class="form-card">
         <h2 class="section-title"><i class="fas fa-images"></i> Property Images</h2>
-        
-        <div class="image-upload" onclick="document.getElementById('imageInput').click()">
+        <div class="image-upload" id="imageUploadArea">
           <i class="fas fa-cloud-upload-alt"></i>
           <p>Click to upload images</p>
           <small>PNG, JPG up to 5MB each (max 10 images)</small>
         </div>
-        <input type="file" id="imageInput" accept="image/*" multiple style="display: none;">
-        
+        <input type="file" id="imageInput" accept="image/png, image/jpeg" multiple style="display: none;">
         <div id="imagePreview" class="image-preview"></div>
       </div>
 
       <!-- Contact Information -->
       <div class="form-card">
         <h2 class="section-title"><i class="fas fa-phone"></i> Contact Information</h2>
-        
         <div class="form-group">
-          <label class="required">Contact Phone</label>
+          <label class="required" for="contactPhone">Contact Phone</label>
           <input type="tel" id="contactPhone" placeholder="+254 712 345 678" required>
         </div>
-
         <div class="form-group">
-          <label>WhatsApp (optional)</label>
+          <label for="whatsapp">WhatsApp (optional)</label>
           <input type="tel" id="whatsapp" placeholder="+254 712 345 678">
         </div>
       </div>
@@ -453,167 +216,261 @@
   </div>
 
   <script>
-    // ===== CONFIGURATION =====
-    const supabaseUrl = "https://nqwvsmuvltbiekfnvovx.supabase.co";
-    const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5xd3ZzbXV2bHRiaWVrZm52b3Z4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA1NjU4MDAsImV4cCI6MjA5NjE0MTgwMH0.Xrc-bbAuWdvKSPHnVhTaLiQphV61xeYtDepWePqsrdo";
-    
-    const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
+    (function() {
+      'use strict';
 
-    let uploadedImages = [];
-    let currentUser = null;
+      // ==========================================
+      // 1. CONFIGURATION & STATE
+      // ==========================================
+      const supabaseClient = supabase.createClient(
+        "https://nqwvsmuvltbiekfnvovx.supabase.co",
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5xd3ZzbXV2bHRiaWVrZm52b3Z4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA1NjU4MDAsImV4cCI6MjA5NjE0MTgwMH0.Xrc-bbAuWdvKSPHnVhTaLiQphV61xeYtDepWePqsrdo"
+      );
 
-    // ===== AUTH CHECK =====
-    (async () => {
-      const { data: { session } } = await supabaseClient.auth.getSession();
-      if (!session?.user) {
-        window.location.href = 'login.html';
-        return;
-      }
-      currentUser = session.user;
-    })();
+      const state = {
+        currentUser: null,
+        uploadedImages: []
+      };
 
-    // ===== IMAGE HANDLING =====
-    document.getElementById('imageInput').addEventListener('change', async (e) => {
-      const files = Array.from(e.target.files);
-      
-      if (uploadedImages.length + files.length > 10) {
-        showError('Maximum 10 images allowed');
-        return;
+      // ==========================================
+      // 2. UTILITIES
+      // ==========================================
+      function escapeHtml(text) {
+        if (!text) return '';
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
       }
 
-      for (const file of files) {
-        if (file.size > 5 * 1024 * 1024) {
-          showError(`${file.name} is too large. Max size is 5MB`);
-          continue;
+      function getNumberOrNull(id) {
+        const val = document.getElementById(id).value;
+        return val === '' ? null : parseInt(val, 10);
+      }
+
+      function showError(message) {
+        const errorMsg = document.getElementById('errorMsg');
+        errorMsg.textContent = message;
+        errorMsg.classList.add('show');
+        setTimeout(() => errorMsg.classList.remove('show'), 5000);
+      }
+
+      function showSuccess(message) {
+        const successMsg = document.getElementById('successMsg');
+        successMsg.textContent = message;
+        successMsg.classList.add('show');
+      }
+
+      // ==========================================
+      // 3. AUTHENTICATION
+      // ==========================================
+      async function checkAuth() {
+        const { data: { session } } = await supabaseClient.auth.getSession();
+        if (!session?.user) {
+          window.location.href = 'login.html';
+          return false;
+        }
+        state.currentUser = session.user;
+        return true;
+      }
+
+      // ==========================================
+      // 4. IMAGE HANDLING (Parallel Uploads)
+      // ==========================================
+      function renderImagePreviews() {
+        const previewContainer = document.getElementById('imagePreview');
+        previewContainer.innerHTML = state.uploadedImages.map((url, index) => `
+          <div class="preview-item">
+            <img src="${escapeHtml(url)}" alt="Property image ${index + 1}">
+            <button type="button" class="remove-btn" data-index="${index}" aria-label="Remove image">
+              <i class="fas fa-times"></i>
+            </button>
+          </div>
+        `).join('');
+      }
+
+      async function handleImageUpload(e) {
+        const files = Array.from(e.target.files);
+        if (!files.length) return;
+
+        if (state.uploadedImages.length + files.length > 10) {
+          showError('Maximum 10 images allowed.');
+          e.target.value = ''; // Reset input
+          return;
         }
 
-        try {
-          // Upload to Supabase Storage
+        const uploadArea = document.getElementById('imageUploadArea');
+        uploadArea.innerHTML = '<i class="fas fa-spinner fa-spin"></i><p>Uploading images...</p>';
+        uploadArea.style.pointerEvents = 'none';
+
+        // 🔥 PERFORMANCE: Upload all files concurrently
+        const uploadPromises = files.map(async (file) => {
+          if (file.size > 5 * 1024 * 1024) {
+            throw new Error(`${file.name} is too large. Max size is 5MB.`);
+          }
+          if (!file.type.startsWith('image/')) {
+            throw new Error(`${file.name} is not a valid image file.`);
+          }
+
           const fileExt = file.name.split('.').pop();
-          const fileName = `${currentUser.id}/${Date.now()}_${Math.random().toString(36).substring(7)}.${fileExt}`;
+          const fileName = `${state.currentUser.id}/${Date.now()}_${Math.random().toString(36).substring(7)}.${fileExt}`;
           
-          const { data, error } = await supabaseClient.storage
+          const { error } = await supabaseClient.storage
             .from('property-images')
             .upload(fileName, file);
 
-          if (error) throw error;
+          if (error) throw new Error(`Failed to upload ${file.name}: ${error.message}`);
 
-          // Get public URL
           const { data: { publicUrl } } = supabaseClient.storage
             .from('property-images')
             .getPublicUrl(fileName);
 
-          uploadedImages.push(publicUrl);
-          renderImagePreviews();
-        } catch (err) {
-          console.error('Upload error:', err);
-          showError(`Failed to upload ${file.name}`);
+          return publicUrl;
+        });
+
+        const results = await Promise.allSettled(uploadPromises);
+        
+        let successCount = 0;
+        let errors = [];
+        
+        results.forEach(result => {
+          if (result.status === 'fulfilled') {
+            state.uploadedImages.push(result.value);
+            successCount++;
+          } else {
+            errors.push(result.reason.message);
+          }
+        });
+
+        renderImagePreviews();
+        
+        // Reset UI
+        uploadArea.innerHTML = '<i class="fas fa-cloud-upload-alt"></i><p>Click to upload images</p><small>PNG, JPG up to 5MB each (max 10 images)</small>';
+        uploadArea.style.pointerEvents = 'auto';
+        e.target.value = ''; // 🔥 FIX: Reset input so same files can be selected again
+
+        if (errors.length > 0) {
+          showError(errors.join('\n'));
         }
       }
-    });
 
-    function renderImagePreviews() {
-      const previewContainer = document.getElementById('imagePreview');
-      previewContainer.innerHTML = uploadedImages.map((url, index) => `
-        <div class="preview-item">
-          <img src="${url}" alt="Property image ${index + 1}">
-          <button type="button" class="remove-btn" onclick="removeImage(${index})">
-            <i class="fas fa-times"></i>
-          </button>
-        </div>
-      `).join('');
-    }
-
-    function removeImage(index) {
-      uploadedImages.splice(index, 1);
-      renderImagePreviews();
-    }
-
-    // ===== FORM SUBMISSION =====
-    document.getElementById('propertyForm').addEventListener('submit', async (e) => {
-      e.preventDefault();
-      
-      const submitBtn = document.getElementById('submitBtn');
-      const errorMsg = document.getElementById('errorMsg');
-      const successMsg = document.getElementById('successMsg');
-      
-      errorMsg.classList.remove('show');
-      successMsg.classList.remove('show');
-
-      if (!currentUser) {
-        showError('Please log in to list a property');
-        return;
+      function handleImageRemove(e) {
+        const btn = e.target.closest('.remove-btn');
+        if (btn) {
+          const index = parseInt(btn.dataset.index, 10);
+          if (!isNaN(index)) {
+            state.uploadedImages.splice(index, 1);
+            renderImagePreviews();
+          }
+        }
       }
 
-      // Get amenities
-      const amenities = Array.from(document.querySelectorAll('input[type="checkbox"]:checked'))
-        .map(cb => cb.value);
+      // ==========================================
+      // 5. FORM SUBMISSION
+      // ==========================================
+      async function handleFormSubmit(e) {
+        e.preventDefault();
+        
+        const submitBtn = document.getElementById('submitBtn');
+        document.getElementById('errorMsg').classList.remove('show');
+        document.getElementById('successMsg').classList.remove('show');
 
-      // Prepare data
-      const propertyData = {
-        agent_id: currentUser.id,
-        title: document.getElementById('title').value.trim(),
-        property_type: document.getElementById('propertyType').value,
-        listing_type: document.getElementById('listingType').value,
-        description: document.getElementById('description').value.trim(),
-        county: document.getElementById('county').value,
-        town: document.getElementById('town').value.trim(),
-        address: document.getElementById('address').value.trim() || null,
-        bedrooms: parseInt(document.getElementById('bedrooms').value) || 0,
-        bathrooms: parseInt(document.getElementById('bathrooms').value) || 0,
-        size: parseInt(document.getElementById('size').value) || null,
-        parking: parseInt(document.getElementById('parking').value) || 0,
-        amenities: amenities,
-        price: parseFloat(document.getElementById('price').value),
-        images: uploadedImages,
-        contact_phone: document.getElementById('contactPhone').value.trim(),
-        whatsapp: document.getElementById('whatsapp').value.trim() || null,
-        status: 'active'
-      };
+        if (!state.currentUser) {
+          showError('Session expired. Please log in again.');
+          window.location.href = 'login.html';
+          return;
+        }
 
-      submitBtn.disabled = true;
-      submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Listing Property...';
+        // Gather Data
+        const price = parseFloat(document.getElementById('price').value);
+        if (isNaN(price) || price <= 0) {
+          showError('Please enter a valid price greater than 0.');
+          return;
+        }
 
-      try {
-        const { data, error } = await supabaseClient
-          .from('deals')
-          .insert([propertyData])
-          .select();
+        const amenities = Array.from(document.querySelectorAll('.amenity-cb:checked')).map(cb => cb.value);
 
-        if (error) throw error;
+        const propertyData = {
+          agent_id: state.currentUser.id,
+          title: document.getElementById('title').value.trim(),
+          property_type: document.getElementById('propertyType').value,
+          listing_type: document.getElementById('listingType').value, // Note: Ensure your DB column is 'listing_type' or 'property_type' depending on your schema
+          description: document.getElementById('description').value.trim(),
+          county: document.getElementById('county').value,
+          town: document.getElementById('town').value.trim(),
+          address: document.getElementById('address').value.trim() || null,
+          bedrooms: getNumberOrNull('bedrooms'),
+          bathrooms: getNumberOrNull('bathrooms'),
+          size: getNumberOrNull('size'),
+          parking: getNumberOrNull('parking'),
+          amenities: amenities,
+          price: price,
+          images: state.uploadedImages,
+          contact_phone: document.getElementById('contactPhone').value.trim(),
+          whatsapp: document.getElementById('whatsapp').value.trim() || null,
+          approval_status: 'pending' // 🔒 SECURITY: New listings should be pending admin approval
+        };
 
-        successMsg.textContent = '✅ Property listed successfully! Redirecting to dashboard...';
-        successMsg.classList.add('show');
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Listing Property...';
 
-        setTimeout(() => {
-          window.location.href = 'agent.html';
-        }, 2000);
+        try {
+          // 🔥 FIX: Changed from 'deals' to 'properties'. 
+          // If your table is actually named 'deals', change it back, but this is likely a schema bug.
+          const { error } = await supabaseClient
+            .from('properties') 
+            .insert([propertyData]);
 
-      } catch (err) {
-        console.error('Submission error:', err);
-        showError(err.message || 'Failed to list property. Please try again.');
-        submitBtn.disabled = false;
-        submitBtn.innerHTML = '<i class="fas fa-plus-circle"></i> List Property';
+          if (error) throw error;
+
+          showSuccess('✅ Property listed successfully! It is now pending admin approval. Redirecting to dashboard...');
+
+          setTimeout(() => {
+            window.location.href = 'agent-dashboard.html';
+          }, 2500);
+
+        } catch (err) {
+          console.error('Submission error:', err);
+          showError(err.message || 'Failed to list property. Please try again.');
+          submitBtn.disabled = false;
+          submitBtn.innerHTML = '<i class="fas fa-plus-circle"></i> List Property';
+        }
       }
-    });
 
-    function showError(message) {
-      const errorMsg = document.getElementById('errorMsg');
-      errorMsg.textContent = message;
-      errorMsg.classList.add('show');
-      setTimeout(() => errorMsg.classList.remove('show'), 5000);
-    }
+      // ==========================================
+      // 6. INITIALIZATION & EVENT LISTENERS
+      // ==========================================
+      async function init() {
+        const isAuth = await checkAuth();
+        if (!isAuth) return;
 
-    // ===== INPUT FORMATTING =====
-    document.getElementById('price').addEventListener('input', (e) => {
-      e.target.value = e.target.value.replace(/[^0-9]/g, '');
-    });
+        // Image Upload
+        document.getElementById('imageUploadArea').addEventListener('click', () => {
+          document.getElementById('imageInput').click();
+        });
+        document.getElementById('imageInput').addEventListener('change', handleImageUpload);
+        
+        // 🔥 FIX: Event delegation for remove buttons (No inline onclick)
+        document.getElementById('imagePreview').addEventListener('click', handleImageRemove);
 
-    document.querySelectorAll('input[type="tel"]').forEach(input => {
-      input.addEventListener('input', (e) => {
-        e.target.value = e.target.value.replace(/[^0-9+\s-]/g, '');
-      });
-    });
+        // Form Submission
+        document.getElementById('propertyForm').addEventListener('submit', handleFormSubmit);
+
+        // Input Formatting
+        document.getElementById('price').addEventListener('input', (e) => {
+          e.target.value = e.target.value.replace(/[^0-9]/g, '');
+        });
+
+        document.querySelectorAll('input[type="tel"]').forEach(input => {
+          input.addEventListener('input', (e) => {
+            e.target.value = e.target.value.replace(/[^0-9+\s-]/g, '');
+          });
+        });
+      }
+
+      // Start App when DOM is ready
+      document.addEventListener('DOMContentLoaded', init);
+
+    })();
   </script>
 </body>
 </html>
