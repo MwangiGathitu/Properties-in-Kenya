@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>My Properties - Properties in Kenya</title>
-    <!-- NOTE: For production, replace this CDN with a pre-compiled Tailwind CSS file -->
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -20,6 +19,11 @@
     </style>
 </head>
 <body class="bg-gray-50">
+
+<!-- 🔒 FIX: Full screen loader to prevent visual flipping/flickering -->
+<div id="auth-loader" style="position:fixed; inset:0; background:white; z-index:9999; display:flex; align-items:center; justify-content:center;">
+    <i class="fas fa-spinner fa-spin text-4xl text-amber-500"></i>
+</div>
 
 <button id="mobile-menu-btn" class="lg:hidden fixed top-4 left-4 z-50 bg-white p-3 rounded-xl shadow-lg" aria-label="Toggle menu">
     <i class="fas fa-bars text-gray-700"></i>
@@ -98,7 +102,6 @@
 </div>
 
 <!-- ADD/EDIT PROPERTY MODAL -->
-<!-- 🔒 FIX: Added ARIA attributes for accessibility -->
 <div id="property-modal" class="fixed inset-0 bg-black/60 hidden flex items-center justify-center z-50 p-4" role="dialog" aria-modal="true" aria-labelledby="modal-title">
     <div class="modal bg-white rounded-3xl w-full max-w-3xl max-h-[90vh] overflow-y-auto">
         <div class="p-6 border-b flex items-center justify-between sticky top-0 bg-white z-10">
@@ -249,7 +252,6 @@
         return new Intl.NumberFormat('en-KE', { style: 'currency', currency: 'KES', maximumFractionDigits: 0 }).format(amount || 0);
     }
 
-    // 🔒 FIX: Standard debounce using local closure variable
     function debounce(func, wait) {
         let timeout;
         return (...args) => {
@@ -258,7 +260,6 @@
         };
     }
 
-    // 🔒 FIX: Safe number parsing that preserves `0`
     function getNumOrNull(id) {
         const val = document.getElementById(id).value;
         return val === '' ? null : parseInt(val, 10);
@@ -269,7 +270,6 @@
         return val === '' ? defaultVal : parseFloat(val);
     }
 
-    // 🔒 FIX: Non-blocking Toast notification instead of alert()
     function showToast(message, type = 'success') {
         const toast = document.createElement('div');
         const bgColor = type === 'error' ? 'bg-red-500' : 'bg-green-500';
@@ -287,19 +287,41 @@
     // 3. AUTH & DATA LOADING
     // ==========================================
     async function checkAuth() {
-        const { data: { user } } = await supabase.auth.getUser();
-        if (!user) { 
-            window.location.href = 'login.html'; 
-            return; 
+        try {
+            // 1. Check local browser session
+            const { data: { session } } = await supabase.auth.getSession();
+
+            if (!session) {
+                window.location.href = 'login.html?role=agent';
+                return;
+            }
+
+            // 2. 🔒 BULLETPROOF FIX: Verify the session is actually valid on the server.
+            // This kills the "Ghost Session" redirect loop.
+            const { data: { user }, error } = await supabase.auth.getUser();
+
+            if (error || !user) {
+                // The local session was broken/expired. Sign out completely to clear it.
+                await supabase.auth.signOut();
+                window.location.href = 'login.html?role=agent';
+                return;
+            }
+
+            // 3. Session is 100% valid. Hide the loader and proceed.
+            state.user = user;
+            document.getElementById('auth-loader').style.display = 'none';
+            
+            loadProperties();
+
+        } catch (err) {
+            console.error('Auth check failed:', err);
+            window.location.href = 'login.html?role=agent';
         }
-        state.user = user;
-        loadProperties();
     }
 
-    // 🔒 FIX: Listen for auth state changes to handle session expiry
     supabase.auth.onAuthStateChange((event, session) => {
         if (event === 'SIGNED_OUT' || !session) {
-            window.location.href = 'login.html';
+            window.location.href = 'login.html?role=agent';
         }
     });
 
@@ -313,9 +335,8 @@
                 .order('created_at', { ascending: false });
 
             if (error) {
-                // 🔒 FIX: Redirect to login if JWT is invalid/expired
                 if (error.status === 401 || error.message.includes('JWT')) {
-                    window.location.href = 'login.html';
+                    window.location.href = 'login.html?role=agent';
                     return;
                 }
                 throw error;
@@ -373,7 +394,6 @@
         grid.innerHTML = properties.map(prop => {
             const imgSrc = (prop.images && prop.images[0] && isValidUrl(prop.images[0])) ? prop.images[0] : FALLBACK_IMG;
             
-            // 🔒 FIX: Correctly check for null/undefined instead of falsy (allows 0% commission)
             const hasCommission = prop.visibility === 'co-broker' && prop.commission_split !== undefined && prop.commission_split !== null;
             const commissionBadge = hasCommission 
                 ? `<div class="absolute top-3 right-3 bg-amber-500 text-white px-3 py-1 rounded-full text-xs font-bold"><i class="fas fa-percentage mr-1"></i>${esc(String(prop.commission_split))}% Split</div>` 
@@ -382,7 +402,6 @@
             return `
             <div class="bg-white rounded-2xl border border-gray-100 overflow-hidden hover:shadow-xl transition-shadow duration-300 group">
                 <div class="relative h-48 bg-gray-200">
-                    <!-- 🔒 FIX: Added loading="lazy" for performance -->
                     <img src="${esc(imgSrc)}" loading="lazy" class="prop-img w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" alt="Property">
                     <div class="absolute top-3 left-3 flex gap-2">
                         <span class="px-3 py-1 rounded-full text-xs font-bold uppercase ${visibilityColors[prop.visibility] || 'bg-gray-100'}">${esc(prop.visibility)}</span>
@@ -437,7 +456,6 @@
         document.getElementById('prop-town').value = prop.town || '';
         document.getElementById('prop-location').value = prop.location || '';
         
-        // 🔒 FIX: Correctly handle 0 values when populating form
         document.getElementById('prop-beds').value = prop.bedrooms !== null && prop.bedrooms !== undefined ? prop.bedrooms : '';
         document.getElementById('prop-baths').value = prop.bathrooms !== null && prop.bathrooms !== undefined ? prop.bathrooms : '';
         
@@ -481,7 +499,6 @@
             county: document.getElementById('prop-county').value,
             town: document.getElementById('prop-town').value.trim(),
             location: document.getElementById('prop-location').value.trim(),
-            // 🔒 FIX: Use safe parsers that preserve `0`
             bedrooms: getNumOrNull('prop-beds'),
             bathrooms: getNumOrNull('prop-baths'),
             status: document.getElementById('prop-status').value,
@@ -546,7 +563,7 @@
         document.getElementById('logout-btn').addEventListener('click', async (e) => {
             e.preventDefault();
             await supabase.auth.signOut();
-            window.location.href = 'login.html';
+            window.location.href = 'login.html?role=agent';
         });
 
         document.getElementById('add-property-btn').addEventListener('click', openPropertyModal);
@@ -579,7 +596,6 @@
             }
         });
 
-        // 🔒 FIX: Prevent infinite loop if fallback image also fails
         document.addEventListener('error', (e) => {
             if (e.target.tagName === 'IMG' && e.target.classList.contains('prop-img')) {
                 if (e.target.src !== FALLBACK_IMG) {
@@ -598,5 +614,6 @@
 
 })();
 </script>
+
 </body>
 </html>
