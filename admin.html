@@ -3,8 +3,6 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="X-Content-Type-Options" content="nosniff">
-  <meta http-equiv="X-Frame-Options" content="DENY">
   <title>PropDesk Admin — Properties in Kenya</title>
   
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -537,11 +535,6 @@
   // ==========================================
   // 1. CONFIGURATION & CONSTANTS
   // ==========================================
-  // ⚠️ SECURITY WARNING: 
-  // In a pure client-side Supabase app, the anon key MUST be in the frontend code. 
-  // This is NOT a vulnerability IF Row Level Security (RLS) is strictly enforced in your Supabase database.
-  // Ensure your 'properties' and 'profiles' tables have RLS enabled with policies that 
-  // restrict data access and mutations to users with the 'admin' role.
   const CONFIG = {
     supabaseUrl: "https://nqwvsmuvltbiekfnvovx.supabase.co",
     supabaseKey: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5xd3ZzbXV2bHRiaWVrZm52b3Z4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA1NjU4MDAsImV4cCI6MjA5NjE0MTgwMH0.Xrc-bbAuWdvKSPHnVhTaLiQphV61xeYtDepWePqsrdo",
@@ -905,7 +898,6 @@
     if (error) {
       toast('error', 'Update Failed', error.message);
     } else {
-      // Optimistic update
       state.properties = state.properties.map(p => 
         p.id === propertyId ? { ...p, approval_status: newStatus } : p
       );
@@ -1072,7 +1064,6 @@
       toast('success', 'Saved', 'Property updated successfully.');
       closeEditModal();
       
-      // Optimistic update
       state.properties = state.properties.map(p => p.id === id ? { ...p, ...updates } : p);
       renderList();
       fetchGlobalStats();
@@ -1188,7 +1179,6 @@
   // 11. EVENT DELEGATION & INITIALIZATION
   // ==========================================
   function initEventListeners() {
-    // Global click delegation
     document.body.addEventListener('click', async (e) => {
       const btn = e.target.closest('button[data-action], [data-action="toggle-select"]');
       if (!btn) return;
@@ -1255,7 +1245,6 @@
       }
     });
 
-    // Filter inputs
     document.getElementById('searchInput').addEventListener('input', () => {
       clearTimeout(state.filterTimeout);
       state.filterTimeout = setTimeout(applyFilters, 300);
@@ -1272,14 +1261,12 @@
       });
     });
 
-    // Image error handling via delegation
     document.getElementById('list').addEventListener('error', (e) => {
       if (e.target.tagName === 'IMG' && e.target.classList.contains('card-thumb')) {
         e.target.src = CONFIG.fallbackImage(e.target.dataset.id);
       }
     }, true);
 
-    // Modal overlay clicks
     document.getElementById('editModal').addEventListener('click', (e) => {
       if (e.target.id === 'editModal') closeEditModal();
     });
@@ -1287,7 +1274,6 @@
       if (e.target.id === 'imageModal') closeImageModal();
     });
 
-    // Keyboard shortcuts
     document.addEventListener('keydown', (e) => {
       if (e.key === 'Escape') {
         closeEditModal();
@@ -1299,7 +1285,6 @@
       }
     });
 
-    // Auth state change listener
     supabaseClient.auth.onAuthStateChange((event, session) => {
       if (event === 'SIGNED_OUT') {
         resetUI();
@@ -1318,7 +1303,6 @@
     }
   }
 
-  // Start the app
   init();
 
 })();
