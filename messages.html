@@ -3,7 +3,6 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- 🔒 FIX: Corrected closing tag from </td> to </title> -->
     <title>Messages & Network - Properties in Kenya</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
@@ -29,11 +28,21 @@
         @media (min-width: 1024px) {
             .mobile-chat-hidden { display: flex !important; }
         }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-slide-up { animation: slideUp 0.2s ease-out; }
     </style>
 </head>
 <body class="bg-gray-50">
 
-<!-- 🔒 FIX: Removed inline onclick, added IDs for event delegation -->
+<!-- 🔒 FIX: Full screen loader to prevent visual flipping/flickering -->
+<div id="auth-loader" style="position:fixed; inset:0; background:white; z-index:9999; display:flex; align-items:center; justify-content:center;">
+    <i class="fas fa-spinner fa-spin text-4xl text-amber-500"></i>
+</div>
+
 <button id="mobile-menu-btn" class="lg:hidden fixed top-4 left-4 z-50 bg-white p-3 rounded-xl shadow-lg" aria-label="Toggle menu">
     <i class="fas fa-bars text-gray-700"></i>
 </button>
@@ -70,7 +79,6 @@
             <!-- LEFT PANE -->
             <div id="left-pane" class="w-full lg:w-1/3 bg-white border-r border-gray-200 flex flex-col mobile-chat-hidden">
                 <div class="flex border-b border-gray-200">
-                    <!-- 🔒 FIX: Replaced inline onclick with data attributes -->
                     <button data-tab="chats" id="tab-chats" class="flex-1 py-4 text-sm font-bold text-blue-600 border-b-2 border-blue-600">Chats</button>
                     <button data-tab="network" id="tab-network" class="flex-1 py-4 text-sm font-semibold text-gray-500 hover:text-gray-700">Network</button>
                 </div>
@@ -79,7 +87,6 @@
                     <div class="p-4 text-center text-gray-400"><i class="fas fa-spinner fa-spin"></i> Loading...</div>
                 </div>
 
-                <!-- 🔒 FIX: Corrected missing closing '>' on div -->
                 <div id="network-list" class="hidden flex-1 overflow-y-auto hide-scrollbar p-4 space-y-3">
                     <div class="relative mb-4">
                         <i class="fas fa-search absolute left-3 top-3 text-gray-400"></i>
@@ -205,16 +212,41 @@
     // 3. AUTH & INITIALIZATION
     // ==========================================
     async function checkAuth() {
-        const { data: { user } } = await supabase.auth.getUser();
-        if (!user) { window.location.href = 'login.html'; return; }
-        state.user = user;
-        
-        supabase.auth.onAuthStateChange((event) => {
-            if (event === 'SIGNED_OUT') window.location.href = 'login.html';
-        });
+        try {
+            // 1. Check local browser session
+            const { data: { session } } = await supabase.auth.getSession();
 
-        loadConversations();
-        loadNetworkAgents();
+            if (!session) {
+                window.location.href = 'login.html?role=agent';
+                return;
+            }
+
+            // 2. 🔒 BULLETPROOF FIX: Verify the session is actually valid on the server.
+            // This kills the "Ghost Session" redirect loop.
+            const { data: { user }, error } = await supabase.auth.getUser();
+
+            if (error || !user) {
+                // The local session was broken/expired. Sign out completely to clear it.
+                await supabase.auth.signOut();
+                window.location.href = 'login.html?role=agent';
+                return;
+            }
+
+            // 3. Session is 100% valid. Hide the loader and proceed.
+            state.user = user;
+            document.getElementById('auth-loader').style.display = 'none';
+            
+            supabase.auth.onAuthStateChange((event) => {
+                if (event === 'SIGNED_OUT') window.location.href = 'login.html?role=agent';
+            });
+
+            loadConversations();
+            loadNetworkAgents();
+
+        } catch (err) {
+            console.error('Auth check failed:', err);
+            window.location.href = 'login.html?role=agent';
+        }
     }
 
     // ==========================================
@@ -242,7 +274,7 @@
             .select('id, full_name, agency')
             .in('id', otherIds);
         
-        const profileMap = new Map(profiles.map(p => [p.id, p]));
+        const profileMap = new Map((profiles || []).map(p => [p.id, p]));
 
         const conversationsWithDetails = data.map(conv => {
             const otherId = conv.participant_1 === state.user.id ? conv.participant_2 : conv.participant_1;
@@ -300,7 +332,7 @@
         container.innerHTML = agents.map(agent => `
             <div class="bg-white p-4 rounded-xl border border-gray-100 flex items-center gap-3">
                 <div class="w-12 h-12 bg-gray-200 rounded-full flex items-center justify-center text-gray-600 font-bold flex-shrink-0 relative">
-                    ${esc(agent.full_name.charAt(0))}
+                    ${esc((agent.full_name || 'A').charAt(0))}
                     ${agent.is_verified ? '<i class="fas fa-check-circle absolute -bottom-1 -right-1 text-blue-500 bg-white rounded-full text-xs"></i>' : ''}
                 </div>
                 <div class="flex-1 min-w-0">
@@ -323,7 +355,7 @@
             .from('conversations')
             .select('id')
             .or(`and(participant_1.eq.${state.user.id},participant_2.eq.${otherId}),and(participant_1.eq.${otherId},participant_2.eq.${state.user.id})`)
-            .single();
+            .maybeSingle();
 
         let convId = existing?.id;
 
@@ -385,7 +417,7 @@
         const area = document.getElementById('messages-area');
         area.innerHTML = ''; 
         
-        data.forEach(msg => appendMessage(msg, false));
+        (data || []).forEach(msg => appendMessage(msg, false));
         scrollToBottom();
 
         await supabase
@@ -526,7 +558,7 @@
         document.getElementById('logout-btn').addEventListener('click', async (e) => {
             e.preventDefault();
             await supabase.auth.signOut();
-            window.location.href = 'login.html';
+            window.location.href = 'login.html?role=agent';
         });
 
         // Tabs
@@ -601,7 +633,7 @@
         // 🔥 PERFORMANCE: Debounced Network Search
         const debouncedSearch = debounce((term) => {
             const filtered = state.allAgents.filter(a => 
-                a.full_name.toLowerCase().includes(term) || 
+                (a.full_name || '').toLowerCase().includes(term) || 
                 (a.county && a.county.toLowerCase().includes(term))
             );
             renderAgents(filtered);
