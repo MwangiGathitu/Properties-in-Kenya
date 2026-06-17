@@ -1,3 +1,6 @@
+Here is the **complete, updated `index.html`** with "All Listings" replaced by "Blog", "List Property" replaced by "Log In / Sign Up", and a new modal that asks users if they are an Agent or Buyer when they click the login button.
+
+```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -478,6 +481,99 @@ body {
 .mobile-menu-cta:hover {
   transform: translateY(-1px);
   box-shadow: 0 4px 12px rgba(212, 175, 55, 0.3);
+}
+/* ===== LOGIN MODAL ===== */
+.login-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(4px);
+  z-index: 200;
+  display: none;
+  align-items: center;
+  justify-content: center;
+}
+.login-modal-overlay.active {
+  display: flex;
+}
+.login-modal {
+  background: white;
+  border-radius: 20px;
+  padding: 40px;
+  max-width: 500px;
+  width: 90%;
+  text-align: center;
+  animation: modalPop 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+@keyframes modalPop {
+  from { opacity: 0; transform: scale(0.95); }
+  to { opacity: 1; transform: scale(1); }
+}
+.login-modal h2 {
+  font-size: 24px;
+  font-weight: 700;
+  color: #111827;
+  margin-bottom: 12px;
+}
+.login-modal p {
+  font-size: 14px;
+  color: #6B7280;
+  margin-bottom: 32px;
+}
+.login-options {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+.login-option {
+  padding: 24px 16px;
+  border: 2px solid #E5E7EB;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-decoration: none;
+  color: #111827;
+}
+.login-option:hover {
+  border-color: #D4AF37;
+  background: #FFFBF0;
+  transform: translateY(-2px);
+}
+.login-option i {
+  font-size: 32px;
+  color: #D4AF37;
+  margin-bottom: 12px;
+  display: block;
+}
+.login-option-title {
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+.login-option-desc {
+  font-size: 12px;
+  color: #6B7280;
+}
+.login-modal-close {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  background: #F3F4F6;
+  border: none;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #6B7280;
+  transition: all 0.2s;
+}
+.login-modal-close:hover {
+  background: #E5E7EB;
+  color: #111827;
 }
 /* ===== MAIN CONTENT ===== */
 .main-content {
@@ -1620,6 +1716,7 @@ body {
   .footer {
     padding-bottom: calc(32px + 80px + env(safe-area-inset-bottom, 0px));
   }
+  .login-options { grid-template-columns: 1fr; }
 }
 </style>
 </head>
@@ -1641,7 +1738,8 @@ body {
       <button class="nav-link" data-category="for sale">Buy</button>
       <button class="nav-link" data-category="for rent">Rent</button>
       <button class="nav-link" data-category="lease">For Lease</button>
-      <button class="nav-link" data-category="all">All Listings</button>
+      <!-- 🔒 FIX: Replaced "All Listings" with "Blog" -->
+      <a href="#blog" class="nav-link">Blog</a>
       <a href="/agents.html" class="nav-link">Agents</a>
       <button class="nav-link favorites-badge" id="navFavoritesBtn" aria-label="Saved properties">
         <i class="fas fa-heart" aria-hidden="true"></i>
@@ -1650,11 +1748,8 @@ body {
       </button>
     </div>
     <div style="display: flex; align-items: center; gap: 16px;">
-      <!-- 🔒 FIX: Added prominent Log In button for Buyers, Agents, and Admins -->
-      <a href="login.html" class="nav-link" style="font-weight: 600; color: #111827;">Log In</a>
-      
-      <!-- List Property routes to login so unauthenticated users are prompted to sign up/log in -->
-      <a href="login.html" class="nav-cta desktop-only">List Property</a>
+      <!-- 🔒 FIX: Replaced "List Property" with "Log In / Sign Up" -->
+      <button class="nav-cta desktop-only" id="loginBtn">Log In / Sign Up</button>
       
       <button class="hamburger-btn" id="hamburgerBtn" aria-label="Open menu" aria-expanded="false">
         <span class="hamburger-line"></span>
@@ -1664,6 +1759,30 @@ body {
     </div>
   </div>
 </nav>
+
+<!-- Login Modal - Agent or Buyer Choice -->
+<div class="login-modal-overlay" id="loginModal">
+  <div class="login-modal">
+    <button class="login-modal-close" id="closeLoginModal" aria-label="Close login modal">
+      <i class="fas fa-times"></i>
+    </button>
+    <h2>Welcome Back</h2>
+    <p>Are you looking to buy/rent a property or list properties as an agent?</p>
+    <div class="login-options">
+      <a href="login.html?role=buyer" class="login-option">
+        <i class="fas fa-user"></i>
+        <div class="login-option-title">I'm a Buyer</div>
+        <div class="login-option-desc">Looking to buy or rent property</div>
+      </a>
+      <a href="login.html?role=agent" class="login-option">
+        <i class="fas fa-briefcase"></i>
+        <div class="login-option-title">I'm an Agent</div>
+        <div class="login-option-desc">Listing and managing properties</div>
+      </a>
+    </div>
+  </div>
+</div>
+
 <!-- Mobile Menu Overlay -->
 <div class="mobile-menu-overlay" id="mobileMenuOverlay" aria-hidden="true"></div>
 <!-- Mobile Menu Drawer -->
@@ -1692,10 +1811,11 @@ body {
         <i class="fas fa-file-contract" aria-hidden="true"></i>
         For Lease
       </button>
-      <button class="mobile-menu-link" data-category="all">
-        <i class="fas fa-th-large" aria-hidden="true"></i>
-        All Listings
-      </button>
+      <!-- 🔒 FIX: Replaced "All Listings" with "Blog" in mobile menu -->
+      <a href="#blog" class="mobile-menu-link">
+        <i class="fas fa-newspaper" aria-hidden="true"></i>
+        Blog
+      </a>
       <button class="mobile-menu-link" id="mobileFavoritesBtn">
         <i class="fas fa-heart" aria-hidden="true"></i>
         Saved Properties
@@ -1705,11 +1825,11 @@ body {
     <div class="mobile-menu-divider"></div>
     <div class="mobile-menu-section">
       <div class="mobile-menu-section-title">Account</div>
-      <!-- 🔒 FIX: Corrected broken HTML nesting and made Log In prominent -->
-      <a href="login.html" class="mobile-menu-link" style="color: #D4AF37; font-weight: 600;">
+      <!-- 🔒 FIX: Added prominent Log In / Sign Up button -->
+      <button class="mobile-menu-link" id="mobileLoginBtn" style="color: #D4AF37; font-weight: 600;">
         <i class="fas fa-sign-in-alt" style="color: #D4AF37;"></i>
         Log In / Sign Up
-      </a>
+      </button>
       <a href="agent-dashboard.html" class="mobile-menu-link">
         <i class="fas fa-user" aria-hidden="true"></i>
         Agent Portal
@@ -1719,10 +1839,10 @@ body {
         Browse Agents
       </a>
     </div>
-    <a href="login.html" class="mobile-menu-cta">
+    <button class="mobile-menu-cta" id="mobileLoginCta">
       <i class="fas fa-plus" aria-hidden="true" style="margin-right: 6px;"></i>
-      List Your Property
-    </a>
+      Log In / Sign Up
+    </button>
   </div>
 </div>
 <!-- Main Content -->
@@ -1881,7 +2001,7 @@ body {
     <div id="favoritesGrid" class="favorites-grid" role="list"></div>
   </section>
   <!-- Blog Section -->
-  <section class="blog-section" aria-labelledby="blog-title">
+  <section class="blog-section" id="blog" aria-labelledby="blog-title">
     <div class="section-header">
       <h2 class="section-title" id="blog-title">Real Estate Insights</h2>
       <p class="section-subtitle">Expert guides and market analysis</p>
@@ -1951,7 +2071,7 @@ body {
           <button class="footer-link" data-category="for sale" style="background:none; border:none; cursor:pointer; padding:0;">Buy Property</button>
           <button class="footer-link" data-category="for rent" style="background:none; border:none; cursor:pointer; padding:0;">Rent Property</button>
           <button class="footer-link" data-category="lease" style="background:none; border:none; cursor:pointer; padding:0;">For Lease</button>
-          <button class="footer-link" data-category="all" style="background:none; border:none; cursor:pointer; padding:0;">All Listings</button>
+          <a href="#blog" class="footer-link">Blog</a>
         </div>
       </div>
       <div>
@@ -2253,9 +2373,31 @@ body {
     }
 
     // ==========================================
-    // 7. EVENT DELEGATION & INIT
+    // 7. LOGIN MODAL FUNCTIONS
+    // ==========================================
+    function openLoginModal() {
+        document.getElementById('loginModal').classList.add('active');
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeLoginModal() {
+        document.getElementById('loginModal').classList.remove('active');
+        document.body.style.overflow = '';
+    }
+
+    // ==========================================
+    // 8. EVENT DELEGATION & INIT
     // ==========================================
     function initEventListeners() {
+        // Login Modal
+        document.getElementById('loginBtn').addEventListener('click', openLoginModal);
+        document.getElementById('mobileLoginBtn').addEventListener('click', () => { openLoginModal(); toggleMobileMenu(); });
+        document.getElementById('mobileLoginCta').addEventListener('click', () => { openLoginModal(); toggleMobileMenu(); });
+        document.getElementById('closeLoginModal').addEventListener('click', closeLoginModal);
+        document.getElementById('loginModal').addEventListener('click', (e) => {
+            if (e.target.id === 'loginModal') closeLoginModal();
+        });
+
         // Mobile Menu
         document.getElementById('hamburgerBtn').addEventListener('click', () => {
             document.getElementById('mobileMenuDrawer').classList.add('active');
@@ -2364,3 +2506,4 @@ body {
 </script>
 </body>
 </html>
+```
