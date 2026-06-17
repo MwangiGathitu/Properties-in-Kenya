@@ -20,295 +20,74 @@
 <style>
 * { margin: 0; padding: 0; box-sizing: border-box; }
 html { scroll-behavior: smooth; }
-body {
-  font-family: 'Inter', -apple-system, sans-serif;
-  color: #111827; background: #f4f4f7;
-  line-height: 1.6;
-  padding-bottom: 80px;
-}
-
-/* NAV */
-.nav {
-  position: sticky; top: 0; z-index: 100;
-  background: rgba(255,255,255,0.95);
-  backdrop-filter: blur(20px);
-  border-bottom: 1px solid #e5e7eb;
-  padding: 14px 24px;
-  display: flex; justify-content: space-between; align-items: center;
-}
-.logo {
-  font-size: 16px; font-weight: 700; color: #6b21a8;
-  display: flex; align-items: center; gap: 8px;
-  text-decoration: none;
-}
-.back-btn {
-  background: #f3f4f6; color: #374151;
-  border: none; padding: 8px 14px; border-radius: 8px;
-  font-size: 13px; font-weight: 500; cursor: pointer;
-  display: flex; align-items: center; gap: 6px;
-  text-decoration: none;
-}
+body { font-family: 'Inter', -apple-system, sans-serif; color: #111827; background: #f4f4f7; line-height: 1.6; padding-bottom: 80px; }
+.nav { position: sticky; top: 0; z-index: 100; background: rgba(255,255,255,0.95); backdrop-filter: blur(20px); border-bottom: 1px solid #e5e7eb; padding: 14px 24px; display: flex; justify-content: space-between; align-items: center; }
+.logo { font-size: 16px; font-weight: 700; color: #6b21a8; display: flex; align-items: center; gap: 8px; text-decoration: none; }
+.back-btn { background: #f3f4f6; color: #374151; border: none; padding: 8px 14px; border-radius: 8px; font-size: 13px; font-weight: 500; cursor: pointer; display: flex; align-items: center; gap: 6px; text-decoration: none; }
 .back-btn:hover { background: #e5e7eb; }
-
-/* CONTAINER */
-.container {
-  max-width: 1400px;
-  margin: 24px auto;
-  padding: 0 24px;
-  display: grid;
-  grid-template-columns: 1fr 380px;
-  gap: 24px;
-  align-items: start;
-}
-@media (max-width: 1024px) {
-  .container { grid-template-columns: 1fr; }
-  .sidebar { position: static !important; }
-}
-
-/* CARD */
-.card {
-  background: white; border-radius: 16px;
-  padding: 24px; margin-bottom: 20px;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.06);
-}
-.card-title {
-  font-size: 18px; font-weight: 700;
-  margin-bottom: 16px;
-  display: flex; align-items: center; gap: 8px;
-  color: #111827;
-}
+.container { max-width: 1400px; margin: 24px auto; padding: 0 24px; display: grid; grid-template-columns: 1fr 380px; gap: 24px; align-items: start; }
+@media (max-width: 1024px) { .container { grid-template-columns: 1fr; } .sidebar { position: static !important; } }
+.card { background: white; border-radius: 16px; padding: 24px; margin-bottom: 20px; box-shadow: 0 1px 3px rgba(0,0,0,0.06); }
+.card-title { font-size: 18px; font-weight: 700; margin-bottom: 16px; display: flex; align-items: center; gap: 8px; color: #111827; }
 .card-title i { color: #6b21a8; }
-
-/* HERO GALLERY */
 .hero-gallery { margin-bottom: 24px; }
-.main-image {
-  width: 100%; height: 450px;
-  background: #f3f4f6;
-  border-radius: 16px;
-  overflow: hidden;
-  position: relative;
-}
+.main-image { width: 100%; height: 450px; background: #f3f4f6; border-radius: 16px; overflow: hidden; position: relative; }
 .main-image img { width: 100%; height: 100%; object-fit: cover; }
-.thumbnails {
-  display: flex; gap: 10px;
-  margin-top: 12px;
-  overflow-x: auto;
-  padding-bottom: 4px;
-}
-.thumbnail {
-  width: 100px; height: 70px;
-  border-radius: 10px;
-  overflow: hidden;
-  cursor: pointer;
-  border: 2px solid transparent;
-  flex-shrink: 0;
-  transition: all 0.2s;
-}
-.thumbnail:hover, .thumbnail.active {
-  border-color: #6b21a8;
-  transform: translateY(-2px);
-}
+.thumbnails { display: flex; gap: 10px; margin-top: 12px; overflow-x: auto; padding-bottom: 4px; }
+.thumbnail { width: 100px; height: 70px; border-radius: 10px; overflow: hidden; cursor: pointer; border: 2px solid transparent; flex-shrink: 0; transition: all 0.2s; }
+.thumbnail:hover, .thumbnail.active { border-color: #6b21a8; transform: translateY(-2px); }
 .thumbnail img { width: 100%; height: 100%; object-fit: cover; }
-
-/* PRICE BADGE */
-.price-badge {
-  display: inline-block;
-  background: linear-gradient(135deg, #6b21a8, #a855f7);
-  color: white;
-  padding: 8px 16px;
-  border-radius: 9999px;
-  font-size: 14px;
-  font-weight: 700;
-  margin-bottom: 12px;
-}
-
-/* PROPERTY TITLE */
-.property-title {
-  font-size: 28px; font-weight: 800;
-  color: #111827;
-  margin-bottom: 8px;
-  letter-spacing: -0.5px;
-}
-.property-location {
-  font-size: 15px; color: #6b7280;
-  display: flex; align-items: center; gap: 6px;
-  margin-bottom: 16px;
-}
-
-/* FEATURES GRID */
-.features-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 12px;
-  margin: 20px 0;
-}
-.feature-item {
-  display: flex; align-items: center; gap: 8px;
-  padding: 12px;
-  background: #f9fafb;
-  border-radius: 10px;
-}
-.feature-icon {
-  width: 36px; height: 36px;
-  background: linear-gradient(135deg, rgba(107,33,168,0.1), rgba(168,85,247,0.1));
-  color: #6b21a8;
-  border-radius: 8px;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 14px;
-}
+.price-badge { display: inline-block; background: linear-gradient(135deg, #6b21a8, #a855f7); color: white; padding: 8px 16px; border-radius: 9999px; font-size: 14px; font-weight: 700; margin-bottom: 12px; }
+.property-title { font-size: 28px; font-weight: 800; color: #111827; margin-bottom: 8px; letter-spacing: -0.5px; }
+.property-location { font-size: 15px; color: #6b7280; display: flex; align-items: center; gap: 6px; margin-bottom: 16px; }
+.features-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin: 20px 0; }
+.feature-item { display: flex; align-items: center; gap: 8px; padding: 12px; background: #f9fafb; border-radius: 10px; }
+.feature-icon { width: 36px; height: 36px; background: linear-gradient(135deg, rgba(107,33,168,0.1), rgba(168,85,247,0.1)); color: #6b21a8; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 14px; }
 .feature-text { font-size: 13px; font-weight: 600; color: #111827; }
 .feature-label { font-size: 11px; color: #6b7280; }
-
-/* SIDEBAR */
 .sidebar { position: sticky; top: 88px; }
-.contact-card {
-  background: white; border-radius: 16px;
-  padding: 24px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-  border: 1px solid #e5e7eb;
-}
-.price-display {
-  font-size: 32px; font-weight: 800;
-  color: #6b21a8;
-  margin-bottom: 16px;
-  letter-spacing: -0.5px;
-}
-.btn {
-  width: 100%;
-  padding: 14px;
-  border-radius: 12px;
-  border: none;
-  font-size: 14px; font-weight: 700;
-  cursor: pointer;
-  display: flex; align-items: center; justify-content: center;
-  gap: 8px;
-  text-decoration: none;
-  margin-bottom: 10px;
-  transition: all 0.2s;
-}
+.contact-card { background: white; border-radius: 16px; padding: 24px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); border: 1px solid #e5e7eb; }
+.price-display { font-size: 32px; font-weight: 800; color: #6b21a8; margin-bottom: 16px; letter-spacing: -0.5px; }
+.btn { width: 100%; padding: 14px; border-radius: 12px; border: none; font-size: 14px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; text-decoration: none; margin-bottom: 10px; transition: all 0.2s; }
 .btn:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(0,0,0,0.15); }
 .btn-whatsapp { background: #25D366; color: white; }
 .btn-call { background: #6b21a8; color: white; }
 .btn-email { background: white; color: #6b21a8; border: 2px solid #6b21a8; }
 .btn-email:hover { background: #faf5ff; }
-.btn-share { 
-  background: #f9fafb; color: #374151; 
-  border: 1px solid #e5e7eb; 
-}
+.btn-share { background: #f9fafb; color: #374151; border: 1px solid #e5e7eb; }
 .btn-share:hover { background: #f3f4f6; border-color: #d1d5db; }
-
-/* AGENT CARD */
-.agent-card {
-  margin-top: 20px;
-  padding: 20px;
-  background: linear-gradient(135deg, #faf5ff, white);
-  border: 2px solid #e9d5ff;
-  border-radius: 14px;
-}
-.agent-header {
-  display: flex; gap: 14px; align-items: center;
-  margin-bottom: 14px;
-}
-.agent-avatar {
-  width: 56px; height: 56px;
-  border-radius: 50%;
-  background: linear-gradient(135deg, #6b21a8, #a855f7);
-  color: white; font-size: 22px; font-weight: 800;
-  display: flex; align-items: center; justify-content: center;
-  overflow: hidden;
-  border: 3px solid white;
-}
+.agent-card { margin-top: 20px; padding: 20px; background: linear-gradient(135deg, #faf5ff, white); border: 2px solid #e9d5ff; border-radius: 14px; }
+.agent-header { display: flex; gap: 14px; align-items: center; margin-bottom: 14px; }
+.agent-avatar { width: 56px; height: 56px; border-radius: 50%; background: linear-gradient(135deg, #6b21a8, #a855f7); color: white; font-size: 22px; font-weight: 800; display: flex; align-items: center; justify-content: center; overflow: hidden; border: 3px solid white; }
 .agent-avatar img { width: 100%; height: 100%; object-fit: cover; }
 .agent-info { flex: 1; }
-.agent-name {
-  font-size: 15px; font-weight: 700;
-  color: #111827;
-  display: flex; align-items: center; gap: 6px;
-}
+.agent-name { font-size: 15px; font-weight: 700; color: #111827; display: flex; align-items: center; gap: 6px; }
 .agent-company { font-size: 12px; color: #6b21a8; font-weight: 600; }
 .agent-stats { display: flex; gap: 12px; font-size: 11px; color: #6b7280; }
 .agent-stat { display: flex; align-items: center; gap: 4px; }
 .agent-stat strong { color: #111827; font-weight: 700; }
-.view-profile-btn {
-  width: 100%;
-  padding: 10px;
-  background: white;
-  border: 1.5px solid #6b21a8;
-  color: #6b21a8;
-  border-radius: 10px;
-  font-size: 13px; font-weight: 600;
-  cursor: pointer;
-  display: flex; align-items: center; justify-content: center;
-  gap: 6px;
-  transition: all 0.2s;
-  text-decoration: none;
-}
+.view-profile-btn { width: 100%; padding: 10px; background: white; border: 1.5px solid #6b21a8; color: #6b21a8; border-radius: 10px; font-size: 13px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; transition: all 0.2s; text-decoration: none; }
 .view-profile-btn:hover { background: #6b21a8; color: white; }
-
-/* DESCRIPTION */
 .description { font-size: 15px; color: #374151; line-height: 1.7; }
-
-/* FEATURES LIST */
 .features-list { display: flex; flex-wrap: wrap; gap: 8px; }
-.feature-chip {
-  padding: 8px 14px;
-  background: #f9fafb;
-  border: 1px solid #e5e7eb;
-  border-radius: 9999px;
-  font-size: 13px; color: #374151;
-  display: flex; align-items: center; gap: 6px;
-}
+.feature-chip { padding: 8px 14px; background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 9999px; font-size: 13px; color: #374151; display: flex; align-items: center; gap: 6px; }
 .feature-chip i { color: #10b981; font-size: 12px; }
-
-/* SIMILAR PROPERTIES */
-.similar-scroll {
-  display: flex; gap: 16px;
-  overflow-x: auto;
-  padding-bottom: 8px;
-  scroll-snap-type: x mandatory;
-}
-.similar-card {
-  flex: 0 0 260px;
-  background: white; border-radius: 14px;
-  overflow: hidden;
-  border: 1px solid #e5e7eb;
-  cursor: pointer;
-  scroll-snap-align: start;
-}
-.similar-card:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 8px 20px rgba(0,0,0,0.08);
-  border-color: #a855f7;
-}
+.similar-scroll { display: flex; gap: 16px; overflow-x: auto; padding-bottom: 8px; scroll-snap-type: x mandatory; }
+.similar-card { flex: 0 0 260px; background: white; border-radius: 14px; overflow: hidden; border: 1px solid #e5e7eb; cursor: pointer; scroll-snap-align: start; transition: all 0.2s; }
+.similar-card:hover { transform: translateY(-3px); box-shadow: 0 8px 20px rgba(0,0,0,0.08); border-color: #a855f7; }
 .similar-img { width: 100%; height: 160px; background: #f3f4f6; }
 .similar-img img { width: 100%; height: 100%; object-fit: cover; }
 .similar-body { padding: 14px; }
 .similar-price { font-size: 17px; font-weight: 800; color: #6b21a8; margin-bottom: 4px; }
-.similar-title {
-  font-size: 13px; font-weight: 600;
-  margin-bottom: 4px;
-  overflow: hidden; text-overflow: ellipsis;
-  white-space: nowrap;
-}
+.similar-title { font-size: 13px; font-weight: 600; margin-bottom: 4px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .similar-loc { font-size: 12px; color: #6b7280; display: flex; align-items: center; gap: 4px; }
-
-/* MOBILE BAR */
-.mobile-bar {
-  position: fixed; bottom: 0; left: 0; right: 0;
-  background: white; border-top: 2px solid #6b21a8;
-  padding: 12px; z-index: 99;
-  display: none; gap: 8px;
-  box-shadow: 0 -4px 16px rgba(0,0,0,0.08);
-}
+.mobile-bar { position: fixed; bottom: 0; left: 0; right: 0; background: white; border-top: 2px solid #6b21a8; padding: 12px; z-index: 99; display: none; gap: 8px; box-shadow: 0 -4px 16px rgba(0,0,0,0.08); }
 .mobile-bar .btn { flex: 1; padding: 12px; font-size: 13px; margin: 0; }
-
-/* LOADING & EMPTY */
 .loading { text-align: center; padding: 60px 20px; color: #6b7280; }
 .loading i { font-size: 48px; animation: spin 1s linear infinite; }
 @keyframes spin { 100% { transform: rotate(360deg); } }
 .empty { text-align: center; padding: 40px 20px; color: #9ca3af; }
 .empty i { font-size: 36px; margin-bottom: 10px; }
-
 @media (max-width: 768px) {
   .container { padding: 0 16px; }
   .main-image { height: 280px; }
@@ -323,12 +102,8 @@ body {
 <body>
 
 <nav class="nav">
-  <a href="/" class="logo">
-    <i class="fas fa-home"></i> Properties in Kenya
-  </a>
-  <a href="/" class="back-btn">
-    <i class="fas fa-arrow-left"></i> Back
-  </a>
+  <a href="/" class="logo"><i class="fas fa-home"></i> Properties in Kenya</a>
+  <a href="/" class="back-btn"><i class="fas fa-arrow-left"></i> Back</a>
 </nav>
 
 <div class="container">
@@ -340,9 +115,7 @@ body {
 
     <div id="propertyContent" style="display:none;">
       <section class="hero-gallery">
-        <div class="main-image">
-          <img id="mainImage" src="" alt="">
-        </div>
+        <div class="main-image"><img id="mainImage" src="" alt=""></div>
         <div class="thumbnails" id="thumbnails"></div>
       </section>
 
@@ -380,7 +153,7 @@ body {
     <div class="contact-card">
       <div class="price-display" id="sidebarPrice">KES 0</div>
       
-      <a href="#" id="btnWhatsApp" target="_blank" class="btn btn-whatsapp">
+      <a href="#" id="btnWhatsApp" target="_blank" rel="noopener noreferrer" class="btn btn-whatsapp">
         <i class="fab fa-whatsapp"></i> WhatsApp Agent
       </a>
       <a href="#" id="btnCall" class="btn btn-call">
@@ -390,8 +163,7 @@ body {
         <i class="fas fa-envelope"></i> Email Agent
       </a>
       
-      <!-- NEW: SHARE BUTTON -->
-      <a href="#" id="shareWhatsApp" target="_blank" class="btn btn-share">
+      <a href="#" id="shareWhatsApp" target="_blank" rel="noopener noreferrer" class="btn btn-share">
         <i class="fas fa-share-alt"></i> Share Property
       </a>
 
@@ -425,335 +197,374 @@ body {
 </div>
 
 <div class="mobile-bar">
-  <a href="#" id="mobileCall" class="btn btn-call">
-    <i class="fas fa-phone"></i> Call
-  </a>
-  <a href="#" id="mobileWhatsApp" target="_blank" class="btn btn-whatsapp">
-    <i class="fab fa-whatsapp"></i> WhatsApp
-  </a>
+  <a href="#" id="mobileCall" class="btn btn-call"><i class="fas fa-phone"></i> Call</a>
+  <a href="#" id="mobileWhatsApp" target="_blank" rel="noopener noreferrer" class="btn btn-whatsapp"><i class="fab fa-whatsapp"></i> WhatsApp</a>
 </div>
 
 <script>
-const sb = supabase.createClient(
-  "https://nqwvsmuvltbiekfnvovx.supabase.co",
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5xd3ZzbXV2bHRiaWVrZm52b3Z4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA1NjU4MDAsImV4cCI6MjA5NjE0MTgwMH0.Xrc-bbAuWdvKSPHnVhTaLiQphV61xeYtDepWePqsrdo"
-);
+(function() {
+    'use strict';
 
-// ==========================================
-// 1. SUPABASE FAST CACHING SYSTEM
-// ==========================================
-let PROPERTY_CACHE = null;
-let CACHE_TIME = null;
-const CACHE_DURATION = 5 * 60 * 1000; // 5 minutes
-
-async function fetchAllProperties() {
-    const now = Date.now();
-    // Return cached data if it's fresh
-    if (PROPERTY_CACHE && CACHE_TIME && (now - CACHE_TIME < CACHE_DURATION)) {
-        return PROPERTY_CACHE;
-    }
-
-    // Fetch from Supabase
-    const { data, error } = await sb
-        .from("properties")
-        .select("*")
-        .eq("approval_status", "approved");
-
-    if (!error && data) {
-        PROPERTY_CACHE = data;
-        CACHE_TIME = now;
-        return data;
-    }
-    return [];
-}
-
-let property = null;
-let agent = null;
-let currentImageIndex = 0;
-
-const esc = t => {
-  const d = document.createElement('div');
-  d.textContent = t || '';
-  return d.innerHTML;
-};
-
-function showErrorState(title, msg = "") {
-    document.getElementById('loadingState').innerHTML = `
-      <div class="empty">
-        <i class="fas fa-exclamation-circle"></i>
-        <h3>${title}</h3>
-        ${msg ? `<p>${msg}</p>` : ''}
-        <a href="/" class="btn btn-call" style="display:inline-block; margin-top:16px;">Browse Properties</a>
-      </div>
-    `;
-}
-
-async function loadProperty() {
-  const params = new URLSearchParams(location.search);
-  const id = params.get('id');
-
-  if (!id) {
-    showErrorState("No property ID provided");
-    return;
-  }
-
-  // Fetch all properties (utilizing cache)
-  const allProperties = await fetchAllProperties();
-  
-  // Find current property in the cached array
-  property = allProperties.find(p => p.id === id);
-
-  if (!property) {
-    showErrorState("Property not found", "This property may have been sold or removed.");
-    return;
-  }
-
-  // Load agent
-  if (property.agent_id) {
-    const { data: agentData } = await sb
-      .from('profiles')
-      .select('*')
-      .eq('id', property.agent_id)
-      .single();
-    agent = agentData;
-  }
-
-  // Increment views (fire and forget)
-  sb.from('properties').update({ views_count: (property.views_count || 0) + 1 }).eq('id', id);
-
-  renderProperty();
-  if (agent) renderAgent();
-  renderSimilarProperties(allProperties);
-  injectStructuredData();
-}
-
-function renderProperty() {
-  document.getElementById('loadingState').style.display = 'none';
-  document.getElementById('propertyContent').style.display = 'block';
-
-  // ==========================================
-  // 2. SEO-FRIENDLY DYNAMIC META TAGS
-  // ==========================================
-  const title = `${property.title} | ${property.location} | KES ${Number(property.price).toLocaleString()}`;
-  document.title = title;
-  
-  const desc = property.description || `View ${property.title} in ${property.location}. Listed for KES ${Number(property.price).toLocaleString()}.`;
-  document.getElementById('pageDescription').setAttribute('content', desc.substring(0, 160));
-  document.getElementById('ogTitle').setAttribute('content', title);
-  document.getElementById('ogDescription').setAttribute('content', desc.substring(0, 160));
-  
-  const mainImg = property.images?.[0] || property.image_url || 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=1200&q=80';
-  document.getElementById('ogImage').setAttribute('content', mainImg);
-  document.getElementById('canonical').setAttribute('href', `https://propertiesinkenya.co.ke/property.html?id=${property.id}`);
-
-  // Images
-  const images = property.images?.length > 0 ? property.images : [mainImg];
-  document.getElementById('mainImage').src = images[0];
-  document.getElementById('mainImage').alt = property.title;
-
-  const thumbnailsHTML = images.map((img, i) => `
-    <div class="thumbnail ${i === 0 ? 'active' : ''}" onclick="changeImage(${i})">
-      <img src="${img}" alt="">
-    </div>
-  `).join('');
-  document.getElementById('thumbnails').innerHTML = thumbnailsHTML;
-
-  // Basic info
-  document.getElementById('propertyType').textContent = (property.property_type || 'FOR SALE').toUpperCase();
-  document.getElementById('propertyTitle').textContent = property.title;
-  document.getElementById('propertyLocation').textContent = property.location || 'Kenya';
-  document.getElementById('sidebarPrice').textContent = `KES ${Number(property.price).toLocaleString()}`;
-
-  // Features grid
-  const features = [];
-  if (property.bedrooms) features.push({ icon: 'fa-bed', label: 'Bedrooms', value: property.bedrooms });
-  if (property.bathrooms) features.push({ icon: 'fa-bath', label: 'Bathrooms', value: property.bathrooms });
-  if (property.area) features.push({ icon: 'fa-ruler-combined', label: 'Size', value: `${property.area} ${property.area_unit || 'sqm'}` });
-  if (property.parking) features.push({ icon: 'fa-car', label: 'Parking', value: property.parking });
-
-  document.getElementById('featuresGrid').innerHTML = features.map(f => `
-    <div class="feature-item">
-      <div class="feature-icon"><i class="fas ${f.icon}"></i></div>
-      <div>
-        <div class="feature-text">${f.value}</div>
-        <div class="feature-label">${f.label}</div>
-      </div>
-    </div>
-  `).join('');
-
-  // Description
-  document.getElementById('propertyDescription').textContent = property.description || 'No description available.';
-
-  // Safe Feature Parser
-  let featuresList = property.features || [];
-  if (typeof featuresList === 'string') {
-      const str = featuresList.trim();
-      if (str.startsWith('[')) {
-          try {
-              const parsed = JSON.parse(str);
-              featuresList = Array.isArray(parsed) ? parsed : str.split(',').map(f => f.trim()).filter(Boolean);
-          } catch (e) {
-              featuresList = str.split(',').map(f => f.trim()).filter(Boolean);
-          }
-      } else {
-          featuresList = str.split(',').map(f => f.trim()).filter(Boolean);
-      }
-  }
-  featuresList = featuresList.map(f => String(f).trim()).filter(f => f);
-
-  if (featuresList.length > 0) {
-      document.getElementById('featuresList').innerHTML = featuresList.map(f => `
-          <div class="feature-chip"><i class="fas fa-check"></i> ${esc(f)}</div>
-      `).join('');
-  }
-
-  // Contact buttons
-  if (agent) {
-    const phone = agent.phone || agent.whatsapp_number || '';
-    const waPhone = (agent.whatsapp_number || phone).replace(/[^0-9]/g, '');
-    const waMsg = encodeURIComponent(`Hi ${agent.full_name?.split(' ')[0]}, I'm interested in: ${property.title} (KES ${Number(property.price).toLocaleString()})`);
-
-    document.getElementById('btnWhatsApp').href = `https://wa.me/${waPhone}?text=${waMsg}`;
-    document.getElementById('btnCall').href = `tel:${phone}`;
-    document.getElementById('btnEmail').href = `mailto:${agent.email || ''}`;
-    document.getElementById('mobileWhatsApp').href = `https://wa.me/${waPhone}?text=${waMsg}`;
-    document.getElementById('mobileCall').href = `tel:${phone}`;
-  }
-
-  // Setup Share Link
-  setupWhatsAppShare();
-}
-
-// ==========================================
-// 3. SHAREABLE WHATSAPP LINKS
-// ==========================================
-function setupWhatsAppShare() {
-    const shareUrl = `${window.location.origin}/property.html?id=${property.id}`;
-    const whatsappShareText = encodeURIComponent(
-        `🏡 *${property.title}*\n\n` +
-        `💰 Price: KES ${Number(property.price).toLocaleString()}\n` +
-        `📍 Location: ${property.location || 'Kenya'}\n\n` +
-        `View property here:\n${shareUrl}`
+    // ==========================================
+    // 1. CONFIGURATION & STATE
+    // ==========================================
+    const sb = supabase.createClient(
+        "https://nqwvsmuvltbiekfnvovx.supabase.co",
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5xd3ZzbXV2bHRiaWVrZm52b3Z4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA1NjU4MDAsImV4cCI6MjA5NjE0MTgwMH0.Xrc-bbAuWdvKSPHnVhTaLiQphV61xeYtDepWePqsrdo"
     );
-    const whatsappShareLink = `https://wa.me/?text=${whatsappShareText}`;
-    
-    const shareBtn = document.getElementById("shareWhatsApp");
-    if(shareBtn) {
-        shareBtn.href = whatsappShareLink;
-    }
-}
 
-// ==========================================
-// 4. SEO STRUCTURED DATA (JSON-LD)
-// ==========================================
-function injectStructuredData() {
-    const existing = document.getElementById('dynamic-property-schema');
-    if (existing) existing.remove();
-
-    const img = property.images?.[0] || property.image_url || 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=1200&q=80';
-    
-    const schema = {
-      "@context": "https://schema.org",
-      "@type": "RealEstateListing",
-      "name": property.title,
-      "description": (property.description || '').substring(0, 500),
-      "url": `https://propertiesinkenya.co.ke/property.html?id=${property.id}`,
-      "image": img,
-      "address": {
-        "@type": "PostalAddress",
-        "addressLocality": property.location || "Nairobi",
-        "addressCountry": "KE"
-      },
-      "offers": {
-        "@type": "Offer",
-        "price": property.price,
-        "priceCurrency": "KES",
-        "availability": "https://schema.org/InStock"
-      }
+    const state = {
+        property: null,
+        agent: null,
+        images: [],
+        currentImageIndex: 0
     };
 
-    const script = document.createElement("script");
-    script.type = "application/ld+json";
-    script.id = "dynamic-property-schema";
-    script.textContent = JSON.stringify(schema);
-    document.head.appendChild(script);
-}
-
-function renderAgent() {
-  const init = (agent.full_name || 'A').charAt(0).toUpperCase();
-  document.getElementById('agentAvatar').innerHTML = agent.avatar_url
-    ? `<img src="${agent.avatar_url}" onerror="this.parentElement.innerHTML='${init}'">`
-    : init;
-
-  document.getElementById('agentName').innerHTML = `
-    ${esc(agent.full_name || 'Agent')}
-    <i class="fas fa-check-circle" style="color:#10b981; font-size:12px;"></i>
-  `;
-  document.getElementById('agentCompany').textContent = agent.company || 'Independent Agent';
-  document.getElementById('agentRating').textContent = (agent.average_rating || 0).toFixed(1);
-  document.getElementById('agentTrust').textContent = agent.trust_score || 0;
-
-  const agentUrl = agent.slug ? `/agent/${agent.slug}` : `/agent-profile.html?id=${agent.id}`;
-  document.getElementById('viewAgentProfile').href = agentUrl;
-}
-
-function changeImage(index) {
-  currentImageIndex = index;
-  const images = property.images?.length > 0 ? property.images : [property.image_url];
-  document.getElementById('mainImage').src = images[index];
-  document.querySelectorAll('.thumbnail').forEach((t, i) => {
-    t.classList.toggle('active', i === index);
-  });
-}
-
-// ==========================================
-// 5. SIMILAR PROPERTIES ENGINE
-// ==========================================
-function getSimilarProperties(currentProperty, allProperties) {
-    return allProperties
-        .filter(p =>
-            p.id !== currentProperty.id &&
-            (
-                p.location === currentProperty.location ||
-                p.property_type === currentProperty.property_type ||
-                Math.abs(p.price - currentProperty.price) < 1000000
-            )
-        )
-        .slice(0, 6);
-}
-
-function renderSimilarProperties(allProperties) {
-    const similar = getSimilarProperties(property, allProperties);
-    const container = document.getElementById('similarProperties');
-
-    if (!similar || similar.length === 0) {
-        container.innerHTML = '<div class="empty"><i class="fas fa-search"></i> No similar properties found</div>';
-        return;
+    // ==========================================
+    // 2. UTILITIES
+    // ==========================================
+    function esc(str) {
+        if (!str) return '';
+        const div = document.createElement('div');
+        div.textContent = str;
+        return div.innerHTML;
     }
 
-    container.innerHTML = similar.map(p => {
-        const img = p.images?.[0] || p.image_url || 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=400&q=80';
-        return `
-        <div class="similar-card" onclick="location.href='?id=${p.id}'">
-            <div class="similar-img">
-            <img src="${img}" alt="${esc(p.title)}">
-            </div>
-            <div class="similar-body">
-            <div class="similar-price">KES ${Number(p.price).toLocaleString()}</div>
-            <div class="similar-title">${esc(p.title)}</div>
-            <div class="similar-loc">
-                <i class="fas fa-map-marker-alt"></i> ${esc(p.location)}
-            </div>
-            </div>
-        </div>
+    function formatKES(amount) {
+        return new Intl.NumberFormat('en-KE', { style: 'currency', currency: 'KES', maximumFractionDigits: 0 }).format(amount || 0);
+    }
+
+    // 🔒 FIX: Safely parse JSON strings or arrays from Supabase
+    function parseJsonArray(data) {
+        if (!data) return [];
+        if (Array.isArray(data)) return data;
+        if (typeof data === 'string') {
+            try {
+                const parsed = JSON.parse(data);
+                return Array.isArray(parsed) ? parsed : [];
+            } catch (e) {
+                return [];
+            }
+        }
+        return [];
+    }
+
+    function formatWhatsApp(phone) {
+        if (!phone) return '';
+        let clean = phone.replace(/\D/g, '');
+        if (clean.startsWith('0')) clean = '254' + clean.substring(1);
+        if (clean.startsWith('+')) clean = clean.substring(1);
+        return clean;
+    }
+
+    function showErrorState(title, msg = "") {
+        document.getElementById('loadingState').innerHTML = `
+          <div class="empty">
+            <i class="fas fa-exclamation-circle"></i>
+            <h3>${esc(title)}</h3>
+            ${msg ? `<p>${esc(msg)}</p>` : ''}
+            <a href="/" class="btn btn-call" style="display:inline-block; margin-top:16px;">Browse Properties</a>
+          </div>
         `;
-    }).join('');
-}
+    }
 
-window.changeImage = changeImage;
+    // ==========================================
+    // 3. DATA LOADING (Targeted Queries)
+    // ==========================================
+    async function loadProperty() {
+        const params = new URLSearchParams(location.search);
+        const id = params.get('id');
 
-// Initialize
-loadProperty();
+        if (!id) {
+            showErrorState("No property ID provided");
+            return;
+        }
+
+        try {
+            // 🔥 PERFORMANCE FIX: Fetch ONLY the specific property, not the whole database
+            const { data: propertyData, error } = await sb
+                .from("properties")
+                .select("*")
+                .eq("id", id)
+                .eq("approval_status", "approved")
+                .single();
+
+            if (error || !propertyData) {
+                showErrorState("Property not found", "This property may have been sold or removed.");
+                return;
+            }
+
+            state.property = propertyData;
+            state.images = parseJsonArray(propertyData.images);
+            if (state.images.length === 0 && propertyData.image_url) {
+                state.images = [propertyData.image_url];
+            }
+            if (state.images.length === 0) {
+                state.images = ['https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=1200&q=80'];
+            }
+
+            // Load Agent
+            if (propertyData.agent_id) {
+                const { data: agentData } = await sb
+                    .from('profiles')
+                    .select('*')
+                    .eq('id', propertyData.agent_id)
+                    .single();
+                state.agent = agentData;
+            }
+
+            // 🔒 SECURITY FIX: Atomic view increment via RPC
+            sb.rpc('increment_property_views', { p_id: id }).catch(err => console.warn('View increment failed:', err));
+
+            renderProperty();
+            if (state.agent) renderAgent();
+            
+            // 🔥 PERFORMANCE FIX: Fetch similar properties via targeted query
+            loadSimilarProperties();
+            injectStructuredData();
+
+        } catch (err) {
+            console.error('Load error:', err);
+            showErrorState("Failed to load property", "Please check your connection and try again.");
+        }
+    }
+
+    async function loadSimilarProperties() {
+        const p = state.property;
+        const { data } = await sb
+            .from('properties')
+            .select('id, title, price, location, images, image_url, property_type')
+            .eq('approval_status', 'approved')
+            .neq('id', p.id)
+            .or(`location.eq.${p.location},property_type.eq.${p.property_type}`)
+            .limit(10);
+
+        if (!data || data.length === 0) {
+            document.getElementById('similarProperties').innerHTML = '<div class="empty"><i class="fas fa-search"></i> No similar properties found</div>';
+            return;
+        }
+
+        // Sort by relevance (same location first)
+        data.sort((a, b) => {
+            const aMatch = a.location === p.location ? 1 : 0;
+            const bMatch = b.location === p.location ? 1 : 0;
+            return bMatch - aMatch;
+        });
+
+        renderSimilarProperties(data.slice(0, 6));
+    }
+
+    // ==========================================
+    // 4. RENDERING
+    // ==========================================
+    function renderProperty() {
+        const p = state.property;
+        document.getElementById('loadingState').style.display = 'none';
+        document.getElementById('propertyContent').style.display = 'block';
+
+        // SEO Meta Tags (Note: See critical SEO warning below)
+        const title = `${p.title} | ${p.location} | ${formatKES(p.price)}`;
+        document.title = title;
+        const desc = p.description || `View ${p.title} in ${p.location}. Listed for ${formatKES(p.price)}.`;
+        document.getElementById('pageDescription').setAttribute('content', desc.substring(0, 160));
+        document.getElementById('ogTitle').setAttribute('content', title);
+        document.getElementById('ogDescription').setAttribute('content', desc.substring(0, 160));
+        document.getElementById('ogImage').setAttribute('content', state.images[0]);
+        document.getElementById('canonical').setAttribute('href', `https://propertiesinkenya.co.ke/property.html?id=${p.id}`);
+
+        // Images
+        document.getElementById('mainImage').src = state.images[0];
+        document.getElementById('mainImage').alt = p.title;
+
+        document.getElementById('thumbnails').innerHTML = state.images.map((img, i) => `
+            <div class="thumbnail ${i === 0 ? 'active' : ''}" data-index="${i}">
+                <img src="${esc(img)}" alt="Thumbnail ${i + 1}" loading="lazy">
+            </div>
+        `).join('');
+
+        // Basic info
+        document.getElementById('propertyType').textContent = (p.property_type || 'FOR SALE').toUpperCase();
+        document.getElementById('propertyTitle').textContent = p.title;
+        document.getElementById('propertyLocation').textContent = p.location || 'Kenya';
+        document.getElementById('sidebarPrice').textContent = formatKES(p.price);
+
+        // Features grid
+        const features = [];
+        if (p.bedrooms) features.push({ icon: 'fa-bed', label: 'Bedrooms', value: p.bedrooms });
+        if (p.bathrooms) features.push({ icon: 'fa-bath', label: 'Bathrooms', value: p.bathrooms });
+        if (p.area) features.push({ icon: 'fa-ruler-combined', label: 'Size', value: `${p.area} ${p.area_unit || 'sqm'}` });
+        if (p.parking) features.push({ icon: 'fa-car', label: 'Parking', value: p.parking });
+
+        document.getElementById('featuresGrid').innerHTML = features.map(f => `
+            <div class="feature-item">
+                <div class="feature-icon"><i class="fas ${f.icon}"></i></div>
+                <div>
+                    <div class="feature-text">${esc(f.value)}</div>
+                    <div class="feature-label">${esc(f.label)}</div>
+                </div>
+            </div>
+        `).join('');
+
+        // Description
+        document.getElementById('propertyDescription').textContent = p.description || 'No description available.';
+
+        // Amenities
+        const amenities = parseJsonArray(p.features || p.amenities);
+        if (amenities.length > 0) {
+            document.getElementById('featuresList').innerHTML = amenities.map(f => `
+                <div class="feature-chip"><i class="fas fa-check"></i> ${esc(f)}</div>
+            `).join('');
+        }
+
+        // Contact buttons
+        setupContactButtons();
+        setupWhatsAppShare();
+    }
+
+    function setupContactButtons() {
+        const agent = state.agent;
+        const btnWA = document.getElementById('btnWhatsApp');
+        const btnCall = document.getElementById('btnCall');
+        const btnEmail = document.getElementById('btnEmail');
+        const mobileWA = document.getElementById('mobileWhatsApp');
+        const mobileCall = document.getElementById('mobileCall');
+
+        if (!agent) {
+            [btnWA, btnCall, btnEmail, mobileWA, mobileCall].forEach(el => el.style.display = 'none');
+            return;
+        }
+
+        const phone = agent.phone || agent.whatsapp_number || '';
+        const email = agent.email || '';
+        const waPhone = formatWhatsApp(agent.whatsapp_number || phone);
+        const waMsg = encodeURIComponent(`Hi ${agent.full_name?.split(' ')[0]}, I'm interested in: ${state.property.title} (${formatKES(state.property.price)})`);
+
+        if (waPhone) {
+            btnWA.href = `https://wa.me/${waPhone}?text=${waMsg}`;
+            mobileWA.href = `https://wa.me/${waPhone}?text=${waMsg}`;
+        } else { btnWA.style.display = 'none'; mobileWA.style.display = 'none'; }
+
+        if (phone) {
+            btnCall.href = `tel:${encodeURIComponent(phone)}`;
+            mobileCall.href = `tel:${encodeURIComponent(phone)}`;
+        } else { btnCall.style.display = 'none'; mobileCall.style.display = 'none'; }
+
+        if (email) {
+            btnEmail.href = `mailto:${encodeURIComponent(email)}`;
+        } else { btnEmail.style.display = 'none'; }
+    }
+
+    function setupWhatsAppShare() {
+        const shareUrl = `${window.location.origin}/property.html?id=${state.property.id}`;
+        const whatsappShareText = encodeURIComponent(
+            `🏡 *${state.property.title}*\n\n` +
+            `💰 Price: ${formatKES(state.property.price)}\n` +
+            `📍 Location: ${state.property.location || 'Kenya'}\n\n` +
+            `View property here:\n${shareUrl}`
+        );
+        document.getElementById("shareWhatsApp").href = `https://wa.me/?text=${whatsappShareText}`;
+    }
+
+    function renderAgent() {
+        const agent = state.agent;
+        const init = (agent.full_name || 'A').charAt(0).toUpperCase();
+        const avatarEl = document.getElementById('agentAvatar');
+        
+        // 🔒 SECURITY FIX: CSP-compliant image rendering without inline onerror
+        if (agent.avatar_url) {
+            const img = document.createElement('img');
+            img.src = agent.avatar_url;
+            img.alt = agent.full_name;
+            img.style.cssText = 'width:100%;height:100%;object-fit:cover;';
+            img.onerror = () => { 
+                img.remove(); 
+                avatarEl.textContent = init; 
+            };
+            avatarEl.innerHTML = '';
+            avatarEl.appendChild(img);
+        } else {
+            avatarEl.textContent = init;
+        }
+
+        document.getElementById('agentName').innerHTML = `${esc(agent.full_name || 'Agent')} <i class="fas fa-check-circle" style="color:#10b981; font-size:12px;"></i>`;
+        document.getElementById('agentCompany').textContent = agent.company || 'Independent Agent';
+        document.getElementById('agentRating').textContent = (agent.average_rating || 0).toFixed(1);
+        document.getElementById('agentTrust').textContent = agent.trust_score || 0;
+
+        const agentUrl = agent.slug ? `/agent/${encodeURIComponent(agent.slug)}` : `/agent-profile.html?id=${encodeURIComponent(agent.id)}`;
+        document.getElementById('viewAgentProfile').href = agentUrl;
+    }
+
+    function renderSimilarProperties(properties) {
+        const container = document.getElementById('similarProperties');
+        container.innerHTML = properties.map(p => {
+            const imgs = parseJsonArray(p.images);
+            const img = imgs[0] || p.image_url || 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=400&q=80';
+            return `
+            <div class="similar-card" data-id="${esc(p.id)}">
+                <div class="similar-img"><img src="${esc(img)}" alt="${esc(p.title)}" loading="lazy"></div>
+                <div class="similar-body">
+                    <div class="similar-price">${formatKES(p.price)}</div>
+                    <div class="similar-title">${esc(p.title)}</div>
+                    <div class="similar-loc"><i class="fas fa-map-marker-alt"></i> ${esc(p.location)}</div>
+                </div>
+            </div>`;
+        }).join('');
+    }
+
+    function injectStructuredData() {
+        const existing = document.getElementById('dynamic-property-schema');
+        if (existing) existing.remove();
+
+        const schema = {
+          "@context": "https://schema.org",
+          "@type": "RealEstateListing",
+          "name": state.property.title,
+          "description": (state.property.description || '').substring(0, 500),
+          "url": `https://propertiesinkenya.co.ke/property.html?id=${state.property.id}`,
+          "image": state.images[0],
+          "address": { "@type": "PostalAddress", "addressLocality": state.property.location || "Nairobi", "addressCountry": "KE" },
+          "offers": { "@type": "Offer", "price": state.property.price, "priceCurrency": "KES", "availability": "https://schema.org/InStock" }
+        };
+
+        const script = document.createElement("script");
+        script.type = "application/ld+json";
+        script.id = "dynamic-property-schema";
+        script.textContent = JSON.stringify(schema);
+        document.head.appendChild(script);
+    }
+
+    // ==========================================
+    // 5. EVENT DELEGATION
+    // ==========================================
+    function initEventListeners() {
+        // Thumbnails
+        document.getElementById('thumbnails').addEventListener('click', (e) => {
+            const thumb = e.target.closest('.thumbnail');
+            if (thumb) {
+                const index = parseInt(thumb.dataset.index, 10);
+                state.currentImageIndex = index;
+                document.getElementById('mainImage').src = state.images[index];
+                document.querySelectorAll('.thumbnail').forEach((t, i) => t.classList.toggle('active', i === index));
+            }
+        });
+
+        // Similar Properties
+        document.getElementById('similarProperties').addEventListener('click', (e) => {
+            const card = e.target.closest('.similar-card');
+            if (card) {
+                window.location.href = `?id=${encodeURIComponent(card.dataset.id)}`;
+            }
+        });
+    }
+
+    // Start App
+    document.addEventListener('DOMContentLoaded', () => {
+        initEventListeners();
+        loadProperty();
+    });
+
+})();
 </script>
 
 </body>
