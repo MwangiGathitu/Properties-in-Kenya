@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Agent Dashboard - Properties in Kenya</title>
-    <!-- NOTE: For production, replace this CDN with a pre-compiled Tailwind CSS file -->
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -342,7 +341,7 @@
     // 1. CONFIGURATION & STATE
     // ==========================================
     const supabase = window.supabase.createClient(
-        'https://nqvsmuvltbiekfnvovx.supabase.co',
+        'https://nqwvsmuvltbiekfnvovx.supabase.co',
         'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5xd3ZzbXV2bHRiaWVrZm52b3Z4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA1NjU4MDAsImV4cCI6MjA5NjE0MTgwMH0.Xrc-bbAuWdvKSPHnVhTaLiQphV61xeYtDepWePqsrdo'
     );
 
@@ -451,17 +450,20 @@
     // ==========================================
     async function checkAuth() {
         try {
-            const { data: { user }, error } = await supabase.auth.getUser();
-            if (error || !user) {
-                window.location.href = 'login.html';
-                return;
+            // 🔒 FIX: Use getSession() instead of getUser() to prevent redirect loops/flickering
+            const { data: { session } } = await supabase.auth.getSession();
+            
+            if (!session?.user) { 
+                window.location.href = 'login.html?role=agent'; 
+                return; 
             }
-            state.user = user;
+            
+            state.user = session.user;
             await loadDashboard();
             setupRealtimeNotifications();
         } catch (err) {
             console.error('Auth check failed:', err);
-            window.location.href = 'login.html';
+            window.location.href = 'login.html?role=agent';
         }
     }
 
@@ -772,7 +774,7 @@
 
     async function logout() {
         await supabase.auth.signOut();
-        window.location.href = 'login.html';
+        window.location.href = 'login.html?role=agent';
     }
 
     function initEventListeners() {
