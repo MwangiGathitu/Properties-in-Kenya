@@ -45,6 +45,11 @@
 </head>
 <body class="bg-gray-50">
 
+<!-- 🔒 FIX: Full screen loader to prevent visual flipping/flickering -->
+<div id="auth-loader" style="position:fixed; inset:0; background:white; z-index:9999; display:flex; align-items:center; justify-content:center;">
+    <i class="fas fa-spinner fa-spin text-4xl text-amber-500"></i>
+</div>
+
 <!-- Mobile Menu Button -->
 <button id="mobile-menu-btn" class="lg:hidden fixed top-4 left-4 z-50 bg-white p-3 rounded-xl shadow-lg" aria-label="Toggle mobile menu">
     <i class="fas fa-bars text-gray-700"></i>
@@ -450,17 +455,32 @@
     // ==========================================
     async function checkAuth() {
         try {
-            // 🔒 FIX: Use getSession() instead of getUser() to prevent redirect loops/flickering
+            // 1. Check local browser session
             const { data: { session } } = await supabase.auth.getSession();
-            
-            if (!session?.user) { 
-                window.location.href = 'login.html?role=agent'; 
-                return; 
+
+            if (!session) {
+                window.location.href = 'login.html?role=agent';
+                return;
             }
+
+            // 2. 🔒 BULLETPROOF FIX: Verify the session is actually valid on the server.
+            // This kills the "Ghost Session" redirect loop.
+            const { data: { user }, error } = await supabase.auth.getUser();
+
+            if (error || !user) {
+                // The local session was broken/expired. Sign out completely to clear it.
+                await supabase.auth.signOut();
+                window.location.href = 'login.html?role=agent';
+                return;
+            }
+
+            // 3. Session is 100% valid. Hide the loader and proceed.
+            state.user = user;
+            document.getElementById('auth-loader').style.display = 'none';
             
-            state.user = session.user;
             await loadDashboard();
             setupRealtimeNotifications();
+
         } catch (err) {
             console.error('Auth check failed:', err);
             window.location.href = 'login.html?role=agent';
