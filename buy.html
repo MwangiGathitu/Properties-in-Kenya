@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Buy Property in Kenya — Properties in Kenya</title>
-  <meta name="description" content="Browse verified houses, apartments, land, villas, and commercial properties for sale across Kenya." />
+  <meta name="description" content="Find verified houses, apartments, land, villas, and commercial properties for sale across Kenya." />
   <meta name="theme-color" content="#B8922E" />
 
   <!-- Fonts & Icons -->
@@ -37,7 +37,6 @@
       --radius-xl: 24px;
       --transition-fast: 150ms ease;
       --transition-base: 250ms ease;
-      --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
     }
 
     /* =============================================
@@ -46,7 +45,7 @@
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     html { scroll-behavior: smooth; -webkit-font-smoothing: antialiased; }
     body {
-      font-family: var(--font-sans);
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
       font-size: 16px;
       line-height: 1.6;
       color: var(--text-primary);
@@ -59,16 +58,12 @@
     :focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
 
     /* =============================================
-       UTILITY CLASSES
+       UTILITY
     ============================================= */
     .container { max-width: 1280px; margin: 0 auto; padding: 0 24px; }
-    .text-center { text-align: center; }
-    .mt-6 { margin-top: 24px; }
-    .mb-6 { margin-bottom: 24px; }
-    .hidden { display: none !important; }
 
     /* =============================================
-       NAVIGATION (simple, sticky)
+       NAVIGATION
     ============================================= */
     .nav {
       position: sticky; top: 0; z-index: 100;
@@ -79,14 +74,10 @@
       max-width: 1280px; margin: 0 auto; padding: 0 24px;
       height: 100%; display: flex; align-items: center; justify-content: space-between;
     }
-    .nav-logo {
-      display: flex; align-items: center; gap: 12px;
-      font-weight: 700; font-size: 1.25rem; color: var(--text-primary);
-    }
+    .nav-logo { display: flex; align-items: center; gap: 12px; font-weight: 700; font-size: 1.25rem; }
     .nav-logo-icon {
       width: 36px; height: 36px; background: linear-gradient(135deg, var(--gold), var(--gold-light));
-      border-radius: var(--radius-md); display: grid; place-items: center;
-      color: white; font-size: 1rem;
+      border-radius: var(--radius-md); display: grid; place-items: center; color: white; font-size: 1rem;
     }
     .nav-links { display: flex; gap: 4px; }
     .nav-link {
@@ -95,8 +86,15 @@
       transition: background var(--transition-fast), color var(--transition-fast);
     }
     .nav-link:hover, .nav-link.active { background: rgba(184,146,46,0.1); color: var(--gold-dark); }
+    .btn-signin {
+      background: var(--gold); color: white; font-weight: 600; padding: 8px 20px;
+      border-radius: 9999px; font-size: 0.875rem;
+      box-shadow: 0 4px 12px rgba(184,146,46,0.3);
+      transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+    }
+    .btn-signin:hover { transform: translateY(-1px); box-shadow: 0 8px 20px rgba(184,146,46,0.4); }
 
-    /* Hamburger – hidden on desktop */
+    /* Hamburger */
     .hamburger { display: none; width: 40px; height: 40px; border-radius: var(--radius-sm); flex-direction: column; align-items: center; justify-content: center; gap: 5px; }
     .hamburger-line { width: 20px; height: 2px; background: var(--text-primary); border-radius: 2px; transition: var(--transition-base); }
 
@@ -106,26 +104,26 @@
     .mobile-link { padding: 14px 0; border-bottom: 1px solid var(--border); font-weight: 500; }
 
     /* =============================================
-       HERO SECTION
+       HERO (glassmorphism search container)
     ============================================= */
     .hero {
       position: relative; background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.6)),
-                  url('https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=1500&q=80') center/cover no-repeat;
+                  url('https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=1500&q=80') center/cover no-repeat;
       min-height: 70vh; display: flex; align-items: center; justify-content: center;
       text-align: center; color: white; padding: 80px 24px;
     }
-    .hero-content { max-width: 800px; }
-    .hero-title { font-size: clamp(2rem, 5vw, 3.5rem); font-weight: 800; letter-spacing: -0.02em; margin-bottom: 16px; }
+    .hero-content { max-width: 900px; }
+    .hero-title { font-size: clamp(2rem, 5vw, 3.5rem); font-weight: 800; letter-spacing: -0.02em; margin-bottom: 12px; }
     .hero-subtitle { font-size: 1.125rem; opacity: 0.9; margin-bottom: 32px; }
 
-    /* Search container (glassmorphism) */
+    /* Search container – glassmorphism */
     .search-container {
       background: rgba(255,255,255,0.15); backdrop-filter: blur(20px);
       border-radius: 60px; padding: 8px; display: flex; flex-wrap: wrap; gap: 8px;
-      box-shadow: var(--shadow-xl); max-width: 900px; margin: 0 auto;
+      box-shadow: var(--shadow-xl); max-width: 100%;
     }
     .search-group {
-      flex: 1; min-width: 180px; background: white; border-radius: 50px;
+      flex: 1; min-width: 160px; background: white; border-radius: 50px;
       display: flex; align-items: center; padding: 0 16px;
     }
     .search-group i { color: var(--text-muted); margin-right: 8px; }
@@ -183,9 +181,7 @@
     .property-image img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s; }
     .property-card:hover .property-image img { transform: scale(1.05); }
 
-    .property-badges {
-      position: absolute; top: 12px; left: 12px; display: flex; gap: 6px;
-    }
+    .property-badges { position: absolute; top: 12px; left: 12px; display: flex; gap: 6px; }
     .badge {
       padding: 4px 10px; border-radius: 20px; font-size: 0.6875rem; font-weight: 600;
       text-transform: uppercase; backdrop-filter: blur(8px);
@@ -221,10 +217,7 @@
       color: white; display: grid; place-items: center; font-size: 0.625rem; font-weight: 700;
     }
 
-    /* No results message */
-    .no-results {
-      text-align: center; padding: 64px; color: var(--text-muted);
-    }
+    .no-results { text-align: center; padding: 64px; color: var(--text-muted); display: none; }
 
     /* =============================================
        AGENT CTA
@@ -246,7 +239,7 @@
     .cta-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(0,0,0,0.25); }
 
     /* =============================================
-       FOOTER (minimal)
+       FOOTER
     ============================================= */
     .footer {
       border-top: 1px solid var(--border); padding: 32px 0;
@@ -283,7 +276,7 @@
         <a href="/rent.html" class="nav-link">Rent</a>
         <a href="/blog.html" class="nav-link">Blog</a>
         <a href="/agents.html" class="nav-link">Agents</a>
-        <a href="/login.html" class="nav-link" style="background:var(--gold); color:white;">Sign In</a>
+        <a href="/login.html" class="btn-signin">Sign In</a>
       </div>
       <button class="hamburger" id="hamburgerBtn" aria-label="Menu">
         <span class="hamburger-line"></span>
@@ -304,10 +297,10 @@
   </div>
 
   <main>
-    <!-- Hero Section -->
+    <!-- Hero -->
     <section class="hero">
       <div class="hero-content">
-        <h1 class="hero-title">Find Your Dream Home in Kenya</h1>
+        <h1 class="hero-title">Find your dream home in Kenya</h1>
         <p class="hero-subtitle">Verified houses, apartments, and land across all 47 counties</p>
         <div class="search-container">
           <div class="search-group">
@@ -337,18 +330,16 @@
     <div class="container">
       <!-- Property Type Filter Cards -->
       <section class="type-filters">
-        <div class="filter-grid" id="typeFilters">
-          <!-- dynamically generated -->
-        </div>
+        <div class="filter-grid" id="typeFilters"></div>
       </section>
 
       <!-- Property Listings -->
       <section class="properties-section">
         <div class="section-header">
-          <h2 class="section-title" id="listingTitle">Featured Properties</h2>
+          <h2 class="section-title" id="listingTitle">Featured Properties for Sale</h2>
         </div>
         <div class="property-grid" id="propertyGrid"></div>
-        <div class="no-results hidden" id="noResults">
+        <div class="no-results" id="noResults">
           <i class="fas fa-search" style="font-size:2rem; opacity:0.3;"></i>
           <p>No properties match your criteria. Try adjusting your filters.</p>
         </div>
@@ -356,9 +347,9 @@
 
       <!-- Agent CTA -->
       <section class="agent-cta">
-        <h2>Are You a Real Estate Agent?</h2>
+        <h2>Are you a real estate agent?</h2>
         <p>List your properties and reach thousands of buyers across Kenya.</p>
-        <a href="/agent-dashboard.html" class="cta-btn"><i class="fas fa-plus-circle"></i> List Your Properties</a>
+        <a href="/login.html?role=agent" class="cta-btn"><i class="fas fa-plus-circle"></i> List Your Properties</a>
       </section>
     </div>
   </main>
@@ -375,139 +366,51 @@
 
   <script>
     // ======================
-    // PROPERTY DATA (structured)
+    // STRUCTURED PROPERTY DATA (ready for Supabase)
     // ======================
     const properties = [
-      {
-        id: 1,
-        type: "house",
-        location: "Ruai",
-        price: 8500000,
-        bedrooms: 4,
-        bathrooms: 3,
-        size: "2,200 sqft",
-        verified: true,
-        image: "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=600&q=80",
-        agent: { name: "Sarah Mwangi", initials: "SM" }
-      },
-      {
-        id: 2,
-        type: "apartment",
-        location: "Kilimani",
-        price: 12000000,
-        bedrooms: 3,
-        bathrooms: 2,
-        size: "1,800 sqft",
-        verified: true,
-        image: "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=600&q=80",
-        agent: { name: "Peter Ochieng", initials: "PO" }
-      },
-      {
-        id: 3,
-        type: "land",
-        location: "Syokimau",
-        price: 2500000,
-        bedrooms: 0,
-        bathrooms: 0,
-        size: "0.25 acres",
-        verified: false,
-        image: "https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=600&q=80",
-        agent: { name: "Jane Wanjiku", initials: "JW" }
-      },
-      {
-        id: 4,
-        type: "villa",
-        location: "Karen",
-        price: 45000000,
-        bedrooms: 6,
-        bathrooms: 5,
-        size: "5,000 sqft",
-        verified: true,
-        image: "https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=600&q=80",
-        agent: { name: "Mike Kariuki", initials: "MK" }
-      },
-      {
-        id: 5,
-        type: "commercial",
-        location: "Westlands",
-        price: 32000000,
-        bedrooms: 0,
-        bathrooms: 2,
-        size: "3,500 sqft",
-        verified: true,
-        image: "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=600&q=80",
-        agent: { name: "Alice Njeri", initials: "AN" }
-      },
-      {
-        id: 6,
-        type: "house",
-        location: "Rongai",
-        price: 6800000,
-        bedrooms: 3,
-        bathrooms: 2,
-        size: "1,600 sqft",
-        verified: true,
-        image: "https://images.unsplash.com/photo-1580587771525-78b9dba3b914?w=600&q=80",
-        agent: { name: "David Muthoni", initials: "DM" }
-      },
-      {
-        id: 7,
-        type: "apartment",
-        location: "Kileleshwa",
-        price: 15000000,
-        bedrooms: 2,
-        bathrooms: 2,
-        size: "1,400 sqft",
-        verified: true,
-        image: "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=600&q=80",
-        agent: { name: "Sarah Mwangi", initials: "SM" }
-      },
-      {
-        id: 8,
-        type: "land",
-        location: "Kitengela",
-        price: 1800000,
-        bedrooms: 0,
-        bathrooms: 0,
-        size: "0.5 acres",
-        verified: false,
-        image: "https://images.unsplash.com/photo-1500530859303-6b24e3c7c6c4?w=600&q=80",
-        agent: { name: "Robert Kiprop", initials: "RK" }
-      }
+      { id: 1, type: 'house', location: 'Ruai', price: 12000000, bedrooms: 4, bathrooms: 3, size: '0.25 acres', verified: true, image: 'https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=600&q=80', agent: { name: 'John Kamau', initials: 'JK' } },
+      { id: 2, type: 'apartment', location: 'Kilimani', price: 15000000, bedrooms: 3, bathrooms: 2, size: '1,800 sqft', verified: true, image: 'https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=600&q=80', agent: { name: 'Sarah Mwangi', initials: 'SM' } },
+      { id: 3, type: 'land', location: 'Syokimau', price: 3500000, bedrooms: 0, bathrooms: 0, size: '0.5 acres', verified: false, image: 'https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=600&q=80', agent: { name: 'Peter Ochieng', initials: 'PO' } },
+      { id: 4, type: 'villa', location: 'Karen', price: 85000000, bedrooms: 5, bathrooms: 4, size: '1 acre', verified: true, image: 'https://images.unsplash.com/photo-1613490493576-7fde63acd811?w=600&q=80', agent: { name: 'Mike Kariuki', initials: 'MK' } },
+      { id: 5, type: 'commercial', location: 'Westlands', price: 250000000, bedrooms: 0, bathrooms: 2, size: '10,000 sqft', verified: true, image: 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=600&q=80', agent: { name: 'Alice Njeri', initials: 'AN' } },
+      { id: 6, type: 'house', location: 'Rongai', price: 6800000, bedrooms: 3, bathrooms: 2, size: '1,600 sqft', verified: true, image: 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=600&q=80', agent: { name: 'David Muthoni', initials: 'DM' } },
+      { id: 7, type: 'apartment', location: 'Kileleshwa', price: 12000000, bedrooms: 2, bathrooms: 2, size: '1,200 sqft', verified: true, image: 'https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=600&q=80', agent: { name: 'Jane Wanjiku', initials: 'JW' } },
+      { id: 8, type: 'land', location: 'Kangundo Road', price: 3500000, bedrooms: 0, bathrooms: 0, size: '50x100 ft', verified: false, image: 'https://images.unsplash.com/photo-1500530859303-6b24e3c7c6c4?w=600&q=80', agent: { name: 'Robert Kiprop', initials: 'RK' } }
     ];
 
-    // Favorites state (loaded from localStorage)
-    let favorites = JSON.parse(localStorage.getItem('pik_favorites')) || [];
-
-    // Current filters
+    // ======================
+    // STATE
+    // ======================
     let activeType = 'all';
-    let searchLocation = '';
-    let searchType = '';
-    let searchBudget = Infinity;
+    let favorites = JSON.parse(localStorage.getItem('pik_favorites')) || [];
+    let currentFilter = { location: '', type: '', budget: Infinity };
 
     // ======================
-    // RENDER FUNCTIONS
+    // HELPER: count per type
+    // ======================
+    const countByType = (type) => properties.filter(p => type === 'all' || p.type === type).length;
+
+    // ======================
+    // RENDER TYPE FILTER CARDS
     // ======================
     function renderTypeFilters() {
       const types = [
-        { key: 'all', label: 'View All', icon: 'fa-list', count: properties.length },
-        { key: 'house', label: 'Houses', icon: 'fa-home', count: properties.filter(p => p.type === 'house').length },
-        { key: 'apartment', label: 'Apartments', icon: 'fa-building', count: properties.filter(p => p.type === 'apartment').length },
-        { key: 'land', label: 'Land', icon: 'fa-map', count: properties.filter(p => p.type === 'land').length },
-        { key: 'villa', label: 'Villas', icon: 'fa-tree', count: properties.filter(p => p.type === 'villa').length },
-        { key: 'commercial', label: 'Commercial', icon: 'fa-store', count: properties.filter(p => p.type === 'commercial').length },
+        { key: 'all', label: 'View All', icon: 'fa-list' },
+        { key: 'house', label: 'Houses', icon: 'fa-home' },
+        { key: 'apartment', label: 'Apartments', icon: 'fa-building' },
+        { key: 'land', label: 'Land', icon: 'fa-map' },
+        { key: 'villa', label: 'Villas', icon: 'fa-tree' },
+        { key: 'commercial', label: 'Commercial', icon: 'fa-store' }
       ];
-
       const container = document.getElementById('typeFilters');
-      container.innerHTML = types.map(type => `
-        <div class="filter-card ${activeType === type.key ? 'active' : ''}" data-type="${type.key}">
-          <div class="filter-icon"><i class="fas ${type.icon}"></i></div>
-          <div class="filter-label">${type.label}</div>
-          <div class="filter-count">${type.count} listings</div>
+      container.innerHTML = types.map(t => `
+        <div class="filter-card ${activeType === t.key ? 'active' : ''}" data-type="${t.key}">
+          <div class="filter-icon"><i class="fas ${t.icon}"></i></div>
+          <div class="filter-label">${t.label}</div>
+          <div class="filter-count">${countByType(t.key)} listings</div>
         </div>
       `).join('');
-
-      // attach click events
       container.querySelectorAll('.filter-card').forEach(card => {
         card.addEventListener('click', () => {
           activeType = card.dataset.type;
@@ -517,84 +420,95 @@
       });
     }
 
-    function createPropertyCard(property) {
-      const isFav = favorites.includes(property.id);
-      return `
-        <div class="property-card" data-id="${property.id}" data-type="${property.type}" data-location="${property.location.toLowerCase()}" data-price="${property.price}">
-          <div class="property-image">
-            <img src="${property.image}" alt="${property.type} in ${property.location}" loading="lazy" />
-            <div class="property-badges">
-              <span class="badge badge-sale">For Sale</span>
-              ${property.verified ? '<span class="badge badge-verified">Verified</span>' : ''}
-            </div>
-            <button class="favorite-btn ${isFav ? 'active' : ''}" aria-label="Save property">
-              <i class="${isFav ? 'fas' : 'far'} fa-heart"></i>
-            </button>
-          </div>
-          <div class="property-info">
-            <div class="property-location"><i class="fas fa-map-marker-alt"></i> ${property.location}</div>
-            <h3 class="property-title">${property.type.charAt(0).toUpperCase() + property.type.slice(1)} in ${property.location}</h3>
-            <div class="property-features">
-              ${property.bedrooms > 0 ? `<span class="feature-item"><i class="fas fa-bed"></i> ${property.bedrooms} Beds</span>` : ''}
-              ${property.bathrooms > 0 ? `<span class="feature-item"><i class="fas fa-bath"></i> ${property.bathrooms} Baths</span>` : ''}
-              <span class="feature-item"><i class="fas fa-vector-square"></i> ${property.size}</span>
-            </div>
-            <div class="property-footer">
-              <span class="property-price">KES ${property.price.toLocaleString()}</span>
-              <div class="property-agent">
-                <div class="agent-avatar">${property.agent.initials}</div>
-                ${property.agent.name}
+    // ======================
+    // RENDER PROPERTY CARDS
+    // ======================
+    function renderProperties(filtered) {
+      const grid = document.getElementById('propertyGrid');
+      const noRes = document.getElementById('noResults');
+      if (filtered.length === 0) {
+        grid.innerHTML = '';
+        noRes.style.display = 'block';
+      } else {
+        noRes.style.display = 'none';
+        grid.innerHTML = filtered.map(p => {
+          const isFav = favorites.includes(p.id);
+          return `
+            <div class="property-card" data-id="${p.id}" data-type="${p.type}" data-location="${p.location.toLowerCase()}" data-price="${p.price}">
+              <div class="property-image">
+                <img src="${p.image}" alt="${p.type} in ${p.location}" loading="lazy" />
+                <div class="property-badges">
+                  <span class="badge badge-sale">For Sale</span>
+                  ${p.verified ? '<span class="badge badge-verified"><i class="fas fa-check-circle"></i> Verified</span>' : ''}
+                </div>
+                <button class="favorite-btn ${isFav ? 'active' : ''}" aria-label="Save property">
+                  <i class="${isFav ? 'fas' : 'far'} fa-heart"></i>
+                </button>
+              </div>
+              <div class="property-info">
+                <div class="property-location"><i class="fas fa-map-marker-alt"></i> ${p.location}</div>
+                <h3 class="property-title">${p.type.charAt(0).toUpperCase() + p.type.slice(1)} in ${p.location}</h3>
+                <div class="property-features">
+                  ${p.bedrooms > 0 ? `<span class="feature-item"><i class="fas fa-bed"></i> ${p.bedrooms} Beds</span>` : ''}
+                  ${p.bathrooms > 0 ? `<span class="feature-item"><i class="fas fa-bath"></i> ${p.bathrooms} Baths</span>` : ''}
+                  <span class="feature-item"><i class="fas fa-vector-square"></i> ${p.size}</span>
+                </div>
+                <div class="property-footer">
+                  <span class="property-price">KES ${p.price.toLocaleString()}</span>
+                  <div class="property-agent">
+                    <div class="agent-avatar">${p.agent.initials}</div>
+                    ${p.agent.name}
+                  </div>
+                </div>
               </div>
             </div>
-          </div>
-        </div>
-      `;
-    }
+          `;
+        }).join('');
 
-    function renderProperties(filteredProps) {
-      const grid = document.getElementById('propertyGrid');
-      const noResults = document.getElementById('noResults');
-      if (filteredProps.length === 0) {
-        grid.innerHTML = '';
-        noResults.classList.remove('hidden');
-      } else {
-        noResults.classList.add('hidden');
-        grid.innerHTML = filteredProps.map(createPropertyCard).join('');
-        // attach favorite click events
+        // Attach event listeners
         grid.querySelectorAll('.favorite-btn').forEach(btn => {
           btn.addEventListener('click', (e) => {
             e.stopPropagation();
             const card = btn.closest('.property-card');
             const id = parseInt(card.dataset.id);
             toggleFavorite(id);
+            // re-render to update icon (or just toggle classes)
+            // simpler: just re-render all
+            applyFilters();
           });
         });
-        // attach card click to navigate to detail page (mock)
+
         grid.querySelectorAll('.property-card').forEach(card => {
           card.addEventListener('click', () => {
             const id = card.dataset.id;
-            // In production, navigate to detail page
-            alert(`View property details (ID: ${id}). (In production, navigate to /property/${id})`);
+            // Navigate to detail page (mock)
+            alert(`View property details (ID: ${id}). In production, navigate to /property/${id}`);
           });
         });
       }
     }
 
+    // ======================
+    // FILTER LOGIC (structured data)
+    // ======================
     function applyFilters() {
       let filtered = properties.filter(p => {
         // type filter
         if (activeType !== 'all' && p.type !== activeType) return false;
-        // location search
-        if (searchLocation && !p.location.toLowerCase().includes(searchLocation.toLowerCase())) return false;
-        // property type dropdown
-        if (searchType && p.type !== searchType) return false;
+        // location (search)
+        if (currentFilter.location && !p.location.toLowerCase().includes(currentFilter.location.toLowerCase())) return false;
+        // type dropdown
+        if (currentFilter.type && p.type !== currentFilter.type) return false;
         // budget
-        if (p.price > searchBudget) return false;
+        if (p.price > currentFilter.budget) return false;
         return true;
       });
       renderProperties(filtered);
     }
 
+    // ======================
+    // FAVORITES PERSISTENCE
+    // ======================
     function toggleFavorite(id) {
       if (favorites.includes(id)) {
         favorites = favorites.filter(f => f !== id);
@@ -602,27 +516,19 @@
         favorites.push(id);
       }
       localStorage.setItem('pik_favorites', JSON.stringify(favorites));
-      // update all cards with same id
-      document.querySelectorAll(`.property-card[data-id="${id}"] .favorite-btn`).forEach(btn => {
-        const icon = btn.querySelector('i');
-        if (favorites.includes(id)) {
-          btn.classList.add('active');
-          icon.className = 'fas fa-heart';
-        } else {
-          btn.classList.remove('active');
-          icon.className = 'far fa-heart';
-        }
-      });
     }
 
     // ======================
     // EVENT LISTENERS
     // ======================
     document.getElementById('searchBtn').addEventListener('click', () => {
-      searchLocation = document.getElementById('searchLocation').value.trim();
-      searchType = document.getElementById('searchType').value;
+      currentFilter.location = document.getElementById('searchLocation').value.trim();
+      currentFilter.type = document.getElementById('searchType').value;
       const budgetVal = document.getElementById('searchBudget').value;
-      searchBudget = budgetVal ? parseInt(budgetVal) : Infinity;
+      currentFilter.budget = budgetVal ? parseInt(budgetVal) : Infinity;
+      // Reset active type to 'all' when searching?
+      activeType = 'all';
+      renderTypeFilters();
       applyFilters();
     });
 
@@ -634,11 +540,12 @@
     });
 
     // Mobile menu
-    const hamburger = document.getElementById('hamburgerBtn');
-    const mobileMenu = document.getElementById('mobileMenu');
-    const closeMobile = document.getElementById('closeMobileMenu');
-    hamburger.addEventListener('click', () => mobileMenu.classList.add('active'));
-    closeMobile.addEventListener('click', () => mobileMenu.classList.remove('active'));
+    document.getElementById('hamburgerBtn').addEventListener('click', () => {
+      document.getElementById('mobileMenu').classList.add('active');
+    });
+    document.getElementById('closeMobileMenu').addEventListener('click', () => {
+      document.getElementById('mobileMenu').classList.remove('active');
+    });
 
     // ======================
     // INITIAL RENDER
