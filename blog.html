@@ -135,12 +135,12 @@
     .mobile-cta { display: block; text-align: center; padding: 14px; background: var(--accent); color: white; font-weight: 700; border-radius: var(--radius-md); margin-top: auto; }
 
     /* =============================================
-       HERO SECTION (now centred)
+       HERO SECTION (centred)
     ============================================= */
     .hero {
       position: relative; padding: var(--space-16) var(--space-6) var(--space-12);
       background: linear-gradient(135deg, #0F172A 0%, #1E293B 100%);
-      display: flex; align-items: center; justify-content: center; /* changed from flex-start to center */
+      display: flex; align-items: center; justify-content: center;
     }
     .hero::before {
       content: ''; position: absolute; inset: 0;
@@ -181,20 +181,7 @@
     }
     .search-btn:hover { transform: scale(1.03); box-shadow: 0 8px 20px rgba(234,88,12,0.4); }
 
-    .filter-chips {
-      display: flex; flex-wrap: wrap; gap: var(--space-3); margin-top: var(--space-5); justify-content: center;
-    }
-    .chip {
-      padding: var(--space-2) var(--space-5); background: rgba(255,255,255,0.1);
-      backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.2);
-      border-radius: 9999px; color: white; font-size: var(--text-sm); font-weight: 500;
-      transition: background var(--transition-fast), transform var(--transition-fast);
-    }
-    .chip:hover { background: rgba(255,255,255,0.2); transform: translateY(-2px); }
-
-    /* =============================================
-       CATEGORY PILLS (sticky, swipeable)
-    ============================================= */
+    /* Category pills */
     .category-nav {
       position: sticky; top: 64px; z-index: 999;
       background: rgba(255,255,255,0.85); backdrop-filter: blur(20px);
@@ -217,9 +204,7 @@
       box-shadow: 0 4px 12px rgba(234,88,12,0.3);
     }
 
-    /* =============================================
-       FEATURED STORY BLOCK
-    ============================================= */
+    /* Featured Story */
     .featured-story {
       display: grid; grid-template-columns: 1fr 1fr; background: var(--bg-surface);
       border-radius: var(--radius-xl); overflow: hidden;
@@ -248,9 +233,7 @@
     .author-name { font-weight: 600; font-size: var(--text-sm); }
     .author-role { font-size: var(--text-xs); color: var(--text-muted); }
 
-    /* =============================================
-       EDITOR'S PICKS (horizontal scroll)
-    ============================================= */
+    /* Editor's Picks */
     .section-heading {
       display: flex; align-items: baseline; justify-content: space-between;
       margin: var(--space-8) 0 var(--space-4);
@@ -274,7 +257,7 @@
     .pick-title { font-size: var(--text-base); font-weight: 700; line-height: 1.3; }
 
     /* =============================================
-       ARTICLE GRID (masonry-like)
+       ARTICLE GRID – now with THREE sizes
     ============================================= */
     .articles-grid {
       display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--space-6);
@@ -285,11 +268,20 @@
       display: flex; flex-direction: column;
     }
     .article-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-lg); }
-    .article-card--large { grid-column: span 2; }
+
+    /* Small card – default */
     .card-image { position: relative; height: 200px; overflow: hidden; }
-    .article-card--large .card-image { height: 280px; }
     .card-image img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s; }
     .article-card:hover .card-image img { transform: scale(1.06); }
+
+    /* Medium card – taller image */
+    .article-card--medium .card-image { height: 260px; }
+
+    /* Large card – spans 2 columns, taller image */
+    .article-card--large { grid-column: span 2; }
+    .article-card--large .card-image { height: 300px; }
+
+    /* Common card elements */
     .card-badge {
       position: absolute; top: var(--space-4); left: var(--space-4);
       padding: var(--space-1) var(--space-3); background: rgba(255,255,255,0.95);
@@ -327,7 +319,7 @@
     }
     @keyframes shimmer { 0%{background-position:200% 0}100%{background-position:-200% 0} }
 
-    /* Load More button */
+    /* Load More */
     .load-more-wrapper { text-align: center; padding: var(--space-10) 0; }
     .load-more-btn {
       background: var(--bg-surface); border: 1px solid var(--border-light);
@@ -389,7 +381,7 @@
       .search-bar { flex-direction: column; border-radius: var(--radius-lg); padding: var(--space-3); }
       .search-btn { width: 100%; justify-content: center; }
       .articles-grid { grid-template-columns: 1fr; }
-      .article-card--large { grid-column: span 1; }
+      .article-card--large, .article-card--medium { grid-column: span 1; }  /* all single column on mobile */
       .newsletter-form { flex-direction: column; }
       .newsletter-btn { width: 100%; }
       .category-scroll { padding: 0 var(--space-4); }
@@ -441,7 +433,7 @@
   </div>
 
   <main id="main-content">
-    <!-- Hero Section (now centred) -->
+    <!-- Hero Section -->
     <section class="hero">
       <div class="hero-content">
         <div class="hero-badge">
@@ -458,13 +450,13 @@
       </div>
     </section>
 
-    <!-- Sticky Category Pills (dynamically generated) -->
+    <!-- Sticky Category Pills -->
     <div class="category-nav" id="categoryNav">
       <div class="category-scroll" id="categoryScroll"></div>
     </div>
 
     <div class="container" style="max-width:1280px; margin:0 auto; padding:0 var(--space-6);">
-      <!-- Featured Story (rendered by JS) -->
+      <!-- Featured Story -->
       <div id="featuredContainer"></div>
 
       <!-- Editor's Picks -->
@@ -473,13 +465,13 @@
       </div>
       <div class="picks-scroll" id="picksContainer"></div>
 
-      <!-- Main Insights Grid -->
+      <!-- Main Insights Grid (now with variable sizes) -->
       <div class="section-heading" style="margin-top:var(--space-12);">
         <h2 class="section-title">Latest Insights</h2>
       </div>
       <div class="articles-grid" id="mainGridContainer"></div>
 
-      <!-- Load More Button (replaces infinite scroll alert) -->
+      <!-- Load More Button -->
       <div class="load-more-wrapper" id="loadMoreWrapper">
         <button class="load-more-btn" id="loadMoreBtn"><i class="fas fa-plus" style="margin-right:8px;"></i> Load More Articles</button>
       </div>
@@ -656,12 +648,20 @@
       }
     };
 
+    // Determine card size based on caretaker_score
+    function getCardSize(score) {
+      if (score >= 75) return 'large';   // featured in grid
+      if (score >= 65) return 'medium';  // taller image
+      return 'small';                    // default
+    }
+
     // ======================
     // RENDER FUNCTIONS
     // ======================
-    function createArticleCard(article, isLarge = false) {
+    function createArticleCard(article) {
       const card = document.createElement('article');
-      card.className = `article-card${isLarge ? ' article-card--large' : ''}`;
+      const size = getCardSize(article.caretaker_score);
+      card.className = `article-card${size === 'large' ? ' article-card--large' : ''}${size === 'medium' ? ' article-card--medium' : ''}`;
       card.dataset.category = article.category;
       card.dataset.tags = article.tags.join(',');
       card.dataset.score = article.caretaker_score;
@@ -738,8 +738,7 @@
     function renderMainGrid() {
       const container = document.getElementById('mainGridContainer');
       caretakerData.main_grid.forEach(article => {
-        const isLarge = (article.category === 'guide' || article.category === 'legal');
-        const card = createArticleCard(article, isLarge);
+        const card = createArticleCard(article);
         container.appendChild(card);
       });
     }
@@ -827,12 +826,11 @@
     });
 
     // ======================
-    // LOAD MORE (replaces infinite scroll alert)
+    // LOAD MORE
     // ======================
     const loadMoreBtn = document.getElementById('loadMoreBtn');
     const loadMoreWrapper = document.getElementById('loadMoreWrapper');
     loadMoreBtn.addEventListener('click', () => {
-      // Show skeleton briefly, then append hidden archive
       loadMoreBtn.disabled = true;
       loadMoreBtn.textContent = 'Loading…';
       setTimeout(() => {
@@ -841,7 +839,6 @@
           const card = createArticleCard(article);
           grid.appendChild(card);
         });
-        // Hide the button once all hidden articles are loaded
         loadMoreWrapper.style.display = 'none';
       }, 800);
     });
