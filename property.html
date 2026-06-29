@@ -13,13 +13,142 @@
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
-<!-- Styles -->
-<link rel="stylesheet" href="css/design-system.css">
-<link rel="stylesheet" href="css/nav.css">
-<link rel="stylesheet" href="css/components.css">
-<link rel="stylesheet" href="css/sections.css">
-<link rel="stylesheet" href="css/property.css">
-<link rel="stylesheet" href="css/responsive.css">
+<!-- Styles (critical fixes are embedded inline; external files are kept for reference but not required) -->
+<style>
+/* ===== INLINE FIXES & MOBILE NAVIGATION ===== */
+
+/* Mobile hamburger & drawer – taken from the unified platform nav */
+.hamburger {
+  display: none;
+  width: 40px;
+  height: 40px;
+  border-radius: 8px;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+.hamburger-line {
+  width: 20px;
+  height: 2px;
+  background: #0F172A;
+  border-radius: 2px;
+  transition: all 0.2s;
+}
+.mobile-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.4);
+  backdrop-filter: blur(4px);
+  z-index: 1100;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s;
+}
+.mobile-overlay.active {
+  opacity: 1;
+  pointer-events: auto;
+}
+.mobile-drawer {
+  position: fixed;
+  top: 0;
+  right: -100%;
+  width: 85%;
+  max-width: 360px;
+  height: 100vh;
+  background: white;
+  z-index: 1200;
+  box-shadow: 0 20px 48px rgba(0,0,0,0.12);
+  transition: right 0.25s ease;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+}
+.mobile-drawer.active {
+  right: 0;
+}
+.mobile-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 24px;
+  border-bottom: 1px solid #E8ECF0;
+}
+.mobile-close {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: #F8FAFC;
+  color: #475569;
+  border: none;
+  cursor: pointer;
+}
+.mobile-menu {
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.mobile-link {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px;
+  border-radius: 12px;
+  font-weight: 500;
+  color: #1F2937;
+  text-decoration: none;
+  transition: background 0.15s;
+}
+.mobile-link:hover {
+  background: #F1F5F9;
+}
+.mobile-divider {
+  height: 1px;
+  background: #E8ECF0;
+  margin: 12px 0;
+}
+.mobile-cta {
+  display: block;
+  text-align: center;
+  padding: 14px;
+  background: #6366F1;
+  color: white;
+  font-weight: 700;
+  border-radius: 12px;
+  margin-top: auto;
+  text-decoration: none;
+}
+
+/* Footer fallback – using the standard platform footer class */
+.footer {
+  background: white;
+  border-top: 1px solid #E8ECF0;
+  padding: 40px 24px;
+  color: #64748B;
+  font-size: 0.8125rem;
+  text-align: center;
+}
+.footer a { color: inherit; text-decoration: none; transition: color 0.15s; }
+.footer a:hover { color: #6366F1; }
+
+/* Responsive overrides */
+@media (max-width: 1024px) {
+  .nav-links { display: none; }
+  .hamburger { display: flex; }
+}
+@media (max-width: 768px) {
+  .property-layout { grid-template-columns: 1fr; }
+  .property-sidebar { position: static; margin-top: 24px; }
+  .gallery-main { height: 300px; }
+  .property-title { font-size: 1.75rem; }
+}
+</style>
 
 <!-- SEO -->
 <meta property="og:type" content="website">
@@ -45,25 +174,53 @@
       <a href="/agents.html" class="nav-link-premium"><i class="fas fa-users"></i> Agents</a>
     </div>
     <div class="nav-actions">
-      <a href="/saved.html" class="nav-link-premium" style="color: var(--color-danger);">
-        <i class="fas fa-heart"></i> <span class="favorites-count">0</span>
+      <a href="/saved.html" class="nav-link-premium" style="color: #EF4444;">
+        <i class="fas fa-heart"></i> <span class="favorites-count" id="favoritesCount">0</span>
       </a>
       <a href="login.html" class="btn btn-primary btn-sm">Sign In</a>
+      <button class="hamburger" id="hamburgerBtn" aria-label="Toggle menu" aria-expanded="false">
+        <span class="hamburger-line"></span>
+        <span class="hamburger-line"></span>
+        <span class="hamburger-line"></span>
+      </button>
     </div>
   </div>
 </nav>
 
+<!-- Mobile Menu Overlay & Drawer -->
+<div class="mobile-overlay" id="mobileOverlay" aria-hidden="true"></div>
+<div class="mobile-drawer" id="mobileDrawer" aria-label="Navigation menu">
+  <div class="mobile-header">
+    <span style="font-weight:700; display:flex; align-items:center; gap:8px;">
+      <div class="nav-logo-icon"><i class="fas fa-home"></i></div> Menu
+    </span>
+    <button class="mobile-close" id="closeMobileMenu" aria-label="Close menu">
+      <i class="fas fa-times"></i>
+    </button>
+  </div>
+  <div class="mobile-menu">
+    <a href="/buy.html" class="mobile-link"><i class="fas fa-home"></i> Buy</a>
+    <a href="/rent.html" class="mobile-link"><i class="fas fa-key"></i> Rent</a>
+    <a href="/lease.html" class="mobile-link"><i class="fas fa-building"></i> Lease</a>
+    <a href="/pikbnb.html" class="mobile-link"><i class="fas fa-bed"></i> PIKBNB</a>
+    <a href="/blog.html" class="mobile-link"><i class="fas fa-newspaper"></i> Blog</a>
+    <a href="/agents.html" class="mobile-link"><i class="fas fa-users"></i> Agents</a>
+    <div class="mobile-divider"></div>
+    <a href="login.html" class="mobile-cta">Sign In</a>
+  </div>
+</div>
+
 <!-- Main Content -->
-<main style="padding-top: 80px; background: var(--color-bg); min-height: 100vh;">
+<main style="padding-top: 80px; background: #FAFAFB; min-height: 100vh;">
   
   <!-- Breadcrumbs -->
-  <div class="container" style="padding-top: var(--space-6);">
-    <div style="display: flex; align-items: center; gap: var(--space-2); font-size: var(--text-sm); color: var(--text-tertiary);">
-      <a href="/" style="color: var(--text-secondary);">Home</a>
+  <div class="container" style="padding-top: 24px;">
+    <div style="display: flex; align-items: center; gap: 8px; font-size: 0.875rem; color: #6B7280;">
+      <a href="/" style="color: #475569;">Home</a>
       <i class="fas fa-chevron-right" style="font-size: 10px;"></i>
-      <a href="/buy.html" style="color: var(--text-secondary);">Buy</a>
+      <a href="/buy.html" style="color: #475569;">Buy</a>
       <i class="fas fa-chevron-right" style="font-size: 10px;"></i>
-      <span style="color: var(--text-primary); font-weight: 500;">Karen, Nairobi</span>
+      <span style="color: #0F172A; font-weight: 500;">Karen, Nairobi</span>
     </div>
   </div>
 
@@ -85,18 +242,18 @@
           </div>
         </div>
         <div class="gallery-thumbnails">
-          <div class="gallery-thumb active" onclick="changeImage(this, 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=1600&q=80')">
+          <button class="gallery-thumb active" onclick="changeImage(this, 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=1600&q=80')" aria-label="View 1">
             <img src="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=400&q=80" alt="View 1">
-          </div>
-          <div class="gallery-thumb" onclick="changeImage(this, 'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=1600&q=80')">
+          </button>
+          <button class="gallery-thumb" onclick="changeImage(this, 'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=1600&q=80')" aria-label="View 2">
             <img src="https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=400&q=80" alt="View 2">
-          </div>
-          <div class="gallery-thumb" onclick="changeImage(this, 'https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?w=1600&q=80')">
+          </button>
+          <button class="gallery-thumb" onclick="changeImage(this, 'https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?w=1600&q=80')" aria-label="View 3">
             <img src="https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?w=400&q=80" alt="View 3">
-          </div>
-          <div class="gallery-thumb" onclick="changeImage(this, 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1600&q=80')">
+          </button>
+          <button class="gallery-thumb" onclick="changeImage(this, 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1600&q=80')" aria-label="View 4">
             <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=400&q=80" alt="View 4">
-          </div>
+          </button>
         </div>
       </div>
 
@@ -151,8 +308,8 @@
           <p>Outside, the property boasts a sparkling swimming pool, a manicured garden, and a covered patio area ideal for entertaining. Additional features include a borehole, backup generator, and 24/7 security.</p>
           <div class="description-fade"></div>
         </div>
-        <button class="expand-btn" id="expandBtn" onclick="toggleDescription()">
-          Show more <i class="fas fa-chevron-down"></i>
+        <button class="expand-btn" id="expandBtn" aria-expanded="false">
+          <span class="expand-text">Show more</span> <i class="fas fa-chevron-down"></i>
         </button>
       </div>
 
@@ -272,7 +429,7 @@
         <div class="sidebar-price-period">Estimated Mortgage: KSh 380,000/mo</div>
         
         <div class="agent-card-sidebar">
-          <img src="https://images.unsplash.com/photo-1560250097-0b93528c311a?w=200&q=80" alt="Agent" class="agent-avatar-lg">
+          <img src="https://images.unsplash.com/photo-1560250097-0b93528c311a?w=200&q=80" alt="John Kamau" class="agent-avatar-lg" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%2264%22 height=%2264%22%3E%3Crect fill=%22%23ddd%22 width=%2264%22 height=%2264%22 rx=%2232%22/%3E%3Ctext x=%2232%22 y=%2232%22 text-anchor=%22middle%22 dy=%22.35em%22 fill=%22%23555%22 font-size=%2220%22%3EJK%3C/text%3E%3C/svg%3E'">
           <div class="agent-info">
             <h4>John Kamau</h4>
             <p><i class="fas fa-star rating"></i> 4.9 (124 reviews)</p>
@@ -304,16 +461,16 @@
 </main>
 
 <!-- Footer -->
-<footer class="footer-premium">
+<footer class="footer">
   <div class="container">
-    <div class="footer-grid">
+    <div class="footer-grid" style="display:grid; grid-template-columns:2fr 1fr 1fr 1fr; gap:32px; text-align:left;">
       <div>
-        <div class="nav-logo" style="color: white; margin-bottom: var(--space-4);">
+        <div style="display:flex; align-items:center; gap:12px; font-weight:800; font-size:1.25rem; margin-bottom:16px;">
           <div class="nav-logo-icon"><i class="fas fa-home"></i></div>
           <span>Properties in Kenya</span>
         </div>
-        <p class="footer-brand-desc">Kenya's premium real estate platform. Find verified properties with AI-powered search.</p>
-        <div class="footer-social">
+        <p style="color:#64748B; max-width:300px; line-height:1.7; margin-bottom:16px;">Kenya's premium real estate platform. Find verified properties with AI-powered search.</p>
+        <div style="display:flex; gap:16px;">
           <a href="#"><i class="fab fa-facebook-f"></i></a>
           <a href="#"><i class="fab fa-twitter"></i></a>
           <a href="#"><i class="fab fa-instagram"></i></a>
@@ -321,36 +478,36 @@
         </div>
       </div>
       <div>
-        <h4 class="footer-heading">Properties</h4>
-        <div class="footer-links">
-          <a href="/buy.html" class="footer-link">Buy Property</a>
-          <a href="/rent.html" class="footer-link">Rent Property</a>
-          <a href="/lease.html" class="footer-link">Commercial Lease</a>
-          <a href="/pikbnb.html" class="footer-link">Short Stays</a>
+        <h4 style="font-size:0.875rem; font-weight:700; text-transform:uppercase; letter-spacing:0.5px; margin-bottom:16px;">Properties</h4>
+        <div style="display:flex; flex-direction:column; gap:12px;">
+          <a href="/buy.html">Buy Property</a>
+          <a href="/rent.html">Rent Property</a>
+          <a href="/lease.html">Commercial Lease</a>
+          <a href="/pikbnb.html">Short Stays</a>
         </div>
       </div>
       <div>
-        <h4 class="footer-heading">Resources</h4>
-        <div class="footer-links">
-          <a href="/blog.html" class="footer-link">Blog</a>
-          <a href="/agents.html" class="footer-link">Find an Agent</a>
-          <a href="#" class="footer-link">Buying Guides</a>
+        <h4 style="font-size:0.875rem; font-weight:700; text-transform:uppercase; letter-spacing:0.5px; margin-bottom:16px;">Resources</h4>
+        <div style="display:flex; flex-direction:column; gap:12px;">
+          <a href="/blog.html">Blog</a>
+          <a href="/agents.html">Find an Agent</a>
+          <a href="#">Buying Guides</a>
         </div>
       </div>
       <div>
-        <h4 class="footer-heading">Company</h4>
-        <div class="footer-links">
-          <a href="#" class="footer-link">About Us</a>
-          <a href="#" class="footer-link">Contact</a>
-          <a href="agent-dashboard.html" class="footer-link">For Agents</a>
+        <h4 style="font-size:0.875rem; font-weight:700; text-transform:uppercase; letter-spacing:0.5px; margin-bottom:16px;">Company</h4>
+        <div style="display:flex; flex-direction:column; gap:12px;">
+          <a href="#">About Us</a>
+          <a href="#">Contact</a>
+          <a href="agent-dashboard.html">For Agents</a>
         </div>
       </div>
     </div>
-    <div class="footer-bottom">
+    <div style="border-top:1px solid #E8ECF0; padding-top:24px; margin-top:24px; display:flex; justify-content:space-between; flex-wrap:wrap; gap:16px; color:#64748B; font-size:0.8125rem;">
       <p>© 2026 Properties in Kenya. All rights reserved.</p>
-      <div style="display: flex; gap: var(--space-6);">
-        <a href="#" class="footer-link">Terms</a>
-        <a href="#" class="footer-link">Privacy</a>
+      <div style="display: flex; gap: 16px;">
+        <a href="#">Terms</a>
+        <a href="#">Privacy</a>
       </div>
     </div>
   </div>
@@ -358,40 +515,107 @@
 
 <!-- Scripts -->
 <script>
-function changeImage(thumbnail, src) {
-  document.getElementById('mainImage').src = src;
-  document.querySelectorAll('.gallery-thumb').forEach(t => t.classList.remove('active'));
-  thumbnail.classList.add('active');
-}
+(function() {
+  'use strict';
 
-function toggleDescription() {
-  const desc = document.getElementById('propertyDescription');
-  const btn = document.getElementById('expandBtn');
-  desc.classList.toggle('expanded');
-  if (desc.classList.contains('expanded')) {
-    btn.innerHTML = 'Show less <i class="fas fa-chevron-up"></i>';
-  } else {
-    btn.innerHTML = 'Show more <i class="fas fa-chevron-down"></i>';
+  // ---------- MOBILE MENU ----------
+  const hamburgerBtn = document.getElementById('hamburgerBtn');
+  const overlay = document.getElementById('mobileOverlay');
+  const drawer = document.getElementById('mobileDrawer');
+  const closeBtn = document.getElementById('closeMobileMenu');
+
+  function openMobileMenu() {
+    overlay.classList.add('active');
+    drawer.classList.add('active');
+    hamburgerBtn.setAttribute('aria-expanded', 'true');
+    overlay.setAttribute('aria-hidden', 'false');
+    document.body.style.overflow = 'hidden';
   }
-}
 
-document.getElementById('favoriteBtn').addEventListener('click', function() {
-  this.classList.toggle('active');
-  const icon = this.querySelector('i');
-  if (this.classList.contains('active')) {
-    icon.classList.remove('far');
-    icon.classList.add('fas');
-  } else {
-    icon.classList.remove('fas');
-    icon.classList.add('far');
+  function closeMobileMenu() {
+    overlay.classList.remove('active');
+    drawer.classList.remove('active');
+    hamburgerBtn.setAttribute('aria-expanded', 'false');
+    overlay.setAttribute('aria-hidden', 'true');
+    document.body.style.overflow = '';
   }
-});
 
-window.addEventListener('scroll', () => {
-  const nav = document.getElementById('mainNav');
-  if (window.scrollY > 50) nav.classList.add('scrolled');
-  else nav.classList.remove('scrolled');
-});
+  hamburgerBtn.addEventListener('click', openMobileMenu);
+  closeBtn.addEventListener('click', closeMobileMenu);
+  overlay.addEventListener('click', closeMobileMenu);
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && drawer.classList.contains('active')) closeMobileMenu();
+  });
+
+  // ---------- IMAGE GALLERY ----------
+  window.changeImage = function(button, src) {
+    document.getElementById('mainImage').src = src;
+    document.querySelectorAll('.gallery-thumb').forEach(btn => btn.classList.remove('active'));
+    button.classList.add('active');
+  };
+
+  // ---------- DESCRIPTION TOGGLE ----------
+  const descDiv = document.getElementById('propertyDescription');
+  const expandBtn = document.getElementById('expandBtn');
+  const expandText = expandBtn.querySelector('.expand-text');
+  const expandIcon = expandBtn.querySelector('i');
+
+  expandBtn.addEventListener('click', function() {
+    const expanded = descDiv.classList.toggle('expanded');
+    expandText.textContent = expanded ? 'Show less' : 'Show more';
+    expandIcon.className = expanded ? 'fas fa-chevron-up' : 'fas fa-chevron-down';
+    expandBtn.setAttribute('aria-expanded', expanded);
+  });
+
+  // ---------- PERSISTENT FAVORITES ----------
+  const FAVORITES_KEY = 'propertiesinkenya_favorites';
+  const PROPERTY_ID = 'villa-karen-4br'; // Unique ID for this property
+  const favoriteBtn = document.getElementById('favoriteBtn');
+  const favIcon = favoriteBtn.querySelector('i');
+  const favCountSpan = document.getElementById('favoritesCount');
+
+  function getFavorites() {
+    try {
+      return JSON.parse(localStorage.getItem(FAVORITES_KEY)) || [];
+    } catch (e) {
+      return [];
+    }
+  }
+
+  function saveFavorites(favs) {
+    localStorage.setItem(FAVORITES_KEY, JSON.stringify(favs));
+  }
+
+  function updateFavoriteUI() {
+    const favs = getFavorites();
+    const isFav = favs.includes(PROPERTY_ID);
+    favIcon.className = isFav ? 'fas fa-heart' : 'far fa-heart';
+    favoriteBtn.classList.toggle('active', isFav);
+    favCountSpan.textContent = favs.length;
+  }
+
+  favoriteBtn.addEventListener('click', function() {
+    const favs = getFavorites();
+    const index = favs.indexOf(PROPERTY_ID);
+    if (index === -1) {
+      favs.push(PROPERTY_ID);
+    } else {
+      favs.splice(index, 1);
+    }
+    saveFavorites(favs);
+    updateFavoriteUI();
+  });
+
+  // Initial load
+  updateFavoriteUI();
+
+  // ---------- STICKY NAV SCROLL EFFECT ----------
+  window.addEventListener('scroll', () => {
+    const nav = document.getElementById('mainNav');
+    if (window.scrollY > 50) nav.classList.add('scrolled');
+    else nav.classList.remove('scrolled');
+  });
+})();
 </script>
 
 </body>
