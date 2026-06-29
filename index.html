@@ -557,6 +557,59 @@
     </div>
   </div>
 </footer>
+<!-- ===== FLOATING CARETAKER BUTTON ===== -->
+<button class="caretaker-float-btn" id="caretakerFloatBtn" aria-label="Open The Caretaker AI Assistant">
+  <div class="caretaker-float-btn-content">
+    <div class="caretaker-float-btn-icon">
+      <i class="fas fa-robot"></i>
+      <span class="caretaker-float-btn-badge"></span>
+    </div>
+    <span class="caretaker-float-btn-text">Ask The Caretaker</span>
+  </div>
+</button>
+<!-- ===== CARETAKER CHAT MODAL ===== -->
+<div class="caretaker-chat-overlay" id="caretakerChatOverlay">
+  <div class="caretaker-chat-container">
+    <div class="caretaker-chat-header">
+      <button class="caretaker-chat-close" id="caretakerChatClose" aria-label="Close chat">
+        <i class="fas fa-times"></i>
+      </button>
+      <div class="caretaker-chat-header-title">
+        <i class="fas fa-robot"></i>
+        The Caretaker
+      </div>
+      <div class="caretaker-chat-header-subtitle">AI Property Assistant • Online Now</div>
+    </div>
+    <div class="caretaker-chat-messages" id="caretakerChatMessages">
+      <div class="caretaker-chat-message ai">
+        <div class="caretaker-chat-avatar">
+          <i class="fas fa-robot"></i>
+        </div>
+        <div class="caretaker-chat-bubble">
+          Hi! I'm The Caretaker. I can help you find the perfect property in Kenya. What are you looking for?
+        </div>
+      </div>
+      <div class="caretaker-suggestions">
+        <span class="caretaker-suggestion" data-query="3 bedroom house in Ruai under 8 million">3 bed in Ruai</span>
+        <span class="caretaker-suggestion" data-query="apartment for rent in Kilimani">Rent in Kilimani</span>
+        <span class="caretaker-suggestion" data-query="land for sale in Kiambu">Land in Kiambu</span>
+        <span class="caretaker-suggestion" data-query="properties near schools">Near schools</span>
+      </div>
+    </div>
+    <form class="caretaker-chat-input-wrapper" id="caretakerChatForm">
+      <input 
+        type="text" 
+        class="caretaker-chat-input" 
+        id="caretakerChatInput" 
+        placeholder="Describe your dream property..."
+        autocomplete="off"
+      >
+      <button type="submit" class="caretaker-chat-send" id="caretakerChatSend" aria-label="Send message">
+        <i class="fas fa-paper-plane"></i>
+      </button>
+    </form>
+  </div>
+</div>
 <!-- ===== SUPABASE SDK ===== -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <!-- ===== YOUR JS FILES (load in this exact order) ===== -->
