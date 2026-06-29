@@ -103,13 +103,34 @@
   transition: color 0.3s;
 }
 
-/* ===== FEATURED SECTION ===== */
+/* ===== FEATURED SECTION — CAROUSEL FIX ===== */
 .featured-section {
   padding: 40px 0 80px;
 }
 
+/* CRITICAL: Carousel container MUST be flex with horizontal scroll */
+.carousel-container {
+  display: flex !important;
+  flex-direction: row !important;
+  gap: 20px;
+  overflow-x: auto !important;
+  overflow-y: hidden !important;
+  scroll-snap-type: x mandatory;
+  scroll-behavior: smooth;
+  padding: 16px 8px 24px;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+
+.carousel-container::-webkit-scrollbar { 
+  display: none !important; 
+}
+
+/* CRITICAL: Cards must have FIXED width, not flex-grow */
 .featured-card {
-  flex: 0 0 360px;
+  flex: 0 0 340px !important;
+  width: 340px !important;
+  min-width: 340px !important;
   background: white;
   border-radius: 16px;
   overflow: hidden;
@@ -118,6 +139,7 @@
   transition: all 0.3s;
   border: 1px solid #F3F4F6;
   position: relative;
+  scroll-snap-align: start;
 }
 
 .featured-card:hover {
@@ -133,7 +155,7 @@
 
 .featured-image {
   width: 100%;
-  height: 240px;
+  height: 220px;
   object-fit: cover;
   transition: transform 0.4s;
 }
@@ -155,6 +177,7 @@
   color: #111827;
   text-transform: uppercase;
   letter-spacing: 0.5px;
+  z-index: 2;
 }
 
 .featured-verified {
@@ -170,12 +193,15 @@
   display: flex;
   align-items: center;
   gap: 4px;
+  z-index: 2;
 }
 
-.featured-info { padding: 20px; }
+.featured-info { 
+  padding: 20px; 
+}
 
 .featured-title {
-  font-size: 17px;
+  font-size: 16px;
   font-weight: 600;
   color: #111827;
   margin-bottom: 8px;
@@ -195,7 +221,7 @@
 }
 
 .featured-price {
-  font-size: 20px;
+  font-size: 18px;
   font-weight: 700;
   color: #B8922E;
   margin-bottom: 14px;
@@ -373,7 +399,7 @@
   color: #9CA3AF;
 }
 
-/* ===== BLOG SECTION ===== */
+/* ===== BLOG SECTION — CAROUSEL FIX ===== */
 .blog-section {
   padding: 40px 0 100px;
 }
@@ -383,10 +409,13 @@
   padding: 0 48px;
 }
 
+/* CRITICAL: Blog carousel MUST be flex horizontal */
 .blog-carousel {
-  display: flex;
+  display: flex !important;
+  flex-direction: row !important;
   gap: 24px;
-  overflow-x: auto;
+  overflow-x: auto !important;
+  overflow-y: hidden !important;
   scroll-snap-type: x mandatory;
   scroll-behavior: smooth;
   padding: 16px 4px 24px;
@@ -394,10 +423,15 @@
   scrollbar-width: none;
 }
 
-.blog-carousel::-webkit-scrollbar { display: none; }
+.blog-carousel::-webkit-scrollbar { 
+  display: none !important; 
+}
 
+/* CRITICAL: Blog cards fixed width */
 .blog-card {
-  flex: 0 0 380px;
+  flex: 0 0 360px !important;
+  width: 360px !important;
+  min-width: 360px !important;
   scroll-snap-align: start;
   background: white;
   border-radius: 16px;
@@ -442,6 +476,7 @@
   color: #7C4DFF;
   text-transform: uppercase;
   letter-spacing: 0.5px;
+  z-index: 2;
 }
 
 .blog-content { 
@@ -511,7 +546,9 @@
 
 /* ===== SKELETON LOADERS ===== */
 .skeleton-featured-card {
-  flex: 0 0 360px;
+  flex: 0 0 340px !important;
+  width: 340px !important;
+  min-width: 340px !important;
   background: white;
   border-radius: 16px;
   overflow: hidden;
@@ -521,7 +558,7 @@
 
 .skeleton-featured-image {
   width: 100%;
-  height: 240px;
+  height: 220px;
   background: #E5E7EB;
   position: relative;
   overflow: hidden;
@@ -651,5 +688,49 @@
   .skeleton-price::after,
   .skeleton-meta-item::after {
     background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+  }
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 1024px) {
+  .category-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .trust-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .stats-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .category-grid {
+    grid-template-columns: 1fr;
+  }
+  .trust-grid {
+    grid-template-columns: 1fr;
+  }
+  .stats-grid {
+    grid-template-columns: 1fr;
+  }
+  .featured-card {
+    flex: 0 0 300px !important;
+    width: 300px !important;
+    min-width: 300px !important;
+  }
+  .blog-card {
+    flex: 0 0 300px !important;
+    width: 300px !important;
+    min-width: 300px !important;
+  }
+  .blog-carousel-wrapper {
+    padding: 0 16px;
+  }
+  .section-title {
+    font-size: 22px;
+  }
+  .stat-value {
+    font-size: 28px;
   }
 }
