@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Properties in Kenya — Guided by the Caretaker</title>
-  <meta name="description" content="Kenya's premium real estate platform. Ask the Caretaker to find verified properties with intelligent, human-like guidance.">
+  <title>Properties in Kenya — Find Your Perfect Home</title>
+  <meta name="description" content="Kenya's premium real estate platform. Discover verified properties with AI-powered search.">
   <meta name="theme-color" content="#6366F1">
 
   <!-- Fonts -->
@@ -13,7 +13,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
-  <!-- Styles (separate files) -->
+  <!-- Styles -->
   <link rel="stylesheet" href="css/design-system.css">
   <link rel="stylesheet" href="css/nav.css">
   <link rel="stylesheet" href="css/component.css">
@@ -22,8 +22,8 @@
 
   <!-- SEO -->
   <meta property="og:type" content="website">
-  <meta property="og:title" content="Properties in Kenya — Ask the Caretaker">
-  <meta property="og:description" content="Stop searching. Start asking the Caretaker. Intelligent real estate guidance across Kenya.">
+  <meta property="og:title" content="Properties in Kenya">
+  <meta property="og:description" content="Kenya's premium real estate platform">
   <meta property="og:image" content="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=1200&q=80">
   <meta name="twitter:card" content="summary_large_image">
   <link rel="canonical" href="https://propertiesinkenya.co.ke/">
@@ -119,9 +119,9 @@
       gap: var(--space-3);
     }
 
-    /* Hamburger button – visible on mobile */
+    /* Hamburger button */
     .hamburger-btn {
-      display: none; /* hidden on desktop, overridden by media query */
+      display: none;
       background: none;
       border: none;
       width: 40px;
@@ -195,7 +195,6 @@
       margin-bottom: var(--space-8);
     }
 
-    /* Renamed animation to avoid collision */
     @keyframes pulse-badge {
       0%, 100% { opacity: 1; transform: scale(1); }
       50% { opacity: 0.7; transform: scale(1.1); }
@@ -234,7 +233,7 @@
       line-height: 1.6;
     }
 
-    /* Premium Input Card (not a search, but a guidance box) */
+    /* Premium Search Card - REFRAMED AS CARETAKER */
     .search-premium {
       background: white;
       border-radius: var(--radius-xl);
@@ -259,7 +258,7 @@
     }
 
     .search-premium-input::placeholder {
-      color: var(--text-tertiary); /* Ensure --text-tertiary is defined in design-system.css */
+      color: var(--text-tertiary);
     }
 
     .search-premium-btn {
@@ -730,10 +729,10 @@
         grid-template-columns: 1fr 1fr;
       }
       .hamburger-btn {
-        display: flex;  /* show hamburger */
+        display: flex;
       }
       .nav-links {
-        display: none;  /* hide desktop links */
+        display: none;
       }
     }
 
@@ -765,23 +764,23 @@
     <div class="nav-links" id="navLinks">
       <a href="/buy.html" class="nav-link-premium">
         <i class="fas fa-home"></i>
-        Buy
+        Find a Home
       </a>
       <a href="/rent.html" class="nav-link-premium">
         <i class="fas fa-key"></i>
-        Rent
+        Find Rentals
       </a>
       <a href="/lease.html" class="nav-link-premium">
         <i class="fas fa-building"></i>
-        Lease
+        Commercial
       </a>
       <a href="/pikbnb.html" class="nav-link-premium">
         <i class="fas fa-bed"></i>
-        PIKBNB
+        Short Stays
       </a>
       <a href="/blog.html" class="nav-link-premium">
         <i class="fas fa-newspaper"></i>
-        Blog
+        Insights
       </a>
       <a href="/agents.html" class="nav-link-premium">
         <i class="fas fa-users"></i>
@@ -797,6 +796,7 @@
       <a href="login.html" class="btn btn-primary btn-sm">
         Sign In
       </a>
+      <!-- Hamburger button for mobile -->
       <button class="hamburger-btn" id="hamburgerBtn" aria-label="Toggle menu" aria-expanded="false">
         <span class="hamburger-line"></span>
         <span class="hamburger-line"></span>
@@ -825,23 +825,23 @@
       <div class="mobile-menu-section-title">Navigate</div>
       <a href="/buy.html" class="mobile-menu-link">
         <span class="mobile-menu-icon"><i class="fas fa-home"></i></span>
-        Buy
+        Find a Home
       </a>
       <a href="/rent.html" class="mobile-menu-link">
         <span class="mobile-menu-icon"><i class="fas fa-key"></i></span>
-        Rent
+        Find Rentals
       </a>
       <a href="/lease.html" class="mobile-menu-link">
         <span class="mobile-menu-icon"><i class="fas fa-building"></i></span>
-        Lease
+        Commercial
       </a>
       <a href="/pikbnb.html" class="mobile-menu-link">
         <span class="mobile-menu-icon"><i class="fas fa-bed"></i></span>
-        PIKBNB
+        Short Stays
       </a>
       <a href="/blog.html" class="mobile-menu-link">
         <span class="mobile-menu-icon"><i class="fas fa-newspaper"></i></span>
-        Blog
+        Insights
       </a>
       <a href="/agents.html" class="mobile-menu-link">
         <span class="mobile-menu-icon"><i class="fas fa-users"></i></span>
@@ -854,39 +854,38 @@
 </div>
 
 <main id="main-content">
-
-  <!-- Hero Section – now centered on the Caretaker -->
+  <!-- Hero Section -->
   <section class="hero-cinematic">
     <div class="hero-content">
       <div class="hero-badge">
         <span class="hero-badge-dot"></span>
-        <span>Your intelligent real‑estate guide</span>
+        <span>Powered by The Caretaker AI</span>
       </div>
       
       <h1 class="hero-title">
-        Ask the <span class="highlight">Caretaker</span>
+        Stop Searching. <span class="highlight">Start Asking</span> the Caretaker.
       </h1>
       
       <p class="hero-subtitle">
-        Stop searching. Tell us what you need—the Caretaker understands and finds exactly what fits your life.
+        Real estate, guided by intelligence—not search bars. Tell us what you need. We'll take care of the rest.
       </p>
       
-      <!-- Guidance Box (formerly search) -->
+      <!-- Ask the Caretaker Input -->
       <div class="search-premium">
-        <i class="fas fa-comment-dots" style="color: var(--text-tertiary); margin-left: var(--space-4);"></i>
-        <input 
-          type="text" 
-          class="search-premium-input" 
-          placeholder="e.g. “A 3‑bedroom apartment in Westlands with a pool”" 
-          aria-label="Ask the Caretaker what you are looking for"
-        >
+        <i class="fas fa-sparkles" style="color: var(--color-primary); margin-left: var(--space-4);"></i>
+        <input type="text" class="search-premium-input" placeholder="Ask the Caretaker what you're looking for..." aria-label="Ask the Caretaker">
         <button class="search-premium-btn">
           <i class="fas fa-arrow-right"></i>
           Ask the Caretaker
         </button>
       </div>
       
-      <!-- Quick Actions -->
+      <!-- Helper text -->
+      <p style="color: rgba(255,255,255,0.8); font-size: 14px; margin-top: var(--space-4);">
+        The Caretaker understands your needs and helps you find exactly what matters.
+      </p>
+      
+      <!-- Quick Actions - REFRAMED -->
       <div class="quick-actions">
         <a href="/buy.html" class="quick-action">
           <i class="fas fa-home"></i>
@@ -894,7 +893,7 @@
         </a>
         <a href="/rent.html" class="quick-action">
           <i class="fas fa-key"></i>
-          Find a Rental
+          Find Rentals
         </a>
         <a href="/pikbnb.html" class="quick-action">
           <i class="fas fa-bed"></i>
@@ -902,35 +901,35 @@
         </a>
         <a href="/agents.html" class="quick-action">
           <i class="fas fa-user-tie"></i>
-          Talk to an Agent
+          Get Guidance
         </a>
       </div>
     </div>
   </section>
 
-  <!-- Categories Section -->
+  <!-- Categories Section - REFRAMED -->
   <section class="section">
     <div class="container">
       <div class="section-header">
-        <span class="text-label">Browse by Category</span>
-        <h2 class="heading-2">Let the Caretaker guide your direction</h2>
-        <p class="text-body">From luxury villas to affordable apartments — the Caretaker focuses only on what matters to you</p>
+        <span class="text-label">Let the Caretaker Guide You</span>
+        <h2 class="heading-2">Explore Opportunities Across Kenya</h2>
+        <p class="text-body">From luxury villas to affordable apartments — describe what you need, and the Caretaker will find it</p>
       </div>
       
       <div class="categories-grid">
         <a href="/buy.html" class="category-card-premium">
-          <img src="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=800&q=80" alt="For Sale" loading="lazy">
+          <img src="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=800&q=80" alt="Find a Home" loading="lazy">
           <div class="category-card-overlay">
-            <span class="category-card-label">For Sale</span>
+            <span class="category-card-label">Find a Home</span>
             <h3 class="category-card-title">Houses & Land</h3>
             <span class="category-card-count">2,847 properties</span>
           </div>
         </a>
         
         <a href="/rent.html" class="category-card-premium">
-          <img src="https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=800&q=80" alt="For Rent" loading="lazy">
+          <img src="https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=800&q=80" alt="Find Rentals" loading="lazy">
           <div class="category-card-overlay">
-            <span class="category-card-label">For Rent</span>
+            <span class="category-card-label">Find Rentals</span>
             <h3 class="category-card-title">Apartments & Homes</h3>
             <span class="category-card-count">1,523 properties</span>
           </div>
@@ -948,7 +947,7 @@
         <a href="/pikbnb.html" class="category-card-premium">
           <img src="https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?w=800&q=80" alt="Short Stays" loading="lazy">
           <div class="category-card-overlay">
-            <span class="category-card-label">PIKBNB</span>
+            <span class="category-card-label">Short Stays</span>
             <h3 class="category-card-title">Vacation Rentals</h3>
             <span class="category-card-count">327 stays</span>
           </div>
@@ -957,13 +956,13 @@
     </div>
   </section>
 
-  <!-- Featured Properties (still dynamic, but the heading reflects the Caretaker's role) -->
+  <!-- Featured Properties - REFRAMED -->
   <section class="section" style="background: var(--color-border-subtle);">
     <div class="container">
       <div class="section-header">
-        <span class="text-label">Recommended for You</span>
-        <h2 class="heading-2">Options the Caretaker recommends</h2>
-        <p class="text-body">Curated matches from Kenya's top agents</p>
+        <span class="text-label">Curated for You</span>
+        <h2 class="heading-2">Options the Caretaker Recommends</h2>
+        <p class="text-body">Verified listings matched to what matters most to you</p>
       </div>
       
       <div class="properties-grid" id="featuredProperties">
@@ -972,20 +971,20 @@
       
       <div style="text-align: center; margin-top: var(--space-12);">
         <a href="/buy.html" class="btn btn-secondary btn-lg">
-          View All Properties
+          See All Recommendations
           <i class="fas fa-arrow-right"></i>
         </a>
       </div>
     </div>
   </section>
 
-  <!-- Trust Section -->
+  <!-- Trust Section - REFRAMED -->
   <section class="section">
     <div class="container">
       <div class="section-header">
-        <span class="text-label">Why Choose Us</span>
-        <h2 class="heading-2">Intelligence you can trust</h2>
-        <p class="text-body">The Caretaker combines AI understanding with human‑verified listings</p>
+        <span class="text-label">Not Just Listings. Understanding.</span>
+        <h2 class="heading-2">Built on Trust & Intelligence</h2>
+        <p class="text-body">The Caretaker filters noise and focuses only on what fits your life</p>
       </div>
       
       <div class="trust-grid-premium">
@@ -1001,8 +1000,8 @@
           <div class="trust-icon-premium">
             <i class="fas fa-brain"></i>
           </div>
-          <h3 class="trust-title">The Caretaker AI</h3>
-          <p class="trust-desc">Understands your needs and filters out noise – you only see what fits</p>
+          <h3 class="trust-title">AI-Powered Guidance</h3>
+          <p class="trust-desc">The Caretaker understands exactly what you're looking for</p>
         </div>
         
         <div class="trust-card-premium">
@@ -1038,24 +1037,23 @@
         </div>
         <div class="stat-card-premium">
           <div class="stat-value-premium">12K+</div>
-          <div class="stat-label-premium">Monthly Conversations with the Caretaker</div>
+          <div class="stat-label-premium">Monthly Searches</div>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- CTA Section -->
+  <!-- CTA Section - REFRAMED -->
   <section class="container">
     <div class="cta-premium">
-      <h2 class="heading-2">Ready to ask the Caretaker?</h2>
-      <p class="text-body">Thousands of Kenyans have already found their perfect home through guidance, not guesswork.</p>
+      <h2 class="heading-2">Ready to Find Your Dream Property?</h2>
+      <p class="text-body">Join thousands of Kenyans who found their perfect home with the Caretaker's guidance</p>
       <a href="/buy.html" class="btn btn-lg" style="background: white; color: var(--color-primary);">
         Ask the Caretaker
         <i class="fas fa-arrow-right"></i>
       </a>
     </div>
   </section>
-
 </main>
 
 <!-- Footer -->
@@ -1070,7 +1068,7 @@
           <span>Properties in Kenya</span>
         </div>
         <p class="footer-brand-desc">
-          Real estate guided by the Caretaker — intelligent, personal, trusted.
+          Kenya's premium real estate platform. Find verified properties with AI-powered guidance from the Caretaker.
         </p>
         <div class="footer-social">
           <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
@@ -1083,8 +1081,8 @@
       <div>
         <h4 class="footer-heading">Properties</h4>
         <div class="footer-links">
-          <a href="/buy.html" class="footer-link">Buy Property</a>
-          <a href="/rent.html" class="footer-link">Rent Property</a>
+          <a href="/buy.html" class="footer-link">Find a Home</a>
+          <a href="/rent.html" class="footer-link">Find Rentals</a>
           <a href="/lease.html" class="footer-link">Commercial Lease</a>
           <a href="/pikbnb.html" class="footer-link">Short Stays</a>
           <a href="/saved.html" class="footer-link">Saved Properties</a>
@@ -1094,7 +1092,7 @@
       <div>
         <h4 class="footer-heading">Resources</h4>
         <div class="footer-links">
-          <a href="/blog.html" class="footer-link">Blog</a>
+          <a href="/blog.html" class="footer-link">Insights</a>
           <a href="/agents.html" class="footer-link">Find an Agent</a>
           <a href="/blog.html" class="footer-link">Buying Guides</a>
           <a href="/blog.html" class="footer-link">Market Reports</a>
