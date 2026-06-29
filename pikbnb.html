@@ -1,0 +1,999 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PIKBNB | Short-Term Stays & Vacation Rentals in Kenya</title>
+<meta name="description" content="Book unique short-term stays across Kenya. Beach houses, city apartments, cabins, and villas. Powered by Properties in Kenya.">
+<meta name="keywords" content="PIKBNB, short stays Kenya, vacation rentals Kenya, Airbnb Kenya, beach house Diani, Nairobi apartment, cabin Naivasha">
+<meta name="robots" content="index, follow">
+<link rel="canonical" href="https://propertiesinkenya.co.ke/pikbnb.html">
+<meta property="og:type" content="website">
+<meta property="og:title" content="PIKBNB — Short-Term Stays in Kenya">
+<meta property="og:description" content="Book unique short-term stays across Kenya. Beach houses, city apartments, cabins, and villas.">
+<meta property="og:image" content="https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?w=1200&q=80">
+<meta property="og:url" content="https://propertiesinkenya.co.ke/pikbnb.html">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="PIKBNB — Short-Term Stays in Kenya">
+<meta name="twitter:description" content="Book unique short-term stays across Kenya.">
+<meta name="twitter:image" content="https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?w=1200&q=80">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  "name": "PIKBNB",
+  "url": "https://propertiesinkenya.co.ke/pikbnb.html",
+  "description": "Short-term vacation rentals and stays across Kenya."
+}
+</script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/nav.css">
+<link rel="stylesheet" href="css/components.css">
+<link rel="stylesheet" href="css/sections.css">
+<link rel="stylesheet" href="css/responsive.css">
+<style>
+/* PIKBNB Specific Styles */
+.pikbnb-hero {
+  position: relative;
+  width: 100%;
+  max-width: 1440px;
+  margin: 0 auto 60px;
+  border-radius: 24px;
+  overflow: hidden;
+  height: 500px;
+  background: linear-gradient(180deg, rgba(0,0,0,0.1) 0%, rgba(0,0,0,0.5) 100%),
+              url('https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?w=2000&q=80') center/cover no-repeat;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px;
+}
+
+.pikbnb-hero::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(0,0,0,0.2) 0%, rgba(0,0,0,0.6) 100%);
+  z-index: 1;
+}
+
+.pikbnb-hero-content {
+  position: relative;
+  z-index: 2;
+  text-align: center;
+  width: 100%;
+  max-width: 800px;
+}
+
+.pikbnb-logo-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 24px;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  border-radius: 9999px;
+  font-size: 18px;
+  font-weight: 700;
+  color: #7C4DFF;
+  margin-bottom: 24px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+}
+
+.pikbnb-logo-badge i {
+  font-size: 20px;
+}
+
+.pikbnb-hero-title {
+  font-size: 48px;
+  font-weight: 700;
+  color: white;
+  margin-bottom: 12px;
+  letter-spacing: -0.03em;
+  line-height: 1.1;
+  text-shadow: 0 2px 20px rgba(0, 0, 0, 0.4);
+}
+
+.pikbnb-hero-subtitle {
+  font-size: 18px;
+  color: rgba(255, 255, 255, 0.9);
+  margin-bottom: 32px;
+  font-weight: 400;
+  text-shadow: 0 1px 8px rgba(0, 0, 0, 0.3);
+}
+
+/* Search Bar with Dates */
+.pikbnb-search-bar {
+  background: white;
+  border-radius: 60px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.25);
+  padding: 8px;
+  display: flex;
+  align-items: center;
+  max-width: 700px;
+  margin: 0 auto;
+  gap: 4px;
+}
+
+.pikbnb-search-field {
+  flex: 1;
+  padding: 14px 20px;
+  border: none;
+  outline: none;
+  font-size: 15px;
+  color: #111827;
+  background: transparent;
+  font-family: 'Inter', sans-serif;
+  border-radius: 50px;
+  transition: background 0.2s;
+}
+
+.pikbnb-search-field:focus {
+  background: #F9FAFB;
+}
+
+.pikbnb-search-field::placeholder {
+  color: #9CA3AF;
+}
+
+.pikbnb-search-divider {
+  width: 1px;
+  height: 32px;
+  background: #E5E7EB;
+}
+
+.pikbnb-search-btn {
+  padding: 14px 28px;
+  background: linear-gradient(135deg, #7C4DFF, #9A7BFF);
+  color: white;
+  border: none;
+  border-radius: 50px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.2s;
+  box-shadow: 0 4px 12px rgba(124, 77, 255, 0.3);
+  white-space: nowrap;
+}
+
+.pikbnb-search-btn:hover {
+  transform: scale(1.03);
+  box-shadow: 0 6px 16px rgba(124, 77, 255, 0.4);
+}
+
+/* Stay Type Categories */
+.stay-types-section {
+  padding: 20px 0 60px;
+}
+
+.stay-types-grid {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 20px;
+}
+
+.stay-type-card {
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.3s;
+  padding: 16px 8px;
+  border-radius: 16px;
+}
+
+.stay-type-card:hover {
+  background: #F9FAFB;
+  transform: translateY(-4px);
+}
+
+.stay-type-icon {
+  width: 64px;
+  height: 64px;
+  margin: 0 auto 12px;
+  background: linear-gradient(135deg, rgba(124, 77, 255, 0.1), rgba(154, 123, 255, 0.1));
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 28px;
+  color: #7C4DFF;
+  transition: all 0.3s;
+}
+
+.stay-type-card:hover .stay-type-icon {
+  background: linear-gradient(135deg, #7C4DFF, #9A7BFF);
+  color: white;
+  transform: scale(1.05);
+}
+
+.stay-type-name {
+  font-size: 14px;
+  font-weight: 600;
+  color: #111827;
+  margin-bottom: 4px;
+}
+
+.stay-type-count {
+  font-size: 12px;
+  color: #9CA3AF;
+}
+
+/* Featured Stays */
+.pikbnb-stays-section {
+  padding: 40px 0 80px;
+}
+
+.stays-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 24px;
+}
+
+.stay-card {
+  background: white;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  cursor: pointer;
+  transition: all 0.3s;
+  border: 1px solid #F3F4F6;
+}
+
+.stay-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.12);
+  border-color: #7C4DFF;
+}
+
+.stay-card-image-wrapper {
+  position: relative;
+  overflow: hidden;
+  height: 220px;
+}
+
+.stay-card-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.5s;
+}
+
+.stay-card:hover .stay-card-image {
+  transform: scale(1.08);
+}
+
+.stay-card-badge {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  padding: 5px 12px;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 600;
+  color: #7C4DFF;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.stay-card-favorite {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.9);
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  color: #9CA3AF;
+  transition: all 0.2s;
+}
+
+.stay-card-favorite:hover {
+  color: #EF4444;
+  transform: scale(1.1);
+}
+
+.stay-card-info {
+  padding: 16px;
+}
+
+.stay-card-location {
+  font-size: 13px;
+  color: #6B7280;
+  margin-bottom: 6px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.stay-card-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: #111827;
+  margin-bottom: 8px;
+  line-height: 1.3;
+}
+
+.stay-card-amenities {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 12px;
+  font-size: 12px;
+  color: #6B7280;
+}
+
+.stay-card-amenities span {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.stay-card-price {
+  display: flex;
+  align-items: baseline;
+  gap: 4px;
+  padding-top: 12px;
+  border-top: 1px solid #F3F4F6;
+}
+
+.stay-card-price-amount {
+  font-size: 18px;
+  font-weight: 700;
+  color: #7C4DFF;
+}
+
+.stay-card-price-period {
+  font-size: 13px;
+  color: #9CA3AF;
+}
+
+.stay-card-rating {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 13px;
+  color: #111827;
+  font-weight: 600;
+  margin-left: auto;
+}
+
+.stay-card-rating i {
+  color: #FBBF24;
+  font-size: 12px;
+}
+
+/* Host CTA Section */
+.host-cta-section {
+  background: linear-gradient(135deg, #7C4DFF 0%, #9A7BFF 100%);
+  border-radius: 24px;
+  padding: 60px 40px;
+  margin: 40px 0 80px;
+  text-align: center;
+  color: white;
+  position: relative;
+  overflow: hidden;
+}
+
+.host-cta-section::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  right: -20%;
+  width: 500px;
+  height: 500px;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.host-cta-title {
+  font-size: 32px;
+  font-weight: 700;
+  margin-bottom: 12px;
+  letter-spacing: -0.02em;
+  position: relative;
+  z-index: 1;
+}
+
+.host-cta-subtitle {
+  font-size: 16px;
+  opacity: 0.9;
+  margin-bottom: 32px;
+  max-width: 500px;
+  margin-left: auto;
+  margin-right: auto;
+  position: relative;
+  z-index: 1;
+}
+
+.host-cta-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 16px 32px;
+  background: white;
+  color: #7C4DFF;
+  border: none;
+  border-radius: 50px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+  position: relative;
+  z-index: 1;
+  text-decoration: none;
+}
+
+.host-cta-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+  .stay-types-grid { grid-template-columns: repeat(3, 1fr); }
+  .stays-grid { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (max-width: 768px) {
+  .pikbnb-hero { height: 450px; border-radius: 0; margin: 0 -20px 40px; }
+  .pikbnb-hero-title { font-size: 32px; }
+  .pikbnb-hero-subtitle { font-size: 15px; }
+  .pikbnb-search-bar { flex-direction: column; border-radius: 20px; padding: 12px; }
+  .pikbnb-search-divider { width: 100%; height: 1px; }
+  .pikbnb-search-btn { width: 100%; justify-content: center; }
+  .stay-types-grid { grid-template-columns: repeat(2, 1fr); }
+  .stays-grid { grid-template-columns: 1fr; }
+  .host-cta-title { font-size: 24px; }
+}
+</style>
+<script defer data-domain="propertiesinkenya.co.ke" src="https://plausible.io/js/script.js"></script>
+<link rel="preconnect" href="https://nqwvsmuvltbiekfnvovx.supabase.co">
+<link rel="preconnect" href="https://images.unsplash.com">
+</head>
+<body>
+<div class="bg-layers">
+  <div class="bg-layer-1"></div>
+  <div class="bg-layer-2"></div>
+  <div class="bg-layer-3"></div>
+</div>
+
+<!-- Navigation -->
+<nav class="nav-fixed" aria-label="Main navigation">
+  <div class="nav-content">
+    <a href="/" class="nav-logo" aria-label="Properties in Kenya - Home">
+      <div class="nav-logo-icon"><i class="fas fa-home" aria-hidden="true"></i></div>
+      Properties in Kenya
+    </a>
+    <div class="nav-center">
+      <button class="nav-link" data-category="for sale">Buy</button>
+      <button class="nav-link" data-category="for rent">Rent</button>
+      <button class="nav-link" data-category="lease">For Lease</button>
+      <a href="/pikbnb.html" class="nav-link pikbnb-link active">
+        <i class="fas fa-bed" style="margin-right: 4px;"></i>
+        PIKBNB
+      </a>
+      <a href="/#blog" class="nav-link">Blog</a>
+      <a href="/agents.html" class="nav-link">Agents</a>
+      <button class="nav-link favorites-badge" id="navFavoritesBtn" aria-label="Saved properties">
+        <i class="fas fa-heart" aria-hidden="true"></i>
+        Saved
+        <span class="favorites-count" id="favoritesCount" aria-live="polite">0</span>
+      </button>
+    </div>
+    <div style="display: flex; align-items: center; gap: 16px;">
+      <button class="nav-cta desktop-only" id="loginBtn">Log In / Sign Up</button>
+      <button class="hamburger-btn" id="hamburgerBtn" aria-label="Open menu" aria-expanded="false">
+        <span class="hamburger-line"></span>
+        <span class="hamburger-line"></span>
+        <span class="hamburger-line"></span>
+      </button>
+    </div>
+  </div>
+</nav>
+
+<!-- Login Modal -->
+<div class="login-modal-overlay" id="loginModal">
+  <div class="login-modal">
+    <button class="login-modal-close" id="closeLoginModal" aria-label="Close login modal">
+      <i class="fas fa-times"></i>
+    </button>
+    <h2>Welcome Back</h2>
+    <p>Are you looking to book a stay or list your property?</p>
+    <div class="login-options">
+      <a href="login.html?role=guest" class="login-option">
+        <i class="fas fa-user"></i>
+        <div class="login-option-title">I'm a Guest</div>
+        <div class="login-option-desc">Looking to book a stay</div>
+      </a>
+      <a href="login.html?role=host" class="login-option">
+        <i class="fas fa-home"></i>
+        <div class="login-option-title">I'm a Host</div>
+        <div class="login-option-desc">Listing my property</div>
+      </a>
+    </div>
+  </div>
+</div>
+
+<!-- Mobile Menu -->
+<div class="mobile-menu-overlay" id="mobileMenuOverlay" aria-hidden="true"></div>
+<div class="mobile-menu-drawer" id="mobileMenuDrawer" role="dialog" aria-label="Navigation menu">
+  <div class="mobile-menu-header">
+    <div class="mobile-menu-title">
+      <div class="nav-logo-icon" style="width:24px; height:24px; font-size:11px;"><i class="fas fa-home" aria-hidden="true"></i></div>
+      Menu
+    </div>
+    <button class="mobile-menu-close" id="mobileMenuClose" aria-label="Close menu">
+      <i class="fas fa-times" aria-hidden="true"></i>
+    </button>
+  </div>
+  <div class="mobile-menu-content">
+    <div class="mobile-menu-section">
+      <div class="mobile-menu-section-title">Browse</div>
+      <a href="/" class="mobile-menu-link">
+        <i class="fas fa-home" aria-hidden="true"></i>
+        Buy Property
+      </a>
+      <a href="/" class="mobile-menu-link">
+        <i class="fas fa-key" aria-hidden="true"></i>
+        Rent Property
+      </a>
+      <a href="/" class="mobile-menu-link">
+        <i class="fas fa-file-contract" aria-hidden="true"></i>
+        For Lease
+      </a>
+      <a href="/pikbnb.html" class="mobile-menu-link pikbnb-link-mobile active">
+        <i class="fas fa-bed" style="color: #7C4DFF;"></i>
+        PIKBNB - Short Stays
+      </a>
+      <a href="/#blog" class="mobile-menu-link">
+        <i class="fas fa-newspaper" aria-hidden="true"></i>
+        Blog
+      </a>
+    </div>
+    <div class="mobile-menu-divider"></div>
+    <div class="mobile-menu-section">
+      <div class="mobile-menu-section-title">Account</div>
+      <button class="mobile-menu-link" id="mobileLoginBtn" style="color: #D4AF37; font-weight: 600;">
+        <i class="fas fa-sign-in-alt" style="color: #D4AF37;"></i>
+        Log In / Sign Up
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Main Content -->
+<main class="main-content" role="main">
+  <!-- PIKBNB Hero -->
+  <section class="pikbnb-hero" aria-labelledby="pikbnb-title">
+    <div class="pikbnb-hero-content">
+      <div class="pikbnb-logo-badge">
+        <i class="fas fa-bed"></i>
+        PIKBNB
+      </div>
+      <h1 class="pikbnb-hero-title" id="pikbnb-title">Find your perfect stay in Kenya</h1>
+      <p class="pikbnb-hero-subtitle">
+        Beach houses, city apartments, cabins, and villas — book unique short-term stays across all 47 counties.
+      </p>
+      
+      <!-- Search Bar -->
+      <div class="pikbnb-search-bar">
+        <input type="text" class="pikbnb-search-field" id="pikbnbLocation" placeholder="Where are you going?">
+        <div class="pikbnb-search-divider"></div>
+        <input type="text" class="pikbnb-search-field" id="pikbnbCheckin" placeholder="Check-in" onfocus="this.type='date'" onblur="if(!this.value)this.type='text'">
+        <div class="pikbnb-search-divider"></div>
+        <input type="text" class="pikbnb-search-field" id="pikbnbCheckout" placeholder="Check-out" onfocus="this.type='date'" onblur="if(!this.value)this.type='text'">
+        <button class="pikbnb-search-btn" id="pikbnbSearchBtn">
+          <i class="fas fa-search"></i>
+          Search
+        </button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Stay Type Categories -->
+  <section class="stay-types-section" aria-labelledby="stay-types-title">
+    <div class="section-header">
+      <h2 class="section-title" id="stay-types-title">Browse by stay type</h2>
+      <p class="section-subtitle">Find the perfect place for your trip</p>
+    </div>
+    <div class="stay-types-grid">
+      <div class="stay-type-card" onclick="filterStays('beachfront')">
+        <div class="stay-type-icon"><i class="fas fa-umbrella-beach"></i></div>
+        <div class="stay-type-name">Beachfront</div>
+        <div class="stay-type-count">24 stays</div>
+      </div>
+      <div class="stay-type-card" onclick="filterStays('apartment')">
+        <div class="stay-type-icon"><i class="fas fa-building"></i></div>
+        <div class="stay-type-name">City Apartments</div>
+        <div class="stay-type-count">156 stays</div>
+      </div>
+      <div class="stay-type-card" onclick="filterStays('cabin')">
+        <div class="stay-type-icon"><i class="fas fa-tree"></i></div>
+        <div class="stay-type-name">Cabins & Lodges</div>
+        <div class="stay-type-count">42 stays</div>
+      </div>
+      <div class="stay-type-card" onclick="filterStays('villa')">
+        <div class="stay-type-icon"><i class="fas fa-home"></i></div>
+        <div class="stay-type-name">Villas</div>
+        <div class="stay-type-count">38 stays</div>
+      </div>
+      <div class="stay-type-card" onclick="filterStays('safari')">
+        <div class="stay-type-icon"><i class="fas fa-paw"></i></div>
+        <div class="stay-type-name">Safari Lodges</div>
+        <div class="stay-type-count">67 stays</div>
+      </div>
+      <div class="stay-type-card" onclick="filterStays('all')">
+        <div class="stay-type-icon"><i class="fas fa-th-large"></i></div>
+        <div class="stay-type-name">View All</div>
+        <div class="stay-type-count">327 stays</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Featured Stays -->
+  <section class="pikbnb-stays-section" aria-labelledby="featured-stays-title">
+    <div class="section-header">
+      <h2 class="section-title" id="featured-stays-title">Featured stays</h2>
+      <p class="section-subtitle">Handpicked unique stays across Kenya</p>
+    </div>
+    <div class="stays-grid" id="staysGrid">
+      <!-- Stay Card 1 -->
+      <article class="stay-card" onclick="window.location.href='/stay/beach-house-diani'">
+        <div class="stay-card-image-wrapper">
+          <img src="https://images.unsplash.com/photo-1499793983690-e29da59ef1c2?w=600&q=80" alt="Beach house in Diani" class="stay-card-image" loading="lazy">
+          <span class="stay-card-badge">Beachfront</span>
+          <button class="stay-card-favorite" aria-label="Save stay">
+            <i class="far fa-heart"></i>
+          </button>
+        </div>
+        <div class="stay-card-info">
+          <div class="stay-card-location"><i class="fas fa-map-marker-alt"></i> Diani Beach, Kwale</div>
+          <h3 class="stay-card-title">Luxury Beach House with Pool</h3>
+          <div class="stay-card-amenities">
+            <span><i class="fas fa-bed"></i> 4 beds</span>
+            <span><i class="fas fa-bath"></i> 3 baths</span>
+            <span><i class="fas fa-users"></i> 8 guests</span>
+          </div>
+          <div class="stay-card-price">
+            <span class="stay-card-price-amount">KSh 15,000</span>
+            <span class="stay-card-price-period">/ night</span>
+            <div class="stay-card-rating"><i class="fas fa-star"></i> 4.9</div>
+          </div>
+        </div>
+      </article>
+
+      <!-- Stay Card 2 -->
+      <article class="stay-card" onclick="window.location.href='/stay/apartment-westlands'">
+        <div class="stay-card-image-wrapper">
+          <img src="https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=600&q=80" alt="Apartment in Westlands" class="stay-card-image" loading="lazy">
+          <span class="stay-card-badge">City</span>
+          <button class="stay-card-favorite" aria-label="Save stay">
+            <i class="far fa-heart"></i>
+          </button>
+        </div>
+        <div class="stay-card-info">
+          <div class="stay-card-location"><i class="fas fa-map-marker-alt"></i> Westlands, Nairobi</div>
+          <h3 class="stay-card-title">Modern 2BR Apartment with City View</h3>
+          <div class="stay-card-amenities">
+            <span><i class="fas fa-bed"></i> 2 beds</span>
+            <span><i class="fas fa-bath"></i> 2 baths</span>
+            <span><i class="fas fa-users"></i> 4 guests</span>
+          </div>
+          <div class="stay-card-price">
+            <span class="stay-card-price-amount">KSh 8,500</span>
+            <span class="stay-card-price-period">/ night</span>
+            <div class="stay-card-rating"><i class="fas fa-star"></i> 4.8</div>
+          </div>
+        </div>
+      </article>
+
+      <!-- Stay Card 3 -->
+      <article class="stay-card" onclick="window.location.href='/stay/cabin-naivasha'">
+        <div class="stay-card-image-wrapper">
+          <img src="https://images.unsplash.com/photo-1449158743715-0a90ebb6d2d8?w=600&q=80" alt="Cabin in Naivasha" class="stay-card-image" loading="lazy">
+          <span class="stay-card-badge">Cabin</span>
+          <button class="stay-card-favorite" aria-label="Save stay">
+            <i class="far fa-heart"></i>
+          </button>
+        </div>
+        <div class="stay-card-info">
+          <div class="stay-card-location"><i class="fas fa-map-marker-alt"></i> Naivasha, Nakuru</div>
+          <h3 class="stay-card-title">Lakeside Cabin with Fireplace</h3>
+          <div class="stay-card-amenities">
+            <span><i class="fas fa-bed"></i> 2 beds</span>
+            <span><i class="fas fa-bath"></i> 1 bath</span>
+            <span><i class="fas fa-users"></i> 4 guests</span>
+          </div>
+          <div class="stay-card-price">
+            <span class="stay-card-price-amount">KSh 6,000</span>
+            <span class="stay-card-price-period">/ night</span>
+            <div class="stay-card-rating"><i class="fas fa-star"></i> 4.9</div>
+          </div>
+        </div>
+      </article>
+
+      <!-- Stay Card 4 -->
+      <article class="stay-card" onclick="window.location.href='/stay/villa-karen'">
+        <div class="stay-card-image-wrapper">
+          <img src="https://images.unsplash.com/photo-1613490493576-7fde63acd811?w=600&q=80" alt="Villa in Karen" class="stay-card-image" loading="lazy">
+          <span class="stay-card-badge">Villa</span>
+          <button class="stay-card-favorite" aria-label="Save stay">
+            <i class="far fa-heart"></i>
+          </button>
+        </div>
+        <div class="stay-card-info">
+          <div class="stay-card-location"><i class="fas fa-map-marker-alt"></i> Karen, Nairobi</div>
+          <h3 class="stay-card-title">Garden Villa with Private Pool</h3>
+          <div class="stay-card-amenities">
+            <span><i class="fas fa-bed"></i> 5 beds</span>
+            <span><i class="fas fa-bath"></i> 4 baths</span>
+            <span><i class="fas fa-users"></i> 10 guests</span>
+          </div>
+          <div class="stay-card-price">
+            <span class="stay-card-price-amount">KSh 25,000</span>
+            <span class="stay-card-price-period">/ night</span>
+            <div class="stay-card-rating"><i class="fas fa-star"></i> 5.0</div>
+          </div>
+        </div>
+      </article>
+
+      <!-- Stay Card 5 -->
+      <article class="stay-card" onclick="window.location.href='/stay/safari-masai-mara'">
+        <div class="stay-card-image-wrapper">
+          <img src="https://images.unsplash.com/photo-1516426122078-c23e76319801?w=600&q=80" alt="Safari lodge in Masai Mara" class="stay-card-image" loading="lazy">
+          <span class="stay-card-badge">Safari</span>
+          <button class="stay-card-favorite" aria-label="Save stay">
+            <i class="far fa-heart"></i>
+          </button>
+        </div>
+        <div class="stay-card-info">
+          <div class="stay-card-location"><i class="fas fa-map-marker-alt"></i> Masai Mara, Narok</div>
+          <h3 class="stay-card-title">Luxury Safari Tent Experience</h3>
+          <div class="stay-card-amenities">
+            <span><i class="fas fa-bed"></i> 1 bed</span>
+            <span><i class="fas fa-bath"></i> 1 bath</span>
+            <span><i class="fas fa-users"></i> 2 guests</span>
+          </div>
+          <div class="stay-card-price">
+            <span class="stay-card-price-amount">KSh 35,000</span>
+            <span class="stay-card-price-period">/ night</span>
+            <div class="stay-card-rating"><i class="fas fa-star"></i> 4.9</div>
+          </div>
+        </div>
+      </article>
+
+      <!-- Stay Card 6 -->
+      <article class="stay-card" onclick="window.location.href='/stay/apartment-kilimani'">
+        <div class="stay-card-image-wrapper">
+          <img src="https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=600&q=80" alt="Apartment in Kilimani" class="stay-card-image" loading="lazy">
+          <span class="stay-card-badge">City</span>
+          <button class="stay-card-favorite" aria-label="Save stay">
+            <i class="far fa-heart"></i>
+          </button>
+        </div>
+        <div class="stay-card-info">
+          <div class="stay-card-location"><i class="fas fa-map-marker-alt"></i> Kilimani, Nairobi</div>
+          <h3 class="stay-card-title">Stylish Studio Near Yaya Centre</h3>
+          <div class="stay-card-amenities">
+            <span><i class="fas fa-bed"></i> 1 bed</span>
+            <span><i class="fas fa-bath"></i> 1 bath</span>
+            <span><i class="fas fa-users"></i> 2 guests</span>
+          </div>
+          <div class="stay-card-price">
+            <span class="stay-card-price-amount">KSh 4,500</span>
+            <span class="stay-card-price-period">/ night</span>
+            <div class="stay-card-rating"><i class="fas fa-star"></i> 4.7</div>
+          </div>
+        </div>
+      </article>
+
+      <!-- Stay Card 7 -->
+      <article class="stay-card" onclick="window.location.href='/stay/beach-house-watamu'">
+        <div class="stay-card-image-wrapper">
+          <img src="https://images.unsplash.com/photo-1571896349842-33c89424de2d?w=600&q=80" alt="Beach house in Watamu" class="stay-card-image" loading="lazy">
+          <span class="stay-card-badge">Beachfront</span>
+          <button class="stay-card-favorite" aria-label="Save stay">
+            <i class="far fa-heart"></i>
+          </button>
+        </div>
+        <div class="stay-card-info">
+          <div class="stay-card-location"><i class="fas fa-map-marker-alt"></i> Watamu, Kilifi</div>
+          <h3 class="stay-card-title">Oceanfront Villa with Chef</h3>
+          <div class="stay-card-amenities">
+            <span><i class="fas fa-bed"></i> 3 beds</span>
+            <span><i class="fas fa-bath"></i> 3 baths</span>
+            <span><i class="fas fa-users"></i> 6 guests</span>
+          </div>
+          <div class="stay-card-price">
+            <span class="stay-card-price-amount">KSh 20,000</span>
+            <span class="stay-card-price-period">/ night</span>
+            <div class="stay-card-rating"><i class="fas fa-star"></i> 4.9</div>
+          </div>
+        </div>
+      </article>
+
+      <!-- Stay Card 8 -->
+      <article class="stay-card" onclick="window.location.href='/stay/lodge-amboseli'">
+        <div class="stay-card-image-wrapper">
+          <img src="https://images.unsplash.com/photo-1547471080-7cc2caa01a7e?w=600&q=80" alt="Lodge in Amboseli" class="stay-card-image" loading="lazy">
+          <span class="stay-card-badge">Safari</span>
+          <button class="stay-card-favorite" aria-label="Save stay">
+            <i class="far fa-heart"></i>
+          </button>
+        </div>
+        <div class="stay-card-info">
+          <div class="stay-card-location"><i class="fas fa-map-marker-alt"></i> Amboseli, Kajiado</div>
+          <h3 class="stay-card-title">Kilimanjaro View Eco-Lodge</h3>
+          <div class="stay-card-amenities">
+            <span><i class="fas fa-bed"></i> 2 beds</span>
+            <span><i class="fas fa-bath"></i> 2 baths</span>
+            <span><i class="fas fa-users"></i> 4 guests</span>
+          </div>
+          <div class="stay-card-price">
+            <span class="stay-card-price-amount">KSh 18,000</span>
+            <span class="stay-card-price-period">/ night</span>
+            <div class="stay-card-rating"><i class="fas fa-star"></i> 4.8</div>
+          </div>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <!-- Host CTA Section -->
+  <section class="host-cta-section" aria-labelledby="host-cta-title">
+    <h2 class="host-cta-title" id="host-cta-title">List your property on PIKBNB</h2>
+    <p class="host-cta-subtitle">
+      Earn extra income by hosting guests. We handle verification, payments, and support.
+    </p>
+    <a href="login.html?role=host" class="host-cta-btn">
+      <i class="fas fa-plus"></i>
+      Become a Host
+    </a>
+  </section>
+</main>
+
+<!-- Footer -->
+<footer class="footer" role="contentinfo">
+  <div class="footer-content">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <div class="footer-brand-title">
+          <div class="nav-logo-icon" style="width:24px; height:24px; font-size:11px;"><i class="fas fa-home" aria-hidden="true"></i></div>
+          Properties in Kenya
+        </div>
+        <p class="footer-brand-desc">
+          AI-powered real estate platform connecting buyers, renters, and investors with verified properties across Kenya.
+        </p>
+        <div class="footer-powered">
+          <span class="footer-powered-dot" aria-hidden="true"></span>
+          Powered by The Caretaker Intelligence
+        </div>
+      </div>
+      <div>
+        <div class="footer-col-title">Explore</div>
+        <div class="footer-links">
+          <a href="/" class="footer-link">Buy Property</a>
+          <a href="/" class="footer-link">Rent Property</a>
+          <a href="/" class="footer-link">For Lease</a>
+          <a href="/pikbnb.html" class="footer-link">PIKBNB - Short Stays</a>
+          <a href="/#blog" class="footer-link">Blog</a>
+        </div>
+      </div>
+      <div>
+        <div class="footer-col-title">Company</div>
+        <div class="footer-links">
+          <a href="#" class="footer-link">About Us</a>
+          <a href="#" class="footer-link">Contact</a>
+          <a href="agent-dashboard.html" class="footer-link">For Agents</a>
+          <a href="login.html?role=host" class="footer-link">Become a Host</a>
+        </div>
+      </div>
+      <div>
+        <div class="footer-col-title">Legal</div>
+        <div class="footer-links">
+          <a href="#" class="footer-link">Terms</a>
+          <a href="#" class="footer-link">Privacy</a>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p class="footer-copyright">© 2026 Properties in Kenya. All rights reserved.</p>
+    </div>
+  </div>
+</footer>
+
+<script>
+// PIKBNB Specific JS
+function filterStays(type) {
+  const cards = document.querySelectorAll('.stay-card');
+  cards.forEach(card => {
+    const badge = card.querySelector('.stay-card-badge').textContent.toLowerCase();
+    if (type === 'all' || badge.includes(type) || 
+        (type === 'apartment' && badge === 'city') ||
+        (type === 'safari' && badge === 'safari')) {
+      card.style.display = 'block';
+    } else {
+      card.style.display = 'none';
+    }
+  });
+  
+  // Scroll to stays
+  document.getElementById('featured-stays-title').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+// Search functionality
+document.getElementById('pikbnbSearchBtn').addEventListener('click', () => {
+  const location = document.getElementById('pikbnbLocation').value.trim();
+  if (location) {
+    alert(`Searching for stays in ${location}... (Connect to Supabase to enable real search)`);
+  }
+});
+
+// Favorite toggle
+document.querySelectorAll('.stay-card-favorite').forEach(btn => {
+  btn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    const icon = btn.querySelector('i');
+    icon.classList.toggle('far');
+    icon.classList.toggle('fas');
+    if (icon.classList.contains('fas')) {
+      btn.style.color = '#EF4444';
+    } else {
+      btn.style.color = '#9CA3AF';
+    }
+  });
+});
+
+// Mobile menu
+document.getElementById('hamburgerBtn').addEventListener('click', () => {
+  document.getElementById('mobileMenuDrawer').classList.add('active');
+  document.getElementById('mobileMenuOverlay').classList.add('active');
+});
+
+document.getElementById('mobileMenuClose').addEventListener('click', () => {
+  document.getElementById('mobileMenuDrawer').classList.remove('active');
+  document.getElementById('mobileMenuOverlay').classList.remove('active');
+});
+
+document.getElementById('mobileMenuOverlay').addEventListener('click', () => {
+  document.getElementById('mobileMenuDrawer').classList.remove('active');
+  document.getElementById('mobileMenuOverlay').classList.remove('active');
+});
+
+// Login modal
+document.getElementById('loginBtn').addEventListener('click', () => {
+  document.getElementById('loginModal').classList.add('active');
+});
+
+document.getElementById('mobileLoginBtn').addEventListener('click', () => {
+  document.getElementById('loginModal').classList.add('active');
+  document.getElementById('mobileMenuDrawer').classList.remove('active');
+  document.getElementById('mobileMenuOverlay').classList.remove('active');
+});
+
+document.getElementById('closeLoginModal').addEventListener('click', () => {
+  document.getElementById('loginModal').classList.remove('active');
+});
+
+document.getElementById('loginModal').addEventListener('click', (e) => {
+  if (e.target.id === 'loginModal') {
+    document.getElementById('loginModal').classList.remove('active');
+  }
+});
+</script>
+</body>
+</html>
