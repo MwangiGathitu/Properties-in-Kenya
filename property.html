@@ -3,577 +3,400 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title id="pageTitle">Property Details | Properties in Kenya</title>
-<meta id="pageDescription" name="description" content="View property details, photos, and contact the listing agent.">
-<meta property="og:title" id="ogTitle" content="Property Details | Properties in Kenya">
-<meta property="og:description" id="ogDescription" content="View property details, photos, and contact the listing agent.">
-<meta property="og:image" id="ogImage" content="https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=1200&q=80">
-<meta property="og:type" content="website">
-<meta name="twitter:card" content="summary_large_image">
-<link rel="canonical" id="canonical" href="https://propertiesinkenya.co.ke/property.html">
+<title>4 Bedroom Villa in Karen | Properties in Kenya</title>
+<meta name="description" content="Stunning 4-bedroom villa in Karen, Nairobi. Features swimming pool, garden, and modern finishes.">
+<meta name="theme-color" content="#6366F1">
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<!-- Fonts & Icons -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
-<style>
-* { margin: 0; padding: 0; box-sizing: border-box; }
-html { scroll-behavior: smooth; }
-body { font-family: 'Inter', -apple-system, sans-serif; color: #111827; background: #f4f4f7; line-height: 1.6; padding-bottom: 80px; }
-.nav { position: sticky; top: 0; z-index: 100; background: rgba(255,255,255,0.95); backdrop-filter: blur(20px); border-bottom: 1px solid #e5e7eb; padding: 14px 24px; display: flex; justify-content: space-between; align-items: center; }
-.logo { font-size: 16px; font-weight: 700; color: #6b21a8; display: flex; align-items: center; gap: 8px; text-decoration: none; }
-.back-btn { background: #f3f4f6; color: #374151; border: none; padding: 8px 14px; border-radius: 8px; font-size: 13px; font-weight: 500; cursor: pointer; display: flex; align-items: center; gap: 6px; text-decoration: none; }
-.back-btn:hover { background: #e5e7eb; }
-.container { max-width: 1400px; margin: 24px auto; padding: 0 24px; display: grid; grid-template-columns: 1fr 380px; gap: 24px; align-items: start; }
-@media (max-width: 1024px) { .container { grid-template-columns: 1fr; } .sidebar { position: static !important; } }
-.card { background: white; border-radius: 16px; padding: 24px; margin-bottom: 20px; box-shadow: 0 1px 3px rgba(0,0,0,0.06); }
-.card-title { font-size: 18px; font-weight: 700; margin-bottom: 16px; display: flex; align-items: center; gap: 8px; color: #111827; }
-.card-title i { color: #6b21a8; }
-.hero-gallery { margin-bottom: 24px; }
-.main-image { width: 100%; height: 450px; background: #f3f4f6; border-radius: 16px; overflow: hidden; position: relative; }
-.main-image img { width: 100%; height: 100%; object-fit: cover; }
-.thumbnails { display: flex; gap: 10px; margin-top: 12px; overflow-x: auto; padding-bottom: 4px; }
-.thumbnail { width: 100px; height: 70px; border-radius: 10px; overflow: hidden; cursor: pointer; border: 2px solid transparent; flex-shrink: 0; transition: all 0.2s; }
-.thumbnail:hover, .thumbnail.active { border-color: #6b21a8; transform: translateY(-2px); }
-.thumbnail img { width: 100%; height: 100%; object-fit: cover; }
-.price-badge { display: inline-block; background: linear-gradient(135deg, #6b21a8, #a855f7); color: white; padding: 8px 16px; border-radius: 9999px; font-size: 14px; font-weight: 700; margin-bottom: 12px; }
-.property-title { font-size: 28px; font-weight: 800; color: #111827; margin-bottom: 8px; letter-spacing: -0.5px; }
-.property-location { font-size: 15px; color: #6b7280; display: flex; align-items: center; gap: 6px; margin-bottom: 16px; }
-.features-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin: 20px 0; }
-.feature-item { display: flex; align-items: center; gap: 8px; padding: 12px; background: #f9fafb; border-radius: 10px; }
-.feature-icon { width: 36px; height: 36px; background: linear-gradient(135deg, rgba(107,33,168,0.1), rgba(168,85,247,0.1)); color: #6b21a8; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 14px; }
-.feature-text { font-size: 13px; font-weight: 600; color: #111827; }
-.feature-label { font-size: 11px; color: #6b7280; }
-.sidebar { position: sticky; top: 88px; }
-.contact-card { background: white; border-radius: 16px; padding: 24px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); border: 1px solid #e5e7eb; }
-.price-display { font-size: 32px; font-weight: 800; color: #6b21a8; margin-bottom: 16px; letter-spacing: -0.5px; }
-.btn { width: 100%; padding: 14px; border-radius: 12px; border: none; font-size: 14px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; text-decoration: none; margin-bottom: 10px; transition: all 0.2s; }
-.btn:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(0,0,0,0.15); }
-.btn-whatsapp { background: #25D366; color: white; }
-.btn-call { background: #6b21a8; color: white; }
-.btn-email { background: white; color: #6b21a8; border: 2px solid #6b21a8; }
-.btn-email:hover { background: #faf5ff; }
-.btn-share { background: #f9fafb; color: #374151; border: 1px solid #e5e7eb; }
-.btn-share:hover { background: #f3f4f6; border-color: #d1d5db; }
-.agent-card { margin-top: 20px; padding: 20px; background: linear-gradient(135deg, #faf5ff, white); border: 2px solid #e9d5ff; border-radius: 14px; }
-.agent-header { display: flex; gap: 14px; align-items: center; margin-bottom: 14px; }
-.agent-avatar { width: 56px; height: 56px; border-radius: 50%; background: linear-gradient(135deg, #6b21a8, #a855f7); color: white; font-size: 22px; font-weight: 800; display: flex; align-items: center; justify-content: center; overflow: hidden; border: 3px solid white; }
-.agent-avatar img { width: 100%; height: 100%; object-fit: cover; }
-.agent-info { flex: 1; }
-.agent-name { font-size: 15px; font-weight: 700; color: #111827; display: flex; align-items: center; gap: 6px; }
-.agent-company { font-size: 12px; color: #6b21a8; font-weight: 600; }
-.agent-stats { display: flex; gap: 12px; font-size: 11px; color: #6b7280; }
-.agent-stat { display: flex; align-items: center; gap: 4px; }
-.agent-stat strong { color: #111827; font-weight: 700; }
-.view-profile-btn { width: 100%; padding: 10px; background: white; border: 1.5px solid #6b21a8; color: #6b21a8; border-radius: 10px; font-size: 13px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; transition: all 0.2s; text-decoration: none; }
-.view-profile-btn:hover { background: #6b21a8; color: white; }
-.description { font-size: 15px; color: #374151; line-height: 1.7; }
-.features-list { display: flex; flex-wrap: wrap; gap: 8px; }
-.feature-chip { padding: 8px 14px; background: #f9fafb; border: 1px solid #e5e7eb; border-radius: 9999px; font-size: 13px; color: #374151; display: flex; align-items: center; gap: 6px; }
-.feature-chip i { color: #10b981; font-size: 12px; }
-.similar-scroll { display: flex; gap: 16px; overflow-x: auto; padding-bottom: 8px; scroll-snap-type: x mandatory; }
-.similar-card { flex: 0 0 260px; background: white; border-radius: 14px; overflow: hidden; border: 1px solid #e5e7eb; cursor: pointer; scroll-snap-align: start; transition: all 0.2s; }
-.similar-card:hover { transform: translateY(-3px); box-shadow: 0 8px 20px rgba(0,0,0,0.08); border-color: #a855f7; }
-.similar-img { width: 100%; height: 160px; background: #f3f4f6; }
-.similar-img img { width: 100%; height: 100%; object-fit: cover; }
-.similar-body { padding: 14px; }
-.similar-price { font-size: 17px; font-weight: 800; color: #6b21a8; margin-bottom: 4px; }
-.similar-title { font-size: 13px; font-weight: 600; margin-bottom: 4px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.similar-loc { font-size: 12px; color: #6b7280; display: flex; align-items: center; gap: 4px; }
-.mobile-bar { position: fixed; bottom: 0; left: 0; right: 0; background: white; border-top: 2px solid #6b21a8; padding: 12px; z-index: 99; display: none; gap: 8px; box-shadow: 0 -4px 16px rgba(0,0,0,0.08); }
-.mobile-bar .btn { flex: 1; padding: 12px; font-size: 13px; margin: 0; }
-.loading { text-align: center; padding: 60px 20px; color: #6b7280; }
-.loading i { font-size: 48px; animation: spin 1s linear infinite; }
-@keyframes spin { 100% { transform: rotate(360deg); } }
-.empty { text-align: center; padding: 40px 20px; color: #9ca3af; }
-.empty i { font-size: 36px; margin-bottom: 10px; }
-@media (max-width: 768px) {
-  .container { padding: 0 16px; }
-  .main-image { height: 280px; }
-  .property-title { font-size: 22px; }
-  .features-grid { grid-template-columns: repeat(2, 1fr); }
-  .price-display { font-size: 26px; }
-  .mobile-bar { display: flex; }
-  body { padding-bottom: 90px; }
-}
-</style>
+<!-- Styles -->
+<link rel="stylesheet" href="css/design-system.css">
+<link rel="stylesheet" href="css/nav.css">
+<link rel="stylesheet" href="css/components.css">
+<link rel="stylesheet" href="css/sections.css">
+<link rel="stylesheet" href="css/property.css">
+<link rel="stylesheet" href="css/responsive.css">
+
+<!-- SEO -->
+<meta property="og:type" content="website">
+<meta property="og:title" content="4 Bedroom Villa in Karen">
+<meta property="og:description" content="Stunning 4-bedroom villa in Karen, Nairobi.">
+<meta property="og:image" content="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=1200&q=80">
 </head>
 <body>
 
-<nav class="nav">
-  <a href="/" class="logo"><i class="fas fa-home"></i> Properties in Kenya</a>
-  <a href="/" class="back-btn"><i class="fas fa-arrow-left"></i> Back</a>
+<!-- Navigation (Reused) -->
+<nav class="nav-premium" id="mainNav">
+  <div class="nav-premium-inner">
+    <a href="/" class="nav-logo">
+      <div class="nav-logo-icon"><i class="fas fa-home"></i></div>
+      <span>Properties in Kenya</span>
+    </a>
+    <div class="nav-links">
+      <a href="/buy.html" class="nav-link-premium"><i class="fas fa-home"></i> Buy</a>
+      <a href="/rent.html" class="nav-link-premium"><i class="fas fa-key"></i> Rent</a>
+      <a href="/lease.html" class="nav-link-premium"><i class="fas fa-building"></i> Lease</a>
+      <a href="/pikbnb.html" class="nav-link-premium"><i class="fas fa-bed"></i> PIKBNB</a>
+      <a href="/blog.html" class="nav-link-premium"><i class="fas fa-newspaper"></i> Blog</a>
+      <a href="/agents.html" class="nav-link-premium"><i class="fas fa-users"></i> Agents</a>
+    </div>
+    <div class="nav-actions">
+      <a href="/saved.html" class="nav-link-premium" style="color: var(--color-danger);">
+        <i class="fas fa-heart"></i> <span class="favorites-count">0</span>
+      </a>
+      <a href="login.html" class="btn btn-primary btn-sm">Sign In</a>
+    </div>
+  </div>
 </nav>
 
-<div class="container">
-  <main>
-    <div id="loadingState" class="loading">
-      <i class="fas fa-spinner"></i>
-      <p>Loading property details...</p>
+<!-- Main Content -->
+<main style="padding-top: 80px; background: var(--color-bg); min-height: 100vh;">
+  
+  <!-- Breadcrumbs -->
+  <div class="container" style="padding-top: var(--space-6);">
+    <div style="display: flex; align-items: center; gap: var(--space-2); font-size: var(--text-sm); color: var(--text-tertiary);">
+      <a href="/" style="color: var(--text-secondary);">Home</a>
+      <i class="fas fa-chevron-right" style="font-size: 10px;"></i>
+      <a href="/buy.html" style="color: var(--text-secondary);">Buy</a>
+      <i class="fas fa-chevron-right" style="font-size: 10px;"></i>
+      <span style="color: var(--text-primary); font-weight: 500;">Karen, Nairobi</span>
     </div>
+  </div>
 
-    <div id="propertyContent" style="display:none;">
-      <section class="hero-gallery">
-        <div class="main-image"><img id="mainImage" src="" alt=""></div>
-        <div class="thumbnails" id="thumbnails"></div>
-      </section>
-
-      <div class="price-badge" id="propertyType">FOR SALE</div>
-      <h1 class="property-title" id="propertyTitle">Loading...</h1>
-      <div class="property-location">
-        <i class="fas fa-map-marker-alt"></i>
-        <span id="propertyLocation">Loading...</span>
-      </div>
-
-      <div class="features-grid" id="featuresGrid"></div>
-
-      <section class="card">
-        <h2 class="card-title"><i class="fas fa-align-left"></i> Description</h2>
-        <div class="description" id="propertyDescription">Loading...</div>
-      </section>
-
-      <section class="card">
-        <h2 class="card-title"><i class="fas fa-check-circle"></i> Features & Amenities</h2>
-        <div class="features-list" id="featuresList">
-          <div class="empty"><i class="fas fa-info-circle"></i> No features listed</div>
-        </div>
-      </section>
-
-      <section class="card">
-        <h2 class="card-title"><i class="fas fa-home"></i> Similar Properties Nearby</h2>
-        <div class="similar-scroll" id="similarProperties">
-          <div class="empty"><i class="fas fa-search"></i> No similar properties found</div>
-        </div>
-      </section>
-    </div>
-  </main>
-
-  <aside class="sidebar">
-    <div class="contact-card">
-      <div class="price-display" id="sidebarPrice">KES 0</div>
+  <div class="property-layout">
+    <!-- Left Column: Main Content -->
+    <div class="property-main">
       
-      <a href="#" id="btnWhatsApp" target="_blank" rel="noopener noreferrer" class="btn btn-whatsapp">
-        <i class="fab fa-whatsapp"></i> WhatsApp Agent
-      </a>
-      <a href="#" id="btnCall" class="btn btn-call">
-        <i class="fas fa-phone"></i> Call Agent
-      </a>
-      <a href="#" id="btnEmail" class="btn btn-email">
-        <i class="fas fa-envelope"></i> Email Agent
-      </a>
-      
-      <a href="#" id="shareWhatsApp" target="_blank" rel="noopener noreferrer" class="btn btn-share">
-        <i class="fas fa-share-alt"></i> Share Property
-      </a>
-
-      <div class="agent-card">
-        <div class="agent-header">
-          <div class="agent-avatar" id="agentAvatar">A</div>
-          <div class="agent-info">
-            <div class="agent-name" id="agentName">
-              Loading...
-              <i class="fas fa-check-circle" style="color:#10b981; font-size:12px;"></i>
-            </div>
-            <div class="agent-company" id="agentCompany">—</div>
-            <div class="agent-stats">
-              <div class="agent-stat">
-                <i class="fas fa-star" style="color:#fbbf24;"></i>
-                <strong id="agentRating">0.0</strong>
-              </div>
-              <div class="agent-stat">
-                <i class="fas fa-shield-halved"></i>
-                <strong id="agentTrust">0</strong>
-              </div>
-            </div>
+      <!-- Gallery Section -->
+      <div class="property-gallery">
+        <div class="gallery-main" id="mainImageContainer">
+          <img src="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=1600&q=80" alt="Main property view" id="mainImage">
+          <div class="gallery-actions">
+            <button class="gallery-action-btn" id="favoriteBtn" aria-label="Save property">
+              <i class="far fa-heart"></i>
+            </button>
+            <button class="gallery-action-btn" aria-label="Share property">
+              <i class="fas fa-share-alt"></i>
+            </button>
           </div>
         </div>
-        <a href="#" id="viewAgentProfile" class="view-profile-btn">
-          <i class="fas fa-user"></i> View Agent Profile
-        </a>
-      </div>
-    </div>
-  </aside>
-</div>
-
-<div class="mobile-bar">
-  <a href="#" id="mobileCall" class="btn btn-call"><i class="fas fa-phone"></i> Call</a>
-  <a href="#" id="mobileWhatsApp" target="_blank" rel="noopener noreferrer" class="btn btn-whatsapp"><i class="fab fa-whatsapp"></i> WhatsApp</a>
-</div>
-
-<script>
-(function() {
-    'use strict';
-
-    // ==========================================
-    // 1. CONFIGURATION & STATE
-    // ==========================================
-    const sb = supabase.createClient(
-        "https://nqwvsmuvltbiekfnvovx.supabase.co",
-        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5xd3ZzbXV2bHRiaWVrZm52b3Z4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA1NjU4MDAsImV4cCI6MjA5NjE0MTgwMH0.Xrc-bbAuWdvKSPHnVhTaLiQphV61xeYtDepWePqsrdo"
-    );
-
-    const state = {
-        property: null,
-        agent: null,
-        images: [],
-        currentImageIndex: 0
-    };
-
-    // ==========================================
-    // 2. UTILITIES
-    // ==========================================
-    function esc(str) {
-        if (!str) return '';
-        const div = document.createElement('div');
-        div.textContent = str;
-        return div.innerHTML;
-    }
-
-    function formatKES(amount) {
-        return new Intl.NumberFormat('en-KE', { style: 'currency', currency: 'KES', maximumFractionDigits: 0 }).format(amount || 0);
-    }
-
-    // 🔒 FIX: Safely parse JSON strings or arrays from Supabase
-    function parseJsonArray(data) {
-        if (!data) return [];
-        if (Array.isArray(data)) return data;
-        if (typeof data === 'string') {
-            try {
-                const parsed = JSON.parse(data);
-                return Array.isArray(parsed) ? parsed : [];
-            } catch (e) {
-                return [];
-            }
-        }
-        return [];
-    }
-
-    function formatWhatsApp(phone) {
-        if (!phone) return '';
-        let clean = phone.replace(/\D/g, '');
-        if (clean.startsWith('0')) clean = '254' + clean.substring(1);
-        if (clean.startsWith('+')) clean = clean.substring(1);
-        return clean;
-    }
-
-    function showErrorState(title, msg = "") {
-        document.getElementById('loadingState').innerHTML = `
-          <div class="empty">
-            <i class="fas fa-exclamation-circle"></i>
-            <h3>${esc(title)}</h3>
-            ${msg ? `<p>${esc(msg)}</p>` : ''}
-            <a href="/" class="btn btn-call" style="display:inline-block; margin-top:16px;">Browse Properties</a>
+        <div class="gallery-thumbnails">
+          <div class="gallery-thumb active" onclick="changeImage(this, 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=1600&q=80')">
+            <img src="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=400&q=80" alt="View 1">
           </div>
-        `;
-    }
+          <div class="gallery-thumb" onclick="changeImage(this, 'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=1600&q=80')">
+            <img src="https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=400&q=80" alt="View 2">
+          </div>
+          <div class="gallery-thumb" onclick="changeImage(this, 'https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?w=1600&q=80')">
+            <img src="https://images.unsplash.com/photo-1600566753190-17f0baa2a6c3?w=400&q=80" alt="View 3">
+          </div>
+          <div class="gallery-thumb" onclick="changeImage(this, 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1600&q=80')">
+            <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=400&q=80" alt="View 4">
+          </div>
+        </div>
+      </div>
 
-    // ==========================================
-    // 3. DATA LOADING (Targeted Queries)
-    // ==========================================
-    async function loadProperty() {
-        const params = new URLSearchParams(location.search);
-        let id = params.get('id');
+      <!-- Property Header -->
+      <div class="property-header">
+        <div class="property-badges">
+          <span class="badge badge-success"><i class="fas fa-check-circle"></i> Verified</span>
+          <span class="badge badge-primary">For Sale</span>
+          <span class="badge badge-accent">New Listing</span>
+        </div>
+        <h1 class="property-title">Luxury 4-Bedroom Villa with Swimming Pool</h1>
+        <div class="property-location">
+          <i class="fas fa-map-marker-alt"></i>
+          <span>Karen, Nairobi, Kenya</span>
+        </div>
+      </div>
 
-        // 🔒 FIX: Fallback for clean URLs like /property/abc-123-id
-        if (!id) {
-            const pathParts = window.location.pathname.split('/');
-            // Handles URLs like /property/abc-123-id
-            if (pathParts.length >= 3 && pathParts[1] === 'property') {
-                id = pathParts[2];
-            }
-        }
+      <!-- Key Stats -->
+      <div class="property-stats">
+        <div class="stat-box">
+          <i class="fas fa-bed"></i>
+          <div class="stat-box-value">4</div>
+          <div class="stat-box-label">Bedrooms</div>
+        </div>
+        <div class="stat-box">
+          <i class="fas fa-bath"></i>
+          <div class="stat-box-value">3</div>
+          <div class="stat-box-label">Bathrooms</div>
+        </div>
+        <div class="stat-box">
+          <i class="fas fa-car"></i>
+          <div class="stat-box-value">2</div>
+          <div class="stat-box-label">Parking</div>
+        </div>
+        <div class="stat-box">
+          <i class="fas fa-ruler-combined"></i>
+          <div class="stat-box-value">0.5</div>
+          <div class="stat-box-label">Acres</div>
+        </div>
+      </div>
 
-        if (!id) {
-            showErrorState("No property ID provided");
-            return;
-        }
+      <!-- Description -->
+      <div class="property-section">
+        <h2 class="section-heading">About This Property</h2>
+        <div class="property-description" id="propertyDescription">
+          <p>Welcome to this stunning 4-bedroom villa located in the serene and prestigious neighborhood of Karen, Nairobi. This property offers the perfect blend of luxury, comfort, and modern living.</p>
+          <br>
+          <p>The spacious open-plan living area flows seamlessly into a gourmet kitchen equipped with high-end appliances. Floor-to-ceiling windows flood the space with natural light and offer breathtaking views of the lush garden.</p>
+          <br>
+          <p>The master suite features a walk-in closet and an en-suite bathroom with a freestanding bathtub. Three additional generously sized bedrooms are perfect for family or guests.</p>
+          <br>
+          <p>Outside, the property boasts a sparkling swimming pool, a manicured garden, and a covered patio area ideal for entertaining. Additional features include a borehole, backup generator, and 24/7 security.</p>
+          <div class="description-fade"></div>
+        </div>
+        <button class="expand-btn" id="expandBtn" onclick="toggleDescription()">
+          Show more <i class="fas fa-chevron-down"></i>
+        </button>
+      </div>
 
-        try {
-            // 🔥 PERFORMANCE FIX: Fetch ONLY the specific property, not the whole database
-            const { data: propertyData, error } = await sb
-                .from("properties")
-                .select("*")
-                .eq("id", id)
-                .eq("approval_status", "approved")
-                .single();
+      <!-- Amenities -->
+      <div class="property-section">
+        <h2 class="section-heading">Amenities & Features</h2>
+        <div class="amenities-grid">
+          <div class="amenity-card">
+            <div class="amenity-icon"><i class="fas fa-wifi"></i></div>
+            <div class="amenity-name">High-Speed Wi-Fi</div>
+          </div>
+          <div class="amenity-card">
+            <div class="amenity-icon"><i class="fas fa-shield-alt"></i></div>
+            <div class="amenity-name">24/7 Security</div>
+          </div>
+          <div class="amenity-card">
+            <div class="amenity-icon"><i class="fas fa-car"></i></div>
+            <div class="amenity-name">Covered Parking</div>
+          </div>
+          <div class="amenity-card">
+            <div class="amenity-icon"><i class="fas fa-swimming-pool"></i></div>
+            <div class="amenity-name">Swimming Pool</div>
+          </div>
+          <div class="amenity-card">
+            <div class="amenity-icon"><i class="fas fa-dumbbell"></i></div>
+            <div class="amenity-name">Private Gym</div>
+          </div>
+          <div class="amenity-card">
+            <div class="amenity-icon"><i class="fas fa-tree"></i></div>
+            <div class="amenity-name">Lush Garden</div>
+          </div>
+          <div class="amenity-card">
+            <div class="amenity-icon"><i class="fas fa-tint"></i></div>
+            <div class="amenity-name">Borehole Water</div>
+          </div>
+          <div class="amenity-card">
+            <div class="amenity-icon"><i class="fas fa-bolt"></i></div>
+            <div class="amenity-name">Backup Generator</div>
+          </div>
+          <div class="amenity-card">
+            <div class="amenity-icon"><i class="fas fa-video"></i></div>
+            <div class="amenity-name">CCTV Surveillance</div>
+          </div>
+          <div class="amenity-card">
+            <div class="amenity-icon"><i class="fas fa-child"></i></div>
+            <div class="amenity-name">Children's Play Area</div>
+          </div>
+        </div>
+      </div>
 
-            if (error || !propertyData) {
-                showErrorState("Property not found", "This property may have been sold or removed.");
-                return;
-            }
+      <!-- Map Section -->
+      <div class="property-section">
+        <h2 class="section-heading">Location & Nearby</h2>
+        <div class="map-container">
+          <div class="map-placeholder"></div>
+        </div>
+        <div class="nearby-places">
+          <div class="place-item"><i class="fas fa-school"></i> Karen Primary School (1.2 km)</div>
+          <div class="place-item"><i class="fas fa-hospital"></i> Nairobi Hospital (8.5 km)</div>
+          <div class="place-item"><i class="fas fa-shopping-cart"></i> The Hub Karen (2.1 km)</div>
+          <div class="place-item"><i class="fas fa-gas-pump"></i> Total Petrol Station (0.8 km)</div>
+          <div class="place-item"><i class="fas fa-shield-alt"></i> Karen Police Station (1.5 km)</div>
+        </div>
+      </div>
 
-            state.property = propertyData;
-            state.images = parseJsonArray(propertyData.images);
-            if (state.images.length === 0 && propertyData.image_url) {
-                state.images = [propertyData.image_url];
-            }
-            if (state.images.length === 0) {
-                state.images = ['https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=1200&q=80'];
-            }
-
-            // Load Agent
-            if (propertyData.agent_id) {
-                const { data: agentData } = await sb
-                    .from('profiles')
-                    .select('*')
-                    .eq('id', propertyData.agent_id)
-                    .single();
-                state.agent = agentData;
-            }
-
-            // 🔒 SECURITY FIX: Atomic view increment via RPC
-            sb.rpc('increment_property_views', { p_id: id }).catch(err => console.warn('View increment failed:', err));
-
-            renderProperty();
-            if (state.agent) renderAgent();
-            
-            // 🔥 PERFORMANCE FIX: Fetch similar properties via targeted query
-            loadSimilarProperties();
-            injectStructuredData();
-
-        } catch (err) {
-            console.error('Load error:', err);
-            showErrorState("Failed to load property", "Please check your connection and try again.");
-        }
-    }
-
-    async function loadSimilarProperties() {
-        const p = state.property;
-        const { data } = await sb
-            .from('properties')
-            .select('id, title, price, location, images, image_url, property_type')
-            .eq('approval_status', 'approved')
-            .neq('id', p.id)
-            .or(`location.eq.${p.location},property_type.eq.${p.property_type}`)
-            .limit(10);
-
-        if (!data || data.length === 0) {
-            document.getElementById('similarProperties').innerHTML = '<div class="empty"><i class="fas fa-search"></i> No similar properties found</div>';
-            return;
-        }
-
-        // Sort by relevance (same location first)
-        data.sort((a, b) => {
-            const aMatch = a.location === p.location ? 1 : 0;
-            const bMatch = b.location === p.location ? 1 : 0;
-            return bMatch - aMatch;
-        });
-
-        renderSimilarProperties(data.slice(0, 6));
-    }
-
-    // ==========================================
-    // 4. RENDERING
-    // ==========================================
-    function renderProperty() {
-        const p = state.property;
-        document.getElementById('loadingState').style.display = 'none';
-        document.getElementById('propertyContent').style.display = 'block';
-
-        // SEO Meta Tags (Note: See critical SEO warning below)
-        const title = `${p.title} | ${p.location} | ${formatKES(p.price)}`;
-        document.title = title;
-        const desc = p.description || `View ${p.title} in ${p.location}. Listed for ${formatKES(p.price)}.`;
-        document.getElementById('pageDescription').setAttribute('content', desc.substring(0, 160));
-        document.getElementById('ogTitle').setAttribute('content', title);
-        document.getElementById('ogDescription').setAttribute('content', desc.substring(0, 160));
-        document.getElementById('ogImage').setAttribute('content', state.images[0]);
-        document.getElementById('canonical').setAttribute('href', `https://propertiesinkenya.co.ke/property.html?id=${p.id}`);
-
-        // Images
-        document.getElementById('mainImage').src = state.images[0];
-        document.getElementById('mainImage').alt = p.title;
-
-        document.getElementById('thumbnails').innerHTML = state.images.map((img, i) => `
-            <div class="thumbnail ${i === 0 ? 'active' : ''}" data-index="${i}">
-                <img src="${esc(img)}" alt="Thumbnail ${i + 1}" loading="lazy">
+      <!-- Similar Properties -->
+      <div class="similar-section">
+        <h2 class="section-heading">Similar Properties You May Like</h2>
+        <div class="properties-grid" style="grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));">
+          <!-- Reusing premium card structure -->
+          <a href="#" class="property-card-premium">
+            <div class="property-card-image">
+              <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=600&q=80" alt="Similar 1">
+              <div class="property-card-badges"><span class="badge badge-primary">For Sale</span></div>
+              <button class="property-card-favorite"><i class="far fa-heart"></i></button>
             </div>
-        `).join('');
-
-        // Basic info
-        document.getElementById('propertyType').textContent = (p.property_type || 'FOR SALE').toUpperCase();
-        document.getElementById('propertyTitle').textContent = p.title;
-        document.getElementById('propertyLocation').textContent = p.location || 'Kenya';
-        document.getElementById('sidebarPrice').textContent = formatKES(p.price);
-
-        // Features grid
-        const features = [];
-        if (p.bedrooms) features.push({ icon: 'fa-bed', label: 'Bedrooms', value: p.bedrooms });
-        if (p.bathrooms) features.push({ icon: 'fa-bath', label: 'Bathrooms', value: p.bathrooms });
-        if (p.area) features.push({ icon: 'fa-ruler-combined', label: 'Size', value: `${p.area} ${p.area_unit || 'sqm'}` });
-        if (p.parking) features.push({ icon: 'fa-car', label: 'Parking', value: p.parking });
-
-        document.getElementById('featuresGrid').innerHTML = features.map(f => `
-            <div class="feature-item">
-                <div class="feature-icon"><i class="fas ${f.icon}"></i></div>
-                <div>
-                    <div class="feature-text">${esc(f.value)}</div>
-                    <div class="feature-label">${esc(f.label)}</div>
-                </div>
+            <div class="property-card-content">
+              <div class="property-card-location"><i class="fas fa-map-marker-alt"></i> Runda, Nairobi</div>
+              <h3 class="property-card-title">5-Bedroom Mansion in Runda</h3>
+              <div class="property-card-features">
+                <span class="property-card-feature"><i class="fas fa-bed"></i> 5</span>
+                <span class="property-card-feature"><i class="fas fa-bath"></i> 4</span>
+                <span class="property-card-feature"><i class="fas fa-ruler-combined"></i> 1 Acre</span>
+              </div>
+              <div class="property-card-footer">
+                <div class="property-card-price">KSh 85M</div>
+              </div>
             </div>
-        `).join('');
+          </a>
+          <a href="#" class="property-card-premium">
+            <div class="property-card-image">
+              <img src="https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=600&q=80" alt="Similar 2">
+              <div class="property-card-badges"><span class="badge badge-primary">For Sale</span></div>
+              <button class="property-card-favorite"><i class="far fa-heart"></i></button>
+            </div>
+            <div class="property-card-content">
+              <div class="property-card-location"><i class="fas fa-map-marker-alt"></i> Lavington, Nairobi</div>
+              <h3 class="property-card-title">Modern 4-Bedroom Home</h3>
+              <div class="property-card-features">
+                <span class="property-card-feature"><i class="fas fa-bed"></i> 4</span>
+                <span class="property-card-feature"><i class="fas fa-bath"></i> 3</span>
+                <span class="property-card-feature"><i class="fas fa-ruler-combined"></i> 0.4 Acre</span>
+              </div>
+              <div class="property-card-footer">
+                <div class="property-card-price">KSh 65M</div>
+              </div>
+            </div>
+          </a>
+        </div>
+      </div>
 
-        // Description
-        document.getElementById('propertyDescription').textContent = p.description || 'No description available.';
+    </div>
 
-        // Amenities
-        const amenities = parseJsonArray(p.features || p.amenities);
-        if (amenities.length > 0) {
-            document.getElementById('featuresList').innerHTML = amenities.map(f => `
-                <div class="feature-chip"><i class="fas fa-check"></i> ${esc(f)}</div>
-            `).join('');
-        }
-
-        // Contact buttons
-        setupContactButtons();
-        setupWhatsAppShare();
-    }
-
-    function setupContactButtons() {
-        const agent = state.agent;
-        const btnWA = document.getElementById('btnWhatsApp');
-        const btnCall = document.getElementById('btnCall');
-        const btnEmail = document.getElementById('btnEmail');
-        const mobileWA = document.getElementById('mobileWhatsApp');
-        const mobileCall = document.getElementById('mobileCall');
-
-        if (!agent) {
-            [btnWA, btnCall, btnEmail, mobileWA, mobileCall].forEach(el => el.style.display = 'none');
-            return;
-        }
-
-        const phone = agent.phone || agent.whatsapp_number || '';
-        const email = agent.email || '';
-        const waPhone = formatWhatsApp(agent.whatsapp_number || phone);
-        const waMsg = encodeURIComponent(`Hi ${agent.full_name?.split(' ')[0]}, I'm interested in: ${state.property.title} (${formatKES(state.property.price)})`);
-
-        if (waPhone) {
-            btnWA.href = `https://wa.me/${waPhone}?text=${waMsg}`;
-            mobileWA.href = `https://wa.me/${waPhone}?text=${waMsg}`;
-        } else { btnWA.style.display = 'none'; mobileWA.style.display = 'none'; }
-
-        if (phone) {
-            btnCall.href = `tel:${encodeURIComponent(phone)}`;
-            mobileCall.href = `tel:${encodeURIComponent(phone)}`;
-        } else { btnCall.style.display = 'none'; mobileCall.style.display = 'none'; }
-
-        if (email) {
-            btnEmail.href = `mailto:${encodeURIComponent(email)}`;
-        } else { btnEmail.style.display = 'none'; }
-    }
-
-    function setupWhatsAppShare() {
-        const shareUrl = `${window.location.origin}/property.html?id=${state.property.id}`;
-        const whatsappShareText = encodeURIComponent(
-            `🏡 *${state.property.title}*\n\n` +
-            `💰 Price: ${formatKES(state.property.price)}\n` +
-            `📍 Location: ${state.property.location || 'Kenya'}\n\n` +
-            `View property here:\n${shareUrl}`
-        );
-        document.getElementById("shareWhatsApp").href = `https://wa.me/?text=${whatsappShareText}`;
-    }
-
-    function renderAgent() {
-        const agent = state.agent;
-        const init = (agent.full_name || 'A').charAt(0).toUpperCase();
-        const avatarEl = document.getElementById('agentAvatar');
+    <!-- Right Column: Sticky Sidebar -->
+    <div class="property-sidebar-wrapper">
+      <div class="property-sidebar">
+        <div class="sidebar-price">KSh 45,000,000</div>
+        <div class="sidebar-price-period">Estimated Mortgage: KSh 380,000/mo</div>
         
-        // 🔒 SECURITY FIX: CSP-compliant image rendering without inline onerror
-        if (agent.avatar_url) {
-            const img = document.createElement('img');
-            img.src = agent.avatar_url;
-            img.alt = agent.full_name;
-            img.style.cssText = 'width:100%;height:100%;object-fit:cover;';
-            img.onerror = () => { 
-                img.remove(); 
-                avatarEl.textContent = init; 
-            };
-            avatarEl.innerHTML = '';
-            avatarEl.appendChild(img);
-        } else {
-            avatarEl.textContent = init;
-        }
+        <div class="agent-card-sidebar">
+          <img src="https://images.unsplash.com/photo-1560250097-0b93528c311a?w=200&q=80" alt="Agent" class="agent-avatar-lg">
+          <div class="agent-info">
+            <h4>John Kamau</h4>
+            <p><i class="fas fa-star rating"></i> 4.9 (124 reviews)</p>
+            <p style="margin-top: 2px; font-size: 12px;">Premier Properties Ltd</p>
+          </div>
+        </div>
 
-        document.getElementById('agentName').innerHTML = `${esc(agent.full_name || 'Agent')} <i class="fas fa-check-circle" style="color:#10b981; font-size:12px;"></i>`;
-        document.getElementById('agentCompany').textContent = agent.company || 'Independent Agent';
-        document.getElementById('agentRating').textContent = (agent.average_rating || 0).toFixed(1);
-        document.getElementById('agentTrust').textContent = agent.trust_score || 0;
+        <div class="sidebar-actions">
+          <button class="btn btn-whatsapp">
+            <i class="fab fa-whatsapp"></i> Chat on WhatsApp
+          </button>
+          <button class="btn btn-call">
+            <i class="fas fa-phone-alt"></i> Call Agent
+          </button>
+          <button class="btn btn-secondary-full">
+            <i class="fas fa-envelope"></i> Send Email
+          </button>
+          <button class="btn btn-secondary-full">
+            <i class="fas fa-calendar-alt"></i> Schedule Viewing
+          </button>
+          <button class="btn btn-secondary-full" style="color: var(--color-primary); border-color: var(--color-primary-light);">
+            <i class="fas fa-calculator"></i> Mortgage Calculator
+          </button>
+        </div>
+      </div>
+    </div>
 
-        const agentUrl = agent.slug ? `/agent/${encodeURIComponent(agent.slug)}` : `/agent-profile.html?id=${encodeURIComponent(agent.id)}`;
-        document.getElementById('viewAgentProfile').href = agentUrl;
-    }
+  </div>
+</main>
 
-    function renderSimilarProperties(properties) {
-        const container = document.getElementById('similarProperties');
-        container.innerHTML = properties.map(p => {
-            const imgs = parseJsonArray(p.images);
-            const img = imgs[0] || p.image_url || 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=400&q=80';
-            return `
-            <div class="similar-card" data-id="${esc(p.id)}">
-                <div class="similar-img"><img src="${esc(img)}" alt="${esc(p.title)}" loading="lazy"></div>
-                <div class="similar-body">
-                    <div class="similar-price">${formatKES(p.price)}</div>
-                    <div class="similar-title">${esc(p.title)}</div>
-                    <div class="similar-loc"><i class="fas fa-map-marker-alt"></i> ${esc(p.location)}</div>
-                </div>
-            </div>`;
-        }).join('');
-    }
+<!-- Global Footer (Reused) -->
+<footer class="footer-premium">
+  <div class="container">
+    <div class="footer-grid">
+      <div>
+        <div class="nav-logo" style="color: white; margin-bottom: var(--space-4);">
+          <div class="nav-logo-icon"><i class="fas fa-home"></i></div>
+          <span>Properties in Kenya</span>
+        </div>
+        <p class="footer-brand-desc">Kenya's premium real estate platform. Find verified properties with AI-powered search.</p>
+        <div class="footer-social">
+          <a href="#"><i class="fab fa-facebook-f"></i></a>
+          <a href="#"><i class="fab fa-twitter"></i></a>
+          <a href="#"><i class="fab fa-instagram"></i></a>
+          <a href="#"><i class="fab fa-linkedin-in"></i></a>
+        </div>
+      </div>
+      <div>
+        <h4 class="footer-heading">Properties</h4>
+        <div class="footer-links">
+          <a href="/buy.html" class="footer-link">Buy Property</a>
+          <a href="/rent.html" class="footer-link">Rent Property</a>
+          <a href="/lease.html" class="footer-link">Commercial Lease</a>
+          <a href="/pikbnb.html" class="footer-link">Short Stays</a>
+        </div>
+      </div>
+      <div>
+        <h4 class="footer-heading">Resources</h4>
+        <div class="footer-links">
+          <a href="/blog.html" class="footer-link">Blog</a>
+          <a href="/agents.html" class="footer-link">Find an Agent</a>
+          <a href="#" class="footer-link">Buying Guides</a>
+        </div>
+      </div>
+      <div>
+        <h4 class="footer-heading">Company</h4>
+        <div class="footer-links">
+          <a href="#" class="footer-link">About Us</a>
+          <a href="#" class="footer-link">Contact</a>
+          <a href="agent-dashboard.html" class="footer-link">For Agents</a>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2026 Properties in Kenya. All rights reserved.</p>
+      <div style="display: flex; gap: var(--space-6);">
+        <a href="#" class="footer-link">Terms</a>
+        <a href="#" class="footer-link">Privacy</a>
+      </div>
+    </div>
+  </div>
+</footer>
 
-    function injectStructuredData() {
-        const existing = document.getElementById('dynamic-property-schema');
-        if (existing) existing.remove();
+<!-- Page Specific Scripts -->
+<script>
+// Gallery Image Switcher
+function changeImage(thumbnail, src) {
+  document.getElementById('mainImage').src = src;
+  document.querySelectorAll('.gallery-thumb').forEach(t => t.classList.remove('active'));
+  thumbnail.classList.add('active');
+}
 
-        const schema = {
-          "@context": "https://schema.org",
-          "@type": "RealEstateListing",
-          "name": state.property.title,
-          "description": (state.property.description || '').substring(0, 500),
-          "url": `https://propertiesinkenya.co.ke/property.html?id=${state.property.id}`,
-          "image": state.images[0],
-          "address": { "@type": "PostalAddress", "addressLocality": state.property.location || "Nairobi", "addressCountry": "KE" },
-          "offers": { "@type": "Offer", "price": state.property.price, "priceCurrency": "KES", "availability": "https://schema.org/InStock" }
-        };
+// Description Expand/Collapse
+function toggleDescription() {
+  const desc = document.getElementById('propertyDescription');
+  const btn = document.getElementById('expandBtn');
+  desc.classList.toggle('expanded');
+  if (desc.classList.contains('expanded')) {
+    btn.innerHTML = 'Show less <i class="fas fa-chevron-up"></i>';
+  } else {
+    btn.innerHTML = 'Show more <i class="fas fa-chevron-down"></i>';
+  }
+}
 
-        const script = document.createElement("script");
-        script.type = "application/ld+json";
-        script.id = "dynamic-property-schema";
-        script.textContent = JSON.stringify(schema);
-        document.head.appendChild(script);
-    }
+// Favorite Toggle
+document.getElementById('favoriteBtn').addEventListener('click', function() {
+  this.classList.toggle('active');
+  const icon = this.querySelector('i');
+  if (this.classList.contains('active')) {
+    icon.classList.remove('far');
+    icon.classList.add('fas');
+  } else {
+    icon.classList.remove('fas');
+    icon.classList.add('far');
+  }
+});
 
-    // ==========================================
-    // 5. EVENT DELEGATION
-    // ==========================================
-    function initEventListeners() {
-        // Thumbnails
-        document.getElementById('thumbnails').addEventListener('click', (e) => {
-            const thumb = e.target.closest('.thumbnail');
-            if (thumb) {
-                const index = parseInt(thumb.dataset.index, 10);
-                state.currentImageIndex = index;
-                document.getElementById('mainImage').src = state.images[index];
-                document.querySelectorAll('.thumbnail').forEach((t, i) => t.classList.toggle('active', i === index));
-            }
-        });
-
-        // Similar Properties
-        document.getElementById('similarProperties').addEventListener('click', (e) => {
-            const card = e.target.closest('.similar-card');
-            if (card) {
-                window.location.href = `?id=${encodeURIComponent(card.dataset.id)}`;
-            }
-        });
-    }
-
-    // Start App
-    document.addEventListener('DOMContentLoaded', () => {
-        initEventListeners();
-        loadProperty();
-    });
-
-})();
+// Nav Scroll Effect
+window.addEventListener('scroll', () => {
+  const nav = document.getElementById('mainNav');
+  if (window.scrollY > 50) nav.classList.add('scrolled');
+  else nav.classList.remove('scrolled');
+});
 </script>
 
 </body>
