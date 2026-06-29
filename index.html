@@ -69,204 +69,217 @@
 <link rel="preconnect" href="https://nqwvsmuvltbiekfnvovx.supabase.co">
 <link rel="preconnect" href="https://images.unsplash.com">
 <style>
-/* Quick Navigation Bar */
+/* Quick Navigation Pills */
 .quick-nav {
-  background: linear-gradient(135deg, #111827 0%, #1F2937 100%);
-  padding: 12px 0;
-  position: sticky;
-  top: 64px;
-  z-index: 99;
-  border-bottom: 1px solid rgba(255,255,255,0.1);
-}
-.quick-nav-content {
-  max-width: 1440px;
-  margin: 0 auto;
-  padding: 0 80px;
   display: flex;
+  gap: 12px;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-top: 24px;
+}
+.quick-nav-pill {
+  display: inline-flex;
   align-items: center;
   gap: 8px;
-  overflow-x: auto;
-  scrollbar-width: none;
+  padding: 10px 20px;
+  background: rgba(255,255,255,0.15);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255,255,255,0.2);
+  border-radius: 50px;
+  color: white;
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 500;
+  transition: all 0.3s;
 }
-.quick-nav-content::-webkit-scrollbar {
-  display: none;
+.quick-nav-pill:hover {
+  background: rgba(255,255,255,0.25);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.2);
 }
-.quick-nav-label {
+.quick-nav-pill i {
   font-size: 12px;
-  color: rgba(255,255,255,0.6);
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  white-space: nowrap;
-  margin-right: 8px;
 }
-.quick-nav-link {
+
+/* Section Navigation Links */
+.section-nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 32px;
+  padding: 20px 24px;
+  background: linear-gradient(135deg, #f9fafb 0%, #f3f4f6 100%);
+  border-radius: 16px;
+  border: 1px solid #e5e7eb;
+}
+.section-nav-text {
+  font-size: 14px;
+  color: #6b7280;
+}
+.section-nav-text strong {
+  color: #111827;
+  font-weight: 600;
+}
+.section-nav-links {
+  display: flex;
+  gap: 12px;
+}
+.section-nav-link {
   display: inline-flex;
   align-items: center;
   gap: 6px;
   padding: 8px 16px;
-  background: rgba(255,255,255,0.08);
-  border: 1px solid rgba(255,255,255,0.1);
+  background: white;
+  border: 1px solid #e5e7eb;
   border-radius: 8px;
-  color: rgba(255,255,255,0.9);
+  color: #374151;
+  text-decoration: none;
   font-size: 13px;
   font-weight: 500;
-  text-decoration: none;
   transition: all 0.2s;
-  white-space: nowrap;
 }
-.quick-nav-link:hover {
-  background: rgba(255,255,255,0.15);
-  border-color: rgba(255,255,255,0.2);
+.section-nav-link:hover {
+  background: #7C4DFF;
+  color: white;
+  border-color: #7C4DFF;
   transform: translateY(-1px);
 }
-.quick-nav-link i {
-  font-size: 12px;
-}
-.quick-nav-divider {
-  width: 1px;
-  height: 20px;
-  background: rgba(255,255,255,0.2);
-  margin: 0 4px;
+.section-nav-link i {
+  font-size: 11px;
 }
 
-/* Enhanced Navigation */
-.nav-fixed {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 64px;
-  background: rgba(255, 255, 255, 0.98);
-  backdrop-filter: blur(20px) saturate(180%);
-  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
-  z-index: 100;
-  display: flex;
-  align-items: center;
-  padding: 0 80px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+/* Related Section */
+.related-section {
+  padding: 40px 0;
+  margin: 40px 0;
+  background: linear-gradient(135deg, #faf5ff 0%, #f3e8ff 100%);
+  border-radius: 24px;
 }
-.nav-content {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  width: 100%;
-  max-width: 1440px;
-  margin: 0 auto;
+.related-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 20px;
+  margin-top: 24px;
 }
-.nav-logo {
-  font-size: 18px;
-  font-weight: 700;
-  color: #111827;
-  display: flex;
-  align-items: center;
-  gap: 10px;
+.related-card {
+  background: white;
+  border-radius: 16px;
+  padding: 24px;
   text-decoration: none;
-  transition: all 0.2s;
+  color: inherit;
+  transition: all 0.3s;
+  border: 1px solid #e5e7eb;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
 }
-.nav-logo:hover {
-  transform: scale(1.02);
+.related-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 32px rgba(124, 77, 255, 0.15);
+  border-color: #7C4DFF;
 }
-.nav-logo-icon {
-  width: 32px;
-  height: 32px;
-  background: linear-gradient(135deg, #D4AF37, #E6C86B);
-  border-radius: 8px;
+.related-card-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
   display: flex;
   align-items: center;
   justify-content: center;
+  font-size: 20px;
   color: white;
-  font-size: 14px;
-  box-shadow: 0 2px 8px rgba(212, 175, 55, 0.3);
 }
-.nav-center {
-  display: flex;
-  gap: 32px;
-  align-items: center;
-}
-.nav-link {
-  font-size: 14px;
-  font-weight: 500;
-  color: #6B7280;
-  text-decoration: none;
-  transition: all 0.2s;
-  cursor: pointer;
-  background: none;
-  border: none;
-  position: relative;
-  padding: 8px 0;
-}
-.nav-link:hover {
-  color: #D4AF37;
-}
-.nav-link::after {
-  content: '';
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  width: 0;
-  height: 2px;
-  background: #D4AF37;
-  transition: width 0.3s;
-}
-.nav-link:hover::after {
-  width: 100%;
-}
-.nav-link.active {
-  color: #D4AF37;
-  font-weight: 600;
-}
-.nav-link.active::after {
-  width: 100%;
-}
-.nav-cta {
-  padding: 10px 20px;
-  border: none;
-  border-radius: 8px;
-  background: linear-gradient(135deg, #D4AF37, #E6C86B);
-  font-size: 13px;
+.related-card-title {
+  font-size: 16px;
   font-weight: 600;
   color: #111827;
-  cursor: pointer;
-  transition: all 0.2s;
-  text-decoration: none;
-  box-shadow: 0 2px 8px rgba(212, 175, 55, 0.3);
 }
-.nav-cta:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(212, 175, 55, 0.4);
+.related-card-desc {
+  font-size: 13px;
+  color: #6b7280;
+  line-height: 1.5;
 }
-
-/* Favorites Badge */
-.favorites-badge {
-  position: relative;
+.related-card-cta {
   display: inline-flex;
   align-items: center;
   gap: 6px;
+  color: #7C4DFF;
+  font-size: 13px;
+  font-weight: 600;
+  margin-top: auto;
 }
-.favorites-count {
-  background: #EF4444;
-  color: white;
-  font-size: 10px;
-  font-weight: 700;
-  min-width: 18px;
-  height: 18px;
-  border-radius: 9999px;
-  display: none;
-  align-items: center;
-  justify-content: center;
-  padding: 0 5px;
+.related-card:hover .related-card-cta {
+  gap: 10px;
 }
 
-/* Responsive */
-@media (max-width: 1024px) {
-  .nav-fixed, .quick-nav-content { padding-left: 40px; padding-right: 40px; }
+/* Breadcrumbs */
+.breadcrumbs {
+  padding: 16px 0;
+  font-size: 13px;
+  color: #6b7280;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
 }
+.breadcrumbs a {
+  color: #7C4DFF;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+.breadcrumbs a:hover {
+  color: #5b21b6;
+  text-decoration: underline;
+}
+.breadcrumbs i {
+  font-size: 10px;
+  color: #9ca3af;
+}
+
+/* Enhanced Footer */
+.footer-links-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 32px;
+  margin-top: 32px;
+}
+.footer-link-group h4 {
+  font-size: 14px;
+  font-weight: 600;
+  color: #111827;
+  margin-bottom: 16px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+.footer-link-group a {
+  display: block;
+  color: #6b7280;
+  text-decoration: none;
+  font-size: 14px;
+  padding: 6px 0;
+  transition: all 0.2s;
+}
+.footer-link-group a:hover {
+  color: #D4AF37;
+  padding-left: 4px;
+}
+
 @media (max-width: 768px) {
-  .nav-fixed, .quick-nav-content { padding-left: 20px; padding-right: 20px; }
-  .nav-center { display: none; }
-  .nav-cta.desktop-only { display: none; }
-  .quick-nav { top: 64px; }
+  .section-nav {
+    flex-direction: column;
+    gap: 16px;
+    text-align: center;
+  }
+  .section-nav-links {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  .quick-nav {
+    gap: 8px;
+  }
+  .quick-nav-pill {
+    padding: 8px 16px;
+    font-size: 13px;
+  }
 }
 </style>
 </head>
@@ -277,7 +290,7 @@
   <div class="bg-layer-3"></div>
 </div>
 
-<!-- Main Navigation -->
+<!-- Navigation -->
 <nav class="nav-fixed" aria-label="Main navigation">
   <div class="nav-content">
     <a href="/" class="nav-logo" aria-label="Properties in Kenya - Home">
@@ -285,15 +298,30 @@
       Properties in Kenya
     </a>
     <div class="nav-center">
-      <a href="/buy.html" class="nav-link">Buy</a>
-      <a href="/rent.html" class="nav-link">Rent</a>
-      <a href="/lease.html" class="nav-link">For Lease</a>
+      <a href="/buy.html" class="nav-link">
+        <i class="fas fa-home" style="margin-right: 4px; font-size: 12px;"></i>
+        Buy
+      </a>
+      <a href="/rent.html" class="nav-link">
+        <i class="fas fa-key" style="margin-right: 4px; font-size: 12px;"></i>
+        Rent
+      </a>
+      <a href="/lease.html" class="nav-link">
+        <i class="fas fa-file-contract" style="margin-right: 4px; font-size: 12px;"></i>
+        Lease
+      </a>
       <a href="/pikbnb.html" class="nav-link">
-        <i class="fas fa-bed" style="margin-right: 4px;"></i>
+        <i class="fas fa-bed" style="margin-right: 4px; font-size: 12px;"></i>
         PIKBNB
       </a>
-      <a href="/blog.html" class="nav-link">Blog</a>
-      <a href="/agents.html" class="nav-link">Agents</a>
+      <a href="/blog.html" class="nav-link">
+        <i class="fas fa-newspaper" style="margin-right: 4px; font-size: 12px;"></i>
+        Blog
+      </a>
+      <a href="/agents.html" class="nav-link">
+        <i class="fas fa-users" style="margin-right: 4px; font-size: 12px;"></i>
+        Agents
+      </a>
       <a href="/saved.html" class="nav-link favorites-badge" aria-label="Saved properties">
         <i class="fas fa-heart" aria-hidden="true"></i>
         Saved
@@ -310,43 +338,6 @@
     </div>
   </div>
 </nav>
-
-<!-- Quick Navigation Bar -->
-<div class="quick-nav">
-  <div class="quick-nav-content">
-    <span class="quick-nav-label">Quick Access:</span>
-    <a href="/buy.html" class="quick-nav-link">
-      <i class="fas fa-home"></i>
-      Buy Property
-    </a>
-    <a href="/rent.html" class="quick-nav-link">
-      <i class="fas fa-key"></i>
-      Rent Property
-    </a>
-    <div class="quick-nav-divider"></div>
-    <a href="/lease.html" class="quick-nav-link">
-      <i class="fas fa-building"></i>
-      Commercial Lease
-    </a>
-    <a href="/pikbnb.html" class="quick-nav-link">
-      <i class="fas fa-bed"></i>
-      Short Stays
-    </a>
-    <div class="quick-nav-divider"></div>
-    <a href="/blog.html" class="quick-nav-link">
-      <i class="fas fa-newspaper"></i>
-      Read Blog
-    </a>
-    <a href="/agents.html" class="quick-nav-link">
-      <i class="fas fa-users"></i>
-      Find Agents
-    </a>
-    <a href="/saved.html" class="quick-nav-link">
-      <i class="fas fa-heart"></i>
-      Saved Properties
-    </a>
-  </div>
-</div>
 
 <!-- Login Modal -->
 <div class="login-modal-overlay" id="loginModal">
@@ -395,15 +386,14 @@
         Rent Property
       </a>
       <a href="/lease.html" class="mobile-menu-link">
-        <i class="fas fa-building" aria-hidden="true"></i>
-        Commercial Lease
+        <i class="fas fa-file-contract" aria-hidden="true"></i>
+        For Lease
       </a>
       <a href="/pikbnb.html" class="mobile-menu-link">
         <i class="fas fa-bed" style="color: #7C4DFF;"></i>
         PIKBNB - Short Stays
       </a>
     </div>
-    <div class="mobile-menu-divider"></div>
     <div class="mobile-menu-section">
       <div class="mobile-menu-section-title">Discover</div>
       <a href="/blog.html" class="mobile-menu-link">
@@ -441,6 +431,13 @@
 
 <!-- Main Content -->
 <main class="main-content" role="main">
+  <!-- Breadcrumbs -->
+  <div class="breadcrumbs">
+    <a href="/">Home</a>
+    <i class="fas fa-chevron-right"></i>
+    <span>Properties in Kenya</span>
+  </div>
+
   <!-- Hero Section -->
   <section class="hero-section" aria-labelledby="hero-title">
     <div class="hero-content">
@@ -452,6 +449,27 @@
       <p class="hero-subtitle">
         Find verified houses, apartments, and land across Kenya with AI-powered matching.
       </p>
+      
+      <!-- Quick Navigation Pills -->
+      <div class="quick-nav">
+        <a href="/buy.html" class="quick-nav-pill">
+          <i class="fas fa-home"></i>
+          Buy Property
+        </a>
+        <a href="/rent.html" class="quick-nav-pill">
+          <i class="fas fa-key"></i>
+          Rent Property
+        </a>
+        <a href="/lease.html" class="quick-nav-pill">
+          <i class="fas fa-file-contract"></i>
+          Commercial Lease
+        </a>
+        <a href="/pikbnb.html" class="quick-nav-pill">
+          <i class="fas fa-bed"></i>
+          Short Stays
+        </a>
+      </div>
+
       <div class="search-card">
         <div class="search-tabs" role="tablist">
           <button class="search-tab active" data-tab="ai" role="tab" aria-selected="true">
@@ -580,6 +598,27 @@
         </div>
       </a>
     </div>
+
+    <!-- Section Navigation -->
+    <div class="section-nav">
+      <div class="section-nav-text">
+        <strong>Looking for something specific?</strong> Explore our specialized property categories
+      </div>
+      <div class="section-nav-links">
+        <a href="/buy.html" class="section-nav-link">
+          <i class="fas fa-home"></i>
+          Buy Properties
+        </a>
+        <a href="/rent.html" class="section-nav-link">
+          <i class="fas fa-key"></i>
+          Rent Properties
+        </a>
+        <a href="/lease.html" class="section-nav-link">
+          <i class="fas fa-building"></i>
+          Commercial
+        </a>
+      </div>
+    </div>
   </section>
 
   <!-- Featured Section -->
@@ -596,6 +635,23 @@
       <button class="carousel-arrow next" data-carousel="featuredCarousel" aria-label="Next properties">
         <i class="fas fa-chevron-right" aria-hidden="true"></i>
       </button>
+    </div>
+
+    <!-- Section Navigation -->
+    <div class="section-nav">
+      <div class="section-nav-text">
+        <strong>Want to see more?</strong> Browse all properties or connect with an agent
+      </div>
+      <div class="section-nav-links">
+        <a href="/buy.html" class="section-nav-link">
+          <i class="fas fa-search"></i>
+          View All Properties
+        </a>
+        <a href="/agents.html" class="section-nav-link">
+          <i class="fas fa-user-tie"></i>
+          Find an Agent
+        </a>
+      </div>
     </div>
   </section>
 
@@ -651,6 +707,84 @@
         <i class="fas fa-users"></i>
         View All Agents
       </a>
+    </div>
+
+    <!-- Section Navigation -->
+    <div class="section-nav">
+      <div class="section-nav-text">
+        <strong>Need expert guidance?</strong> Our agents can help you find the perfect property
+      </div>
+      <div class="section-nav-links">
+        <a href="/agents.html" class="section-nav-link">
+          <i class="fas fa-user-tie"></i>
+          Browse Agents
+        </a>
+        <a href="/blog.html" class="section-nav-link">
+          <i class="fas fa-book"></i>
+          Read Guides
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Related Resources Section -->
+  <section class="related-section">
+    <div style="padding: 0 32px;">
+      <h2 class="section-title">
+        <i class="fas fa-lightbulb" style="color: #F59E0B; margin-right: 8px;"></i>
+        Explore More Resources
+      </h2>
+      <p class="section-subtitle">Everything you need for your property journey</p>
+      
+      <div class="related-grid">
+        <a href="/blog.html" class="related-card">
+          <div class="related-card-icon" style="background: linear-gradient(135deg, #EA580C, #F59E0B);">
+            <i class="fas fa-newspaper"></i>
+          </div>
+          <div class="related-card-title">Real Estate Blog</div>
+          <div class="related-card-desc">Expert guides, market insights, and investment tips for Kenya's property market.</div>
+          <div class="related-card-cta">
+            Read Articles
+            <i class="fas fa-arrow-right"></i>
+          </div>
+        </a>
+
+        <a href="/agents.html" class="related-card">
+          <div class="related-card-icon" style="background: linear-gradient(135deg, #6b21a8, #a855f7);">
+            <i class="fas fa-users"></i>
+          </div>
+          <div class="related-card-title">Find an Agent</div>
+          <div class="related-card-desc">Connect with verified real estate agents across all 47 counties in Kenya.</div>
+          <div class="related-card-cta">
+            Browse Agents
+            <i class="fas fa-arrow-right"></i>
+          </div>
+        </a>
+
+        <a href="/pikbnb.html" class="related-card">
+          <div class="related-card-icon" style="background: linear-gradient(135deg, #7C4DFF, #9A7BFF);">
+            <i class="fas fa-bed"></i>
+          </div>
+          <div class="related-card-title">Short-Term Stays</div>
+          <div class="related-card-desc">Book unique vacation rentals, beach houses, and city apartments across Kenya.</div>
+          <div class="related-card-cta">
+            Explore Stays
+            <i class="fas fa-arrow-right"></i>
+          </div>
+        </a>
+
+        <a href="/saved.html" class="related-card">
+          <div class="related-card-icon" style="background: linear-gradient(135deg, #EF4444, #F59E0B);">
+            <i class="fas fa-heart"></i>
+          </div>
+          <div class="related-card-title">Saved Properties</div>
+          <div class="related-card-desc">Access your bookmarked properties and continue where you left off.</div>
+          <div class="related-card-cta">
+            View Saved
+            <i class="fas fa-arrow-right"></i>
+          </div>
+        </a>
+      </div>
     </div>
   </section>
 
@@ -764,10 +898,31 @@
         View All Articles
       </a>
     </div>
+
+    <!-- Section Navigation -->
+    <div class="section-nav">
+      <div class="section-nav-text">
+        <strong>Ready to take action?</strong> Browse properties or connect with an expert agent
+      </div>
+      <div class="section-nav-links">
+        <a href="/buy.html" class="section-nav-link">
+          <i class="fas fa-home"></i>
+          Buy Property
+        </a>
+        <a href="/rent.html" class="section-nav-link">
+          <i class="fas fa-key"></i>
+          Rent Property
+        </a>
+        <a href="/agents.html" class="section-nav-link">
+          <i class="fas fa-user-tie"></i>
+          Find Agent
+        </a>
+      </div>
+    </div>
   </section>
 </main>
 
-<!-- Footer -->
+<!-- Enhanced Footer -->
 <footer class="footer" role="contentinfo">
   <div class="footer-content">
     <div class="footer-top">
@@ -784,36 +939,51 @@
           Powered by The Caretaker Intelligence
         </div>
       </div>
-      <div>
-        <div class="footer-col-title">Properties</div>
-        <div class="footer-links">
-          <a href="/buy.html" class="footer-link">Buy Property</a>
-          <a href="/rent.html" class="footer-link">Rent Property</a>
-          <a href="/lease.html" class="footer-link">Commercial Lease</a>
-          <a href="/pikbnb.html" class="footer-link">PIKBNB - Short Stays</a>
-        </div>
+
+      <div class="footer-link-group">
+        <h4>Properties</h4>
+        <a href="/buy.html">Buy Property</a>
+        <a href="/rent.html">Rent Property</a>
+        <a href="/lease.html">Commercial Lease</a>
+        <a href="/pikbnb.html">Short-Term Stays</a>
+        <a href="/saved.html">Saved Properties</a>
       </div>
-      <div>
-        <div class="footer-col-title">Discover</div>
-        <div class="footer-links">
-          <a href="/blog.html" class="footer-link">Blog & Insights</a>
-          <a href="/agents.html" class="footer-link">Browse Agents</a>
-          <a href="/saved.html" class="footer-link">Saved Properties</a>
-          <a href="agent-dashboard.html" class="footer-link">Agent Portal</a>
-        </div>
+
+      <div class="footer-link-group">
+        <h4>Resources</h4>
+        <a href="/blog.html">Blog & Insights</a>
+        <a href="/agents.html">Find an Agent</a>
+        <a href="/blog.html">Buying Guides</a>
+        <a href="/blog.html">Market Reports</a>
+        <a href="/blog.html">Investment Tips</a>
       </div>
-      <div>
-        <div class="footer-col-title">Company</div>
-        <div class="footer-links">
-          <a href="#" class="footer-link">About Us</a>
-          <a href="#" class="footer-link">Contact</a>
-          <a href="#" class="footer-link">Terms</a>
-          <a href="#" class="footer-link">Privacy</a>
-        </div>
+
+      <div class="footer-link-group">
+        <h4>Company</h4>
+        <a href="#">About Us</a>
+        <a href="#">Contact</a>
+        <a href="agent-dashboard.html">For Agents</a>
+        <a href="#">Careers</a>
+        <a href="#">Press</a>
+      </div>
+
+      <div class="footer-link-group">
+        <h4>Legal</h4>
+        <a href="#">Terms of Service</a>
+        <a href="#">Privacy Policy</a>
+        <a href="#">Cookie Policy</a>
+        <a href="#">Disclaimer</a>
       </div>
     </div>
+
     <div class="footer-bottom">
       <p class="footer-copyright">© 2026 Properties in Kenya. All rights reserved.</p>
+      <div style="display: flex; gap: 16px;">
+        <a href="#" style="color: #6b7280; font-size: 18px;"><i class="fab fa-facebook"></i></a>
+        <a href="#" style="color: #6b7280; font-size: 18px;"><i class="fab fa-twitter"></i></a>
+        <a href="#" style="color: #6b7280; font-size: 18px;"><i class="fab fa-instagram"></i></a>
+        <a href="#" style="color: #6b7280; font-size: 18px;"><i class="fab fa-linkedin"></i></a>
+      </div>
     </div>
   </div>
 </footer>
