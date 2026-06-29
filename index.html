@@ -1,52 +1,57 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Properties in Kenya — Find Your Perfect Home</title>
-  <meta name="description" content="Kenya's premium real estate platform. Discover verified properties with AI-powered search.">
-  <meta name="theme-color" content="#6366F1">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Properties in Kenya — Ask the Caretaker</title>
+  <meta name="description" content="Real estate guided by the Caretaker. Tell us what you need and we'll find the perfect home." />
+  <meta name="theme-color" content="#6366F1" />
 
   <!-- Fonts -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
 
-  <!-- Styles -->
-  <link rel="stylesheet" href="css/design-system.css">
-  <link rel="stylesheet" href="css/nav.css">
-  <link rel="stylesheet" href="css/component.css">
-  <link rel="stylesheet" href="css/sections.css">
-  <link rel="stylesheet" href="css/responsive.css">
+  <!-- External design system (unchanged) -->
+  <link rel="stylesheet" href="css/design-system.css" />
+  <link rel="stylesheet" href="css/nav.css" />
+  <link rel="stylesheet" href="css/component.css" />
+  <link rel="stylesheet" href="css/sections.css" />
+  <link rel="stylesheet" href="css/responsive.css" />
 
   <!-- SEO -->
-  <meta property="og:type" content="website">
-  <meta property="og:title" content="Properties in Kenya">
-  <meta property="og:description" content="Kenya's premium real estate platform">
-  <meta property="og:image" content="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=1200&q=80">
-  <meta name="twitter:card" content="summary_large_image">
-  <link rel="canonical" href="https://propertiesinkenya.co.ke/">
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="Properties in Kenya — Ask the Caretaker" />
+  <meta property="og:description" content="Stop searching. Start asking the Caretaker." />
+  <meta property="og:image" content="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=1200&q=80" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <link rel="canonical" href="https://propertiesinkenya.co.ke/" />
 
   <!-- Favicon -->
-  <link rel="icon" href="/favicon.ico" sizes="any">
-  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  <link rel="icon" href="/favicon.ico" sizes="any" />
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
 
   <style>
-    /* ===== PAGE-SPECIFIC STYLES ===== */
+    /* ---------------------------------------------------
+       GLOBAL TWEAKS – define missing token & mobile reset
+    --------------------------------------------------- */
+    :root {
+      --text-tertiary: #6B7280;     /* ensures placeholder & secondary text never fail */
+    }
 
-    /* Navigation - Premium Glass */
+    /* ---------------------------------------------------
+       NAVIGATION – premium glass, now with clean mobile menu
+    --------------------------------------------------- */
     .nav-premium {
       position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
+      top: 0; left: 0; right: 0;
       z-index: 1000;
-      background: rgba(255, 255, 255, 0.8);
+      background: rgba(255, 255, 255, 0.75);
       backdrop-filter: blur(20px) saturate(180%);
       -webkit-backdrop-filter: blur(20px) saturate(180%);
       border-bottom: 1px solid rgba(229, 231, 235, 0.5);
-      transition: all var(--transition-base);
+      transition: background var(--transition-base), box-shadow var(--transition-base);
     }
 
     .nav-premium.scrolled {
@@ -119,30 +124,43 @@
       gap: var(--space-3);
     }
 
-    /* Hamburger button */
+    /* hamburger – hidden on large, shown on mobile */
     .hamburger-btn {
       display: none;
       background: none;
       border: none;
-      width: 40px;
-      height: 40px;
-      border-radius: 8px;
-      cursor: pointer;
+      width: 44px;
+      height: 44px;
+      border-radius: var(--radius-md);
       flex-direction: column;
       align-items: center;
       justify-content: center;
       gap: 5px;
+      cursor: pointer;
+    }
+    .hamburger-btn:active {
+      background: var(--color-border-subtle);
     }
 
     .hamburger-line {
-      width: 20px;
+      width: 22px;
       height: 2px;
-      background: var(--text-secondary);
+      background: var(--text-primary);
       border-radius: 2px;
-      transition: all var(--transition-base);
+      transition: var(--transition-base);
     }
 
-    /* Hero Section - Cinematic */
+    /* ---------------------------------------------------
+       MOBILE DRAWER – reuse nav.css classes
+    --------------------------------------------------- */
+    .mobile-menu-overlay,
+    .mobile-menu-drawer {
+      /* already styled in nav.css, just ensure they exist */
+    }
+
+    /* ---------------------------------------------------
+       HERO – completely reframed as a conversation starter
+    --------------------------------------------------- */
     .hero-cinematic {
       position: relative;
       min-height: 100vh;
@@ -161,7 +179,7 @@
       background-image: url('https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=2000&q=80');
       background-size: cover;
       background-position: center;
-      opacity: 0.3;
+      opacity: 0.25;
       mix-blend-mode: overlay;
     }
 
@@ -169,16 +187,22 @@
       content: '';
       position: absolute;
       inset: 0;
-      background: linear-gradient(180deg, rgba(15, 23, 42, 0.4) 0%, rgba(15, 23, 42, 0.7) 100%);
+      background: linear-gradient(180deg, rgba(15, 23, 42, 0.4) 0%, rgba(15, 23, 42, 0.65) 100%);
     }
 
     .hero-content {
       position: relative;
       z-index: 2;
-      max-width: 900px;
+      max-width: 720px;
       text-align: center;
       color: white;
-      animation: fadeInUp 1s ease-out;
+      animation: fadeInUp 0.8s ease-out;
+    }
+
+    /* animated badge */
+    @keyframes pulse-badge {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.7; transform: scale(1.12); }
     }
 
     .hero-badge {
@@ -186,18 +210,13 @@
       align-items: center;
       gap: var(--space-2);
       padding: var(--space-2) var(--space-4);
-      background: rgba(255, 255, 255, 0.15);
+      background: rgba(255, 255, 255, 0.12);
       backdrop-filter: blur(10px);
       border: 1px solid rgba(255, 255, 255, 0.2);
       border-radius: var(--radius-full);
       font-size: var(--text-sm);
       font-weight: 500;
       margin-bottom: var(--space-8);
-    }
-
-    @keyframes pulse-badge {
-      0%, 100% { opacity: 1; transform: scale(1); }
-      50% { opacity: 0.7; transform: scale(1.1); }
     }
 
     .hero-badge-dot {
@@ -209,12 +228,12 @@
     }
 
     .hero-title {
-      font-size: clamp(2.5rem, 6vw, 4.5rem);
+      font-size: clamp(2.2rem, 6vw, 4rem);
       font-weight: 800;
       letter-spacing: -0.03em;
-      line-height: 1.05;
-      margin-bottom: var(--space-6);
-      text-shadow: 0 2px 20px rgba(0, 0, 0, 0.3);
+      line-height: 1.08;
+      margin-bottom: var(--space-5);
+      text-shadow: 0 2px 20px rgba(0, 0, 0, 0.25);
     }
 
     .hero-title .highlight {
@@ -225,30 +244,36 @@
     }
 
     .hero-subtitle {
-      font-size: clamp(1.1rem, 2vw, 1.25rem);
+      font-size: clamp(1rem, 2vw, 1.25rem);
       font-weight: 400;
-      opacity: 0.95;
-      max-width: 640px;
+      opacity: 0.92;
+      max-width: 600px;
       margin: 0 auto var(--space-10);
       line-height: 1.6;
     }
 
-    /* Premium Search Card - REFRAMED AS CARETAKER */
-    .search-premium {
+    /* Conversation input – no search icon, just a prompt */
+    .conversation-card {
       background: white;
       border-radius: var(--radius-xl);
-      padding: var(--space-3);
+      padding: var(--space-4);
       box-shadow: var(--shadow-2xl);
-      max-width: 800px;
+      max-width: 720px;
       margin: 0 auto;
       display: flex;
       align-items: center;
-      gap: var(--space-2);
+      gap: var(--space-3);
     }
 
-    .search-premium-input {
+    .conversation-icon {
+      color: var(--text-tertiary);
+      font-size: var(--text-xl);
+      margin-left: var(--space-2);
+    }
+
+    .conversation-input {
       flex: 1;
-      padding: var(--space-4) var(--space-5);
+      padding: var(--space-4) 0;
       border: none;
       outline: none;
       font-size: var(--text-base);
@@ -257,11 +282,11 @@
       background: transparent;
     }
 
-    .search-premium-input::placeholder {
+    .conversation-input::placeholder {
       color: var(--text-tertiary);
     }
 
-    .search-premium-btn {
+    .conversation-btn {
       padding: var(--space-4) var(--space-6);
       background: var(--color-primary);
       color: white;
@@ -273,43 +298,17 @@
       gap: var(--space-2);
       transition: all var(--transition-base);
       box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+      white-space: nowrap;
     }
 
-    .search-premium-btn:hover {
+    .conversation-btn:hover {
       background: var(--color-primary-dark);
       transform: scale(1.02);
     }
 
-    /* Quick Actions */
-    .quick-actions {
-      display: flex;
-      justify-content: center;
-      gap: var(--space-3);
-      margin-top: var(--space-8);
-      flex-wrap: wrap;
-    }
-
-    .quick-action {
-      padding: var(--space-3) var(--space-5);
-      background: rgba(255, 255, 255, 0.1);
-      backdrop-filter: blur(10px);
-      border: 1px solid rgba(255, 255, 255, 0.2);
-      border-radius: var(--radius-full);
-      color: white;
-      font-size: var(--text-sm);
-      font-weight: 500;
-      transition: all var(--transition-base);
-      display: flex;
-      align-items: center;
-      gap: var(--space-2);
-    }
-
-    .quick-action:hover {
-      background: rgba(255, 255, 255, 0.2);
-      transform: translateY(-2px);
-    }
-
-    /* Category Cards - Premium */
+    /* ---------------------------------------------------
+       CATEGORIES – keep them visual but airier
+    --------------------------------------------------- */
     .categories-grid {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
@@ -318,15 +317,16 @@
 
     .category-card-premium {
       position: relative;
-      height: 320px;
+      height: 280px;
       border-radius: var(--radius-xl);
       overflow: hidden;
       cursor: pointer;
       transition: all var(--transition-base);
+      box-shadow: var(--shadow-sm);
     }
 
     .category-card-premium:hover {
-      transform: translateY(-8px);
+      transform: translateY(-6px);
       box-shadow: var(--shadow-2xl);
     }
 
@@ -338,13 +338,13 @@
     }
 
     .category-card-premium:hover img {
-      transform: scale(1.1);
+      transform: scale(1.08);
     }
 
     .category-card-overlay {
       position: absolute;
       inset: 0;
-      background: linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(0,0,0,0.8) 100%);
+      background: linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(0,0,0,0.75) 100%);
       display: flex;
       flex-direction: column;
       justify-content: flex-end;
@@ -357,7 +357,7 @@
       font-weight: 600;
       text-transform: uppercase;
       letter-spacing: 0.1em;
-      opacity: 0.9;
+      opacity: 0.85;
       margin-bottom: var(--space-2);
     }
 
@@ -372,10 +372,12 @@
       opacity: 0.8;
     }
 
-    /* Property Cards - Premium */
+    /* ---------------------------------------------------
+       FEATURED PROPERTIES – clean, thumb‑friendly cards
+    --------------------------------------------------- */
     .properties-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
       gap: var(--space-6);
     }
 
@@ -389,14 +391,14 @@
     }
 
     .property-card-premium:hover {
-      transform: translateY(-8px);
+      transform: translateY(-6px);
       box-shadow: var(--shadow-xl);
       border-color: var(--color-primary-light);
     }
 
     .property-card-image {
       position: relative;
-      height: 240px;
+      height: 220px;
       overflow: hidden;
     }
 
@@ -408,15 +410,7 @@
     }
 
     .property-card-premium:hover .property-card-image img {
-      transform: scale(1.08);
-    }
-
-    .property-card-badges {
-      position: absolute;
-      top: var(--space-4);
-      left: var(--space-4);
-      display: flex;
-      gap: var(--space-2);
+      transform: scale(1.06);
     }
 
     .property-card-favorite {
@@ -434,13 +428,10 @@
       color: var(--text-tertiary);
       transition: all var(--transition-fast);
       box-shadow: var(--shadow-md);
+      cursor: pointer;
     }
 
-    .property-card-favorite:hover {
-      color: var(--color-danger);
-      transform: scale(1.1);
-    }
-
+    .property-card-favorite:hover,
     .property-card-favorite.active {
       color: var(--color-danger);
     }
@@ -471,7 +462,6 @@
       gap: var(--space-4);
       padding: var(--space-4) 0;
       border-top: 1px solid var(--color-border-subtle);
-      border-bottom: 1px solid var(--color-border-subtle);
       margin-bottom: var(--space-4);
     }
 
@@ -486,7 +476,7 @@
     .property-card-footer {
       display: flex;
       justify-content: space-between;
-      align-items: center;
+      align-items: baseline;
     }
 
     .property-card-price {
@@ -501,7 +491,9 @@
       font-weight: 500;
     }
 
-    /* Trust Section - Premium */
+    /* ---------------------------------------------------
+       TRUST SECTION – simple, centred, no extra stats
+    --------------------------------------------------- */
     .trust-grid-premium {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
@@ -540,7 +532,6 @@
       font-size: var(--text-lg);
       font-weight: 700;
       margin-bottom: var(--space-3);
-      color: var(--text-primary);
     }
 
     .trust-desc {
@@ -549,52 +540,18 @@
       line-height: 1.6;
     }
 
-    /* Stats - Premium */
-    .stats-grid-premium {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: var(--space-6);
-      margin-top: var(--space-16);
-    }
-
-    .stat-card-premium {
-      padding: var(--space-8);
-      background: linear-gradient(135deg, var(--color-primary), var(--color-primary-light));
-      border-radius: var(--radius-xl);
-      color: white;
-      text-align: center;
-      transition: all var(--transition-base);
-    }
-
-    .stat-card-premium:hover {
-      transform: translateY(-4px);
-      box-shadow: var(--shadow-xl);
-    }
-
-    .stat-value-premium {
-      font-size: var(--text-5xl);
-      font-weight: 800;
-      letter-spacing: -0.02em;
-      line-height: 1;
-      margin-bottom: var(--space-3);
-    }
-
-    .stat-label-premium {
-      font-size: var(--text-sm);
-      font-weight: 500;
-      opacity: 0.9;
-    }
-
-    /* CTA Section - Premium */
+    /* ---------------------------------------------------
+       CTA – focused on the Caretaker interaction
+    --------------------------------------------------- */
     .cta-premium {
       background: linear-gradient(135deg, var(--color-primary) 0%, #8B5CF6 100%);
       border-radius: var(--radius-2xl);
-      padding: var(--space-20) var(--space-8);
+      padding: var(--space-16) var(--space-8);
       text-align: center;
       color: white;
       position: relative;
       overflow: hidden;
-      margin: var(--space-24) 0;
+      margin: var(--space-20) 0;
     }
 
     .cta-premium::before {
@@ -604,7 +561,7 @@
       right: -20%;
       width: 600px;
       height: 600px;
-      background: radial-gradient(circle, rgba(255,255,255,0.15) 0%, transparent 70%);
+      background: radial-gradient(circle, rgba(255,255,255,0.12) 0%, transparent 70%);
       pointer-events: none;
     }
 
@@ -618,7 +575,7 @@
       position: relative;
       z-index: 1;
       color: rgba(255, 255, 255, 0.9);
-      max-width: 560px;
+      max-width: 480px;
       margin: 0 auto var(--space-8);
       font-size: var(--text-lg);
     }
@@ -628,24 +585,26 @@
       z-index: 1;
     }
 
-    /* Footer - Premium */
+    /* ---------------------------------------------------
+       FOOTER – minimal, airy
+    --------------------------------------------------- */
     .footer-premium {
       background: var(--text-primary);
       color: white;
-      padding: var(--space-20) 0 var(--space-8);
+      padding: var(--space-16) 0 var(--space-8);
     }
 
     .footer-grid {
       display: grid;
       grid-template-columns: 2fr repeat(3, 1fr);
       gap: var(--space-12);
-      margin-bottom: var(--space-12);
+      margin-bottom: var(--space-10);
     }
 
     .footer-brand-desc {
       color: rgba(255, 255, 255, 0.7);
       margin: var(--space-4) 0;
-      max-width: 320px;
+      max-width: 300px;
       line-height: 1.7;
     }
 
@@ -655,7 +614,6 @@
       text-transform: uppercase;
       letter-spacing: 0.1em;
       margin-bottom: var(--space-5);
-      color: white;
     }
 
     .footer-links {
@@ -708,14 +666,14 @@
       transform: translateY(-2px);
     }
 
-    /* Skip link */
+    /* skip link (hidden until focused) */
     .skip-link {
       position: absolute;
       top: -40px;
       left: 0;
       background: var(--color-primary);
       color: white;
-      padding: 8px;
+      padding: 8px 16px;
       z-index: 9999;
       transition: top 0.2s;
     }
@@ -723,463 +681,376 @@
       top: 0;
     }
 
-    /* Responsive */
+    /* ---------------------------------------------------
+       RESPONSIVE – mobile first
+    --------------------------------------------------- */
     @media (max-width: 1024px) {
-      .footer-grid {
-        grid-template-columns: 1fr 1fr;
-      }
       .hamburger-btn {
         display: flex;
       }
       .nav-links {
         display: none;
       }
+      .footer-grid {
+        grid-template-columns: 1fr 1fr;
+      }
     }
 
     @media (max-width: 768px) {
-      .nav-links { display: none; }
-      .hero-cinematic { min-height: auto; padding: var(--space-24) var(--space-4) var(--space-16); }
-      .search-premium { flex-direction: column; }
-      .search-premium-btn { width: 100%; justify-content: center; }
-      .footer-grid { grid-template-columns: 1fr; gap: var(--space-8); }
-      .properties-grid { grid-template-columns: 1fr; }
+      .hero-cinematic {
+        min-height: auto;
+        padding: var(--space-24) var(--space-4) var(--space-16);
+      }
+      .conversation-card {
+        flex-direction: column;
+        align-items: stretch;
+      }
+      .conversation-btn {
+        width: 100%;
+        justify-content: center;
+      }
+      .footer-grid {
+        grid-template-columns: 1fr;
+        gap: var(--space-8);
+      }
+      .properties-grid {
+        grid-template-columns: 1fr;
+      }
+      .categories-grid {
+        grid-template-columns: 1fr;
+      }
     }
   </style>
 </head>
 <body>
 
-<!-- Skip to main content -->
-<a href="#main-content" class="skip-link">Skip to main content</a>
+  <!-- Skip link -->
+  <a href="#main-content" class="skip-link">Skip to main content</a>
 
-<!-- Navigation -->
-<nav class="nav-premium" id="mainNav" aria-label="Primary">
-  <div class="nav-premium-inner">
-    <a href="/" class="nav-logo">
-      <div class="nav-logo-icon">
-        <i class="fas fa-home"></i>
-      </div>
-      <span>Properties in Kenya</span>
-    </a>
-    
-    <div class="nav-links" id="navLinks">
-      <a href="/buy.html" class="nav-link-premium">
-        <i class="fas fa-home"></i>
-        Find a Home
+  <!-- Navigation -->
+  <nav class="nav-premium" id="mainNav" aria-label="Primary">
+    <div class="nav-premium-inner">
+      <a href="/" class="nav-logo">
+        <div class="nav-logo-icon"><i class="fas fa-home"></i></div>
+        <span>Properties in Kenya</span>
       </a>
-      <a href="/rent.html" class="nav-link-premium">
-        <i class="fas fa-key"></i>
-        Find Rentals
-      </a>
-      <a href="/lease.html" class="nav-link-premium">
-        <i class="fas fa-building"></i>
-        Commercial
-      </a>
-      <a href="/pikbnb.html" class="nav-link-premium">
-        <i class="fas fa-bed"></i>
-        Short Stays
-      </a>
-      <a href="/blog.html" class="nav-link-premium">
-        <i class="fas fa-newspaper"></i>
-        Insights
-      </a>
-      <a href="/agents.html" class="nav-link-premium">
-        <i class="fas fa-users"></i>
-        Agents
-      </a>
-    </div>
-    
-    <div class="nav-actions">
-      <a href="/saved.html" class="nav-link-premium" style="color: var(--color-danger);">
-        <i class="fas fa-heart"></i>
-        <span class="favorites-count" id="favoritesCount">0</span>
-      </a>
-      <a href="login.html" class="btn btn-primary btn-sm">
-        Sign In
-      </a>
-      <!-- Hamburger button for mobile -->
-      <button class="hamburger-btn" id="hamburgerBtn" aria-label="Toggle menu" aria-expanded="false">
-        <span class="hamburger-line"></span>
-        <span class="hamburger-line"></span>
-        <span class="hamburger-line"></span>
-      </button>
-    </div>
-  </div>
-</nav>
 
-<!-- Mobile menu overlay and drawer -->
-<div class="mobile-menu-overlay" id="mobileMenuOverlay"></div>
-<div class="mobile-menu-drawer" id="mobileMenuDrawer">
-  <div class="mobile-menu-header">
-    <div class="mobile-menu-title">
-      <div class="nav-logo-icon">
-        <i class="fas fa-home"></i>
+      <div class="nav-links" id="navLinks">
+        <a href="/buy.html" class="nav-link-premium"><i class="fas fa-home"></i> Buy</a>
+        <a href="/rent.html" class="nav-link-premium"><i class="fas fa-key"></i> Rent</a>
+        <a href="/lease.html" class="nav-link-premium"><i class="fas fa-building"></i> Lease</a>
+        <a href="/pikbnb.html" class="nav-link-premium"><i class="fas fa-bed"></i> PIKBNB</a>
+        <a href="/blog.html" class="nav-link-premium"><i class="fas fa-newspaper"></i> Blog</a>
+        <a href="/agents.html" class="nav-link-premium"><i class="fas fa-users"></i> Agents</a>
       </div>
-      <span>Menu</span>
-    </div>
-    <button class="modal-close-btn" id="closeMobileMenu" aria-label="Close menu">
-      <i class="fas fa-times"></i>
-    </button>
-  </div>
-  <div class="mobile-menu-content">
-    <div class="mobile-menu-section">
-      <div class="mobile-menu-section-title">Navigate</div>
-      <a href="/buy.html" class="mobile-menu-link">
-        <span class="mobile-menu-icon"><i class="fas fa-home"></i></span>
-        Find a Home
-      </a>
-      <a href="/rent.html" class="mobile-menu-link">
-        <span class="mobile-menu-icon"><i class="fas fa-key"></i></span>
-        Find Rentals
-      </a>
-      <a href="/lease.html" class="mobile-menu-link">
-        <span class="mobile-menu-icon"><i class="fas fa-building"></i></span>
-        Commercial
-      </a>
-      <a href="/pikbnb.html" class="mobile-menu-link">
-        <span class="mobile-menu-icon"><i class="fas fa-bed"></i></span>
-        Short Stays
-      </a>
-      <a href="/blog.html" class="mobile-menu-link">
-        <span class="mobile-menu-icon"><i class="fas fa-newspaper"></i></span>
-        Insights
-      </a>
-      <a href="/agents.html" class="mobile-menu-link">
-        <span class="mobile-menu-icon"><i class="fas fa-users"></i></span>
-        Agents
-      </a>
-      <div class="mobile-menu-divider"></div>
-      <a href="login.html" class="mobile-menu-cta">Sign In</a>
-    </div>
-  </div>
-</div>
 
-<main id="main-content">
-  <!-- Hero Section -->
-  <section class="hero-cinematic">
-    <div class="hero-content">
-      <div class="hero-badge">
-        <span class="hero-badge-dot"></span>
-        <span>Powered by The Caretaker AI</span>
-      </div>
-      
-      <h1 class="hero-title">
-        Stop Searching. <span class="highlight">Start Asking</span> the Caretaker.
-      </h1>
-      
-      <p class="hero-subtitle">
-        Real estate, guided by intelligence—not search bars. Tell us what you need. We'll take care of the rest.
-      </p>
-      
-      <!-- Ask the Caretaker Input -->
-      <div class="search-premium">
-        <i class="fas fa-sparkles" style="color: var(--color-primary); margin-left: var(--space-4);"></i>
-        <input type="text" class="search-premium-input" placeholder="Ask the Caretaker what you're looking for..." aria-label="Ask the Caretaker">
-        <button class="search-premium-btn">
-          <i class="fas fa-arrow-right"></i>
-          Ask the Caretaker
+      <div class="nav-actions">
+        <a href="/saved.html" class="nav-link-premium" style="color: var(--color-danger);">
+          <i class="fas fa-heart"></i>
+          <span class="favorites-count" id="favoritesCount">0</span>
+        </a>
+        <a href="login.html" class="btn btn-primary btn-sm">Sign In</a>
+        <button class="hamburger-btn" id="hamburgerBtn" aria-label="Toggle menu" aria-expanded="false">
+          <span class="hamburger-line"></span>
+          <span class="hamburger-line"></span>
+          <span class="hamburger-line"></span>
         </button>
       </div>
-      
-      <!-- Helper text -->
-      <p style="color: rgba(255,255,255,0.8); font-size: 14px; margin-top: var(--space-4);">
-        The Caretaker understands your needs and helps you find exactly what matters.
-      </p>
-      
-      <!-- Quick Actions - REFRAMED -->
-      <div class="quick-actions">
-        <a href="/buy.html" class="quick-action">
-          <i class="fas fa-home"></i>
-          Find a Home
-        </a>
-        <a href="/rent.html" class="quick-action">
-          <i class="fas fa-key"></i>
-          Find Rentals
-        </a>
-        <a href="/pikbnb.html" class="quick-action">
-          <i class="fas fa-bed"></i>
-          Short Stays
-        </a>
-        <a href="/agents.html" class="quick-action">
-          <i class="fas fa-user-tie"></i>
-          Get Guidance
-        </a>
-      </div>
     </div>
-  </section>
+  </nav>
 
-  <!-- Categories Section - REFRAMED -->
-  <section class="section">
-    <div class="container">
-      <div class="section-header">
-        <span class="text-label">Let the Caretaker Guide You</span>
-        <h2 class="heading-2">Explore Opportunities Across Kenya</h2>
-        <p class="text-body">From luxury villas to affordable apartments — describe what you need, and the Caretaker will find it</p>
+  <!-- Mobile menu overlay + drawer -->
+  <div class="mobile-menu-overlay" id="mobileMenuOverlay"></div>
+  <div class="mobile-menu-drawer" id="mobileMenuDrawer">
+    <div class="mobile-menu-header">
+      <div class="mobile-menu-title">
+        <div class="nav-logo-icon"><i class="fas fa-home"></i></div>
+        <span>Menu</span>
       </div>
-      
-      <div class="categories-grid">
-        <a href="/buy.html" class="category-card-premium">
-          <img src="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=800&q=80" alt="Find a Home" loading="lazy">
-          <div class="category-card-overlay">
-            <span class="category-card-label">Find a Home</span>
-            <h3 class="category-card-title">Houses & Land</h3>
-            <span class="category-card-count">2,847 properties</span>
-          </div>
-        </a>
-        
-        <a href="/rent.html" class="category-card-premium">
-          <img src="https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=800&q=80" alt="Find Rentals" loading="lazy">
-          <div class="category-card-overlay">
-            <span class="category-card-label">Find Rentals</span>
-            <h3 class="category-card-title">Apartments & Homes</h3>
-            <span class="category-card-count">1,523 properties</span>
-          </div>
-        </a>
-        
-        <a href="/lease.html" class="category-card-premium">
-          <img src="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=800&q=80" alt="Commercial" loading="lazy">
-          <div class="category-card-overlay">
-            <span class="category-card-label">Commercial</span>
-            <h3 class="category-card-title">Office & Retail</h3>
-            <span class="category-card-count">487 properties</span>
-          </div>
-        </a>
-        
-        <a href="/pikbnb.html" class="category-card-premium">
-          <img src="https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?w=800&q=80" alt="Short Stays" loading="lazy">
-          <div class="category-card-overlay">
-            <span class="category-card-label">Short Stays</span>
-            <h3 class="category-card-title">Vacation Rentals</h3>
-            <span class="category-card-count">327 stays</span>
-          </div>
-        </a>
-      </div>
+      <button class="modal-close-btn" id="closeMobileMenu" aria-label="Close menu">
+        <i class="fas fa-times"></i>
+      </button>
     </div>
-  </section>
-
-  <!-- Featured Properties - REFRAMED -->
-  <section class="section" style="background: var(--color-border-subtle);">
-    <div class="container">
-      <div class="section-header">
-        <span class="text-label">Curated for You</span>
-        <h2 class="heading-2">Options the Caretaker Recommends</h2>
-        <p class="text-body">Verified listings matched to what matters most to you</p>
-      </div>
-      
-      <div class="properties-grid" id="featuredProperties">
-        <!-- Properties will be loaded dynamically -->
-      </div>
-      
-      <div style="text-align: center; margin-top: var(--space-12);">
-        <a href="/buy.html" class="btn btn-secondary btn-lg">
-          See All Recommendations
-          <i class="fas fa-arrow-right"></i>
-        </a>
-      </div>
-    </div>
-  </section>
-
-  <!-- Trust Section - REFRAMED -->
-  <section class="section">
-    <div class="container">
-      <div class="section-header">
-        <span class="text-label">Not Just Listings. Understanding.</span>
-        <h2 class="heading-2">Built on Trust & Intelligence</h2>
-        <p class="text-body">The Caretaker filters noise and focuses only on what fits your life</p>
-      </div>
-      
-      <div class="trust-grid-premium">
-        <div class="trust-card-premium">
-          <div class="trust-icon-premium">
-            <i class="fas fa-shield-alt"></i>
-          </div>
-          <h3 class="trust-title">Verified Listings</h3>
-          <p class="trust-desc">Every property is authenticated and verified before going live</p>
-        </div>
-        
-        <div class="trust-card-premium">
-          <div class="trust-icon-premium">
-            <i class="fas fa-brain"></i>
-          </div>
-          <h3 class="trust-title">AI-Powered Guidance</h3>
-          <p class="trust-desc">The Caretaker understands exactly what you're looking for</p>
-        </div>
-        
-        <div class="trust-card-premium">
-          <div class="trust-icon-premium">
-            <i class="fas fa-user-check"></i>
-          </div>
-          <h3 class="trust-title">Verified Agents</h3>
-          <p class="trust-desc">All agents undergo identity verification and background checks</p>
-        </div>
-        
-        <div class="trust-card-premium">
-          <div class="trust-icon-premium">
-            <i class="fas fa-map-marked-alt"></i>
-          </div>
-          <h3 class="trust-title">Nationwide Coverage</h3>
-          <p class="trust-desc">Properties across all 47 counties in Kenya</p>
-        </div>
-      </div>
-      
-      <!-- Stats -->
-      <div class="stats-grid-premium">
-        <div class="stat-card-premium">
-          <div class="stat-value-premium">6</div>
-          <div class="stat-label-premium">Verified Listings</div>
-        </div>
-        <div class="stat-card-premium">
-          <div class="stat-value-premium">150+</div>
-          <div class="stat-label-premium">Registered Agents</div>
-        </div>
-        <div class="stat-card-premium">
-          <div class="stat-value-premium">47</div>
-          <div class="stat-label-premium">Counties Covered</div>
-        </div>
-        <div class="stat-card-premium">
-          <div class="stat-value-premium">12K+</div>
-          <div class="stat-label-premium">Monthly Searches</div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- CTA Section - REFRAMED -->
-  <section class="container">
-    <div class="cta-premium">
-      <h2 class="heading-2">Ready to Find Your Dream Property?</h2>
-      <p class="text-body">Join thousands of Kenyans who found their perfect home with the Caretaker's guidance</p>
-      <a href="/buy.html" class="btn btn-lg" style="background: white; color: var(--color-primary);">
-        Ask the Caretaker
-        <i class="fas fa-arrow-right"></i>
-      </a>
-    </div>
-  </section>
-</main>
-
-<!-- Footer -->
-<footer class="footer-premium">
-  <div class="container">
-    <div class="footer-grid">
-      <div>
-        <div class="nav-logo" style="color: white; margin-bottom: var(--space-4);">
-          <div class="nav-logo-icon">
-            <i class="fas fa-home"></i>
-          </div>
-          <span>Properties in Kenya</span>
-        </div>
-        <p class="footer-brand-desc">
-          Kenya's premium real estate platform. Find verified properties with AI-powered guidance from the Caretaker.
-        </p>
-        <div class="footer-social">
-          <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
-          <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
-          <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
-          <a href="#" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
-        </div>
-      </div>
-      
-      <div>
-        <h4 class="footer-heading">Properties</h4>
-        <div class="footer-links">
-          <a href="/buy.html" class="footer-link">Find a Home</a>
-          <a href="/rent.html" class="footer-link">Find Rentals</a>
-          <a href="/lease.html" class="footer-link">Commercial Lease</a>
-          <a href="/pikbnb.html" class="footer-link">Short Stays</a>
-          <a href="/saved.html" class="footer-link">Saved Properties</a>
-        </div>
-      </div>
-      
-      <div>
-        <h4 class="footer-heading">Resources</h4>
-        <div class="footer-links">
-          <a href="/blog.html" class="footer-link">Insights</a>
-          <a href="/agents.html" class="footer-link">Find an Agent</a>
-          <a href="/blog.html" class="footer-link">Buying Guides</a>
-          <a href="/blog.html" class="footer-link">Market Reports</a>
-        </div>
-      </div>
-      
-      <div>
-        <h4 class="footer-heading">Company</h4>
-        <div class="footer-links">
-          <a href="#" class="footer-link">About Us</a>
-          <a href="#" class="footer-link">Contact</a>
-          <a href="agent-dashboard.html" class="footer-link">For Agents</a>
-          <a href="#" class="footer-link">Careers</a>
-        </div>
-      </div>
-    </div>
-    
-    <div class="footer-bottom">
-      <p>© 2026 Properties in Kenya. All rights reserved.</p>
-      <div style="display: flex; gap: var(--space-6);">
-        <a href="#" class="footer-link">Terms</a>
-        <a href="#" class="footer-link">Privacy</a>
-        <a href="#" class="footer-link">Cookies</a>
+    <div class="mobile-menu-content">
+      <div class="mobile-menu-section">
+        <div class="mobile-menu-section-title">Navigate</div>
+        <a href="/buy.html" class="mobile-menu-link"><span class="mobile-menu-icon"><i class="fas fa-home"></i></span> Buy</a>
+        <a href="/rent.html" class="mobile-menu-link"><span class="mobile-menu-icon"><i class="fas fa-key"></i></span> Rent</a>
+        <a href="/lease.html" class="mobile-menu-link"><span class="mobile-menu-icon"><i class="fas fa-building"></i></span> Lease</a>
+        <a href="/pikbnb.html" class="mobile-menu-link"><span class="mobile-menu-icon"><i class="fas fa-bed"></i></span> PIKBNB</a>
+        <a href="/blog.html" class="mobile-menu-link"><span class="mobile-menu-icon"><i class="fas fa-newspaper"></i></span> Blog</a>
+        <a href="/agents.html" class="mobile-menu-link"><span class="mobile-menu-icon"><i class="fas fa-users"></i></span> Agents</a>
+        <div class="mobile-menu-divider"></div>
+        <a href="login.html" class="mobile-menu-cta">Sign In</a>
       </div>
     </div>
   </div>
-</footer>
 
-<!-- Scripts -->
-<script defer src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script defer src="js/config.js"></script>
-<script defer src="js/utils.js"></script>
-<script defer src="js/data.js"></script>
-<script defer src="js/ai.js"></script>
-<script defer src="js/app.js"></script>
+  <main id="main-content">
 
-<script>
-  // === Navigation scroll effect ===
-  window.addEventListener('scroll', () => {
-    const nav = document.getElementById('mainNav');
-    nav.classList.toggle('scrolled', window.scrollY > 50);
-  });
+    <!-- Hero – the Caretaker is the hero -->
+    <section class="hero-cinematic">
+      <div class="hero-content">
+        <div class="hero-badge">
+          <span class="hero-badge-dot"></span>
+          <span>Your intelligent real‑estate guide</span>
+        </div>
 
-  // === Mobile menu toggle ===
-  const hamburgerBtn = document.getElementById('hamburgerBtn');
-  const overlay = document.getElementById('mobileMenuOverlay');
-  const drawer = document.getElementById('mobileMenuDrawer');
-  const closeBtn = document.getElementById('closeMobileMenu');
+        <h1 class="hero-title">
+          Ask the <span class="highlight">Caretaker</span>
+        </h1>
 
-  function openMobileMenu() {
-    overlay.classList.add('active');
-    drawer.classList.add('active');
-    hamburgerBtn.setAttribute('aria-expanded', 'true');
-    document.body.style.overflow = 'hidden';
-  }
+        <p class="hero-subtitle">
+          Describe what you’re looking for. The Caretaker understands and shows only what matters.
+        </p>
 
-  function closeMobileMenu() {
-    overlay.classList.remove('active');
-    drawer.classList.remove('active');
-    hamburgerBtn.setAttribute('aria-expanded', 'false');
-    document.body.style.overflow = '';
-  }
+        <!-- Conversation prompt (no search icon) -->
+        <div class="conversation-card">
+          <span class="conversation-icon"><i class="fas fa-comment-dots"></i></span>
+          <input
+            type="text"
+            class="conversation-input"
+            placeholder="e.g. “A 3‑bedroom apartment in Westlands with a pool”"
+            aria-label="Ask the Caretaker what you need"
+          />
+          <button class="conversation-btn">
+            <i class="fas fa-arrow-right"></i>
+            Get Matches
+          </button>
+        </div>
+      </div>
+    </section>
 
-  hamburgerBtn.addEventListener('click', openMobileMenu);
-  closeBtn.addEventListener('click', closeMobileMenu);
-  overlay.addEventListener('click', closeMobileMenu);
+    <!-- Categories – still visual but now subtitled with Caretaker context -->
+    <section class="section">
+      <div class="container">
+        <div class="section-header">
+          <span class="text-label">Browse by Category</span>
+          <h2 class="heading-2">Let the Caretaker guide you</h2>
+          <p class="text-body">Or explore what’s available across Kenya</p>
+        </div>
 
-  // Close on Escape key
-  document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape' && drawer.classList.contains('active')) {
-      closeMobileMenu();
+        <div class="categories-grid">
+          <a href="/buy.html" class="category-card-premium">
+            <img src="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=800&q=80" alt="For Sale" loading="lazy" />
+            <div class="category-card-overlay">
+              <span class="category-card-label">For Sale</span>
+              <h3 class="category-card-title">Houses & Land</h3>
+              <span class="category-card-count">2,847 properties</span>
+            </div>
+          </a>
+          <a href="/rent.html" class="category-card-premium">
+            <img src="https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=800&q=80" alt="For Rent" loading="lazy" />
+            <div class="category-card-overlay">
+              <span class="category-card-label">For Rent</span>
+              <h3 class="category-card-title">Apartments & Homes</h3>
+              <span class="category-card-count">1,523 properties</span>
+            </div>
+          </a>
+          <a href="/lease.html" class="category-card-premium">
+            <img src="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=800&q=80" alt="Commercial" loading="lazy" />
+            <div class="category-card-overlay">
+              <span class="category-card-label">Commercial</span>
+              <h3 class="category-card-title">Office & Retail</h3>
+              <span class="category-card-count">487 properties</span>
+            </div>
+          </a>
+          <a href="/pikbnb.html" class="category-card-premium">
+            <img src="https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?w=800&q=80" alt="Short Stays" loading="lazy" />
+            <div class="category-card-overlay">
+              <span class="category-card-label">PIKBNB</span>
+              <h3 class="category-card-title">Vacation Rentals</h3>
+              <span class="category-card-count">327 stays</span>
+            </div>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Featured Properties – dynamic, but labelled as recommendations -->
+    <section class="section" style="background: var(--color-border-subtle);">
+      <div class="container">
+        <div class="section-header">
+          <span class="text-label">Recommended for You</span>
+          <h2 class="heading-2">Options the Caretaker thinks you’ll love</h2>
+          <p class="text-body">Curated matches from verified agents</p>
+        </div>
+
+        <div class="properties-grid" id="featuredProperties">
+          <!-- dynamically populated -->
+        </div>
+
+        <div style="text-align: center; margin-top: var(--space-10);">
+          <a href="/buy.html" class="btn btn-ghost" style="font-weight: 600;">
+            Browse all properties <i class="fas fa-arrow-right" style="margin-left: 4px;"></i>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Trust section – clean, no stats -->
+    <section class="section">
+      <div class="container">
+        <div class="section-header">
+          <span class="text-label">Why the Caretaker</span>
+          <h2 class="heading-2">Intelligence you can rely on</h2>
+          <p class="text-body">Our AI understands your needs – and our agents verify everything</p>
+        </div>
+
+        <div class="trust-grid-premium">
+          <div class="trust-card-premium">
+            <div class="trust-icon-premium"><i class="fas fa-shield-alt"></i></div>
+            <h3 class="trust-title">Verified Listings</h3>
+            <p class="trust-desc">Every property is authenticated before it appears</p>
+          </div>
+          <div class="trust-card-premium">
+            <div class="trust-icon-premium"><i class="fas fa-brain"></i></div>
+            <h3 class="trust-title">The Caretaker AI</h3>
+            <p class="trust-desc">Filters noise, understands context, saves you time</p>
+          </div>
+          <div class="trust-card-premium">
+            <div class="trust-icon-premium"><i class="fas fa-user-check"></i></div>
+            <h3 class="trust-title">Verified Agents</h3>
+            <p class="trust-desc">Background‑checked professionals ready to help</p>
+          </div>
+          <div class="trust-card-premium">
+            <div class="trust-icon-premium"><i class="fas fa-map-marked-alt"></i></div>
+            <h3 class="trust-title">All 47 Counties</h3>
+            <p class="trust-desc">From Nairobi to the coast – we cover Kenya entirely</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Final CTA – direct, calm -->
+    <section class="container">
+      <div class="cta-premium">
+        <h2 class="heading-2">Ready to ask the Caretaker?</h2>
+        <p class="text-body">Stop searching. Describe your ideal home and get matched in seconds.</p>
+        <a href="#main-content" class="btn btn-lg" style="background: white; color: var(--color-primary);">
+          <i class="fas fa-comment-dots"></i>
+          Talk to the Caretaker
+        </a>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer-premium">
+    <div class="container">
+      <div class="footer-grid">
+        <div>
+          <div class="nav-logo" style="color: white; margin-bottom: var(--space-4);">
+            <div class="nav-logo-icon"><i class="fas fa-home"></i></div>
+            <span>Properties in Kenya</span>
+          </div>
+          <p class="footer-brand-desc">
+            Real estate guided by the Caretaker — intelligent, personal, trusted.
+          </p>
+          <div class="footer-social">
+            <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+            <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+            <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+            <a href="#" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+          </div>
+        </div>
+
+        <div>
+          <h4 class="footer-heading">Properties</h4>
+          <div class="footer-links">
+            <a href="/buy.html" class="footer-link">Buy Property</a>
+            <a href="/rent.html" class="footer-link">Rent Property</a>
+            <a href="/lease.html" class="footer-link">Commercial Lease</a>
+            <a href="/pikbnb.html" class="footer-link">Short Stays</a>
+            <a href="/saved.html" class="footer-link">Saved Properties</a>
+          </div>
+        </div>
+        <div>
+          <h4 class="footer-heading">Resources</h4>
+          <div class="footer-links">
+            <a href="/blog.html" class="footer-link">Blog</a>
+            <a href="/agents.html" class="footer-link">Find an Agent</a>
+            <a href="/blog.html" class="footer-link">Buying Guides</a>
+            <a href="/blog.html" class="footer-link">Market Reports</a>
+          </div>
+        </div>
+        <div>
+          <h4 class="footer-heading">Company</h4>
+          <div class="footer-links">
+            <a href="#" class="footer-link">About Us</a>
+            <a href="#" class="footer-link">Contact</a>
+            <a href="agent-dashboard.html" class="footer-link">For Agents</a>
+            <a href="#" class="footer-link">Careers</a>
+          </div>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>© 2026 Properties in Kenya. All rights reserved.</p>
+        <div style="display: flex; gap: var(--space-6);">
+          <a href="#" class="footer-link">Terms</a>
+          <a href="#" class="footer-link">Privacy</a>
+          <a href="#" class="footer-link">Cookies</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script defer src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script defer src="js/config.js"></script>
+  <script defer src="js/utils.js"></script>
+  <script defer src="js/data.js"></script>
+  <script defer src="js/ai.js"></script>
+  <script defer src="js/app.js"></script>
+
+  <script>
+    // === Nav scroll effect ===
+    window.addEventListener('scroll', () => {
+      document.getElementById('mainNav').classList.toggle('scrolled', window.scrollY > 50);
+    });
+
+    // === Mobile menu toggle ===
+    const hamburgerBtn = document.getElementById('hamburgerBtn');
+    const overlay = document.getElementById('mobileMenuOverlay');
+    const drawer = document.getElementById('mobileMenuDrawer');
+    const closeBtn = document.getElementById('closeMobileMenu');
+
+    function openMobileMenu() {
+      overlay.classList.add('active');
+      drawer.classList.add('active');
+      hamburgerBtn.setAttribute('aria-expanded', 'true');
+      document.body.style.overflow = 'hidden';
     }
-  });
 
-  // === Update favorites count ===
-  function updateFavoritesCount() {
-    try {
-      const favorites = JSON.parse(localStorage.getItem('propertiesinkenya_favorites')) || [];
-      document.querySelectorAll('.favorites-count').forEach(el => {
-        el.textContent = favorites.length;
-      });
-    } catch (e) {
-      console.error('Error loading favorites:', e);
+    function closeMobileMenu() {
+      overlay.classList.remove('active');
+      drawer.classList.remove('active');
+      hamburgerBtn.setAttribute('aria-expanded', 'false');
+      document.body.style.overflow = '';
     }
-  }
-  updateFavoritesCount();
-</script>
+
+    hamburgerBtn.addEventListener('click', openMobileMenu);
+    closeBtn.addEventListener('click', closeMobileMenu);
+    overlay.addEventListener('click', closeMobileMenu);
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && drawer.classList.contains('active')) {
+        closeMobileMenu();
+      }
+    });
+
+    // === Favorites count ===
+    function updateFavoritesCount() {
+      try {
+        const favorites = JSON.parse(localStorage.getItem('propertiesinkenya_favorites')) || [];
+        document.querySelectorAll('.favorites-count').forEach(el => el.textContent = favorites.length);
+      } catch (e) {
+        console.error('Error loading favorites:', e);
+      }
+    }
+    updateFavoritesCount();
+  </script>
 
 </body>
 </html>
