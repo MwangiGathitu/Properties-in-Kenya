@@ -93,11 +93,11 @@
       </a>
       <a href="/blog.html" class="nav-link">Blog</a>
       <a href="/agents.html" class="nav-link">Agents</a>
-      <button class="nav-link favorites-badge" id="navFavoritesBtn" aria-label="Saved properties">
+      <a href="/saved.html" class="nav-link favorites-badge" aria-label="Saved properties">
         <i class="fas fa-heart" aria-hidden="true"></i>
         Saved
         <span class="favorites-count" id="favoritesCount" aria-live="polite">0</span>
-      </button>
+      </a>
     </div>
     <div style="display: flex; align-items: center; gap: 16px;">
       <button class="nav-cta desktop-only" id="loginBtn">Log In / Sign Up</button>
@@ -172,11 +172,11 @@
         <i class="fas fa-users" aria-hidden="true"></i>
         Browse Agents
       </a>
-      <button class="mobile-menu-link" id="mobileFavoritesBtn">
-        <i class="fas fa-heart" aria-hidden="true"></i>
+      <a href="/saved.html" class="mobile-menu-link" style="color: #EF4444; font-weight: 600;">
+        <i class="fas fa-heart" style="color: #EF4444;"></i>
         Saved Properties
         <span class="favorites-count" id="mobileFavoritesCount" style="margin-left: auto;">0</span>
-      </button>
+      </a>
     </div>
     <div class="mobile-menu-divider"></div>
     <div class="mobile-menu-section">
@@ -459,13 +459,13 @@
     </div>
   </section>
 
-  <!-- Favorites Section -->
+  <!-- Favorites Section (Preview) -->
   <section id="favoritesSection" class="favorites-section" aria-labelledby="favorites-title">
     <div class="section-header" style="display:flex; justify-content:space-between; align-items:center;">
       <h2 class="section-title" id="favorites-title"><i class="fas fa-heart" style="color: #EF4444;" aria-hidden="true"></i> Saved Properties</h2>
-      <button class="nav-cta" id="hideFavoritesBtn" aria-label="Close saved properties">
-        <i class="fas fa-times" aria-hidden="true"></i> Close
-      </button>
+      <a href="/saved.html" class="nav-cta" style="padding: 10px 20px; font-size: 13px;">
+        View All <i class="fas fa-arrow-right" style="margin-left: 4px;"></i>
+      </a>
     </div>
     <div id="favoritesGrid" class="favorites-grid" role="list"></div>
   </section>
@@ -550,6 +550,7 @@
           <a href="/lease.html" class="footer-link">For Lease</a>
           <a href="/pikbnb.html" class="footer-link">PIKBNB - Short Stays</a>
           <a href="/blog.html" class="footer-link">Blog</a>
+          <a href="/saved.html" class="footer-link">Saved Properties</a>
         </div>
       </div>
       <div>
