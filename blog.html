@@ -7,10 +7,10 @@
   <meta name="description" content="Expert guides, market analysis, and investment tips for Kenya’s property market." />
   <meta name="theme-color" content="#0F172A" />
 
-  <!-- Fonts -->
+  <!-- Fonts & Icons -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400..700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
 
   <style>
@@ -18,30 +18,35 @@
        DESIGN TOKENS
     ============================================= */
     :root {
-      /* Colors – slate & orange editorial palette */
-      --color-bg: #F8FAFC;
-      --color-surface: #FFFFFF;
-      --color-border: #E2E8F0;
-      --color-primary: #EA580C;        /* orange */
-      --color-primary-light: #F97316;
-      --color-primary-dark: #C2410C;
-      --color-text-primary: #0F172A;
-      --color-text-secondary: #475569;
-      --color-text-muted: #94A3B8;
-      --color-accent: #D4AF37;         /* gold for subtle highlights */
+      /* 8‑point spacing */
+      --space-1: 4px; --space-2: 8px; --space-3: 12px; --space-4: 16px; --space-5: 20px;
+      --space-6: 24px; --space-8: 32px; --space-10: 40px; --space-12: 48px; --space-16: 64px;
+
+      /* Colors – editorial slate & orange */
+      --bg-page: #FAFAFA;
+      --bg-surface: #FFFFFF;
+      --border-light: #E8ECF0;
+      --text-primary: #0F172A;
+      --text-secondary: #475569;
+      --text-muted: #94A3B8;
+      --accent: #EA580C;
+      --accent-light: #F97316;
+      --gold: #D4AF37;
+
+      /* Shadows – deeper for featured */
       --shadow-sm: 0 1px 2px rgba(0,0,0,0.04);
       --shadow-md: 0 4px 12px rgba(0,0,0,0.06);
-      --shadow-lg: 0 8px 24px rgba(0,0,0,0.08);
-      --shadow-xl: 0 16px 48px rgba(0,0,0,0.10);
-      --radius-sm: 8px;
-      --radius-md: 12px;
-      --radius-lg: 16px;
-      --radius-xl: 24px;
-      --radius-full: 9999px;
+      --shadow-lg: 0 12px 32px rgba(0,0,0,0.08);
+      --shadow-featured: 0 20px 48px rgba(0,0,0,0.12);
+
+      /* Typography */
       --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
-      --transition-fast: 150ms ease;
-      --transition-base: 250ms ease;
-      --header-height: 4rem;
+      --text-xs: 0.75rem; --text-sm: 0.875rem; --text-base: 1rem; --text-lg: 1.125rem;
+      --text-xl: 1.25rem; --text-2xl: 1.5rem; --text-3xl: 1.875rem; --text-4xl: 2.25rem;
+
+      /* Radius & Transition */
+      --radius-sm: 8px; --radius-md: 12px; --radius-lg: 16px; --radius-xl: 24px;
+      --transition-fast: 150ms ease; --transition-base: 250ms ease;
     }
 
     /* =============================================
@@ -51,81 +56,68 @@
     html { scroll-behavior: smooth; -webkit-font-smoothing: antialiased; }
     body {
       font-family: var(--font-sans);
-      font-size: 16px;
-      line-height: 1.6;
-      color: var(--color-text-primary);
-      background: var(--color-bg);
+      font-size: var(--text-base);
+      line-height: 1.7;
+      color: var(--text-primary);
+      background: var(--bg-page);
       overflow-x: hidden;
     }
     img { max-width: 100%; height: auto; display: block; }
     a { color: inherit; text-decoration: none; }
     button { font: inherit; cursor: pointer; border: none; background: none; }
-    :focus-visible { outline: 2px solid var(--color-primary); outline-offset: 2px; }
+    :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 
-    /* skip link */
-    .skip-link {
-      position: absolute; top: -100px; left: 16px;
-      background: var(--color-primary); color: white;
-      padding: 8px 16px; border-radius: var(--radius-sm);
-      z-index: 9999; font-weight: 600; transition: top 0.2s;
+    /* Subtle noise texture overlay */
+    body::before {
+      content: ''; position: fixed; inset: 0; opacity: 0.02; pointer-events: none;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+      z-index: -1;
     }
-    .skip-link:focus { top: 16px; }
 
-    /* scrollbar */
-    ::-webkit-scrollbar { width: 6px; height: 6px; }
-    ::-webkit-scrollbar-track { background: transparent; }
-    ::-webkit-scrollbar-thumb { background: var(--color-border); border-radius: 3px; }
-
-    /* =============================================
-       LAYOUT UTILITIES
-    ============================================= */
-    .container { max-width: 1280px; margin: 0 auto; padding: 0 24px; }
-    .flex { display: flex; }
-    .items-center { align-items: center; }
-    .gap-2 { gap: 8px; }
-    .gap-4 { gap: 16px; }
+    /* Reading progress bar */
+    #progress-bar {
+      position: fixed; top: 0; left: 0; height: 3px; background: var(--accent);
+      z-index: 9999; width: 0; transition: width 0.1s linear;
+    }
 
     /* =============================================
-       STICKY NAVIGATION (glassmorphic)
+       NAVIGATION (glassmorphic)
     ============================================= */
     .nav {
       position: sticky; top: 0; z-index: 1000;
-      background: rgba(255,255,255,0.85);
-      backdrop-filter: blur(12px);
-      border-bottom: 1px solid rgba(0,0,0,0.05);
-      height: var(--header-height);
+      background: rgba(255,255,255,0.85); backdrop-filter: blur(20px);
+      border-bottom: 1px solid rgba(0,0,0,0.05); height: 64px;
     }
     .nav-inner {
-      max-width: 1280px; margin: 0 auto; padding: 0 24px;
+      max-width: 1280px; margin: 0 auto; padding: 0 var(--space-6);
       height: 100%; display: flex; align-items: center; justify-content: space-between;
     }
     .nav-logo {
-      display: flex; align-items: center; gap: 12px;
-      font-weight: 800; font-size: 1.25rem; color: var(--color-text-primary);
+      display: flex; align-items: center; gap: var(--space-3);
+      font-weight: 700; font-size: var(--text-lg); color: var(--text-primary);
     }
     .nav-logo-icon {
-      width: 36px; height: 36px; background: var(--color-primary);
-      border-radius: var(--radius-md); display: grid; place-items: center;
-      color: white; font-size: 1rem;
+      width: 36px; height: 36px; background: var(--accent); border-radius: var(--radius-md);
+      display: grid; place-items: center; color: white; font-size: 1rem;
     }
     .nav-links { display: flex; gap: 4px; }
     .nav-link {
-      padding: 8px 16px; font-weight: 500; font-size: 0.875rem;
-      color: var(--color-text-secondary); border-radius: var(--radius-full);
+      padding: 8px 16px; font-weight: 500; font-size: var(--text-sm);
+      color: var(--text-secondary); border-radius: 9999px;
       transition: background var(--transition-fast), color var(--transition-fast);
     }
-    .nav-link:hover, .nav-link.active { background: rgba(234,88,12,0.08); color: var(--color-primary); }
+    .nav-link:hover, .nav-link.active { background: rgba(234,88,12,0.08); color: var(--accent); }
     .btn-signin {
-      background: var(--color-primary); color: white; font-weight: 600;
-      padding: 8px 20px; border-radius: var(--radius-full); font-size: 0.875rem;
-      transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+      background: var(--accent); color: white; font-weight: 600; padding: 8px 20px;
+      border-radius: 9999px; font-size: var(--text-sm);
       box-shadow: 0 4px 12px rgba(234,88,12,0.3);
+      transition: transform var(--transition-fast), box-shadow var(--transition-fast);
     }
     .btn-signin:hover { transform: translateY(-1px); box-shadow: 0 8px 20px rgba(234,88,12,0.4); }
 
-    /* Hamburger (mobile) */
+    /* Hamburger */
     .hamburger { display: none; width: 40px; height: 40px; border-radius: var(--radius-sm); flex-direction: column; align-items: center; justify-content: center; gap: 5px; }
-    .hamburger-line { width: 20px; height: 2px; background: var(--color-text-primary); border-radius: 2px; transition: transform var(--transition-base), opacity var(--transition-base); }
+    .hamburger-line { width: 20px; height: 2px; background: var(--text-primary); border-radius: 2px; transition: var(--transition-base); }
 
     /* Mobile drawer */
     .mobile-overlay {
@@ -135,285 +127,255 @@
     .mobile-overlay.active { opacity: 1; pointer-events: auto; }
     .mobile-drawer {
       position: fixed; top: 0; right: -100%; width: 85%; max-width: 360px; height: 100vh;
-      background: white; z-index: 1200; box-shadow: var(--shadow-xl);
+      background: var(--bg-surface); z-index: 1200; box-shadow: var(--shadow-featured);
       transition: right var(--transition-base) ease; overflow-y: auto;
       display: flex; flex-direction: column;
     }
     .mobile-drawer.active { right: 0; }
-    .mobile-header { display: flex; justify-content: space-between; align-items: center; padding: 16px 24px; border-bottom: 1px solid var(--color-border); }
-    .mobile-close { width: 36px; height: 36px; border-radius: 50%; display: grid; place-items: center; background: var(--color-bg); color: var(--color-text-secondary); }
-    .mobile-menu { padding: 16px; display: flex; flex-direction: column; gap: 8px; }
-    .mobile-link { display: flex; align-items: center; gap: 12px; padding: 14px 16px; border-radius: var(--radius-md); font-weight: 500; transition: background var(--transition-fast); }
-    .mobile-link:hover { background: var(--color-bg); }
-    .mobile-divider { height: 1px; background: var(--color-border); margin: 12px 0; }
-    .mobile-cta { display: block; text-align: center; padding: 14px; background: var(--color-primary); color: white; font-weight: 700; border-radius: var(--radius-md); margin-top: auto; }
+    .mobile-header { display: flex; justify-content: space-between; align-items: center; padding: var(--space-4) var(--space-6); border-bottom: 1px solid var(--border-light); }
+    .mobile-close { width: 36px; height: 36px; border-radius: 50%; display: grid; place-items: center; background: var(--bg-page); color: var(--text-secondary); }
+    .mobile-menu { padding: var(--space-4); display: flex; flex-direction: column; gap: var(--space-2); }
+    .mobile-link { display: flex; align-items: center; gap: var(--space-3); padding: 14px 16px; border-radius: var(--radius-md); font-weight: 500; transition: background var(--transition-fast); }
+    .mobile-link:hover { background: var(--bg-page); }
+    .mobile-divider { height: 1px; background: var(--border-light); margin: var(--space-3) 0; }
+    .mobile-cta { display: block; text-align: center; padding: 14px; background: var(--accent); color: white; font-weight: 700; border-radius: var(--radius-md); margin-top: auto; }
 
     /* =============================================
-       HERO (editorial style)
+       HERO (editorial, left-aligned)
     ============================================= */
     .hero {
-      position: relative; overflow: hidden;
-      padding: 80px 24px 60px;
+      position: relative; padding: var(--space-16) var(--space-6) var(--space-12);
       background: linear-gradient(135deg, #0F172A 0%, #1E293B 100%);
-      display: flex; align-items: center; justify-content: center;
-      min-height: 70vh;
+      display: flex; align-items: center; justify-content: flex-start;
     }
     .hero::before {
       content: ''; position: absolute; inset: 0;
       background: url('https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=2000&q=80') center/cover no-repeat;
-      opacity: 0.15; mix-blend-mode: overlay;
+      opacity: 0.12; mix-blend-mode: overlay;
     }
-    .hero-content { position: relative; z-index: 2; text-align: center; max-width: 800px; width: 100%; }
+    .hero-content { position: relative; z-index: 2; max-width: 720px; }
     .hero-badge {
-      display: inline-flex; align-items: center; gap: 10px;
-      background: rgba(255,255,255,0.15); backdrop-filter: blur(10px);
-      padding: 10px 24px; border-radius: var(--radius-full);
-      font-size: 0.875rem; font-weight: 600; color: white; margin-bottom: 24px;
+      display: inline-flex; align-items: center; gap: var(--space-2);
+      background: rgba(255,255,255,0.12); backdrop-filter: blur(10px);
+      padding: var(--space-2) var(--space-5); border-radius: 9999px;
+      font-size: var(--text-sm); font-weight: 600; color: white; margin-bottom: var(--space-6);
     }
-    .hero-badge-dot { width: 8px; height: 8px; background: var(--color-primary); border-radius: 50%; animation: pulse 2s infinite; }
-    @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)}50%{opacity:0.7;transform:scale(1.2)} }
+    .hero-badge-dot { width: 8px; height: 8px; background: var(--accent); border-radius: 50%; animation: pulse 2s infinite; }
+    @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.7;transform:scale(1.2)} }
+
     .hero-title {
       font-size: clamp(2.5rem, 6vw, 4rem); font-weight: 800;
-      letter-spacing: -0.03em; line-height: 1.1; color: white; margin-bottom: 16px;
+      letter-spacing: -0.03em; line-height: 1.1; color: white; margin-bottom: var(--space-4);
     }
-    .hero-title span { color: var(--color-primary-light); }
-    .hero-subtitle { font-size: 1.125rem; color: rgba(255,255,255,0.85); max-width: 600px; margin: 0 auto 32px; }
+    .hero-title span { color: var(--accent-light); }
+    .hero-subtitle { font-size: var(--text-lg); color: rgba(255,255,255,0.85); margin-bottom: var(--space-8); max-width: 560px; }
 
-    /* Command palette style search */
+    /* Command palette search */
     .search-bar {
-      background: white; border-radius: var(--radius-full); padding: 8px;
-      box-shadow: var(--shadow-xl); display: flex; align-items: center; gap: 4px;
-      max-width: 640px; margin: 0 auto 24px;
+      background: white; border-radius: 9999px; padding: var(--space-2);
+      box-shadow: var(--shadow-lg); display: flex; align-items: center; gap: 4px;
+      max-width: 600px;
     }
-    .search-bar i { color: var(--color-text-muted); margin-left: 16px; }
+    .search-bar i { color: var(--text-muted); margin-left: var(--space-4); }
     .search-input {
       flex: 1; border: none; outline: none; padding: 14px 16px;
-      font-size: 1rem; background: transparent;
+      font-size: var(--text-base); background: transparent;
     }
-    .search-input::placeholder { color: var(--color-text-muted); }
     .search-btn {
-      background: var(--color-primary); color: white; font-weight: 600;
-      padding: 14px 28px; border-radius: var(--radius-full);
-      font-size: 0.875rem; display: flex; align-items: center; gap: 8px;
+      background: var(--accent); color: white; font-weight: 600; padding: 14px 28px;
+      border-radius: 9999px; font-size: var(--text-sm); display: flex; align-items: center; gap: var(--space-2);
       transition: transform var(--transition-fast), box-shadow var(--transition-fast);
       box-shadow: 0 4px 12px rgba(234,88,12,0.3);
     }
     .search-btn:hover { transform: scale(1.03); box-shadow: 0 8px 20px rgba(234,88,12,0.4); }
 
-    /* Quick filter chips */
+    /* Filter chips (glassmorphic) */
     .filter-chips {
-      display: flex; flex-wrap: wrap; justify-content: center; gap: 12px;
+      display: flex; flex-wrap: wrap; gap: var(--space-3); margin-top: var(--space-5);
     }
     .chip {
-      padding: 8px 20px; background: rgba(255,255,255,0.1); backdrop-filter: blur(10px);
-      border: 1px solid rgba(255,255,255,0.2); border-radius: var(--radius-full);
-      color: white; font-size: 0.875rem; font-weight: 500;
+      padding: var(--space-2) var(--space-5); background: rgba(255,255,255,0.1);
+      backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.2);
+      border-radius: 9999px; color: white; font-size: var(--text-sm); font-weight: 500;
       transition: background var(--transition-fast), transform var(--transition-fast);
     }
     .chip:hover { background: rgba(255,255,255,0.2); transform: translateY(-2px); }
 
     /* =============================================
-       STICKY CATEGORY PILLS
+       CATEGORY PILLS (sticky, swipeable)
     ============================================= */
     .category-nav {
-      position: sticky; top: var(--header-height); z-index: 999;
-      background: rgba(255,255,255,0.85); backdrop-filter: blur(12px);
-      border-bottom: 1px solid rgba(0,0,0,0.05); padding: 12px 0;
+      position: sticky; top: 64px; z-index: 999;
+      background: rgba(255,255,255,0.85); backdrop-filter: blur(20px);
+      border-bottom: 1px solid rgba(0,0,0,0.05); padding: var(--space-4) 0;
     }
     .category-scroll {
-      display: flex; gap: 8px; overflow-x: auto; scrollbar-width: none;
-      padding: 0 24px; scroll-behavior: smooth;
+      display: flex; gap: var(--space-2); overflow-x: auto; scrollbar-width: none;
+      padding: 0 var(--space-6); scroll-behavior: smooth;
     }
     .category-scroll::-webkit-scrollbar { display: none; }
     .category-pill {
-      flex-shrink: 0; padding: 10px 24px; background: var(--color-surface);
-      border: 1px solid var(--color-border); border-radius: var(--radius-full);
-      font-size: 0.875rem; font-weight: 600; color: var(--color-text-secondary);
+      flex-shrink: 0; padding: 10px 24px; background: var(--bg-surface);
+      border: 1px solid var(--border-light); border-radius: 9999px;
+      font-size: var(--text-sm); font-weight: 600; color: var(--text-secondary);
       transition: all var(--transition-fast);
     }
-    .category-pill:hover { border-color: var(--color-primary); color: var(--color-primary); }
+    .category-pill:hover { border-color: var(--accent); color: var(--accent); }
     .category-pill.active {
-      background: var(--color-primary); border-color: var(--color-primary);
-      color: white; box-shadow: 0 4px 12px rgba(234,88,12,0.3);
+      background: var(--accent); border-color: var(--accent); color: white;
+      box-shadow: 0 4px 12px rgba(234,88,12,0.3);
     }
 
     /* =============================================
-       FEATURED STORY (magazine cover)
+       FEATURED STORY (editorial feature)
     ============================================= */
     .featured-story {
-      display: grid; grid-template-columns: 1fr 1fr; gap: 0;
-      background: white; border-radius: var(--radius-xl); overflow: hidden;
-      box-shadow: var(--shadow-lg); margin: 48px 0;
+      display: grid; grid-template-columns: 1fr 1fr; background: var(--bg-surface);
+      border-radius: var(--radius-xl); overflow: hidden;
+      box-shadow: var(--shadow-featured); margin: var(--space-8) 0;
     }
-    .featured-image { position: relative; overflow: hidden; min-height: 400px; }
+    .featured-image { position: relative; overflow: hidden; min-height: 420px; }
     .featured-image img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.6s; }
-    .featured-story:hover .featured-image img { transform: scale(1.05); }
+    .featured-story:hover .featured-image img { transform: scale(1.04); }
     .featured-badge {
-      position: absolute; top: 24px; left: 24px;
-      background: var(--color-primary); color: white;
-      padding: 8px 16px; border-radius: var(--radius-sm); font-weight: 700; font-size: 0.75rem;
+      position: absolute; top: var(--space-6); left: var(--space-6);
+      background: var(--accent); color: white; padding: var(--space-2) var(--space-4);
+      border-radius: var(--radius-sm); font-weight: 700; font-size: var(--text-xs);
       text-transform: uppercase; letter-spacing: 0.5px;
     }
     .featured-content {
-      padding: 48px; display: flex; flex-direction: column; justify-content: center;
+      padding: var(--space-10) var(--space-8); display: flex; flex-direction: column; justify-content: center;
     }
-    .featured-meta {
-      display: flex; gap: 16px; font-size: 0.8125rem; color: var(--color-text-muted); margin-bottom: 16px;
-    }
-    .featured-title {
-      font-size: 2rem; font-weight: 700; letter-spacing: -0.02em;
-      color: var(--color-text-primary); margin-bottom: 16px; line-height: 1.2;
-    }
-    .featured-excerpt { font-size: 1rem; color: var(--color-text-secondary); line-height: 1.7; margin-bottom: 24px; }
-    .author-row { display: flex; align-items: center; gap: 12px; margin-top: auto; }
+    .featured-meta { display: flex; gap: var(--space-4); font-size: var(--text-sm); color: var(--text-muted); margin-bottom: var(--space-4); }
+    .featured-title { font-size: var(--text-3xl); font-weight: 700; letter-spacing: -0.02em; margin-bottom: var(--space-4); line-height: 1.2; }
+    .featured-excerpt { font-size: var(--text-lg); color: var(--text-secondary); line-height: 1.7; margin-bottom: var(--space-6); }
+    .author-row { display: flex; align-items: center; gap: var(--space-3); margin-top: auto; }
     .author-avatar {
-      width: 44px; height: 44px; border-radius: 50%;
-      background: linear-gradient(135deg, var(--color-primary), var(--color-primary-light));
-      display: grid; place-items: center; color: white; font-weight: 700; font-size: 1rem;
+      width: 44px; height: 44px; border-radius: 50%; background: linear-gradient(135deg, var(--accent), var(--accent-light));
+      display: grid; place-items: center; color: white; font-weight: 700; font-size: var(--text-base);
     }
-    .author-name { font-weight: 600; font-size: 0.875rem; }
-    .author-role { font-size: 0.75rem; color: var(--color-text-muted); }
+    .author-name { font-weight: 600; font-size: var(--text-sm); }
+    .author-role { font-size: var(--text-xs); color: var(--text-muted); }
 
     /* =============================================
-       ARTICLE GRID (staggered / masonry)
+       EDITOR’S PICKS (horizontal scroll)
     ============================================= */
-    .articles-section { padding: 48px 0 80px; }
+    .section-heading {
+      display: flex; align-items: baseline; justify-content: space-between;
+      margin: var(--space-8) 0 var(--space-4);
+    }
+    .section-title { font-size: var(--text-2xl); font-weight: 700; letter-spacing: -0.01em; }
+    .picks-scroll {
+      display: flex; gap: var(--space-4); overflow-x: auto; scrollbar-width: none;
+      padding-bottom: var(--space-2);
+    }
+    .picks-scroll::-webkit-scrollbar { display: none; }
+    .pick-card {
+      flex: 0 0 280px; background: var(--bg-surface); border-radius: var(--radius-lg);
+      overflow: hidden; box-shadow: var(--shadow-sm); transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+    }
+    .pick-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-lg); }
+    .pick-image { height: 160px; overflow: hidden; }
+    .pick-image img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.4s; }
+    .pick-card:hover .pick-image img { transform: scale(1.05); }
+    .pick-body { padding: var(--space-4); }
+    .pick-category { font-size: var(--text-xs); color: var(--accent); font-weight: 600; text-transform: uppercase; margin-bottom: var(--space-2); }
+    .pick-title { font-size: var(--text-base); font-weight: 700; line-height: 1.3; }
+
+    /* =============================================
+       ARTICLE MASONRY GRID
+    ============================================= */
     .articles-grid {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 24px;
+      display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--space-6);
     }
     .article-card {
-      background: white; border-radius: var(--radius-lg); overflow: hidden;
+      background: var(--bg-surface); border-radius: var(--radius-lg); overflow: hidden;
       box-shadow: var(--shadow-sm); transition: transform var(--transition-base), box-shadow var(--transition-base);
       display: flex; flex-direction: column;
     }
-    .article-card:hover { transform: translateY(-6px); box-shadow: var(--shadow-lg); }
-    .article-card--large { grid-column: span 2; }    /* featured in grid */
+    .article-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-lg); }
+    .article-card--large { grid-column: span 2; }
     .card-image { position: relative; height: 200px; overflow: hidden; }
     .article-card--large .card-image { height: 280px; }
     .card-image img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s; }
     .article-card:hover .card-image img { transform: scale(1.06); }
     .card-badge {
-      position: absolute; top: 16px; left: 16px;
-      padding: 6px 14px; background: rgba(255,255,255,0.95); backdrop-filter: blur(8px);
-      border-radius: var(--radius-sm); font-size: 0.6875rem; font-weight: 700;
-      text-transform: uppercase; color: var(--color-primary); letter-spacing: 0.5px;
+      position: absolute; top: var(--space-4); left: var(--space-4);
+      padding: var(--space-1) var(--space-3); background: rgba(255,255,255,0.95);
+      backdrop-filter: blur(8px); border-radius: var(--radius-sm); font-size: var(--text-xs); font-weight: 700;
+      text-transform: uppercase; color: var(--accent);
     }
     .card-bookmark {
-      position: absolute; top: 16px; right: 16px;
+      position: absolute; top: var(--space-4); right: var(--space-4);
       width: 36px; height: 36px; background: rgba(255,255,255,0.9); backdrop-filter: blur(8px);
-      border-radius: 50%; display: grid; place-items: center;
-      color: var(--color-text-muted); transition: color var(--transition-fast), transform var(--transition-fast);
+      border-radius: 50%; display: grid; place-items: center; color: var(--text-muted);
+      transition: color var(--transition-fast), transform var(--transition-fast);
     }
-    .card-bookmark:hover { color: var(--color-primary); transform: scale(1.1); }
-    .card-body { padding: 20px; flex: 1; display: flex; flex-direction: column; }
-    .card-meta { display: flex; gap: 12px; font-size: 0.75rem; color: var(--color-text-muted); margin-bottom: 8px; }
-    .card-title { font-size: 1.125rem; font-weight: 700; line-height: 1.3; margin-bottom: 8px; }
-    .article-card--large .card-title { font-size: 1.5rem; }
+    .card-bookmark:hover { color: var(--accent); transform: scale(1.1); }
+    .card-body { padding: var(--space-5); flex: 1; display: flex; flex-direction: column; }
+    .card-meta { display: flex; gap: var(--space-3); font-size: var(--text-xs); color: var(--text-muted); margin-bottom: var(--space-2); }
+    .card-title { font-size: var(--text-lg); font-weight: 700; line-height: 1.3; margin-bottom: var(--space-2); }
     .card-excerpt {
-      font-size: 0.875rem; color: var(--color-text-secondary); line-height: 1.6;
-      flex: 1; margin-bottom: 16px;
+      font-size: var(--text-sm); color: var(--text-secondary); line-height: 1.6; flex: 1;
       display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;
     }
     .card-footer {
-      display: flex; justify-content: space-between; align-items: center;
-      padding-top: 12px; border-top: 1px solid var(--color-border);
+      display: flex; justify-content: space-between; align-items: center; padding-top: var(--space-4); border-top: 1px solid var(--border-light);
     }
-    .card-author { display: flex; align-items: center; gap: 8px; font-size: 0.8125rem; font-weight: 600; }
+    .card-author { display: flex; align-items: center; gap: var(--space-2); font-size: var(--text-xs); font-weight: 600; }
     .card-author-avatar {
-      width: 28px; height: 28px; border-radius: 50%;
-      background: var(--color-primary); display: grid; place-items: center;
-      color: white; font-size: 0.6875rem; font-weight: 700;
+      width: 24px; height: 24px; border-radius: 50%; background: var(--accent); color: white;
+      display: grid; place-items: center; font-size: 10px; font-weight: 700;
     }
-    .read-time { font-size: 0.75rem; color: var(--color-text-muted); display: flex; align-items: center; gap: 4px; }
+    .read-time { font-size: var(--text-xs); color: var(--text-muted); display: flex; align-items: center; gap: 4px; }
 
     /* =============================================
-       SIDEBAR (trending now) – desktop only
+       SKELETON LOADER
     ============================================= */
-    .content-layout { display: flex; gap: 32px; }
-    .main-content { flex: 1; min-width: 0; }
-    .sidebar {
-      width: 300px; flex-shrink: 0; display: flex; flex-direction: column; gap: 24px;
+    .skeleton {
+      background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+      background-size: 200% 100%; animation: shimmer 1.5s infinite; border-radius: var(--radius-sm);
     }
-    .sidebar-card {
-      background: white; border-radius: var(--radius-lg); padding: 24px;
-      box-shadow: var(--shadow-sm); border: 1px solid var(--color-border);
-    }
-    .sidebar-title {
-      font-size: 0.875rem; font-weight: 700; text-transform: uppercase;
-      letter-spacing: 0.05em; color: var(--color-text-muted); margin-bottom: 16px;
-    }
-    .trending-item {
-      display: flex; gap: 12px; padding: 12px 0; border-bottom: 1px solid var(--color-border);
-      transition: color var(--transition-fast);
-    }
-    .trending-item:last-child { border-bottom: none; }
-    .trending-item:hover { color: var(--color-primary); }
-    .trending-num { font-size: 1.25rem; font-weight: 800; color: var(--color-primary); min-width: 28px; }
-    .trending-title { font-size: 0.9375rem; font-weight: 600; line-height: 1.3; }
+    @keyframes shimmer { 0%{background-position:200% 0}100%{background-position:-200% 0} }
 
     /* =============================================
        NEWSLETTER
     ============================================= */
     .newsletter {
-      background: linear-gradient(135deg, #0F172A 0%, #1E293B 100%);
-      border-radius: var(--radius-xl); padding: 64px 24px; text-align: center;
-      color: white; margin: 64px 0; position: relative; overflow: hidden;
+      background: linear-gradient(135deg, #0F172A 0%, #1E293B 100%); border-radius: var(--radius-xl);
+      padding: var(--space-16) var(--space-6); text-align: center; color: white;
+      margin: var(--space-12) 0; position: relative; overflow: hidden;
     }
     .newsletter::before {
-      content: ''; position: absolute; top: -30%; right: -20%;
-      width: 400px; height: 400px;
-      background: radial-gradient(circle, rgba(234,88,12,0.2), transparent 70%);
-      pointer-events: none;
+      content: ''; position: absolute; top: -30%; right: -20%; width: 400px; height: 400px;
+      background: radial-gradient(circle, rgba(234,88,12,0.2), transparent 70%); pointer-events: none;
     }
-    .newsletter-title { font-size: 2rem; font-weight: 700; margin-bottom: 12px; position: relative; }
-    .newsletter-subtitle { font-size: 1rem; opacity: 0.85; max-width: 500px; margin: 0 auto 32px; position: relative; }
-    .newsletter-form { display: flex; gap: 12px; max-width: 500px; margin: 0 auto; position: relative; }
+    .newsletter-title { font-size: var(--text-3xl); font-weight: 700; margin-bottom: var(--space-3); position: relative; }
+    .newsletter-subtitle { font-size: var(--text-lg); opacity: 0.85; max-width: 500px; margin: 0 auto var(--space-8); position: relative; }
+    .newsletter-form { display: flex; gap: var(--space-3); max-width: 500px; margin: 0 auto; position: relative; }
     .newsletter-input {
-      flex: 1; padding: 16px 24px; border: none; border-radius: var(--radius-full);
-      font-size: 1rem; outline: none;
+      flex: 1; padding: var(--space-4) var(--space-6); border: none; border-radius: 9999px;
+      font-size: var(--text-base); outline: none;
     }
-    .newsletter-input::placeholder { color: var(--color-text-muted); }
     .newsletter-btn {
-      padding: 16px 32px; background: var(--color-primary); color: white;
-      border-radius: var(--radius-full); font-weight: 600; font-size: 1rem;
+      padding: var(--space-4) var(--space-8); background: var(--accent); color: white;
+      border-radius: 9999px; font-weight: 600; font-size: var(--text-base);
       transition: transform var(--transition-fast), box-shadow var(--transition-fast);
       box-shadow: 0 4px 12px rgba(234,88,12,0.3);
     }
     .newsletter-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(234,88,12,0.4); }
-
-    .trust-line { font-size: 0.8125rem; opacity: 0.7; margin-top: 16px; position: relative; }
+    .trust-line { font-size: var(--text-xs); opacity: 0.7; margin-top: var(--space-4); position: relative; }
 
     /* =============================================
-       FOOTER (minimal)
+       FOOTER
     ============================================= */
     .footer {
-      border-top: 1px solid var(--color-border); padding: 32px 24px;
-      display: flex; justify-content: space-between; align-items: center;
-      flex-wrap: wrap; gap: 16px; color: var(--color-text-muted); font-size: 0.8125rem;
+      border-top: 1px solid var(--border-light); padding: var(--space-8) var(--space-6);
+      display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap;
+      gap: var(--space-4); color: var(--text-muted); font-size: var(--text-sm);
     }
     .footer a { transition: color var(--transition-fast); }
-    .footer a:hover { color: var(--color-primary); }
-
-    /* =============================================
-       SKELETON LOADING (shimmer)
-    ============================================= */
-    .skeleton {
-      background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
-      background-size: 200% 100%; animation: shimmer 1.5s infinite;
-      border-radius: var(--radius-sm);
-    }
-    @keyframes shimmer { 0%{background-position:200% 0}100%{background-position:-200% 0} }
-
-    /* =============================================
-       FADE-IN ON SCROLL
-    ============================================= */
-    .fade-up {
-      opacity: 0; transform: translateY(24px);
-      transition: opacity 0.6s ease, transform 0.6s ease;
-    }
-    .fade-up.visible { opacity: 1; transform: translateY(0); }
+    .footer a:hover { color: var(--accent); }
 
     /* =============================================
        RESPONSIVE
@@ -423,27 +385,28 @@
       .hamburger { display: flex; }
       .articles-grid { grid-template-columns: repeat(2, 1fr); }
       .article-card--large { grid-column: span 2; }
-      .sidebar { display: none; }
       .featured-story { grid-template-columns: 1fr; }
-      .featured-content { padding: 32px; }
+      .featured-content { padding: var(--space-6); }
     }
 
     @media (max-width: 768px) {
-      .hero { padding: 60px 16px 40px; min-height: auto; }
-      .search-bar { flex-direction: column; border-radius: var(--radius-lg); padding: 12px; }
+      .hero { padding: var(--space-10) var(--space-4) var(--space-8); }
+      .search-bar { flex-direction: column; border-radius: var(--radius-lg); padding: var(--space-3); }
       .search-btn { width: 100%; justify-content: center; }
       .articles-grid { grid-template-columns: 1fr; }
       .article-card--large { grid-column: span 1; }
       .newsletter-form { flex-direction: column; }
       .newsletter-btn { width: 100%; }
-      .category-scroll { padding: 0 16px; }
+      .category-scroll { padding: 0 var(--space-4); }
+      .pick-card { flex: 0 0 240px; }
     }
   </style>
 </head>
 <body>
-  <a href="#main-content" class="skip-link">Skip to main content</a>
+  <!-- Reading progress indicator -->
+  <div id="progress-bar"></div>
 
-  <!-- Sticky Navigation -->
+  <!-- Navigation -->
   <nav class="nav" aria-label="Primary">
     <div class="nav-inner">
       <a href="/" class="nav-logo">
@@ -469,7 +432,7 @@
   <div class="mobile-overlay" id="mobileOverlay" aria-hidden="true"></div>
   <div class="mobile-drawer" id="mobileDrawer" aria-label="Mobile menu">
     <div class="mobile-header">
-      <span class="nav-logo" style="font-size:1rem"><i class="fas fa-home" style="color:var(--color-primary)"></i> Menu</span>
+      <span class="nav-logo" style="font-size:1rem"><i class="fas fa-home" style="color:var(--accent)"></i> Menu</span>
       <button class="mobile-close" id="closeMobileMenu" aria-label="Close menu"><i class="fas fa-times"></i></button>
     </div>
     <div class="mobile-menu">
@@ -483,27 +446,25 @@
   </div>
 
   <main id="main-content">
-    <!-- Hero Section -->
+    <!-- Hero -->
     <section class="hero">
       <div class="hero-content">
         <div class="hero-badge">
           <span class="hero-badge-dot"></span>
           Real Estate Insights
         </div>
-        <h1 class="hero-title">Kenya’s <span>Property</span> Market, Decoded</h1>
-        <p class="hero-subtitle">Expert analysis, investment guides, and trusted advice from the Caretaker intelligence platform.</p>
-
+        <h1 class="hero-title">The <span>Caretaker</span> Intelligence</h1>
+        <p class="hero-subtitle">Unmatched property market analysis, investment strategies, and home‑buyer education — all guided by AI.</p>
         <div class="search-bar">
           <i class="fas fa-search"></i>
           <input type="text" class="search-input" id="blogSearch" placeholder="Search articles…" aria-label="Search articles" />
           <button class="search-btn" id="blogSearchBtn"><i class="fas fa-arrow-right"></i> Search</button>
         </div>
-
         <div class="filter-chips">
-          <a href="#guides" class="chip"><i class="fas fa-book"></i> Buying Guides</a>
-          <a href="#investment" class="chip"><i class="fas fa-chart-line"></i> Investment Insights</a>
-          <a href="#market" class="chip"><i class="fas fa-chart-bar"></i> Market Trends</a>
-          <a href="#legal" class="chip"><i class="fas fa-scale-balanced"></i> Legal Advice</a>
+          <a href="#" class="chip"><i class="fas fa-book"></i> Buying Guides</a>
+          <a href="#" class="chip"><i class="fas fa-chart-line"></i> Investment Insights</a>
+          <a href="#" class="chip"><i class="fas fa-chart-bar"></i> Market Trends</a>
+          <a href="#" class="chip"><i class="fas fa-scale-balanced"></i> Legal Advice</a>
         </div>
       </div>
     </section>
@@ -520,12 +481,12 @@
       </div>
     </div>
 
-    <div class="container">
-      <!-- Featured Story (Magazine Cover) -->
+    <div class="container" style="max-width:1280px; margin:0 auto; padding:0 var(--space-6);">
+      <!-- Featured Story (editorial feature) -->
       <a href="/blog/buy-land-kenya-safely" class="featured-story" data-category="guide">
         <div class="featured-image">
           <img src="https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=1200&q=80" alt="Buying land in Kenya" loading="lazy" />
-          <span class="featured-badge">Trending Now</span>
+          <span class="featured-badge">Editor’s Pick</span>
         </div>
         <div class="featured-content">
           <div class="featured-meta">
@@ -533,7 +494,7 @@
             <span><i class="far fa-clock"></i> 12 min read</span>
           </div>
           <h2 class="featured-title">How to Buy Land in Kenya Without Getting Scammed</h2>
-          <p class="featured-excerpt">A complete step-by-step guide to verifying title deeds, conducting due diligence, and closing a land purchase safely.</p>
+          <p class="featured-excerpt">A step‑by‑step guide covering due diligence, title deeds, and legal protections — so you can invest with confidence.</p>
           <div class="author-row">
             <div class="author-avatar">JK</div>
             <div>
@@ -544,178 +505,135 @@
         </div>
       </a>
 
-      <!-- Content Layout (Articles + Sidebar) -->
-      <div class="content-layout">
-        <div class="main-content">
-          <section class="articles-section">
-            <div class="articles-grid" id="articlesGrid">
-              <!-- Articles will be rendered by JS, but we'll include static cards for SEO -->
-              <!-- Card 1 (large) -->
-              <article class="article-card article-card--large" data-category="market">
-                <a href="/blog/best-nairobi-neighborhoods-2026" style="display:contents">
-                  <div class="card-image">
-                    <img src="https://images.unsplash.com/photo-1582407947304-fd86f028f716?w=800&q=80" alt="Nairobi neighborhoods" loading="lazy" />
-                    <span class="card-badge">Market Trends</span>
-                    <button class="card-bookmark" aria-label="Save article"><i class="far fa-bookmark"></i></button>
-                  </div>
-                  <div class="card-body">
-                    <div class="card-meta"><span>June 25, 2026</span><span>8 min</span></div>
-                    <h3 class="card-title">Best Nairobi Neighborhoods for Families in 2026</h3>
-                    <p class="card-excerpt">From Kilimani to Ruai — discover the top estates for families based on schools, security, and amenities.</p>
-                    <div class="card-footer">
-                      <div class="card-author">
-                        <div class="card-author-avatar">SM</div>
-                        Sarah Mwangi
-                      </div>
-                      <span class="read-time"><i class="far fa-clock"></i> 8 min</span>
-                    </div>
-                  </div>
-                </a>
-              </article>
-              <!-- Card 2 -->
-              <article class="article-card" data-category="investment">
-                <a href="/blog/ruai-property-investment-guide" style="display:contents">
-                  <div class="card-image">
-                    <img src="https://images.unsplash.com/photo-1551833227-8e3512960a83?w=600&q=80" alt="Ruai investment" loading="lazy" />
-                    <span class="card-badge">Investment</span>
-                    <button class="card-bookmark" aria-label="Save article"><i class="far fa-bookmark"></i></button>
-                  </div>
-                  <div class="card-body">
-                    <div class="card-meta"><span>June 22, 2026</span><span>10 min</span></div>
-                    <h3 class="card-title">Ruai Property Investment Guide</h3>
-                    <p class="card-excerpt">Why Ruai is becoming Nairobi’s hottest investment area with 40% appreciation.</p>
-                    <div class="card-footer">
-                      <div class="card-author"><div class="card-author-avatar">PO</div> Peter Ochieng</div>
-                      <span class="read-time"><i class="far fa-clock"></i> 10 min</span>
-                    </div>
-                  </div>
-                </a>
-              </article>
-              <!-- Card 3 (large) -->
-              <article class="article-card article-card--large" data-category="legal">
-                <a href="/blog/property-scams-kenya" style="display:contents">
-                  <div class="card-image">
-                    <img src="https://images.unsplash.com/photo-1450101499163-c8848c66ca85?w=800&q=80" alt="Avoid scams" loading="lazy" />
-                    <span class="card-badge">Legal</span>
-                    <button class="card-bookmark" aria-label="Save article"><i class="far fa-bookmark"></i></button>
-                  </div>
-                  <div class="card-body">
-                    <div class="card-meta"><span>June 18, 2026</span><span>7 min</span></div>
-                    <h3 class="card-title">7 Property Scams in Kenya and How to Avoid Them</h3>
-                    <p class="card-excerpt">Protect yourself from fake title deeds, fraudulent agents, and common property scams.</p>
-                    <div class="card-footer">
-                      <div class="card-author"><div class="card-author-avatar">JW</div> Jane Wanjiku</div>
-                      <span class="read-time"><i class="far fa-clock"></i> 7 min</span>
-                    </div>
-                  </div>
-                </a>
-              </article>
-              <!-- Card 4 -->
-              <article class="article-card" data-category="guide">
-                <a href="/blog/first-time-home-buyer-kenya" style="display:contents">
-                  <div class="card-image">
-                    <img src="https://images.unsplash.com/photo-1560520653-9e0e4c89eb11?w=600&q=80" alt="First time buyer" loading="lazy" />
-                    <span class="card-badge">Guide</span>
-                    <button class="card-bookmark" aria-label="Save article"><i class="far fa-bookmark"></i></button>
-                  </div>
-                  <div class="card-body">
-                    <div class="card-meta"><span>June 15, 2026</span><span>15 min</span></div>
-                    <h3 class="card-title">First-Time Home Buyer's Complete Guide</h3>
-                    <p class="card-excerpt">Everything about buying your first home in Kenya — from budgeting to mortgages.</p>
-                    <div class="card-footer">
-                      <div class="card-author"><div class="card-author-avatar">MK</div> Mike Kariuki</div>
-                      <span class="read-time"><i class="far fa-clock"></i> 15 min</span>
-                    </div>
-                  </div>
-                </a>
-              </article>
-              <!-- Card 5 -->
-              <article class="article-card" data-category="market">
-                <a href="/blog/kenya-rental-market-2026" style="display:contents">
-                  <div class="card-image">
-                    <img src="https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=600&q=80" alt="Rental market" loading="lazy" />
-                    <span class="card-badge">Market</span>
-                    <button class="card-bookmark" aria-label="Save article"><i class="far fa-bookmark"></i></button>
-                  </div>
-                  <div class="card-body">
-                    <div class="card-meta"><span>June 12, 2026</span><span>9 min</span></div>
-                    <h3 class="card-title">Kenya Rental Market 2026: Trends & Predictions</h3>
-                    <p class="card-excerpt">What tenants and landlords need to know this year.</p>
-                    <div class="card-footer">
-                      <div class="card-author"><div class="card-author-avatar">AN</div> Alice Njeri</div>
-                      <span class="read-time"><i class="far fa-clock"></i> 9 min</span>
-                    </div>
-                  </div>
-                </a>
-              </article>
-              <!-- Card 6 (large) -->
-              <article class="article-card article-card--large" data-category="investment">
-                <a href="/blog/commercial-vs-residential-investment" style="display:contents">
-                  <div class="card-image">
-                    <img src="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=800&q=80" alt="Commercial vs residential" loading="lazy" />
-                    <span class="card-badge">Investment</span>
-                    <button class="card-bookmark" aria-label="Save article"><i class="far fa-bookmark"></i></button>
-                  </div>
-                  <div class="card-body">
-                    <div class="card-meta"><span>June 8, 2026</span><span>11 min</span></div>
-                    <h3 class="card-title">Commercial vs Residential: Which Investment Wins?</h3>
-                    <p class="card-excerpt">A detailed comparison of ROI, risks, and management requirements in Kenya.</p>
-                    <div class="card-footer">
-                      <div class="card-author"><div class="card-author-avatar">DM</div> David Muthoni</div>
-                      <span class="read-time"><i class="far fa-clock"></i> 11 min</span>
-                    </div>
-                  </div>
-                </a>
-              </article>
-            </div>
-          </section>
+      <!-- Editor’s Picks horizontal scroll -->
+      <div class="section-heading">
+        <h2 class="section-title">Editor’s Picks</h2>
+      </div>
+      <div class="picks-scroll" id="picksScroll">
+        <a href="/blog/best-nairobi-neighborhoods-2026" class="pick-card">
+          <div class="pick-image"><img src="https://images.unsplash.com/photo-1582407947304-fd86f028f716?w=400&q=80" alt="Nairobi" loading="lazy" /></div>
+          <div class="pick-body">
+            <div class="pick-category">Market</div>
+            <h3 class="pick-title">Best Nairobi Neighborhoods for Families</h3>
+          </div>
+        </a>
+        <a href="/blog/ruai-property-investment-guide" class="pick-card">
+          <div class="pick-image"><img src="https://images.unsplash.com/photo-1551833227-8e3512960a83?w=400&q=80" alt="Ruai" loading="lazy" /></div>
+          <div class="pick-body">
+            <div class="pick-category">Investment</div>
+            <h3 class="pick-title">Why Ruai Prices Are Rising 40%</h3>
+          </div>
+        </a>
+        <a href="/blog/property-scams-kenya" class="pick-card">
+          <div class="pick-image"><img src="https://images.unsplash.com/photo-1450101499163-c8848c66ca85?w=400&q=80" alt="Scams" loading="lazy" /></div>
+          <div class="pick-body">
+            <div class="pick-category">Legal</div>
+            <h3 class="pick-title">7 Property Scams to Avoid</h3>
+          </div>
+        </a>
+        <a href="/blog/first-time-home-buyer-kenya" class="pick-card">
+          <div class="pick-image"><img src="https://images.unsplash.com/photo-1560520653-9e0e4c89eb11?w=400&q=80" alt="First home" loading="lazy" /></div>
+          <div class="pick-body">
+            <div class="pick-category">Guide</div>
+            <h3 class="pick-title">First-Time Buyer’s Complete Guide</h3>
+          </div>
+        </a>
+      </div>
 
-          <!-- "Load More" with skeleton loading (infinite scroll can replace this) -->
-          <div style="text-align:center; padding-bottom: 64px;">
-            <button class="btn-signin" id="loadMoreBtn" style="padding:14px 40px; font-size:1rem;">
-              <i class="fas fa-plus"></i> Load More Articles
-            </button>
-            <p id="loadingIndicator" style="display:none; margin-top:16px; color:var(--color-text-muted)">Loading…</p>
-          </div>
-        </div>
+      <!-- Article Grid (masonry-like) -->
+      <div class="section-heading" style="margin-top:var(--space-12);">
+        <h2 class="section-title">Latest Insights</h2>
+      </div>
+      <div class="articles-grid" id="articlesGrid">
+        <!-- Articles rendered by JS for infinite scroll demo, but also static for SEO -->
+        <!-- Card 1 (large) -->
+        <article class="article-card article-card--large" data-category="market">
+          <a href="/blog/best-nairobi-neighborhoods-2026" style="display:contents">
+            <div class="card-image">
+              <img src="https://images.unsplash.com/photo-1582407947304-fd86f028f716?w=800&q=80" alt="Nairobi" loading="lazy" />
+              <span class="card-badge">Market</span>
+              <button class="card-bookmark" aria-label="Save article"><i class="far fa-bookmark"></i></button>
+            </div>
+            <div class="card-body">
+              <div class="card-meta"><span>June 25</span><span>8 min</span></div>
+              <h3 class="card-title">Best Nairobi Neighborhoods for Families in 2026</h3>
+              <p class="card-excerpt">From Kilimani to Ruai — discover the top estates based on schools, security, and value.</p>
+              <div class="card-footer">
+                <div class="card-author"><div class="card-author-avatar">SM</div> Sarah Mwangi</div>
+                <span class="read-time"><i class="far fa-clock"></i> 8 min</span>
+              </div>
+            </div>
+          </a>
+        </article>
+        <!-- Card 2 -->
+        <article class="article-card" data-category="investment">
+          <a href="/blog/ruai-property-investment-guide" style="display:contents">
+            <div class="card-image">
+              <img src="https://images.unsplash.com/photo-1551833227-8e3512960a83?w=600&q=80" alt="Ruai" loading="lazy" />
+              <span class="card-badge">Investment</span>
+              <button class="card-bookmark" aria-label="Save article"><i class="far fa-bookmark"></i></button>
+            </div>
+            <div class="card-body">
+              <div class="card-meta"><span>June 22</span><span>10 min</span></div>
+              <h3 class="card-title">Ruai Property Investment Guide</h3>
+              <p class="card-excerpt">Why Ruai is becoming Nairobi’s hottest investment area.</p>
+              <div class="card-footer">
+                <div class="card-author"><div class="card-author-avatar">PO</div> Peter Ochieng</div>
+                <span class="read-time"><i class="far fa-clock"></i> 10 min</span>
+              </div>
+            </div>
+          </a>
+        </article>
+        <!-- Card 3 (large) -->
+        <article class="article-card article-card--large" data-category="legal">
+          <a href="/blog/property-scams-kenya" style="display:contents">
+            <div class="card-image">
+              <img src="https://images.unsplash.com/photo-1450101499163-c8848c66ca85?w=800&q=80" alt="Scams" loading="lazy" />
+              <span class="card-badge">Legal</span>
+              <button class="card-bookmark" aria-label="Save article"><i class="far fa-bookmark"></i></button>
+            </div>
+            <div class="card-body">
+              <div class="card-meta"><span>June 18</span><span>7 min</span></div>
+              <h3 class="card-title">7 Property Scams in Kenya and How to Avoid Them</h3>
+              <p class="card-excerpt">Protect yourself from fake title deeds and fraudulent agents.</p>
+              <div class="card-footer">
+                <div class="card-author"><div class="card-author-avatar">JW</div> Jane Wanjiku</div>
+                <span class="read-time"><i class="far fa-clock"></i> 7 min</span>
+              </div>
+            </div>
+          </a>
+        </article>
+        <!-- Card 4 -->
+        <article class="article-card" data-category="guide">
+          <a href="/blog/first-time-home-buyer-kenya" style="display:contents">
+            <div class="card-image">
+              <img src="https://images.unsplash.com/photo-1560520653-9e0e4c89eb11?w=600&q=80" alt="First time" loading="lazy" />
+              <span class="card-badge">Guide</span>
+              <button class="card-bookmark" aria-label="Save article"><i class="far fa-bookmark"></i></button>
+            </div>
+            <div class="card-body">
+              <div class="card-meta"><span>June 15</span><span>15 min</span></div>
+              <h3 class="card-title">First-Time Home Buyer’s Complete Guide</h3>
+              <p class="card-excerpt">Everything about budgeting, mortgages, and closing.</p>
+              <div class="card-footer">
+                <div class="card-author"><div class="card-author-avatar">MK</div> Mike Kariuki</div>
+                <span class="read-time"><i class="far fa-clock"></i> 15 min</span>
+              </div>
+            </div>
+          </a>
+        </article>
+      </div>
 
-        <!-- Sidebar (desktop only) -->
-        <aside class="sidebar">
-          <div class="sidebar-card">
-            <h4 class="sidebar-title">Trending Now</h4>
-            <div class="trending-item">
-              <span class="trending-num">01</span>
-              <span class="trending-title">How to Buy Land in Kenya Safely</span>
-            </div>
-            <div class="trending-item">
-              <span class="trending-num">02</span>
-              <span class="trending-title">Best Nairobi Neighborhoods 2026</span>
-            </div>
-            <div class="trending-item">
-              <span class="trending-num">03</span>
-              <span class="trending-title">Ruai Property Investment Guide</span>
-            </div>
-            <div class="trending-item">
-              <span class="trending-num">04</span>
-              <span class="trending-title">7 Property Scams to Avoid</span>
-            </div>
-            <div class="trending-item">
-              <span class="trending-num">05</span>
-              <span class="trending-title">Kenya Rental Market 2026</span>
-            </div>
-          </div>
-          <!-- Newsletter sidebar teaser -->
-          <div class="sidebar-card" style="background: linear-gradient(135deg,#0F172A,#1E293B); color:white; text-align:center;">
-            <i class="fas fa-paper-plane" style="font-size:2rem; margin-bottom:12px; color:var(--color-primary-light)"></i>
-            <h4 style="margin-bottom:8px;">Weekly Insights</h4>
-            <p style="font-size:0.8125rem; opacity:0.8; margin-bottom:16px;">Get the latest property tips straight to your inbox.</p>
-            <a href="#newsletter" class="btn-signin" style="background:white; color:var(--color-primary); font-size:0.875rem;">Subscribe</a>
-          </div>
-        </aside>
+      <!-- Infinite scroll sentinel (hidden) -->
+      <div id="scrollSentinel" style="height: 1px;"></div>
+      <!-- Skeleton loader (hidden by default) -->
+      <div id="skeletonGrid" class="articles-grid" style="display:none; margin-top: var(--space-6);">
+        <div class="article-card"><div class="card-image skeleton" style="height:200px;"></div><div class="card-body"><div class="skeleton" style="height:20px; width:80%;"></div><div class="skeleton" style="height:16px; width:60%; margin-top:8px;"></div></div></div>
+        <div class="article-card"><div class="card-image skeleton" style="height:200px;"></div><div class="card-body"><div class="skeleton" style="height:20px; width:80%;"></div><div class="skeleton" style="height:16px; width:60%; margin-top:8px;"></div></div></div>
       </div>
     </div>
 
-    <!-- Newsletter Section -->
+    <!-- Newsletter -->
     <section class="newsletter" id="newsletter">
       <h2 class="newsletter-title">Join 12,000+ investors and buyers</h2>
       <p class="newsletter-subtitle">Weekly market trends, investment tips, and exclusive deals — straight to your inbox.</p>
@@ -738,7 +656,15 @@
   </main>
 
   <script>
-    // ---------- Mobile Menu ----------
+    // ---------- READING PROGRESS BAR ----------
+    window.addEventListener('scroll', () => {
+      const scrollTop = document.documentElement.scrollTop;
+      const scrollHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+      const progress = (scrollTop / scrollHeight) * 100;
+      document.getElementById('progress-bar').style.width = progress + '%';
+    });
+
+    // ---------- MOBILE MENU ----------
     const hamburgerBtn = document.getElementById('hamburgerBtn');
     const overlay = document.getElementById('mobileOverlay');
     const drawer = document.getElementById('mobileDrawer');
@@ -767,7 +693,7 @@
       if (e.key === 'Escape' && drawer.classList.contains('active')) closeMobileMenu();
     });
 
-    // ---------- Category Filtering ----------
+    // ---------- CATEGORY FILTERING ----------
     const pills = document.querySelectorAll('.category-pill');
     const articles = document.querySelectorAll('.article-card, .featured-story');
     pills.forEach(pill => {
@@ -785,14 +711,33 @@
       });
     });
 
-    // ---------- Search ----------
+    // ---------- SEARCH (with text highlight) ----------
+    function removeHighlights() {
+      document.querySelectorAll('.highlight-text').forEach(el => {
+        el.replaceWith(el.textContent);
+      });
+    }
     document.getElementById('blogSearchBtn').addEventListener('click', () => {
       const query = document.getElementById('blogSearch').value.trim().toLowerCase();
       if (!query) return;
+      removeHighlights();
       articles.forEach(card => {
-        const title = card.querySelector('h2, h3')?.textContent.toLowerCase() || '';
-        const excerpt = card.querySelector('p')?.textContent.toLowerCase() || '';
-        card.style.display = title.includes(query) || excerpt.includes(query) ? '' : 'none';
+        const titleEl = card.querySelector('h2, h3');
+        const excerptEl = card.querySelector('p');
+        const text = (titleEl?.textContent || '') + ' ' + (excerptEl?.textContent || '');
+        if (text.toLowerCase().includes(query)) {
+          card.style.display = '';
+          // highlight matching text
+          const regex = new RegExp(`(${query})`, 'gi');
+          const highlight = (el) => {
+            if (!el) return;
+            el.innerHTML = el.textContent.replace(regex, '<mark class="highlight-text" style="background:rgba(234,88,12,0.2); border-radius:2px;">$1</mark>');
+          };
+          highlight(titleEl);
+          highlight(excerptEl);
+        } else {
+          card.style.display = 'none';
+        }
       });
       pills.forEach(p => p.classList.remove('active'));
       document.querySelector('.category-pill[data-category="all"]').classList.add('active');
@@ -801,49 +746,52 @@
       if (e.key === 'Enter') document.getElementById('blogSearchBtn').click();
     });
 
-    // ---------- Load More (simulated) ----------
-    document.getElementById('loadMoreBtn').addEventListener('click', () => {
-      const indicator = document.getElementById('loadingIndicator');
-      indicator.style.display = 'block';
+    // ---------- INFINITE SCROLL (simulated) ----------
+    const sentinel = document.getElementById('scrollSentinel');
+    const skeletonGrid = document.getElementById('skeletonGrid');
+    let loading = false;
+    const loadMoreArticles = () => {
+      if (loading) return;
+      loading = true;
+      skeletonGrid.style.display = 'grid';
+      // Simulate network delay
       setTimeout(() => {
-        indicator.style.display = 'none';
-        // In production, append new cards here
-        alert('In production, this would fetch more articles from the backend.');
-      }, 1000);
-    });
+        skeletonGrid.style.display = 'none';
+        // In production, fetch new cards from the backend and append them to the grid.
+        // For demo, we just alert.
+        alert('In production, this would load more articles via API.');
+        loading = false;
+      }, 1500);
+    };
 
-    // ---------- Newsletter ----------
-    document.getElementById('newsletterForm').addEventListener('submit', e => {
-      e.preventDefault();
-      const email = e.target.querySelector('input').value;
-      alert(`Thank you! We'll send insights to ${email}`);
-      e.target.reset();
-    });
-
-    // ---------- Fade-up animation on scroll ----------
-    const fadeEls = document.querySelectorAll('.featured-story, .article-card');
     const observer = new IntersectionObserver(entries => {
       entries.forEach(entry => {
         if (entry.isIntersecting) {
-          entry.target.classList.add('visible');
+          loadMoreArticles();
         }
       });
     }, { threshold: 0.1 });
-    fadeEls.forEach(el => {
-      el.classList.add('fade-up');
-      observer.observe(el);
-    });
+    observer.observe(sentinel);
 
-    // ---------- Bookmark toggle ----------
+    // ---------- BOOKMARK TOGGLE ----------
     document.querySelectorAll('.card-bookmark').forEach(btn => {
       btn.addEventListener('click', (e) => {
         e.preventDefault();
         const icon = btn.querySelector('i');
         icon.classList.toggle('far');
         icon.classList.toggle('fas');
-        btn.style.color = icon.classList.contains('fas') ? 'var(--color-primary)' : '';
+        btn.style.color = icon.classList.contains('fas') ? 'var(--accent)' : '';
         btn.setAttribute('aria-label', icon.classList.contains('fas') ? 'Remove from saved' : 'Save article');
       });
+    });
+
+    // ---------- NEWSLETTER ----------
+    document.getElementById('newsletterForm').addEventListener('submit', e => {
+      e.preventDefault();
+      const email = e.target.querySelector('input').value;
+      // Replace alert with inline notification in production
+      alert(`Thank you! We'll send insights to ${email}`);
+      e.target.reset();
     });
   </script>
 </body>
