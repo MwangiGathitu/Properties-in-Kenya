@@ -1,3 +1,8 @@
+/* =============================================
+   IMPORTANT: Load Inter font in your HTML <head>
+   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+   ============================================= */
+
 :root {
   /* Core Colors */
   --color-primary: #6366F1;
@@ -19,7 +24,7 @@
   /* Text Colors */
   --text-primary: #0F172A;
   --text-secondary: #475569;
-  --text-tertiary: #94A3B8;
+  --text-tertiary: #64748B;   /* increased contrast for WCAG AA */
   --text-inverse: #FFFFFF;
   
   /* Typography Scale */
@@ -84,9 +89,17 @@
 }
 
 html {
-  scroll-behavior: smooth;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  /* Smooth scroll only when user hasn’t requested reduced motion */
+  scrollbar-width: thin;                /* Firefox */
+  scrollbar-color: var(--color-border) var(--color-bg); /* Firefox */
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
+  }
 }
 
 body {
@@ -95,7 +108,7 @@ body {
   line-height: 1.6;
   color: var(--text-primary);
   background: var(--color-bg);
-  overflow-x: hidden;
+  /* overflow-x: hidden removed to avoid clipping positioned elements */
 }
 
 img {
@@ -178,7 +191,7 @@ button {
   transition: all var(--transition-base);
   white-space: nowrap;
   cursor: pointer;
-  border: none;
+  border: 1.5px solid transparent;   /* prevents layout shift between variants */
 }
 
 .btn-primary {
@@ -196,7 +209,7 @@ button {
 .btn-secondary {
   background: var(--color-surface);
   color: var(--text-primary);
-  border: 1.5px solid var(--color-border);
+  border-color: var(--color-border);
 }
 
 .btn-secondary:hover {
@@ -412,6 +425,13 @@ button {
 }
 
 /* ===== SCROLLBAR ===== */
+/* Firefox */
+html {
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-border) var(--color-bg);
+}
+
+/* WebKit / Blink */
 ::-webkit-scrollbar {
   width: 8px;
   height: 8px;
