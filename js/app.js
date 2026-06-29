@@ -119,9 +119,173 @@
         document.getElementById('hideFavoritesBtn').addEventListener('click', hideFavorites);
     }
 
+    // ===== FLOATING CARETAKER CHAT FUNCTIONALITY =====
+    function openCaretakerChat() {
+        document.getElementById('caretakerChatOverlay').classList.add('active');
+        document.getElementById('caretakerChatInput').focus();
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeCaretakerChat() {
+        document.getElementById('caretakerChatOverlay').classList.remove('active');
+        document.body.style.overflow = '';
+    }
+
+    async function sendCaretakerMessage(query) {
+        if (!query.trim()) return;
+        
+        const messagesDiv = document.getElementById('caretakerChatMessages');
+        const sendBtn = document.getElementById('caretakerChatSend');
+        const input = document.getElementById('caretakerChatInput');
+        
+        // Remove suggestions if they exist
+        const existingSuggestions = messagesDiv.querySelector('.caretaker-suggestions');
+        if (existingSuggestions) existingSuggestions.remove();
+        
+        // Add user message
+        messagesDiv.innerHTML += `
+            <div class="caretaker-chat-message user">
+                <div class="caretaker-chat-avatar">
+                    <i class="fas fa-user"></i>
+                </div>
+                <div class="caretaker-chat-bubble">${escapeHtml(query)}</div>
+            </div>
+        `;
+        
+        // Show typing indicator
+        const typingId = 'typing-' + Date.now();
+        messagesDiv.innerHTML += `
+            <div class="caretaker-chat-message ai" id="${typingId}">
+                <div class="caretaker-chat-avatar">
+                    <i class="fas fa-robot"></i>
+                </div>
+                <div class="caretaker-typing">
+                    <div class="caretaker-typing-dot"></div>
+                    <div class="caretaker-typing-dot"></div>
+                    <div class="caretaker-typing-dot"></div>
+                </div>
+            </div>
+        `;
+        
+        messagesDiv.scrollTop = messagesDiv.scrollHeight;
+        sendBtn.disabled = true;
+        input.value = '';
+        
+        try {
+            const response = await fetch('/api/ai-assistant', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ query })
+            });
+            
+            // Remove typing indicator
+            document.getElementById(typingId).remove();
+            
+            if (!response.ok) throw new Error('Server error');
+            
+            const result = await response.json();
+            const filteredProperties = applyAIFilters(result.filters);
+            
+            const aiMsg = filteredProperties.length === 0
+                ? `I couldn't find properties matching "${escapeHtml(query)}". Try adjusting your criteria or browse all listings.`
+                : `✨ Great news! I found ${filteredProperties.length} properties matching your criteria. Check them out below!`;
+            
+            messagesDiv.innerHTML += `
+                <div class="caretaker-chat-message ai">
+                    <div class="caretaker-chat-avatar">
+                        <i class="fas fa-robot"></i>
+                    </div>
+                    <div class="caretaker-chat-bubble">${aiMsg}</div>
+                </div>
+            `;
+            
+            if (filteredProperties.length > 0) {
+                // Add property preview cards
+                filteredProperties.slice(0, 3).forEach(p => {
+                    messagesDiv.innerHTML += `
+                        <div class="caretaker-chat-message ai">
+                            <div class="caretaker-chat-bubble" style="padding: 0; overflow: hidden; border-radius: 12px;">
+                                <img src="${getSafeImage(p)}" alt="${escapeHtml(p.title)}" style="width: 100%; height: 120px; object-fit: cover;">
+                                <div style="padding: 12px;">
+                                    <div style="font-weight: 600; font-size: 13px; margin-bottom: 4px;">${escapeHtml(p.title)}</div>
+                                    <div style="font-size: 12px; color: #6B7280; margin-bottom: 8px;">${escapeHtml(p.location)}</div>
+                                    <div style="font-weight: 700; color: #B8922E; font-size: 14px;">${formatKES(p.price)}</div>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                });
+                
+                if (filteredProperties.length > 3) {
+                    messagesDiv.innerHTML += `
+                        <div class="caretaker-chat-message ai">
+                            <div class="caretaker-chat-bubble" style="text-align: center;">
+                                <a href="#featured" onclick="closeCaretakerChat(); setTimeout(() => document.getElementById('featured').scrollIntoView({behavior: 'smooth'}), 100);" style="color: #7C4DFF; font-weight: 600; text-decoration: none;">
+                                    View all ${filteredProperties.length} properties →
+                                </a>
+                            </div>
+                        </div>
+                    `;
+                }
+            }
+            
+        } catch (error) {
+            document.getElementById(typingId).remove();
+            messagesDiv.innerHTML += `
+                <div class="caretaker-chat-message ai">
+                    <div class="caretaker-chat-avatar">
+                        <i class="fas fa-robot"></i>
+                    </div>
+                    <div class="caretaker-chat-bubble">
+                        I'm having trouble connecting right now. Please try again in a moment.
+                    </div>
+                </div>
+            `;
+        } finally {
+            sendBtn.disabled = false;
+            messagesDiv.scrollTop = messagesDiv.scrollHeight;
+        }
+    }
+
+    function initCaretakerChat() {
+        // Open chat
+        document.getElementById('caretakerFloatBtn').addEventListener('click', openCaretakerChat);
+        
+        // Close chat
+        document.getElementById('caretakerChatClose').addEventListener('click', closeCaretakerChat);
+        document.getElementById('caretakerChatOverlay').addEventListener('click', (e) => {
+            if (e.target.id === 'caretakerChatOverlay') closeCaretakerChat();
+        });
+        
+        // Send message
+        document.getElementById('caretakerChatForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const input = document.getElementById('caretakerChatInput');
+            sendCaretakerMessage(input.value);
+        });
+        
+        // Quick suggestions
+        document.querySelectorAll('.caretaker-suggestion').forEach(btn => {
+            btn.addEventListener('click', () => {
+                sendCaretakerMessage(btn.dataset.query);
+            });
+        });
+        
+        // Escape key to close
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                const chatOverlay = document.getElementById('caretakerChatOverlay');
+                if (chatOverlay.classList.contains('active')) {
+                    closeCaretakerChat();
+                }
+            }
+        });
+    }
+
     document.addEventListener('DOMContentLoaded', () => {
         initEventListeners();
         loadHomepageData();
+        initCaretakerChat();
     });
 
 })();
