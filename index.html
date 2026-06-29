@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Properties in Kenya — Find Your Perfect Home</title>
-  <meta name="description" content="Kenya's premium real estate platform. Discover verified properties with AI-powered search.">
+  <title>Properties in Kenya — Guided by the Caretaker</title>
+  <meta name="description" content="Kenya's premium real estate platform. Ask the Caretaker to find verified properties with intelligent, human-like guidance.">
   <meta name="theme-color" content="#6366F1">
 
   <!-- Fonts -->
@@ -13,23 +13,22 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
-  <!-- Styles (separate files, as you prefer) -->
+  <!-- Styles (separate files) -->
   <link rel="stylesheet" href="css/design-system.css">
   <link rel="stylesheet" href="css/nav.css">
-  <!-- CORRECTED: Use the actual file name. Change to 'components.css' if you rename the file -->
   <link rel="stylesheet" href="css/component.css">
   <link rel="stylesheet" href="css/sections.css">
   <link rel="stylesheet" href="css/responsive.css">
 
   <!-- SEO -->
   <meta property="og:type" content="website">
-  <meta property="og:title" content="Properties in Kenya">
-  <meta property="og:description" content="Kenya's premium real estate platform">
+  <meta property="og:title" content="Properties in Kenya — Ask the Caretaker">
+  <meta property="og:description" content="Stop searching. Start asking the Caretaker. Intelligent real estate guidance across Kenya.">
   <meta property="og:image" content="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=1200&q=80">
   <meta name="twitter:card" content="summary_large_image">
   <link rel="canonical" href="https://propertiesinkenya.co.ke/">
 
-  <!-- Favicon (add your own) -->
+  <!-- Favicon -->
   <link rel="icon" href="/favicon.ico" sizes="any">
   <link rel="apple-touch-icon" href="/apple-touch-icon.png">
 
@@ -120,7 +119,7 @@
       gap: var(--space-3);
     }
 
-    /* Hamburger button – now visible on mobile */
+    /* Hamburger button – visible on mobile */
     .hamburger-btn {
       display: none; /* hidden on desktop, overridden by media query */
       background: none;
@@ -196,7 +195,7 @@
       margin-bottom: var(--space-8);
     }
 
-    /* RENAMED animation to avoid collision with design-system pulse */
+    /* Renamed animation to avoid collision */
     @keyframes pulse-badge {
       0%, 100% { opacity: 1; transform: scale(1); }
       50% { opacity: 0.7; transform: scale(1.1); }
@@ -235,7 +234,7 @@
       line-height: 1.6;
     }
 
-    /* Premium Search Card */
+    /* Premium Input Card (not a search, but a guidance box) */
     .search-premium {
       background: white;
       border-radius: var(--radius-xl);
@@ -260,7 +259,7 @@
     }
 
     .search-premium-input::placeholder {
-      color: var(--text-tertiary); /* Will work once --text-tertiary is defined */
+      color: var(--text-tertiary); /* Ensure --text-tertiary is defined in design-system.css */
     }
 
     .search-premium-btn {
@@ -798,7 +797,6 @@
       <a href="login.html" class="btn btn-primary btn-sm">
         Sign In
       </a>
-      <!-- Hamburger button for mobile -->
       <button class="hamburger-btn" id="hamburgerBtn" aria-label="Toggle menu" aria-expanded="false">
         <span class="hamburger-line"></span>
         <span class="hamburger-line"></span>
@@ -808,7 +806,7 @@
   </div>
 </nav>
 
-<!-- Mobile menu overlay and drawer (using nav.css classes) -->
+<!-- Mobile menu overlay and drawer -->
 <div class="mobile-menu-overlay" id="mobileMenuOverlay"></div>
 <div class="mobile-menu-drawer" id="mobileMenuDrawer">
   <div class="mobile-menu-header">
@@ -856,29 +854,35 @@
 </div>
 
 <main id="main-content">
-  <!-- Hero Section -->
+
+  <!-- Hero Section – now centered on the Caretaker -->
   <section class="hero-cinematic">
     <div class="hero-content">
       <div class="hero-badge">
         <span class="hero-badge-dot"></span>
-        <span>Powered by The Caretaker AI</span>
+        <span>Your intelligent real‑estate guide</span>
       </div>
       
       <h1 class="hero-title">
-        Find Your Perfect <span class="highlight">Home</span> in Kenya
+        Ask the <span class="highlight">Caretaker</span>
       </h1>
       
       <p class="hero-subtitle">
-        Discover verified properties with AI-powered search. From beachfront villas to city apartments — your dream property awaits.
+        Stop searching. Tell us what you need—the Caretaker understands and finds exactly what fits your life.
       </p>
       
-      <!-- Search -->
+      <!-- Guidance Box (formerly search) -->
       <div class="search-premium">
-        <i class="fas fa-search" style="color: var(--text-tertiary); margin-left: var(--space-4);"></i>
-        <input type="text" class="search-premium-input" placeholder="Search by location, property type, or keyword..." aria-label="Search properties">
+        <i class="fas fa-comment-dots" style="color: var(--text-tertiary); margin-left: var(--space-4);"></i>
+        <input 
+          type="text" 
+          class="search-premium-input" 
+          placeholder="e.g. “A 3‑bedroom apartment in Westlands with a pool”" 
+          aria-label="Ask the Caretaker what you are looking for"
+        >
         <button class="search-premium-btn">
           <i class="fas fa-arrow-right"></i>
-          Search
+          Ask the Caretaker
         </button>
       </div>
       
@@ -886,11 +890,11 @@
       <div class="quick-actions">
         <a href="/buy.html" class="quick-action">
           <i class="fas fa-home"></i>
-          Buy Property
+          Find a Home
         </a>
         <a href="/rent.html" class="quick-action">
           <i class="fas fa-key"></i>
-          Rent Property
+          Find a Rental
         </a>
         <a href="/pikbnb.html" class="quick-action">
           <i class="fas fa-bed"></i>
@@ -898,7 +902,7 @@
         </a>
         <a href="/agents.html" class="quick-action">
           <i class="fas fa-user-tie"></i>
-          Find Agent
+          Talk to an Agent
         </a>
       </div>
     </div>
@@ -909,8 +913,8 @@
     <div class="container">
       <div class="section-header">
         <span class="text-label">Browse by Category</span>
-        <h2 class="heading-2">Explore Properties Across Kenya</h2>
-        <p class="text-body">From luxury villas to affordable apartments — find exactly what you're looking for</p>
+        <h2 class="heading-2">Let the Caretaker guide your direction</h2>
+        <p class="text-body">From luxury villas to affordable apartments — the Caretaker focuses only on what matters to you</p>
       </div>
       
       <div class="categories-grid">
@@ -953,13 +957,13 @@
     </div>
   </section>
 
-  <!-- Featured Properties -->
+  <!-- Featured Properties (still dynamic, but the heading reflects the Caretaker's role) -->
   <section class="section" style="background: var(--color-border-subtle);">
     <div class="container">
       <div class="section-header">
-        <span class="text-label">Featured Listings</span>
-        <h2 class="heading-2">Handpicked Properties</h2>
-        <p class="text-body">Verified listings from Kenya's top agents</p>
+        <span class="text-label">Recommended for You</span>
+        <h2 class="heading-2">Options the Caretaker recommends</h2>
+        <p class="text-body">Curated matches from Kenya's top agents</p>
       </div>
       
       <div class="properties-grid" id="featuredProperties">
@@ -980,8 +984,8 @@
     <div class="container">
       <div class="section-header">
         <span class="text-label">Why Choose Us</span>
-        <h2 class="heading-2">Built on Trust & Technology</h2>
-        <p class="text-body">Kenya's most reliable real estate platform</p>
+        <h2 class="heading-2">Intelligence you can trust</h2>
+        <p class="text-body">The Caretaker combines AI understanding with human‑verified listings</p>
       </div>
       
       <div class="trust-grid-premium">
@@ -997,8 +1001,8 @@
           <div class="trust-icon-premium">
             <i class="fas fa-brain"></i>
           </div>
-          <h3 class="trust-title">AI-Powered Search</h3>
-          <p class="trust-desc">The Caretaker AI understands exactly what you're looking for</p>
+          <h3 class="trust-title">The Caretaker AI</h3>
+          <p class="trust-desc">Understands your needs and filters out noise – you only see what fits</p>
         </div>
         
         <div class="trust-card-premium">
@@ -1034,7 +1038,7 @@
         </div>
         <div class="stat-card-premium">
           <div class="stat-value-premium">12K+</div>
-          <div class="stat-label-premium">Monthly Searches</div>
+          <div class="stat-label-premium">Monthly Conversations with the Caretaker</div>
         </div>
       </div>
     </div>
@@ -1043,14 +1047,15 @@
   <!-- CTA Section -->
   <section class="container">
     <div class="cta-premium">
-      <h2 class="heading-2">Ready to Find Your Dream Property?</h2>
-      <p class="text-body">Join thousands of Kenyans who found their perfect home with us</p>
+      <h2 class="heading-2">Ready to ask the Caretaker?</h2>
+      <p class="text-body">Thousands of Kenyans have already found their perfect home through guidance, not guesswork.</p>
       <a href="/buy.html" class="btn btn-lg" style="background: white; color: var(--color-primary);">
-        Start Searching
+        Ask the Caretaker
         <i class="fas fa-arrow-right"></i>
       </a>
     </div>
   </section>
+
 </main>
 
 <!-- Footer -->
@@ -1065,7 +1070,7 @@
           <span>Properties in Kenya</span>
         </div>
         <p class="footer-brand-desc">
-          Kenya's premium real estate platform. Find verified properties with AI-powered search.
+          Real estate guided by the Caretaker — intelligent, personal, trusted.
         </p>
         <div class="footer-social">
           <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
@@ -1143,7 +1148,6 @@
     overlay.classList.add('active');
     drawer.classList.add('active');
     hamburgerBtn.setAttribute('aria-expanded', 'true');
-    // Prevent body scroll
     document.body.style.overflow = 'hidden';
   }
 
@@ -1165,7 +1169,7 @@
     }
   });
 
-  // === Update favorites count (unchanged) ===
+  // === Update favorites count ===
   function updateFavoritesCount() {
     try {
       const favorites = JSON.parse(localStorage.getItem('propertiesinkenya_favorites')) || [];
