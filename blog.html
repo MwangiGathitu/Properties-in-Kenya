@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Real Estate Insights — Properties in Kenya</title>
-  <meta name="description" content="Expert guides, market analysis, and investment tips for Kenya’s property market." />
+  <meta name="description" content="Caretaker Intelligence: expert guides, market analysis, and investment tips for Kenya’s property market." />
   <meta name="theme-color" content="#0F172A" />
 
   <!-- Fonts & Icons -->
@@ -18,11 +18,9 @@
        DESIGN TOKENS
     ============================================= */
     :root {
-      /* 8‑point spacing */
       --space-1: 4px; --space-2: 8px; --space-3: 12px; --space-4: 16px; --space-5: 20px;
       --space-6: 24px; --space-8: 32px; --space-10: 40px; --space-12: 48px; --space-16: 64px;
 
-      /* Colors – editorial slate & orange */
       --bg-page: #FAFAFA;
       --bg-surface: #FFFFFF;
       --border-light: #E8ECF0;
@@ -31,20 +29,16 @@
       --text-muted: #94A3B8;
       --accent: #EA580C;
       --accent-light: #F97316;
-      --gold: #D4AF37;
 
-      /* Shadows – deeper for featured */
       --shadow-sm: 0 1px 2px rgba(0,0,0,0.04);
       --shadow-md: 0 4px 12px rgba(0,0,0,0.06);
       --shadow-lg: 0 12px 32px rgba(0,0,0,0.08);
       --shadow-featured: 0 20px 48px rgba(0,0,0,0.12);
 
-      /* Typography */
       --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
       --text-xs: 0.75rem; --text-sm: 0.875rem; --text-base: 1rem; --text-lg: 1.125rem;
       --text-xl: 1.25rem; --text-2xl: 1.5rem; --text-3xl: 1.875rem; --text-4xl: 2.25rem;
 
-      /* Radius & Transition */
       --radius-sm: 8px; --radius-md: 12px; --radius-lg: 16px; --radius-xl: 24px;
       --transition-fast: 150ms ease; --transition-base: 250ms ease;
     }
@@ -67,14 +61,14 @@
     button { font: inherit; cursor: pointer; border: none; background: none; }
     :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 
-    /* Subtle noise texture overlay */
+    /* Subtle noise texture */
     body::before {
       content: ''; position: fixed; inset: 0; opacity: 0.02; pointer-events: none;
       background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
       z-index: -1;
     }
 
-    /* Reading progress bar */
+    /* Reading progress */
     #progress-bar {
       position: fixed; top: 0; left: 0; height: 3px; background: var(--accent);
       z-index: 9999; width: 0; transition: width 0.1s linear;
@@ -141,7 +135,7 @@
     .mobile-cta { display: block; text-align: center; padding: 14px; background: var(--accent); color: white; font-weight: 700; border-radius: var(--radius-md); margin-top: auto; }
 
     /* =============================================
-       HERO (editorial, left-aligned)
+       HERO SECTION
     ============================================= */
     .hero {
       position: relative; padding: var(--space-16) var(--space-6) var(--space-12);
@@ -162,7 +156,6 @@
     }
     .hero-badge-dot { width: 8px; height: 8px; background: var(--accent); border-radius: 50%; animation: pulse 2s infinite; }
     @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.7;transform:scale(1.2)} }
-
     .hero-title {
       font-size: clamp(2.5rem, 6vw, 4rem); font-weight: 800;
       letter-spacing: -0.03em; line-height: 1.1; color: white; margin-bottom: var(--space-4);
@@ -170,7 +163,6 @@
     .hero-title span { color: var(--accent-light); }
     .hero-subtitle { font-size: var(--text-lg); color: rgba(255,255,255,0.85); margin-bottom: var(--space-8); max-width: 560px; }
 
-    /* Command palette search */
     .search-bar {
       background: white; border-radius: 9999px; padding: var(--space-2);
       box-shadow: var(--shadow-lg); display: flex; align-items: center; gap: 4px;
@@ -189,7 +181,6 @@
     }
     .search-btn:hover { transform: scale(1.03); box-shadow: 0 8px 20px rgba(234,88,12,0.4); }
 
-    /* Filter chips (glassmorphic) */
     .filter-chips {
       display: flex; flex-wrap: wrap; gap: var(--space-3); margin-top: var(--space-5);
     }
@@ -227,7 +218,7 @@
     }
 
     /* =============================================
-       FEATURED STORY (editorial feature)
+       FEATURED STORY BLOCK
     ============================================= */
     .featured-story {
       display: grid; grid-template-columns: 1fr 1fr; background: var(--bg-surface);
@@ -258,7 +249,7 @@
     .author-role { font-size: var(--text-xs); color: var(--text-muted); }
 
     /* =============================================
-       EDITOR’S PICKS (horizontal scroll)
+       EDITOR'S PICKS (horizontal scroll)
     ============================================= */
     .section-heading {
       display: flex; align-items: baseline; justify-content: space-between;
@@ -283,7 +274,7 @@
     .pick-title { font-size: var(--text-base); font-weight: 700; line-height: 1.3; }
 
     /* =============================================
-       ARTICLE MASONRY GRID
+       ARTICLE GRID (masonry-like)
     ============================================= */
     .articles-grid {
       display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--space-6);
@@ -329,18 +320,14 @@
     }
     .read-time { font-size: var(--text-xs); color: var(--text-muted); display: flex; align-items: center; gap: 4px; }
 
-    /* =============================================
-       SKELETON LOADER
-    ============================================= */
+    /* Skeleton */
     .skeleton {
       background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
       background-size: 200% 100%; animation: shimmer 1.5s infinite; border-radius: var(--radius-sm);
     }
     @keyframes shimmer { 0%{background-position:200% 0}100%{background-position:-200% 0} }
 
-    /* =============================================
-       NEWSLETTER
-    ============================================= */
+    /* Newsletter */
     .newsletter {
       background: linear-gradient(135deg, #0F172A 0%, #1E293B 100%); border-radius: var(--radius-xl);
       padding: var(--space-16) var(--space-6); text-align: center; color: white;
@@ -366,9 +353,7 @@
     .newsletter-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(234,88,12,0.4); }
     .trust-line { font-size: var(--text-xs); opacity: 0.7; margin-top: var(--space-4); position: relative; }
 
-    /* =============================================
-       FOOTER
-    ============================================= */
+    /* Footer */
     .footer {
       border-top: 1px solid var(--border-light); padding: var(--space-8) var(--space-6);
       display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap;
@@ -446,191 +431,50 @@
   </div>
 
   <main id="main-content">
-    <!-- Hero -->
+    <!-- Hero Section -->
     <section class="hero">
       <div class="hero-content">
         <div class="hero-badge">
           <span class="hero-badge-dot"></span>
-          Real Estate Insights
+          Caretaker Intelligence
         </div>
-        <h1 class="hero-title">The <span>Caretaker</span> Intelligence</h1>
-        <p class="hero-subtitle">Unmatched property market analysis, investment strategies, and home‑buyer education — all guided by AI.</p>
+        <h1 class="hero-title">Kenya’s <span>Property</span> Market, Decoded</h1>
+        <p class="hero-subtitle">Expert analysis, investment guides, and trusted advice curated by the Caretaker AI.</p>
         <div class="search-bar">
           <i class="fas fa-search"></i>
           <input type="text" class="search-input" id="blogSearch" placeholder="Search articles…" aria-label="Search articles" />
           <button class="search-btn" id="blogSearchBtn"><i class="fas fa-arrow-right"></i> Search</button>
         </div>
-        <div class="filter-chips">
-          <a href="#" class="chip"><i class="fas fa-book"></i> Buying Guides</a>
-          <a href="#" class="chip"><i class="fas fa-chart-line"></i> Investment Insights</a>
-          <a href="#" class="chip"><i class="fas fa-chart-bar"></i> Market Trends</a>
-          <a href="#" class="chip"><i class="fas fa-scale-balanced"></i> Legal Advice</a>
-        </div>
       </div>
     </section>
 
-    <!-- Sticky Category Pills -->
+    <!-- Sticky Category Pills (dynamically generated) -->
     <div class="category-nav" id="categoryNav">
-      <div class="category-scroll">
-        <button class="category-pill active" data-category="all">All</button>
-        <button class="category-pill" data-category="guide">Buying Guides</button>
-        <button class="category-pill" data-category="market">Market Analysis</button>
-        <button class="category-pill" data-category="investment">Investment</button>
-        <button class="category-pill" data-category="legal">Legal</button>
-        <button class="category-pill" data-category="tips">Tips</button>
-      </div>
+      <div class="category-scroll" id="categoryScroll"></div>
     </div>
 
     <div class="container" style="max-width:1280px; margin:0 auto; padding:0 var(--space-6);">
-      <!-- Featured Story (editorial feature) -->
-      <a href="/blog/buy-land-kenya-safely" class="featured-story" data-category="guide">
-        <div class="featured-image">
-          <img src="https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=1200&q=80" alt="Buying land in Kenya" loading="lazy" />
-          <span class="featured-badge">Editor’s Pick</span>
-        </div>
-        <div class="featured-content">
-          <div class="featured-meta">
-            <span><i class="far fa-calendar"></i> June 28, 2026</span>
-            <span><i class="far fa-clock"></i> 12 min read</span>
-          </div>
-          <h2 class="featured-title">How to Buy Land in Kenya Without Getting Scammed</h2>
-          <p class="featured-excerpt">A step‑by‑step guide covering due diligence, title deeds, and legal protections — so you can invest with confidence.</p>
-          <div class="author-row">
-            <div class="author-avatar">JK</div>
-            <div>
-              <div class="author-name">John Kamau</div>
-              <div class="author-role">Senior Property Lawyer</div>
-            </div>
-          </div>
-        </div>
-      </a>
+      <!-- Featured Story (rendered by JS) -->
+      <div id="featuredContainer"></div>
 
-      <!-- Editor’s Picks horizontal scroll -->
+      <!-- Editor's Picks -->
       <div class="section-heading">
         <h2 class="section-title">Editor’s Picks</h2>
       </div>
-      <div class="picks-scroll" id="picksScroll">
-        <a href="/blog/best-nairobi-neighborhoods-2026" class="pick-card">
-          <div class="pick-image"><img src="https://images.unsplash.com/photo-1582407947304-fd86f028f716?w=400&q=80" alt="Nairobi" loading="lazy" /></div>
-          <div class="pick-body">
-            <div class="pick-category">Market</div>
-            <h3 class="pick-title">Best Nairobi Neighborhoods for Families</h3>
-          </div>
-        </a>
-        <a href="/blog/ruai-property-investment-guide" class="pick-card">
-          <div class="pick-image"><img src="https://images.unsplash.com/photo-1551833227-8e3512960a83?w=400&q=80" alt="Ruai" loading="lazy" /></div>
-          <div class="pick-body">
-            <div class="pick-category">Investment</div>
-            <h3 class="pick-title">Why Ruai Prices Are Rising 40%</h3>
-          </div>
-        </a>
-        <a href="/blog/property-scams-kenya" class="pick-card">
-          <div class="pick-image"><img src="https://images.unsplash.com/photo-1450101499163-c8848c66ca85?w=400&q=80" alt="Scams" loading="lazy" /></div>
-          <div class="pick-body">
-            <div class="pick-category">Legal</div>
-            <h3 class="pick-title">7 Property Scams to Avoid</h3>
-          </div>
-        </a>
-        <a href="/blog/first-time-home-buyer-kenya" class="pick-card">
-          <div class="pick-image"><img src="https://images.unsplash.com/photo-1560520653-9e0e4c89eb11?w=400&q=80" alt="First home" loading="lazy" /></div>
-          <div class="pick-body">
-            <div class="pick-category">Guide</div>
-            <h3 class="pick-title">First-Time Buyer’s Complete Guide</h3>
-          </div>
-        </a>
-      </div>
+      <div class="picks-scroll" id="picksContainer"></div>
 
-      <!-- Article Grid (masonry-like) -->
+      <!-- Main Insights Grid -->
       <div class="section-heading" style="margin-top:var(--space-12);">
         <h2 class="section-title">Latest Insights</h2>
       </div>
-      <div class="articles-grid" id="articlesGrid">
-        <!-- Articles rendered by JS for infinite scroll demo, but also static for SEO -->
-        <!-- Card 1 (large) -->
-        <article class="article-card article-card--large" data-category="market">
-          <a href="/blog/best-nairobi-neighborhoods-2026" style="display:contents">
-            <div class="card-image">
-              <img src="https://images.unsplash.com/photo-1582407947304-fd86f028f716?w=800&q=80" alt="Nairobi" loading="lazy" />
-              <span class="card-badge">Market</span>
-              <button class="card-bookmark" aria-label="Save article"><i class="far fa-bookmark"></i></button>
-            </div>
-            <div class="card-body">
-              <div class="card-meta"><span>June 25</span><span>8 min</span></div>
-              <h3 class="card-title">Best Nairobi Neighborhoods for Families in 2026</h3>
-              <p class="card-excerpt">From Kilimani to Ruai — discover the top estates based on schools, security, and value.</p>
-              <div class="card-footer">
-                <div class="card-author"><div class="card-author-avatar">SM</div> Sarah Mwangi</div>
-                <span class="read-time"><i class="far fa-clock"></i> 8 min</span>
-              </div>
-            </div>
-          </a>
-        </article>
-        <!-- Card 2 -->
-        <article class="article-card" data-category="investment">
-          <a href="/blog/ruai-property-investment-guide" style="display:contents">
-            <div class="card-image">
-              <img src="https://images.unsplash.com/photo-1551833227-8e3512960a83?w=600&q=80" alt="Ruai" loading="lazy" />
-              <span class="card-badge">Investment</span>
-              <button class="card-bookmark" aria-label="Save article"><i class="far fa-bookmark"></i></button>
-            </div>
-            <div class="card-body">
-              <div class="card-meta"><span>June 22</span><span>10 min</span></div>
-              <h3 class="card-title">Ruai Property Investment Guide</h3>
-              <p class="card-excerpt">Why Ruai is becoming Nairobi’s hottest investment area.</p>
-              <div class="card-footer">
-                <div class="card-author"><div class="card-author-avatar">PO</div> Peter Ochieng</div>
-                <span class="read-time"><i class="far fa-clock"></i> 10 min</span>
-              </div>
-            </div>
-          </a>
-        </article>
-        <!-- Card 3 (large) -->
-        <article class="article-card article-card--large" data-category="legal">
-          <a href="/blog/property-scams-kenya" style="display:contents">
-            <div class="card-image">
-              <img src="https://images.unsplash.com/photo-1450101499163-c8848c66ca85?w=800&q=80" alt="Scams" loading="lazy" />
-              <span class="card-badge">Legal</span>
-              <button class="card-bookmark" aria-label="Save article"><i class="far fa-bookmark"></i></button>
-            </div>
-            <div class="card-body">
-              <div class="card-meta"><span>June 18</span><span>7 min</span></div>
-              <h3 class="card-title">7 Property Scams in Kenya and How to Avoid Them</h3>
-              <p class="card-excerpt">Protect yourself from fake title deeds and fraudulent agents.</p>
-              <div class="card-footer">
-                <div class="card-author"><div class="card-author-avatar">JW</div> Jane Wanjiku</div>
-                <span class="read-time"><i class="far fa-clock"></i> 7 min</span>
-              </div>
-            </div>
-          </a>
-        </article>
-        <!-- Card 4 -->
-        <article class="article-card" data-category="guide">
-          <a href="/blog/first-time-home-buyer-kenya" style="display:contents">
-            <div class="card-image">
-              <img src="https://images.unsplash.com/photo-1560520653-9e0e4c89eb11?w=600&q=80" alt="First time" loading="lazy" />
-              <span class="card-badge">Guide</span>
-              <button class="card-bookmark" aria-label="Save article"><i class="far fa-bookmark"></i></button>
-            </div>
-            <div class="card-body">
-              <div class="card-meta"><span>June 15</span><span>15 min</span></div>
-              <h3 class="card-title">First-Time Home Buyer’s Complete Guide</h3>
-              <p class="card-excerpt">Everything about budgeting, mortgages, and closing.</p>
-              <div class="card-footer">
-                <div class="card-author"><div class="card-author-avatar">MK</div> Mike Kariuki</div>
-                <span class="read-time"><i class="far fa-clock"></i> 15 min</span>
-              </div>
-            </div>
-          </a>
-        </article>
-      </div>
+      <div class="articles-grid" id="mainGridContainer"></div>
 
-      <!-- Infinite scroll sentinel (hidden) -->
-      <div id="scrollSentinel" style="height: 1px;"></div>
-      <!-- Skeleton loader (hidden by default) -->
+      <!-- Skeleton loader for infinite scroll -->
       <div id="skeletonGrid" class="articles-grid" style="display:none; margin-top: var(--space-6);">
         <div class="article-card"><div class="card-image skeleton" style="height:200px;"></div><div class="card-body"><div class="skeleton" style="height:20px; width:80%;"></div><div class="skeleton" style="height:16px; width:60%; margin-top:8px;"></div></div></div>
         <div class="article-card"><div class="card-image skeleton" style="height:200px;"></div><div class="card-body"><div class="skeleton" style="height:20px; width:80%;"></div><div class="skeleton" style="height:16px; width:60%; margin-top:8px;"></div></div></div>
       </div>
+      <div id="scrollSentinel" style="height:1px;"></div>
     </div>
 
     <!-- Newsletter -->
@@ -656,7 +500,378 @@
   </main>
 
   <script>
-    // ---------- READING PROGRESS BAR ----------
+    // ======================
+    // CARETAKER INTELLIGENCE DATA
+    // ======================
+    const caretakerData = {
+      featured_story: {
+        title: "How to Buy Land in Kenya Without Getting Scammed",
+        category: "guide",
+        caretaker_score: 96,
+        tags: ["land-buying", "due-diligence", "scam-prevention", "legal"],
+        excerpt: "A comprehensive step-by-step guide to verifying title deeds, conducting due diligence with licensed surveyors, and completing land purchases safely.",
+        author: { name: "John Kamau", role: "Senior Property Lawyer", initials: "JK" },
+        date: "June 28, 2026",
+        readTime: "12 min",
+        image: "https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=1200&q=80",
+        url: "/blog/buy-land-kenya-safely"
+      },
+      editor_picks: [
+        {
+          title: "Best Nairobi Neighborhoods for Families in 2026",
+          category: "market",
+          caretaker_score: 87,
+          tags: ["nairobi", "families", "neighborhood-guide", "prices"],
+          excerpt: "From Kilimani to Ruai — discover the top estates based on schools, security, and value.",
+          author: { name: "Sarah Mwangi", initials: "SM" },
+          date: "June 25, 2026",
+          readTime: "8 min",
+          image: "https://images.unsplash.com/photo-1582407947304-fd86f028f716?w=600&q=80",
+          url: "/blog/best-nairobi-neighborhoods-2026"
+        },
+        {
+          title: "Ruai Property Investment Guide: Why Prices Are Rising",
+          category: "investment",
+          caretaker_score: 84,
+          tags: ["ruai", "investment", "appreciation", "nairobi"],
+          excerpt: "Analysis of Ruai's rapid growth and why it's becoming one of Nairobi's hottest investment areas.",
+          author: { name: "Peter Ochieng", initials: "PO" },
+          date: "June 22, 2026",
+          readTime: "10 min",
+          image: "https://images.unsplash.com/photo-1551833227-8e3512960a83?w=600&q=80",
+          url: "/blog/ruai-property-investment-guide"
+        },
+        {
+          title: "7 Property Scams in Kenya and How to Avoid Them",
+          category: "legal",
+          caretaker_score: 81,
+          tags: ["scam-prevention", "fraud", "legal-protection"],
+          excerpt: "Protect yourself from fake title deeds, fraudulent agents, and other common property scams.",
+          author: { name: "Jane Wanjiku", initials: "JW" },
+          date: "June 18, 2026",
+          readTime: "7 min",
+          image: "https://images.unsplash.com/photo-1450101499163-c8848c66ca85?w=600&q=80",
+          url: "/blog/property-scams-kenya"
+        }
+      ],
+      main_grid: [
+        {
+          title: "First-Time Home Buyer's Complete Guide to Kenya",
+          category: "guide",
+          caretaker_score: 79,
+          tags: ["first-time-buyer", "mortgage", "budgeting", "checklist"],
+          excerpt: "Everything you need to know about buying your first home in Kenya — from budgeting to closing the deal.",
+          author: { name: "Mike Kariuki", initials: "MK" },
+          date: "June 15, 2026",
+          readTime: "15 min",
+          image: "https://images.unsplash.com/photo-1560520653-9e0e4c89eb11?w=600&q=80",
+          url: "/blog/first-time-home-buyer-kenya"
+        },
+        {
+          title: "Kenya Rental Market 2026: Trends & Predictions",
+          category: "market",
+          caretaker_score: 72,
+          tags: ["rental", "trends", "nairobi", "mombasa"],
+          excerpt: "Analysis of rental price trends across Nairobi, Mombasa, and Kisumu. What tenants and landlords need to know.",
+          author: { name: "Alice Njeri", initials: "AN" },
+          date: "June 12, 2026",
+          readTime: "9 min",
+          image: "https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=600&q=80",
+          url: "/blog/kenya-rental-market-2026"
+        },
+        {
+          title: "Commercial vs Residential: Which Investment Wins?",
+          category: "investment",
+          caretaker_score: 68,
+          tags: ["roi", "commercial", "residential", "comparison"],
+          excerpt: "A detailed comparison of ROI, risks, and management requirements for commercial and residential property investments in Kenya.",
+          author: { name: "David Muthoni", initials: "DM" },
+          date: "June 8, 2026",
+          readTime: "11 min",
+          image: "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=600&q=80",
+          url: "/blog/commercial-vs-residential-investment"
+        },
+        {
+          title: "How to Negotiate Property Prices Like a Pro",
+          category: "tips",
+          caretaker_score: 65,
+          tags: ["negotiation", "saving-money", "buyer-tips"],
+          excerpt: "Proven negotiation tactics used by Kenya's top property buyers to save millions.",
+          author: { name: "Robert Kiprop", initials: "RK" },
+          date: "June 5, 2026",
+          readTime: "6 min",
+          image: "https://images.unsplash.com/photo-1556761175-5973dc0f32e7?w=600&q=80",
+          url: "/blog/negotiate-property-price"
+        },
+        {
+          title: "Complete Mortgage Guide for Kenyan Home Buyers",
+          category: "legal",
+          caretaker_score: 63,
+          tags: ["mortgage", "financing", "banking", "guide"],
+          excerpt: "Everything about mortgages in Kenya — interest rates, requirements, banks, and how to get approved.",
+          author: { name: "John Kamau", initials: "JK" },
+          date: "June 1, 2026",
+          readTime: "13 min",
+          image: "https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=600&q=80",
+          url: "/blog/mortgage-guide-kenya"
+        }
+      ],
+      hidden_archive: [
+        {
+          title: "10 Essential Property Maintenance Tips for Landlords",
+          category: "tips",
+          caretaker_score: 55,
+          tags: ["landlord", "maintenance", "rental-property"],
+          excerpt: "Keep your rental property in top condition and attract quality tenants.",
+          author: { name: "Sarah Mwangi", initials: "SM" },
+          date: "May 28, 2026",
+          readTime: "5 min",
+          image: "https://images.unsplash.com/photo-1581578731548-c64695cc6952?w=600&q=80",
+          url: "/blog/property-maintenance-tips"
+        }
+      ],
+      category_map: {
+        guide: { count: 2, priority: "high", pill_label: "Essential Guides", visible: true },
+        market: { count: 2, priority: "high", pill_label: "Market Analysis", visible: true },
+        investment: { count: 2, priority: "high", pill_label: "Investment Hot Zones", visible: true },
+        legal: { count: 2, priority: "high", pill_label: "Legal Protection", visible: true },
+        tips: { count: 2, priority: "low", pill_label: "Quick Tips", visible: false }
+      },
+      search_index: {
+        intent_clusters: {
+          guide: ["buy", "first time", "purchase", "beginner", "home buyer"],
+          market: ["price", "trend", "neighborhood", "rental", "analysis"],
+          investment: ["profit", "ROI", "land banking", "growth", "commercial"],
+          legal: ["safe", "scam", "title deed", "due diligence", "mortgage"],
+          tips: ["hack", "quick", "maintenance", "negotiate"]
+        }
+      }
+    };
+
+    // Flatten all articles for search/filter
+    const allArticles = [
+      caretakerData.featured_story,
+      ...caretakerData.editor_picks,
+      ...caretakerData.main_grid,
+      ...caretakerData.hidden_archive
+    ];
+
+    // ======================
+    // RENDER FUNCTIONS
+    // ======================
+    function createArticleCard(article, isLarge = false) {
+      const card = document.createElement('article');
+      card.className = `article-card${isLarge ? ' article-card--large' : ''}`;
+      card.dataset.category = article.category;
+      card.dataset.tags = article.tags.join(',');
+      card.dataset.score = article.caretaker_score;
+
+      card.innerHTML = `
+        <a href="${article.url}" style="display:contents;">
+          <div class="card-image">
+            <img src="${article.image}" alt="${article.title}" loading="lazy" />
+            <span class="card-badge">${article.category.charAt(0).toUpperCase() + article.category.slice(1)}</span>
+            <button class="card-bookmark" aria-label="Save article"><i class="far fa-bookmark"></i></button>
+          </div>
+          <div class="card-body">
+            <div class="card-meta"><span>${article.date}</span><span>${article.readTime} read</span></div>
+            <h3 class="card-title">${article.title}</h3>
+            <p class="card-excerpt">${article.excerpt}</p>
+            <div class="card-footer">
+              <div class="card-author">
+                <div class="card-author-avatar">${article.author.initials}</div>
+                ${article.author.name}
+              </div>
+              <span class="read-time"><i class="far fa-clock"></i> ${article.readTime}</span>
+            </div>
+          </div>
+        </a>
+      `;
+      return card;
+    }
+
+    function renderFeaturedStory() {
+      const container = document.getElementById('featuredContainer');
+      const story = caretakerData.featured_story;
+      container.innerHTML = `
+        <a href="${story.url}" class="featured-story">
+          <div class="featured-image">
+            <img src="${story.image}" alt="${story.title}" loading="lazy" />
+            <span class="featured-badge">Editor’s Pick</span>
+          </div>
+          <div class="featured-content">
+            <div class="featured-meta">
+              <span><i class="far fa-calendar"></i> ${story.date}</span>
+              <span><i class="far fa-clock"></i> ${story.readTime} read</span>
+            </div>
+            <h2 class="featured-title">${story.title}</h2>
+            <p class="featured-excerpt">${story.excerpt}</p>
+            <div class="author-row">
+              <div class="author-avatar">${story.author.initials}</div>
+              <div>
+                <div class="author-name">${story.author.name}</div>
+                <div class="author-role">${story.author.role || ''}</div>
+              </div>
+            </div>
+          </div>
+        </a>
+      `;
+    }
+
+    function renderEditorPicks() {
+      const container = document.getElementById('picksContainer');
+      caretakerData.editor_picks.forEach(pick => {
+        const card = document.createElement('a');
+        card.href = pick.url;
+        card.className = 'pick-card';
+        card.innerHTML = `
+          <div class="pick-image"><img src="${pick.image}" alt="${pick.title}" loading="lazy" /></div>
+          <div class="pick-body">
+            <div class="pick-category">${pick.category}</div>
+            <h3 class="pick-title">${pick.title}</h3>
+          </div>
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    function renderMainGrid() {
+      const container = document.getElementById('mainGridContainer');
+      // Use main_grid; hidden articles won't appear here unless category is selected
+      caretakerData.main_grid.forEach(article => {
+        const isLarge = (article.category === 'guide' || article.category === 'legal'); // make guide/legal larger
+        const card = createArticleCard(article, isLarge);
+        container.appendChild(card);
+      });
+    }
+
+    function renderCategoryPills() {
+      const scroll = document.getElementById('categoryScroll');
+      const map = caretakerData.category_map;
+      // Add 'All' pill
+      const allPill = document.createElement('button');
+      allPill.className = 'category-pill active';
+      allPill.dataset.category = 'all';
+      allPill.textContent = 'All';
+      scroll.appendChild(allPill);
+
+      for (const [key, value] of Object.entries(map)) {
+        if (!value.visible) continue;
+        const pill = document.createElement('button');
+        pill.className = 'category-pill';
+        pill.dataset.category = key;
+        pill.textContent = value.pill_label;
+        scroll.appendChild(pill);
+      }
+    }
+
+    // ======================
+    // INITIAL RENDER
+    // ======================
+    renderFeaturedStory();
+    renderEditorPicks();
+    renderMainGrid();
+    renderCategoryPills();
+
+    // ======================
+    // CATEGORY FILTERING
+    // ======================
+    document.querySelectorAll('.category-pill').forEach(pill => {
+      pill.addEventListener('click', () => {
+        document.querySelectorAll('.category-pill').forEach(p => p.classList.remove('active'));
+        pill.classList.add('active');
+        const category = pill.dataset.category;
+        // Filter all cards (including featured and picks)
+        document.querySelectorAll('.article-card, .featured-story, .pick-card').forEach(el => {
+          const cat = el.dataset.category;
+          if (category === 'all' || cat === category) {
+            el.style.display = '';
+          } else {
+            el.style.display = 'none';
+          }
+        });
+      });
+    });
+
+    // ======================
+    // SEARCH (with text highlight)
+    // ======================
+    function removeHighlights() {
+      document.querySelectorAll('.highlight-text').forEach(el => {
+        el.replaceWith(el.textContent);
+      });
+    }
+    document.getElementById('blogSearchBtn').addEventListener('click', () => {
+      const query = document.getElementById('blogSearch').value.trim().toLowerCase();
+      if (!query) return;
+      removeHighlights();
+      const cards = document.querySelectorAll('.article-card, .featured-story, .pick-card');
+      cards.forEach(card => {
+        const text = (card.querySelector('h2, h3')?.textContent || '') + ' ' + (card.querySelector('p')?.textContent || '');
+        if (text.toLowerCase().includes(query)) {
+          card.style.display = '';
+          // highlight
+          const titleEl = card.querySelector('h2, h3');
+          const excerptEl = card.querySelector('p');
+          const regex = new RegExp(`(${query})`, 'gi');
+          const highlight = (el) => {
+            if (!el) return;
+            el.innerHTML = el.textContent.replace(regex, '<mark class="highlight-text" style="background:rgba(234,88,12,0.2); border-radius:2px;">$1</mark>');
+          };
+          highlight(titleEl);
+          highlight(excerptEl);
+        } else {
+          card.style.display = 'none';
+        }
+      });
+      // reset category pills
+      document.querySelectorAll('.category-pill').forEach(p => p.classList.remove('active'));
+      document.querySelector('.category-pill[data-category="all"]').classList.add('active');
+    });
+    document.getElementById('blogSearch').addEventListener('keypress', e => {
+      if (e.key === 'Enter') document.getElementById('blogSearchBtn').click();
+    });
+
+    // ======================
+    // INFINITE SCROLL (simulated)
+    // ======================
+    const sentinel = document.getElementById('scrollSentinel');
+    const skeletonGrid = document.getElementById('skeletonGrid');
+    let loading = false;
+    const loadMore = () => {
+      if (loading) return;
+      loading = true;
+      skeletonGrid.style.display = 'grid';
+      setTimeout(() => {
+        skeletonGrid.style.display = 'none';
+        // In real production, fetch more articles and append
+        alert('More articles would load here via API.');
+        loading = false;
+      }, 1500);
+    };
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach(entry => { if (entry.isIntersecting) loadMore(); });
+    }, { threshold: 0.1 });
+    observer.observe(sentinel);
+
+    // ======================
+    // BOOKMARK TOGGLE
+    // ======================
+    document.addEventListener('click', (e) => {
+      if (e.target.closest('.card-bookmark')) {
+        e.preventDefault();
+        const btn = e.target.closest('.card-bookmark');
+        const icon = btn.querySelector('i');
+        icon.classList.toggle('far');
+        icon.classList.toggle('fas');
+        btn.style.color = icon.classList.contains('fas') ? 'var(--accent)' : '';
+        btn.setAttribute('aria-label', icon.classList.contains('fas') ? 'Remove from saved' : 'Save article');
+      }
+    });
+
+    // ======================
+    // READING PROGRESS
+    // ======================
     window.addEventListener('scroll', () => {
       const scrollTop = document.documentElement.scrollTop;
       const scrollHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
@@ -664,12 +879,13 @@
       document.getElementById('progress-bar').style.width = progress + '%';
     });
 
-    // ---------- MOBILE MENU ----------
+    // ======================
+    // MOBILE MENU
+    // ======================
     const hamburgerBtn = document.getElementById('hamburgerBtn');
     const overlay = document.getElementById('mobileOverlay');
     const drawer = document.getElementById('mobileDrawer');
     const closeBtn = document.getElementById('closeMobileMenu');
-
     function openMobileMenu() {
       overlay.classList.add('active');
       drawer.classList.add('active');
@@ -689,107 +905,14 @@
     hamburgerBtn.addEventListener('click', openMobileMenu);
     closeBtn.addEventListener('click', closeMobileMenu);
     overlay.addEventListener('click', closeMobileMenu);
-    document.addEventListener('keydown', e => {
-      if (e.key === 'Escape' && drawer.classList.contains('active')) closeMobileMenu();
-    });
+    document.addEventListener('keydown', e => { if (e.key === 'Escape' && drawer.classList.contains('active')) closeMobileMenu(); });
 
-    // ---------- CATEGORY FILTERING ----------
-    const pills = document.querySelectorAll('.category-pill');
-    const articles = document.querySelectorAll('.article-card, .featured-story');
-    pills.forEach(pill => {
-      pill.addEventListener('click', () => {
-        pills.forEach(p => p.classList.remove('active'));
-        pill.classList.add('active');
-        const category = pill.dataset.category;
-        articles.forEach(card => {
-          if (category === 'all' || card.dataset.category === category) {
-            card.style.display = '';
-          } else {
-            card.style.display = 'none';
-          }
-        });
-      });
-    });
-
-    // ---------- SEARCH (with text highlight) ----------
-    function removeHighlights() {
-      document.querySelectorAll('.highlight-text').forEach(el => {
-        el.replaceWith(el.textContent);
-      });
-    }
-    document.getElementById('blogSearchBtn').addEventListener('click', () => {
-      const query = document.getElementById('blogSearch').value.trim().toLowerCase();
-      if (!query) return;
-      removeHighlights();
-      articles.forEach(card => {
-        const titleEl = card.querySelector('h2, h3');
-        const excerptEl = card.querySelector('p');
-        const text = (titleEl?.textContent || '') + ' ' + (excerptEl?.textContent || '');
-        if (text.toLowerCase().includes(query)) {
-          card.style.display = '';
-          // highlight matching text
-          const regex = new RegExp(`(${query})`, 'gi');
-          const highlight = (el) => {
-            if (!el) return;
-            el.innerHTML = el.textContent.replace(regex, '<mark class="highlight-text" style="background:rgba(234,88,12,0.2); border-radius:2px;">$1</mark>');
-          };
-          highlight(titleEl);
-          highlight(excerptEl);
-        } else {
-          card.style.display = 'none';
-        }
-      });
-      pills.forEach(p => p.classList.remove('active'));
-      document.querySelector('.category-pill[data-category="all"]').classList.add('active');
-    });
-    document.getElementById('blogSearch').addEventListener('keypress', e => {
-      if (e.key === 'Enter') document.getElementById('blogSearchBtn').click();
-    });
-
-    // ---------- INFINITE SCROLL (simulated) ----------
-    const sentinel = document.getElementById('scrollSentinel');
-    const skeletonGrid = document.getElementById('skeletonGrid');
-    let loading = false;
-    const loadMoreArticles = () => {
-      if (loading) return;
-      loading = true;
-      skeletonGrid.style.display = 'grid';
-      // Simulate network delay
-      setTimeout(() => {
-        skeletonGrid.style.display = 'none';
-        // In production, fetch new cards from the backend and append them to the grid.
-        // For demo, we just alert.
-        alert('In production, this would load more articles via API.');
-        loading = false;
-      }, 1500);
-    };
-
-    const observer = new IntersectionObserver(entries => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          loadMoreArticles();
-        }
-      });
-    }, { threshold: 0.1 });
-    observer.observe(sentinel);
-
-    // ---------- BOOKMARK TOGGLE ----------
-    document.querySelectorAll('.card-bookmark').forEach(btn => {
-      btn.addEventListener('click', (e) => {
-        e.preventDefault();
-        const icon = btn.querySelector('i');
-        icon.classList.toggle('far');
-        icon.classList.toggle('fas');
-        btn.style.color = icon.classList.contains('fas') ? 'var(--accent)' : '';
-        btn.setAttribute('aria-label', icon.classList.contains('fas') ? 'Remove from saved' : 'Save article');
-      });
-    });
-
-    // ---------- NEWSLETTER ----------
+    // ======================
+    // NEWSLETTER
+    // ======================
     document.getElementById('newsletterForm').addEventListener('submit', e => {
       e.preventDefault();
       const email = e.target.querySelector('input').value;
-      // Replace alert with inline notification in production
       alert(`Thank you! We'll send insights to ${email}`);
       e.target.reset();
     });
