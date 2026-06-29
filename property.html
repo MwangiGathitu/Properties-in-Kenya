@@ -18,7 +18,7 @@
 <link rel="stylesheet" href="css/nav.css">
 <link rel="stylesheet" href="css/components.css">
 <link rel="stylesheet" href="css/sections.css">
-<link rel="stylesheet" href="css/property.css">
+<link rel="stylesheet" href="property.css">
 <link rel="stylesheet" href="css/responsive.css">
 
 <!-- SEO -->
@@ -29,7 +29,7 @@
 </head>
 <body>
 
-<!-- Navigation (Reused) -->
+<!-- Navigation -->
 <nav class="nav-premium" id="mainNav">
   <div class="nav-premium-inner">
     <a href="/" class="nav-logo">
@@ -68,12 +68,12 @@
   </div>
 
   <div class="property-layout">
-    <!-- Left Column: Main Content -->
+    <!-- Left Column -->
     <div class="property-main">
       
-      <!-- Gallery Section -->
+      <!-- Gallery -->
       <div class="property-gallery">
-        <div class="gallery-main" id="mainImageContainer">
+        <div class="gallery-main">
           <img src="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=1600&q=80" alt="Main property view" id="mainImage">
           <div class="gallery-actions">
             <button class="gallery-action-btn" id="favoriteBtn" aria-label="Save property">
@@ -100,7 +100,7 @@
         </div>
       </div>
 
-      <!-- Property Header -->
+      <!-- Header -->
       <div class="property-header">
         <div class="property-badges">
           <span class="badge badge-success"><i class="fas fa-check-circle"></i> Verified</span>
@@ -114,7 +114,7 @@
         </div>
       </div>
 
-      <!-- Key Stats -->
+      <!-- Stats -->
       <div class="property-stats">
         <div class="stat-box">
           <i class="fas fa-bed"></i>
@@ -203,7 +203,7 @@
         </div>
       </div>
 
-      <!-- Map Section -->
+      <!-- Map -->
       <div class="property-section">
         <h2 class="section-heading">Location & Nearby</h2>
         <div class="map-container">
@@ -222,7 +222,6 @@
       <div class="similar-section">
         <h2 class="section-heading">Similar Properties You May Like</h2>
         <div class="properties-grid" style="grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));">
-          <!-- Reusing premium card structure -->
           <a href="#" class="property-card-premium">
             <div class="property-card-image">
               <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=600&q=80" alt="Similar 1">
@@ -266,7 +265,7 @@
 
     </div>
 
-    <!-- Right Column: Sticky Sidebar -->
+    <!-- Sidebar -->
     <div class="property-sidebar-wrapper">
       <div class="property-sidebar">
         <div class="sidebar-price">KSh 45,000,000</div>
@@ -282,19 +281,19 @@
         </div>
 
         <div class="sidebar-actions">
-          <button class="btn btn-whatsapp">
+          <button class="btn-whatsapp">
             <i class="fab fa-whatsapp"></i> Chat on WhatsApp
           </button>
-          <button class="btn btn-call">
+          <button class="btn-call">
             <i class="fas fa-phone-alt"></i> Call Agent
           </button>
-          <button class="btn btn-secondary-full">
+          <button class="btn-secondary-full">
             <i class="fas fa-envelope"></i> Send Email
           </button>
-          <button class="btn btn-secondary-full">
+          <button class="btn-secondary-full">
             <i class="fas fa-calendar-alt"></i> Schedule Viewing
           </button>
-          <button class="btn btn-secondary-full" style="color: var(--color-primary); border-color: var(--color-primary-light);">
+          <button class="btn-secondary-full" style="color: var(--color-primary); border-color: var(--color-primary-light);">
             <i class="fas fa-calculator"></i> Mortgage Calculator
           </button>
         </div>
@@ -304,7 +303,7 @@
   </div>
 </main>
 
-<!-- Global Footer (Reused) -->
+<!-- Footer -->
 <footer class="footer-premium">
   <div class="container">
     <div class="footer-grid">
@@ -357,16 +356,14 @@
   </div>
 </footer>
 
-<!-- Page Specific Scripts -->
+<!-- Scripts -->
 <script>
-// Gallery Image Switcher
 function changeImage(thumbnail, src) {
   document.getElementById('mainImage').src = src;
   document.querySelectorAll('.gallery-thumb').forEach(t => t.classList.remove('active'));
   thumbnail.classList.add('active');
 }
 
-// Description Expand/Collapse
 function toggleDescription() {
   const desc = document.getElementById('propertyDescription');
   const btn = document.getElementById('expandBtn');
@@ -378,7 +375,6 @@ function toggleDescription() {
   }
 }
 
-// Favorite Toggle
 document.getElementById('favoriteBtn').addEventListener('click', function() {
   this.classList.toggle('active');
   const icon = this.querySelector('i');
@@ -391,7 +387,6 @@ document.getElementById('favoriteBtn').addEventListener('click', function() {
   }
 });
 
-// Nav Scroll Effect
 window.addEventListener('scroll', () => {
   const nav = document.getElementById('mainNav');
   if (window.scrollY > 50) nav.classList.add('scrolled');
