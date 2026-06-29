@@ -68,6 +68,207 @@
 <script defer data-domain="propertiesinkenya.co.ke" src="https://plausible.io/js/script.js"></script>
 <link rel="preconnect" href="https://nqwvsmuvltbiekfnvovx.supabase.co">
 <link rel="preconnect" href="https://images.unsplash.com">
+<style>
+/* Quick Navigation Bar */
+.quick-nav {
+  background: linear-gradient(135deg, #111827 0%, #1F2937 100%);
+  padding: 12px 0;
+  position: sticky;
+  top: 64px;
+  z-index: 99;
+  border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+.quick-nav-content {
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 0 80px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.quick-nav-content::-webkit-scrollbar {
+  display: none;
+}
+.quick-nav-label {
+  font-size: 12px;
+  color: rgba(255,255,255,0.6);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  white-space: nowrap;
+  margin-right: 8px;
+}
+.quick-nav-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 8px;
+  color: rgba(255,255,255,0.9);
+  font-size: 13px;
+  font-weight: 500;
+  text-decoration: none;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+.quick-nav-link:hover {
+  background: rgba(255,255,255,0.15);
+  border-color: rgba(255,255,255,0.2);
+  transform: translateY(-1px);
+}
+.quick-nav-link i {
+  font-size: 12px;
+}
+.quick-nav-divider {
+  width: 1px;
+  height: 20px;
+  background: rgba(255,255,255,0.2);
+  margin: 0 4px;
+}
+
+/* Enhanced Navigation */
+.nav-fixed {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 64px;
+  background: rgba(255, 255, 255, 0.98);
+  backdrop-filter: blur(20px) saturate(180%);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  padding: 0 80px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+.nav-content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  max-width: 1440px;
+  margin: 0 auto;
+}
+.nav-logo {
+  font-size: 18px;
+  font-weight: 700;
+  color: #111827;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+  transition: all 0.2s;
+}
+.nav-logo:hover {
+  transform: scale(1.02);
+}
+.nav-logo-icon {
+  width: 32px;
+  height: 32px;
+  background: linear-gradient(135deg, #D4AF37, #E6C86B);
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 14px;
+  box-shadow: 0 2px 8px rgba(212, 175, 55, 0.3);
+}
+.nav-center {
+  display: flex;
+  gap: 32px;
+  align-items: center;
+}
+.nav-link {
+  font-size: 14px;
+  font-weight: 500;
+  color: #6B7280;
+  text-decoration: none;
+  transition: all 0.2s;
+  cursor: pointer;
+  background: none;
+  border: none;
+  position: relative;
+  padding: 8px 0;
+}
+.nav-link:hover {
+  color: #D4AF37;
+}
+.nav-link::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background: #D4AF37;
+  transition: width 0.3s;
+}
+.nav-link:hover::after {
+  width: 100%;
+}
+.nav-link.active {
+  color: #D4AF37;
+  font-weight: 600;
+}
+.nav-link.active::after {
+  width: 100%;
+}
+.nav-cta {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 8px;
+  background: linear-gradient(135deg, #D4AF37, #E6C86B);
+  font-size: 13px;
+  font-weight: 600;
+  color: #111827;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-decoration: none;
+  box-shadow: 0 2px 8px rgba(212, 175, 55, 0.3);
+}
+.nav-cta:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(212, 175, 55, 0.4);
+}
+
+/* Favorites Badge */
+.favorites-badge {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.favorites-count {
+  background: #EF4444;
+  color: white;
+  font-size: 10px;
+  font-weight: 700;
+  min-width: 18px;
+  height: 18px;
+  border-radius: 9999px;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 0 5px;
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+  .nav-fixed, .quick-nav-content { padding-left: 40px; padding-right: 40px; }
+}
+@media (max-width: 768px) {
+  .nav-fixed, .quick-nav-content { padding-left: 20px; padding-right: 20px; }
+  .nav-center { display: none; }
+  .nav-cta.desktop-only { display: none; }
+  .quick-nav { top: 64px; }
+}
+</style>
 </head>
 <body>
 <div class="bg-layers">
@@ -76,7 +277,7 @@
   <div class="bg-layer-3"></div>
 </div>
 
-<!-- Navigation -->
+<!-- Main Navigation -->
 <nav class="nav-fixed" aria-label="Main navigation">
   <div class="nav-content">
     <a href="/" class="nav-logo" aria-label="Properties in Kenya - Home">
@@ -109,6 +310,43 @@
     </div>
   </div>
 </nav>
+
+<!-- Quick Navigation Bar -->
+<div class="quick-nav">
+  <div class="quick-nav-content">
+    <span class="quick-nav-label">Quick Access:</span>
+    <a href="/buy.html" class="quick-nav-link">
+      <i class="fas fa-home"></i>
+      Buy Property
+    </a>
+    <a href="/rent.html" class="quick-nav-link">
+      <i class="fas fa-key"></i>
+      Rent Property
+    </a>
+    <div class="quick-nav-divider"></div>
+    <a href="/lease.html" class="quick-nav-link">
+      <i class="fas fa-building"></i>
+      Commercial Lease
+    </a>
+    <a href="/pikbnb.html" class="quick-nav-link">
+      <i class="fas fa-bed"></i>
+      Short Stays
+    </a>
+    <div class="quick-nav-divider"></div>
+    <a href="/blog.html" class="quick-nav-link">
+      <i class="fas fa-newspaper"></i>
+      Read Blog
+    </a>
+    <a href="/agents.html" class="quick-nav-link">
+      <i class="fas fa-users"></i>
+      Find Agents
+    </a>
+    <a href="/saved.html" class="quick-nav-link">
+      <i class="fas fa-heart"></i>
+      Saved Properties
+    </a>
+  </div>
+</div>
 
 <!-- Login Modal -->
 <div class="login-modal-overlay" id="loginModal">
@@ -147,7 +385,7 @@
   </div>
   <div class="mobile-menu-content">
     <div class="mobile-menu-section">
-      <div class="mobile-menu-section-title">Browse</div>
+      <div class="mobile-menu-section-title">Browse Properties</div>
       <a href="/buy.html" class="mobile-menu-link">
         <i class="fas fa-home" aria-hidden="true"></i>
         Buy Property
@@ -157,16 +395,20 @@
         Rent Property
       </a>
       <a href="/lease.html" class="mobile-menu-link">
-        <i class="fas fa-file-contract" aria-hidden="true"></i>
-        For Lease
+        <i class="fas fa-building" aria-hidden="true"></i>
+        Commercial Lease
       </a>
       <a href="/pikbnb.html" class="mobile-menu-link">
         <i class="fas fa-bed" style="color: #7C4DFF;"></i>
         PIKBNB - Short Stays
       </a>
+    </div>
+    <div class="mobile-menu-divider"></div>
+    <div class="mobile-menu-section">
+      <div class="mobile-menu-section-title">Discover</div>
       <a href="/blog.html" class="mobile-menu-link">
         <i class="fas fa-newspaper" aria-hidden="true"></i>
-        Blog
+        Blog & Insights
       </a>
       <a href="/agents.html" class="mobile-menu-link">
         <i class="fas fa-users" aria-hidden="true"></i>
@@ -543,14 +785,21 @@
         </div>
       </div>
       <div>
-        <div class="footer-col-title">Explore</div>
+        <div class="footer-col-title">Properties</div>
         <div class="footer-links">
           <a href="/buy.html" class="footer-link">Buy Property</a>
           <a href="/rent.html" class="footer-link">Rent Property</a>
-          <a href="/lease.html" class="footer-link">For Lease</a>
+          <a href="/lease.html" class="footer-link">Commercial Lease</a>
           <a href="/pikbnb.html" class="footer-link">PIKBNB - Short Stays</a>
-          <a href="/blog.html" class="footer-link">Blog</a>
+        </div>
+      </div>
+      <div>
+        <div class="footer-col-title">Discover</div>
+        <div class="footer-links">
+          <a href="/blog.html" class="footer-link">Blog & Insights</a>
+          <a href="/agents.html" class="footer-link">Browse Agents</a>
           <a href="/saved.html" class="footer-link">Saved Properties</a>
+          <a href="agent-dashboard.html" class="footer-link">Agent Portal</a>
         </div>
       </div>
       <div>
@@ -558,13 +807,6 @@
         <div class="footer-links">
           <a href="#" class="footer-link">About Us</a>
           <a href="#" class="footer-link">Contact</a>
-          <a href="agent-dashboard.html" class="footer-link">For Agents</a>
-          <a href="/agents.html" class="footer-link">Browse Agents</a>
-        </div>
-      </div>
-      <div>
-        <div class="footer-col-title">Legal</div>
-        <div class="footer-links">
           <a href="#" class="footer-link">Terms</a>
           <a href="#" class="footer-link">Privacy</a>
         </div>
