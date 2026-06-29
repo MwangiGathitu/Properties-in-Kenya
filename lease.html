@@ -321,6 +321,7 @@
               <option value="warehouse">Warehouse</option>
               <option value="industrial">Industrial</option>
               <option value="coworking">Co‑working</option>
+              <option value="event">Event Space</option>
             </select>
           </div>
           <div class="search-group">
@@ -472,7 +473,7 @@
     let currentFilter = { location: '', type: '', budget: Infinity };
 
     // ======================
-    // RENDER TYPE FILTER CARDS
+    // RENDER TYPE FILTER CARDS (now includes event)
     // ======================
     function renderTypeFilters() {
       const types = [
@@ -481,7 +482,8 @@
         { key: 'retail', label: 'Retail Shops', icon: 'fa-store' },
         { key: 'warehouse', label: 'Warehouses', icon: 'fa-warehouse' },
         { key: 'industrial', label: 'Industrial', icon: 'fa-industry' },
-        { key: 'coworking', label: 'Co‑working', icon: 'fa-laptop-house' }
+        { key: 'coworking', label: 'Co‑working', icon: 'fa-laptop-house' },
+        { key: 'event', label: 'Event Spaces', icon: 'fa-glass-cheers' }
       ];
       const container = document.getElementById('typeFilters');
       container.innerHTML = types.map(t => `
@@ -558,10 +560,11 @@
           });
         });
 
+        // Navigate to detail page (no more alert)
         grid.querySelectorAll('.property-card').forEach(card => {
           card.addEventListener('click', () => {
             const id = card.dataset.id;
-            alert(`View property details (ID: ${id}). In production, navigate to /lease/${id}`);
+            window.location.href = `/lease/${id}`;
           });
         });
       }
