@@ -11,7 +11,7 @@
 }
 
 .property-main {
-  min-width: 0; /* Prevents flex/grid overflow issues */
+  min-width: 0;
 }
 
 .property-sidebar-wrapper {
@@ -20,7 +20,7 @@
 
 .property-sidebar {
   position: sticky;
-  top: 100px; /* Offset for fixed nav */
+  top: 100px;
   background: var(--color-surface);
   border-radius: var(--radius-xl);
   border: 1px solid var(--color-border-subtle);
@@ -177,6 +177,7 @@
   font-size: var(--text-2xl);
   color: var(--color-primary);
   margin-bottom: var(--space-2);
+  display: block;
 }
 
 .stat-box-value {
@@ -379,6 +380,7 @@
   display: flex;
   align-items: center;
   gap: 4px;
+  margin: 0;
 }
 
 .agent-info .rating {
@@ -393,30 +395,48 @@
 
 .btn-whatsapp {
   background: #25D366;
-  color: white;
+  color: white !important;
   width: 100%;
   justify-content: center;
   padding: var(--space-4);
   font-size: var(--text-base);
+  border: none;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-weight: 600;
 }
 
 .btn-whatsapp:hover {
   background: #128C7E;
-  color: white;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(37, 211, 102, 0.3);
 }
 
 .btn-call {
   background: var(--color-primary);
-  color: white;
+  color: white !important;
   width: 100%;
   justify-content: center;
   padding: var(--space-4);
   font-size: var(--text-base);
+  border: none;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-weight: 600;
 }
 
 .btn-call:hover {
   background: var(--color-primary-dark);
-  color: white;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
 }
 
 .btn-secondary-full {
@@ -426,11 +446,20 @@
   width: 100%;
   justify-content: center;
   padding: var(--space-3);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-weight: 600;
+  font-size: var(--text-sm);
 }
 
 .btn-secondary-full:hover {
   border-color: var(--color-primary);
   color: var(--color-primary);
+  transform: translateY(-2px);
 }
 
 /* Similar Properties */
@@ -466,5 +495,8 @@
   }
   .property-title {
     font-size: var(--text-3xl);
+  }
+  .map-container {
+    height: 250px;
   }
 }
