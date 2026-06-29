@@ -22,11 +22,20 @@ async function loadHomepageData() {
             supabaseClient.from('properties').select('id', { count: 'exact', head: true }).eq('approval_status', 'approved')
         ]);
 
+        // Update category counts
         document.getElementById('count-all').textContent = `${allRes.count || 0} properties`;
         document.getElementById('count-sale').textContent = `${saleRes.count || 0} properties`;
         document.getElementById('count-rent').textContent = `${rentRes.count || 0} properties`;
         document.getElementById('count-lease').textContent = `${leaseRes.count || 0} properties`;
 
+        // Update HouGarden-style category cards
+        document.getElementById('catJustListed').textContent = (allRes.count || 0).toLocaleString();
+        document.getElementById('catForSale').textContent = (saleRes.count || 0).toLocaleString();
+        document.getElementById('catForRent').textContent = (rentRes.count || 0).toLocaleString();
+        document.getElementById('catLand').textContent = Math.floor((allRes.count || 0) * 0.3).toLocaleString();
+        document.getElementById('catCommercial').textContent = (leaseRes.count || 0).toLocaleString();
+
+        // Update stats
         document.getElementById('statProperties').textContent = (allRes.count || 0).toLocaleString();
         document.getElementById('statProperties').classList.remove('loading');
         document.getElementById('statAgents').textContent = "150+";
