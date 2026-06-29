@@ -1,1067 +1,650 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Buy Property in Kenya | Houses, Apartments & Land for Sale</title>
-<meta name="description" content="Find verified houses, apartments, and land for sale across Kenya. AI-powered property matching. Trusted by buyers nationwide.">
-<meta name="keywords" content="buy property Kenya, houses for sale Nairobi, apartments for sale, land for sale Kiambu, Ruai properties, Kilimani apartments, real estate Kenya">
-<meta name="robots" content="index, follow">
-<link rel="canonical" href="https://propertiesinkenya.co.ke/buy.html">
-<meta property="og:type" content="website">
-<meta property="og:title" content="Buy Property in Kenya — Verified Listings">
-<meta property="og:description" content="Find verified houses, apartments, and land for sale across Kenya.">
-<meta property="og:image" content="https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=1200&q=80">
-<meta property="og:url" content="https://propertiesinkenya.co.ke/buy.html">
-<meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Buy Property in Kenya">
-<meta name="twitter:description" content="Find verified houses, apartments, and land for sale across Kenya.">
-<meta name="twitter:image" content="https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=1200&q=80">
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "WebSite",
-  "name": "Buy Property in Kenya",
-  "url": "https://propertiesinkenya.co.ke/buy.html",
-  "description": "Find verified properties for sale across Kenya."
-}
-</script>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/nav.css">
-<link rel="stylesheet" href="css/components.css">
-<link rel="stylesheet" href="css/sections.css">
-<link rel="stylesheet" href="css/responsive.css">
-<style>
-/* Buy Page Specific Styles */
-.buy-hero {
-  position: relative;
-  width: 100%;
-  max-width: 1440px;
-  margin: 0 auto 60px;
-  border-radius: 24px;
-  overflow: hidden;
-  height: 500px;
-  background: linear-gradient(180deg, rgba(0,0,0,0.1) 0%, rgba(0,0,0,0.5) 100%),
-              url('https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=2000&q=80') center/cover no-repeat;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 40px 20px;
-}
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Buy Property in Kenya — Properties in Kenya</title>
+  <meta name="description" content="Browse verified houses, apartments, land, villas, and commercial properties for sale across Kenya." />
+  <meta name="theme-color" content="#B8922E" />
 
-.buy-hero::before {
-  content: '';
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(180deg, rgba(0,0,0,0.2) 0%, rgba(0,0,0,0.6) 100%);
-  z-index: 1;
-}
+  <!-- Fonts & Icons -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
 
-.buy-hero-content {
-  position: relative;
-  z-index: 2;
-  text-align: center;
-  width: 100%;
-  max-width: 800px;
-}
+  <style>
+    /* =============================================
+       DESIGN TOKENS
+    ============================================= */
+    :root {
+      --gold: #B8922E;
+      --gold-light: #D4AF37;
+      --gold-dark: #8B6914;
+      --text-primary: #0F172A;
+      --text-secondary: #475569;
+      --text-muted: #94A3B8;
+      --bg-page: #FAFAFA;
+      --bg-surface: #FFFFFF;
+      --border: #E8ECF0;
+      --shadow-sm: 0 1px 2px rgba(0,0,0,0.04);
+      --shadow-md: 0 4px 12px rgba(0,0,0,0.06);
+      --shadow-lg: 0 12px 32px rgba(0,0,0,0.08);
+      --shadow-xl: 0 20px 48px rgba(0,0,0,0.12);
+      --radius-sm: 8px;
+      --radius-md: 12px;
+      --radius-lg: 16px;
+      --radius-xl: 24px;
+      --transition-fast: 150ms ease;
+      --transition-base: 250ms ease;
+      --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+    }
 
-.buy-hero-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-  padding: 10px 24px;
-  background: rgba(255, 255, 255, 0.95);
-  backdrop-filter: blur(10px);
-  border-radius: 9999px;
-  font-size: 16px;
-  font-weight: 700;
-  color: #B8922E;
-  margin-bottom: 24px;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
-}
+    /* =============================================
+       RESET & BASE
+    ============================================= */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; -webkit-font-smoothing: antialiased; }
+    body {
+      font-family: var(--font-sans);
+      font-size: 16px;
+      line-height: 1.6;
+      color: var(--text-primary);
+      background: var(--bg-page);
+      overflow-x: hidden;
+    }
+    img { max-width: 100%; height: auto; display: block; }
+    a { color: inherit; text-decoration: none; }
+    button { font: inherit; cursor: pointer; border: none; background: none; }
+    :focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
 
-.buy-hero-badge i {
-  font-size: 18px;
-}
+    /* =============================================
+       UTILITY CLASSES
+    ============================================= */
+    .container { max-width: 1280px; margin: 0 auto; padding: 0 24px; }
+    .text-center { text-align: center; }
+    .mt-6 { margin-top: 24px; }
+    .mb-6 { margin-bottom: 24px; }
+    .hidden { display: none !important; }
 
-.buy-hero-title {
-  font-size: 48px;
-  font-weight: 700;
-  color: white;
-  margin-bottom: 12px;
-  letter-spacing: -0.03em;
-  line-height: 1.1;
-  text-shadow: 0 2px 20px rgba(0, 0, 0, 0.4);
-}
+    /* =============================================
+       NAVIGATION (simple, sticky)
+    ============================================= */
+    .nav {
+      position: sticky; top: 0; z-index: 100;
+      background: rgba(255,255,255,0.9); backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border); height: 64px;
+    }
+    .nav-inner {
+      max-width: 1280px; margin: 0 auto; padding: 0 24px;
+      height: 100%; display: flex; align-items: center; justify-content: space-between;
+    }
+    .nav-logo {
+      display: flex; align-items: center; gap: 12px;
+      font-weight: 700; font-size: 1.25rem; color: var(--text-primary);
+    }
+    .nav-logo-icon {
+      width: 36px; height: 36px; background: linear-gradient(135deg, var(--gold), var(--gold-light));
+      border-radius: var(--radius-md); display: grid; place-items: center;
+      color: white; font-size: 1rem;
+    }
+    .nav-links { display: flex; gap: 4px; }
+    .nav-link {
+      padding: 8px 16px; font-weight: 500; font-size: 0.875rem;
+      color: var(--text-secondary); border-radius: 9999px;
+      transition: background var(--transition-fast), color var(--transition-fast);
+    }
+    .nav-link:hover, .nav-link.active { background: rgba(184,146,46,0.1); color: var(--gold-dark); }
 
-.buy-hero-subtitle {
-  font-size: 18px;
-  color: rgba(255, 255, 255, 0.9);
-  margin-bottom: 32px;
-  font-weight: 400;
-  text-shadow: 0 1px 8px rgba(0, 0, 0, 0.3);
-}
+    /* Hamburger – hidden on desktop */
+    .hamburger { display: none; width: 40px; height: 40px; border-radius: var(--radius-sm); flex-direction: column; align-items: center; justify-content: center; gap: 5px; }
+    .hamburger-line { width: 20px; height: 2px; background: var(--text-primary); border-radius: 2px; transition: var(--transition-base); }
 
-/* Search Bar */
-.buy-search-bar {
-  background: white;
-  border-radius: 60px;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.25);
-  padding: 8px;
-  display: flex;
-  align-items: center;
-  max-width: 700px;
-  margin: 0 auto;
-  gap: 4px;
-}
+    /* Mobile menu */
+    .mobile-menu { display: none; position: fixed; inset: 0; z-index: 200; background: white; flex-direction: column; padding: 24px; }
+    .mobile-menu.active { display: flex; }
+    .mobile-link { padding: 14px 0; border-bottom: 1px solid var(--border); font-weight: 500; }
 
-.buy-search-field {
-  flex: 1;
-  padding: 14px 20px;
-  border: none;
-  outline: none;
-  font-size: 15px;
-  color: #111827;
-  background: transparent;
-  font-family: 'Inter', sans-serif;
-  border-radius: 50px;
-  transition: background 0.2s;
-}
+    /* =============================================
+       HERO SECTION
+    ============================================= */
+    .hero {
+      position: relative; background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.6)),
+                  url('https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=1500&q=80') center/cover no-repeat;
+      min-height: 70vh; display: flex; align-items: center; justify-content: center;
+      text-align: center; color: white; padding: 80px 24px;
+    }
+    .hero-content { max-width: 800px; }
+    .hero-title { font-size: clamp(2rem, 5vw, 3.5rem); font-weight: 800; letter-spacing: -0.02em; margin-bottom: 16px; }
+    .hero-subtitle { font-size: 1.125rem; opacity: 0.9; margin-bottom: 32px; }
 
-.buy-search-field:focus {
-  background: #F9FAFB;
-}
+    /* Search container (glassmorphism) */
+    .search-container {
+      background: rgba(255,255,255,0.15); backdrop-filter: blur(20px);
+      border-radius: 60px; padding: 8px; display: flex; flex-wrap: wrap; gap: 8px;
+      box-shadow: var(--shadow-xl); max-width: 900px; margin: 0 auto;
+    }
+    .search-group {
+      flex: 1; min-width: 180px; background: white; border-radius: 50px;
+      display: flex; align-items: center; padding: 0 16px;
+    }
+    .search-group i { color: var(--text-muted); margin-right: 8px; }
+    .search-input {
+      flex: 1; border: none; outline: none; padding: 14px 0;
+      font-size: 0.9rem; background: transparent;
+    }
+    .search-btn {
+      background: var(--gold); color: white; font-weight: 600;
+      padding: 14px 32px; border-radius: 50px; font-size: 0.9rem;
+      display: flex; align-items: center; gap: 8px;
+      transition: background var(--transition-fast), transform var(--transition-fast);
+      box-shadow: 0 4px 12px rgba(184,146,46,0.3);
+    }
+    .search-btn:hover { background: var(--gold-dark); transform: translateY(-2px); }
 
-.buy-search-field::placeholder {
-  color: #9CA3AF;
-}
+    /* =============================================
+       PROPERTY TYPE FILTER CARDS
+    ============================================= */
+    .type-filters { padding: 48px 0 24px; }
+    .filter-grid {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 16px;
+    }
+    .filter-card {
+      background: white; border-radius: var(--radius-lg); padding: 24px 16px;
+      text-align: center; border: 1px solid var(--border);
+      transition: transform var(--transition-base), box-shadow var(--transition-base), border-color var(--transition-base);
+      cursor: pointer;
+    }
+    .filter-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-lg); border-color: var(--gold-light); }
+    .filter-card.active { border-color: var(--gold); background: #FFF9F0; }
+    .filter-icon { font-size: 2rem; margin-bottom: 8px; color: var(--gold); }
+    .filter-label { font-weight: 600; margin-bottom: 4px; }
+    .filter-count { font-size: 0.75rem; color: var(--text-muted); }
 
-.buy-search-divider {
-  width: 1px;
-  height: 32px;
-  background: #E5E7EB;
-}
+    /* =============================================
+       PROPERTY GRID
+    ============================================= */
+    .properties-section { padding: 24px 0 64px; }
+    .section-header { margin-bottom: 32px; }
+    .section-title { font-size: 1.75rem; font-weight: 700; }
 
-.buy-search-btn {
-  padding: 14px 28px;
-  background: linear-gradient(135deg, #B8922E, #D4AF37);
-  color: white;
-  border: none;
-  border-radius: 50px;
-  font-size: 15px;
-  font-weight: 600;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  transition: all 0.2s;
-  box-shadow: 0 4px 12px rgba(184, 146, 46, 0.3);
-  white-space: nowrap;
-}
+    .property-grid {
+      display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px;
+    }
+    .property-card {
+      background: white; border-radius: var(--radius-lg); overflow: hidden;
+      border: 1px solid var(--border); transition: transform var(--transition-base), box-shadow var(--transition-base);
+      cursor: pointer;
+    }
+    .property-card:hover { transform: translateY(-6px); box-shadow: var(--shadow-xl); }
 
-.buy-search-btn:hover {
-  transform: scale(1.03);
-  box-shadow: 0 6px 16px rgba(184, 146, 46, 0.4);
-}
+    .property-image { position: relative; height: 220px; overflow: hidden; }
+    .property-image img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s; }
+    .property-card:hover .property-image img { transform: scale(1.05); }
 
-/* Property Type Categories */
-.property-types-section {
-  padding: 20px 0 60px;
-}
+    .property-badges {
+      position: absolute; top: 12px; left: 12px; display: flex; gap: 6px;
+    }
+    .badge {
+      padding: 4px 10px; border-radius: 20px; font-size: 0.6875rem; font-weight: 600;
+      text-transform: uppercase; backdrop-filter: blur(8px);
+    }
+    .badge-sale { background: rgba(0,0,0,0.7); color: white; }
+    .badge-verified { background: rgba(16,185,129,0.9); color: white; }
 
-.property-types-grid {
-  display: grid;
-  grid-template-columns: repeat(6, 1fr);
-  gap: 20px;
-}
+    .favorite-btn {
+      position: absolute; top: 12px; right: 12px;
+      width: 36px; height: 36px; background: rgba(255,255,255,0.9); backdrop-filter: blur(8px);
+      border-radius: 50%; display: grid; place-items: center;
+      color: var(--text-muted); transition: color var(--transition-fast), transform var(--transition-fast);
+    }
+    .favorite-btn:hover { transform: scale(1.1); }
+    .favorite-btn.active { color: #EF4444; }
 
-.property-type-card {
-  text-align: center;
-  cursor: pointer;
-  transition: all 0.3s;
-  padding: 16px 8px;
-  border-radius: 16px;
-}
+    .property-info { padding: 16px; }
+    .property-location { display: flex; align-items: center; gap: 6px; font-size: 0.8125rem; color: var(--text-muted); margin-bottom: 8px; }
+    .property-title { font-size: 1rem; font-weight: 700; margin-bottom: 12px; line-height: 1.3; }
 
-.property-type-card:hover {
-  background: #F9FAFB;
-  transform: translateY(-4px);
-}
+    .property-features {
+      display: flex; gap: 16px; padding: 12px 0;
+      border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);
+      margin-bottom: 12px;
+    }
+    .feature-item { display: flex; align-items: center; gap: 4px; font-size: 0.75rem; color: var(--text-secondary); }
 
-.property-type-icon {
-  width: 64px;
-  height: 64px;
-  margin: 0 auto 12px;
-  background: linear-gradient(135deg, rgba(184, 146, 46, 0.1), rgba(212, 175, 55, 0.1));
-  border-radius: 16px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 28px;
-  color: #B8922E;
-  transition: all 0.3s;
-}
+    .property-footer { display: flex; justify-content: space-between; align-items: center; }
+    .property-price { font-size: 1.25rem; font-weight: 800; color: var(--gold-dark); }
+    .property-agent { display: flex; align-items: center; gap: 8px; font-size: 0.75rem; }
+    .agent-avatar {
+      width: 24px; height: 24px; border-radius: 50%; background: var(--gold);
+      color: white; display: grid; place-items: center; font-size: 0.625rem; font-weight: 700;
+    }
 
-.property-type-card:hover .property-type-icon {
-  background: linear-gradient(135deg, #B8922E, #D4AF37);
-  color: white;
-  transform: scale(1.05);
-}
+    /* No results message */
+    .no-results {
+      text-align: center; padding: 64px; color: var(--text-muted);
+    }
 
-.property-type-name {
-  font-size: 14px;
-  font-weight: 600;
-  color: #111827;
-  margin-bottom: 4px;
-}
+    /* =============================================
+       AGENT CTA
+    ============================================= */
+    .agent-cta {
+      background: linear-gradient(135deg, var(--gold), var(--gold-dark));
+      border-radius: var(--radius-xl); padding: 64px 24px;
+      text-align: center; color: white; margin: 48px 0;
+    }
+    .agent-cta h2 { font-size: 2rem; font-weight: 700; margin-bottom: 12px; }
+    .agent-cta p { font-size: 1rem; opacity: 0.9; margin-bottom: 24px; }
+    .cta-btn {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: white; color: var(--gold-dark); font-weight: 600;
+      padding: 14px 32px; border-radius: 9999px; font-size: 1rem;
+      transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    }
+    .cta-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(0,0,0,0.25); }
 
-.property-type-count {
-  font-size: 12px;
-  color: #9CA3AF;
-}
+    /* =============================================
+       FOOTER (minimal)
+    ============================================= */
+    .footer {
+      border-top: 1px solid var(--border); padding: 32px 0;
+      display: flex; justify-content: space-between; align-items: center;
+      flex-wrap: wrap; gap: 16px; color: var(--text-muted); font-size: 0.8125rem;
+    }
 
-/* Featured Properties */
-.buy-properties-section {
-  padding: 40px 0 80px;
-}
-
-.properties-grid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 24px;
-}
-
-.property-card {
-  background: white;
-  border-radius: 16px;
-  overflow: hidden;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
-  cursor: pointer;
-  transition: all 0.3s;
-  border: 1px solid #F3F4F6;
-}
-
-.property-card:hover {
-  transform: translateY(-6px);
-  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.12);
-  border-color: #D4AF37;
-}
-
-.property-card-image-wrapper {
-  position: relative;
-  overflow: hidden;
-  height: 220px;
-}
-
-.property-card-image {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  transition: transform 0.5s;
-}
-
-.property-card:hover .property-card-image {
-  transform: scale(1.08);
-}
-
-.property-card-badge {
-  position: absolute;
-  top: 12px;
-  left: 12px;
-  padding: 5px 12px;
-  background: rgba(255, 255, 255, 0.95);
-  backdrop-filter: blur(10px);
-  border-radius: 6px;
-  font-size: 11px;
-  font-weight: 600;
-  color: #B8922E;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-}
-
-.property-card-verified {
-  position: absolute;
-  top: 12px;
-  right: 12px;
-  padding: 5px 10px;
-  background: #10B981;
-  border-radius: 6px;
-  font-size: 10px;
-  font-weight: 600;
-  color: white;
-  display: flex;
-  align-items: center;
-  gap: 4px;
-}
-
-.property-card-favorite {
-  position: absolute;
-  bottom: 12px;
-  right: 12px;
-  width: 36px;
-  height: 36px;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.95);
-  backdrop-filter: blur(10px);
-  border: none;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 16px;
-  color: #9CA3AF;
-  transition: all 0.2s;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-}
-
-.property-card-favorite:hover {
-  color: #EF4444;
-  transform: scale(1.1);
-}
-
-.property-card-info {
-  padding: 16px;
-}
-
-.property-card-location {
-  font-size: 13px;
-  color: #6B7280;
-  margin-bottom: 6px;
-  display: flex;
-  align-items: center;
-  gap: 4px;
-}
-
-.property-card-title {
-  font-size: 16px;
-  font-weight: 600;
-  color: #111827;
-  margin-bottom: 8px;
-  line-height: 1.3;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.property-card-features {
-  display: flex;
-  gap: 12px;
-  margin-bottom: 12px;
-  font-size: 12px;
-  color: #6B7280;
-}
-
-.property-card-features span {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-}
-
-.property-card-price {
-  display: flex;
-  align-items: baseline;
-  gap: 4px;
-  padding-top: 12px;
-  border-top: 1px solid #F3F4F6;
-}
-
-.property-card-price-amount {
-  font-size: 20px;
-  font-weight: 700;
-  color: #B8922E;
-}
-
-.property-card-agent {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  margin-top: 12px;
-  padding-top: 12px;
-  border-top: 1px solid #F3F4F6;
-}
-
-.property-card-agent-avatar {
-  width: 28px;
-  height: 28px;
-  border-radius: 50%;
-  background: linear-gradient(135deg, #B8922E, #D4AF37);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: white;
-  font-size: 12px;
-  font-weight: 600;
-}
-
-.property-card-agent-name {
-  font-size: 12px;
-  color: #6B7280;
-}
-
-/* Agent CTA Section */
-.agent-cta-section {
-  background: linear-gradient(135deg, #B8922E 0%, #D4AF37 100%);
-  border-radius: 24px;
-  padding: 60px 40px;
-  margin: 40px 0 80px;
-  text-align: center;
-  color: white;
-  position: relative;
-  overflow: hidden;
-}
-
-.agent-cta-section::before {
-  content: '';
-  position: absolute;
-  top: -50%;
-  right: -20%;
-  width: 500px;
-  height: 500px;
-  background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
-  pointer-events: none;
-}
-
-.agent-cta-title {
-  font-size: 32px;
-  font-weight: 700;
-  margin-bottom: 12px;
-  letter-spacing: -0.02em;
-  position: relative;
-  z-index: 1;
-}
-
-.agent-cta-subtitle {
-  font-size: 16px;
-  opacity: 0.9;
-  margin-bottom: 32px;
-  max-width: 500px;
-  margin-left: auto;
-  margin-right: auto;
-  position: relative;
-  z-index: 1;
-}
-
-.agent-cta-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  padding: 16px 32px;
-  background: white;
-  color: #B8922E;
-  border: none;
-  border-radius: 50px;
-  font-size: 15px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.2s;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
-  position: relative;
-  z-index: 1;
-  text-decoration: none;
-}
-
-.agent-cta-btn:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
-}
-
-/* Responsive */
-@media (max-width: 1024px) {
-  .property-types-grid { grid-template-columns: repeat(3, 1fr); }
-  .properties-grid { grid-template-columns: repeat(2, 1fr); }
-}
-
-@media (max-width: 768px) {
-  .buy-hero { height: 450px; border-radius: 0; margin: 0 -20px 40px; }
-  .buy-hero-title { font-size: 32px; }
-  .buy-hero-subtitle { font-size: 15px; }
-  .buy-search-bar { flex-direction: column; border-radius: 20px; padding: 12px; }
-  .buy-search-divider { width: 100%; height: 1px; }
-  .buy-search-btn { width: 100%; justify-content: center; }
-  .property-types-grid { grid-template-columns: repeat(2, 1fr); }
-  .properties-grid { grid-template-columns: 1fr; }
-  .agent-cta-title { font-size: 24px; }
-}
-</style>
-<script defer data-domain="propertiesinkenya.co.ke" src="https://plausible.io/js/script.js"></script>
-<link rel="preconnect" href="https://nqwvsmuvltbiekfnvovx.supabase.co">
-<link rel="preconnect" href="https://images.unsplash.com">
+    /* =============================================
+       RESPONSIVE
+    ============================================= */
+    @media (max-width: 1024px) {
+      .property-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (max-width: 768px) {
+      .nav-links { display: none; }
+      .hamburger { display: flex; }
+      .search-container { flex-direction: column; border-radius: 24px; }
+      .search-group { width: 100%; }
+      .property-grid { grid-template-columns: 1fr; }
+      .filter-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+  </style>
 </head>
 <body>
-<div class="bg-layers">
-  <div class="bg-layer-1"></div>
-  <div class="bg-layer-2"></div>
-  <div class="bg-layer-3"></div>
-</div>
-
-<!-- Navigation -->
-<nav class="nav-fixed" aria-label="Main navigation">
-  <div class="nav-content">
-    <a href="/" class="nav-logo" aria-label="Properties in Kenya - Home">
-      <div class="nav-logo-icon"><i class="fas fa-home" aria-hidden="true"></i></div>
-      Properties in Kenya
-    </a>
-    <div class="nav-center">
-      <button class="nav-link active" data-category="for sale">Buy</button>
-      <button class="nav-link" data-category="for rent">Rent</button>
-      <button class="nav-link" data-category="lease">For Lease</button>
-      <a href="/pikbnb.html" class="nav-link">
-        <i class="fas fa-bed" style="margin-right: 4px;"></i>
-        PIKBNB
+  <!-- Navigation -->
+  <nav class="nav" aria-label="Primary">
+    <div class="nav-inner">
+      <a href="/" class="nav-logo">
+        <div class="nav-logo-icon"><i class="fas fa-home"></i></div>
+        <span>Properties in Kenya</span>
       </a>
-      <a href="/#blog" class="nav-link">Blog</a>
-      <a href="/agents.html" class="nav-link">Agents</a>
-      <button class="nav-link favorites-badge" id="navFavoritesBtn" aria-label="Saved properties">
-        <i class="fas fa-heart" aria-hidden="true"></i>
-        Saved
-        <span class="favorites-count" id="favoritesCount" aria-live="polite">0</span>
-      </button>
-    </div>
-    <div style="display: flex; align-items: center; gap: 16px;">
-      <button class="nav-cta desktop-only" id="loginBtn">Log In / Sign Up</button>
-      <button class="hamburger-btn" id="hamburgerBtn" aria-label="Open menu" aria-expanded="false">
+      <div class="nav-links">
+        <a href="/buy.html" class="nav-link active">Buy</a>
+        <a href="/rent.html" class="nav-link">Rent</a>
+        <a href="/blog.html" class="nav-link">Blog</a>
+        <a href="/agents.html" class="nav-link">Agents</a>
+        <a href="/login.html" class="nav-link" style="background:var(--gold); color:white;">Sign In</a>
+      </div>
+      <button class="hamburger" id="hamburgerBtn" aria-label="Menu">
         <span class="hamburger-line"></span>
         <span class="hamburger-line"></span>
         <span class="hamburger-line"></span>
       </button>
     </div>
+  </nav>
+
+  <!-- Mobile Menu -->
+  <div class="mobile-menu" id="mobileMenu">
+    <button id="closeMobileMenu" style="align-self:flex-end; font-size:1.5rem;">&times;</button>
+    <a href="/buy.html" class="mobile-link">Buy</a>
+    <a href="/rent.html" class="mobile-link">Rent</a>
+    <a href="/blog.html" class="mobile-link">Blog</a>
+    <a href="/agents.html" class="mobile-link">Agents</a>
+    <a href="/login.html" class="mobile-link" style="color:var(--gold-dark); font-weight:700;">Sign In</a>
   </div>
-</nav>
 
-<!-- Login Modal -->
-<div class="login-modal-overlay" id="loginModal">
-  <div class="login-modal">
-    <button class="login-modal-close" id="closeLoginModal" aria-label="Close login modal">
-      <i class="fas fa-times"></i>
-    </button>
-    <h2>Welcome Back</h2>
-    <p>Are you looking to buy a property or list properties as an agent?</p>
-    <div class="login-options">
-      <a href="login.html?role=buyer" class="login-option">
-        <i class="fas fa-user"></i>
-        <div class="login-option-title">I'm a Buyer</div>
-        <div class="login-option-desc">Looking to buy property</div>
-      </a>
-      <a href="login.html?role=agent" class="login-option">
-        <i class="fas fa-briefcase"></i>
-        <div class="login-option-title">I'm an Agent</div>
-        <div class="login-option-desc">Listing and managing properties</div>
-      </a>
+  <main>
+    <!-- Hero Section -->
+    <section class="hero">
+      <div class="hero-content">
+        <h1 class="hero-title">Find Your Dream Home in Kenya</h1>
+        <p class="hero-subtitle">Verified houses, apartments, and land across all 47 counties</p>
+        <div class="search-container">
+          <div class="search-group">
+            <i class="fas fa-map-marker-alt"></i>
+            <input type="text" class="search-input" id="searchLocation" placeholder="Location (e.g. Ruai, Kilimani)" />
+          </div>
+          <div class="search-group">
+            <i class="fas fa-home"></i>
+            <select class="search-input" id="searchType">
+              <option value="">Property Type</option>
+              <option value="house">House</option>
+              <option value="apartment">Apartment</option>
+              <option value="land">Land</option>
+              <option value="villa">Villa</option>
+              <option value="commercial">Commercial</option>
+            </select>
+          </div>
+          <div class="search-group">
+            <i class="fas fa-tag"></i>
+            <input type="number" class="search-input" id="searchBudget" placeholder="Max Budget (KES)" />
+          </div>
+          <button class="search-btn" id="searchBtn"><i class="fas fa-search"></i> Search</button>
+        </div>
+      </div>
+    </section>
+
+    <div class="container">
+      <!-- Property Type Filter Cards -->
+      <section class="type-filters">
+        <div class="filter-grid" id="typeFilters">
+          <!-- dynamically generated -->
+        </div>
+      </section>
+
+      <!-- Property Listings -->
+      <section class="properties-section">
+        <div class="section-header">
+          <h2 class="section-title" id="listingTitle">Featured Properties</h2>
+        </div>
+        <div class="property-grid" id="propertyGrid"></div>
+        <div class="no-results hidden" id="noResults">
+          <i class="fas fa-search" style="font-size:2rem; opacity:0.3;"></i>
+          <p>No properties match your criteria. Try adjusting your filters.</p>
+        </div>
+      </section>
+
+      <!-- Agent CTA -->
+      <section class="agent-cta">
+        <h2>Are You a Real Estate Agent?</h2>
+        <p>List your properties and reach thousands of buyers across Kenya.</p>
+        <a href="/agent-dashboard.html" class="cta-btn"><i class="fas fa-plus-circle"></i> List Your Properties</a>
+      </section>
     </div>
-  </div>
-</div>
+  </main>
 
-<!-- Mobile Menu -->
-<div class="mobile-menu-overlay" id="mobileMenuOverlay" aria-hidden="true"></div>
-<div class="mobile-menu-drawer" id="mobileMenuDrawer" role="dialog" aria-label="Navigation menu">
-  <div class="mobile-menu-header">
-    <div class="mobile-menu-title">
-      <div class="nav-logo-icon" style="width:24px; height:24px; font-size:11px;"><i class="fas fa-home" aria-hidden="true"></i></div>
-      Menu
+  <!-- Footer -->
+  <footer class="footer container">
+    <div>© 2026 Properties in Kenya</div>
+    <div style="display:flex; gap:16px;">
+      <a href="#">Terms</a>
+      <a href="#">Privacy</a>
+      <a href="#">Cookies</a>
     </div>
-    <button class="mobile-menu-close" id="mobileMenuClose" aria-label="Close menu">
-      <i class="fas fa-times" aria-hidden="true"></i>
-    </button>
-  </div>
-  <div class="mobile-menu-content">
-    <div class="mobile-menu-section">
-      <div class="mobile-menu-section-title">Browse</div>
-      <a href="/buy.html" class="mobile-menu-link active">
-        <i class="fas fa-home" aria-hidden="true"></i>
-        Buy Property
-      </a>
-      <a href="/" class="mobile-menu-link">
-        <i class="fas fa-key" aria-hidden="true"></i>
-        Rent Property
-      </a>
-      <a href="/" class="mobile-menu-link">
-        <i class="fas fa-file-contract" aria-hidden="true"></i>
-        For Lease
-      </a>
-      <a href="/pikbnb.html" class="mobile-menu-link">
-        <i class="fas fa-bed" style="color: #7C4DFF;"></i>
-        PIKBNB - Short Stays
-      </a>
-      <a href="/#blog" class="mobile-menu-link">
-        <i class="fas fa-newspaper" aria-hidden="true"></i>
-        Blog
-      </a>
-    </div>
-    <div class="mobile-menu-divider"></div>
-    <div class="mobile-menu-section">
-      <div class="mobile-menu-section-title">Account</div>
-      <button class="mobile-menu-link" id="mobileLoginBtn" style="color: #D4AF37; font-weight: 600;">
-        <i class="fas fa-sign-in-alt" style="color: #D4AF37;"></i>
-        Log In / Sign Up
-      </button>
-      <a href="agent-dashboard.html" class="mobile-menu-link">
-        <i class="fas fa-user" aria-hidden="true"></i>
-        Agent Portal
-      </a>
-    </div>
-  </div>
-</div>
+  </footer>
 
-<!-- Main Content -->
-<main class="main-content" role="main">
-  <!-- Buy Hero -->
-  <section class="buy-hero" aria-labelledby="buy-title">
-    <div class="buy-hero-content">
-      <div class="buy-hero-badge">
-        <i class="fas fa-home"></i>
-        Buy Property in Kenya
-      </div>
-      <h1 class="buy-hero-title" id="buy-title">Find your dream home</h1>
-      <p class="buy-hero-subtitle">
-        Verified houses, apartments, and land for sale across all 47 counties. AI-powered matching to find your perfect property.
-      </p>
-      
-      <!-- Search Bar -->
-      <div class="buy-search-bar">
-        <input type="text" class="buy-search-field" id="buyLocation" placeholder="Location (e.g., Ruai, Kilimani)">
-        <div class="buy-search-divider"></div>
-        <input type="text" class="buy-search-field" id="buyType" placeholder="Property type">
-        <div class="buy-search-divider"></div>
-        <input type="text" class="buy-search-field" id="buyBudget" placeholder="Max budget">
-        <button class="buy-search-btn" id="buySearchBtn">
-          <i class="fas fa-search"></i>
-          Search
-        </button>
-      </div>
-    </div>
-  </section>
+  <script>
+    // ======================
+    // PROPERTY DATA (structured)
+    // ======================
+    const properties = [
+      {
+        id: 1,
+        type: "house",
+        location: "Ruai",
+        price: 8500000,
+        bedrooms: 4,
+        bathrooms: 3,
+        size: "2,200 sqft",
+        verified: true,
+        image: "https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=600&q=80",
+        agent: { name: "Sarah Mwangi", initials: "SM" }
+      },
+      {
+        id: 2,
+        type: "apartment",
+        location: "Kilimani",
+        price: 12000000,
+        bedrooms: 3,
+        bathrooms: 2,
+        size: "1,800 sqft",
+        verified: true,
+        image: "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=600&q=80",
+        agent: { name: "Peter Ochieng", initials: "PO" }
+      },
+      {
+        id: 3,
+        type: "land",
+        location: "Syokimau",
+        price: 2500000,
+        bedrooms: 0,
+        bathrooms: 0,
+        size: "0.25 acres",
+        verified: false,
+        image: "https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=600&q=80",
+        agent: { name: "Jane Wanjiku", initials: "JW" }
+      },
+      {
+        id: 4,
+        type: "villa",
+        location: "Karen",
+        price: 45000000,
+        bedrooms: 6,
+        bathrooms: 5,
+        size: "5,000 sqft",
+        verified: true,
+        image: "https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=600&q=80",
+        agent: { name: "Mike Kariuki", initials: "MK" }
+      },
+      {
+        id: 5,
+        type: "commercial",
+        location: "Westlands",
+        price: 32000000,
+        bedrooms: 0,
+        bathrooms: 2,
+        size: "3,500 sqft",
+        verified: true,
+        image: "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=600&q=80",
+        agent: { name: "Alice Njeri", initials: "AN" }
+      },
+      {
+        id: 6,
+        type: "house",
+        location: "Rongai",
+        price: 6800000,
+        bedrooms: 3,
+        bathrooms: 2,
+        size: "1,600 sqft",
+        verified: true,
+        image: "https://images.unsplash.com/photo-1580587771525-78b9dba3b914?w=600&q=80",
+        agent: { name: "David Muthoni", initials: "DM" }
+      },
+      {
+        id: 7,
+        type: "apartment",
+        location: "Kileleshwa",
+        price: 15000000,
+        bedrooms: 2,
+        bathrooms: 2,
+        size: "1,400 sqft",
+        verified: true,
+        image: "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=600&q=80",
+        agent: { name: "Sarah Mwangi", initials: "SM" }
+      },
+      {
+        id: 8,
+        type: "land",
+        location: "Kitengela",
+        price: 1800000,
+        bedrooms: 0,
+        bathrooms: 0,
+        size: "0.5 acres",
+        verified: false,
+        image: "https://images.unsplash.com/photo-1500530859303-6b24e3c7c6c4?w=600&q=80",
+        agent: { name: "Robert Kiprop", initials: "RK" }
+      }
+    ];
 
-  <!-- Property Type Categories -->
-  <section class="property-types-section" aria-labelledby="property-types-title">
-    <div class="section-header">
-      <h2 class="section-title" id="property-types-title">Browse by property type</h2>
-      <p class="section-subtitle">Find exactly what you're looking for</p>
-    </div>
-    <div class="property-types-grid">
-      <div class="property-type-card" onclick="filterProperties('house')">
-        <div class="property-type-icon"><i class="fas fa-home"></i></div>
-        <div class="property-type-name">Houses</div>
-        <div class="property-type-count">156 listings</div>
-      </div>
-      <div class="property-type-card" onclick="filterProperties('apartment')">
-        <div class="property-type-icon"><i class="fas fa-building"></i></div>
-        <div class="property-type-name">Apartments</div>
-        <div class="property-type-count">243 listings</div>
-      </div>
-      <div class="property-type-card" onclick="filterProperties('land')">
-        <div class="property-type-icon"><i class="fas fa-map"></i></div>
-        <div class="property-type-name">Land</div>
-        <div class="property-type-count">189 listings</div>
-      </div>
-      <div class="property-type-card" onclick="filterProperties('villa')">
-        <div class="property-type-icon"><i class="fas fa-archway"></i></div>
-        <div class="property-type-name">Villas</div>
-        <div class="property-type-count">67 listings</div>
-      </div>
-      <div class="property-type-card" onclick="filterProperties('commercial')">
-        <div class="property-type-icon"><i class="fas fa-store"></i></div>
-        <div class="property-type-name">Commercial</div>
-        <div class="property-type-count">94 listings</div>
-      </div>
-      <div class="property-type-card" onclick="filterProperties('all')">
-        <div class="property-type-icon"><i class="fas fa-th-large"></i></div>
-        <div class="property-type-name">View All</div>
-        <div class="property-type-count">749 listings</div>
-      </div>
-    </div>
-  </section>
+    // Favorites state (loaded from localStorage)
+    let favorites = JSON.parse(localStorage.getItem('pik_favorites')) || [];
 
-  <!-- Featured Properties -->
-  <section class="buy-properties-section" aria-labelledby="featured-properties-title">
-    <div class="section-header">
-      <h2 class="section-title" id="featured-properties-title">Featured properties for sale</h2>
-      <p class="section-subtitle">Handpicked verified listings from top agents</p>
-    </div>
-    <div class="properties-grid" id="propertiesGrid">
-      <!-- Property Card 1 -->
-      <article class="property-card" onclick="window.location.href='/property/4-bed-house-ruai'">
-        <div class="property-card-image-wrapper">
-          <img src="https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=600&q=80" alt="4 bedroom house in Ruai" class="property-card-image" loading="lazy">
-          <span class="property-card-badge">For Sale</span>
-          <span class="property-card-verified"><i class="fas fa-check"></i> Verified</span>
-          <button class="property-card-favorite" aria-label="Save property">
-            <i class="far fa-heart"></i>
-          </button>
-        </div>
-        <div class="property-card-info">
-          <div class="property-card-location"><i class="fas fa-map-marker-alt"></i> Ruai, Nairobi</div>
-          <h3 class="property-card-title">4 Bedroom House + DSQ</h3>
-          <div class="property-card-features">
-            <span><i class="fas fa-bed"></i> 4 beds</span>
-            <span><i class="fas fa-bath"></i> 3 baths</span>
-            <span><i class="fas fa-ruler-combined"></i> 0.1 acre</span>
-          </div>
-          <div class="property-card-price">
-            <span class="property-card-price-amount">KSh 12,000,000</span>
-          </div>
-          <div class="property-card-agent">
-            <div class="property-card-agent-avatar">JK</div>
-            <span class="property-card-agent-name">John Kamau</span>
-          </div>
-        </div>
-      </article>
+    // Current filters
+    let activeType = 'all';
+    let searchLocation = '';
+    let searchType = '';
+    let searchBudget = Infinity;
 
-      <!-- Property Card 2 -->
-      <article class="property-card" onclick="window.location.href='/property/spacious-bedsitter-ruai'">
-        <div class="property-card-image-wrapper">
-          <img src="https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=600&q=80" alt="Spacious bedsitter in Ruai" class="property-card-image" loading="lazy">
-          <span class="property-card-badge">For Sale</span>
-          <span class="property-card-verified"><i class="fas fa-check"></i> Verified</span>
-          <button class="property-card-favorite" aria-label="Save property">
-            <i class="far fa-heart"></i>
-          </button>
-        </div>
-        <div class="property-card-info">
-          <div class="property-card-location"><i class="fas fa-map-marker-alt"></i> Ruai, Nairobi</div>
-          <h3 class="property-card-title">Spacious Bedsitter in Ruai</h3>
-          <div class="property-card-features">
-            <span><i class="fas fa-bed"></i> 1 bed</span>
-            <span><i class="fas fa-bath"></i> 1 bath</span>
-            <span><i class="fas fa-ruler-combined"></i> 350 sqft</span>
-          </div>
-          <div class="property-card-price">
-            <span class="property-card-price-amount">KSh 12,000</span>
-          </div>
-          <div class="property-card-agent">
-            <div class="property-card-agent-avatar">SM</div>
-            <span class="property-card-agent-name">Sarah Mwangi</span>
-          </div>
-        </div>
-      </article>
+    // ======================
+    // RENDER FUNCTIONS
+    // ======================
+    function renderTypeFilters() {
+      const types = [
+        { key: 'all', label: 'View All', icon: 'fa-list', count: properties.length },
+        { key: 'house', label: 'Houses', icon: 'fa-home', count: properties.filter(p => p.type === 'house').length },
+        { key: 'apartment', label: 'Apartments', icon: 'fa-building', count: properties.filter(p => p.type === 'apartment').length },
+        { key: 'land', label: 'Land', icon: 'fa-map', count: properties.filter(p => p.type === 'land').length },
+        { key: 'villa', label: 'Villas', icon: 'fa-tree', count: properties.filter(p => p.type === 'villa').length },
+        { key: 'commercial', label: 'Commercial', icon: 'fa-store', count: properties.filter(p => p.type === 'commercial').length },
+      ];
 
-      <!-- Property Card 3 -->
-      <article class="property-card" onclick="window.location.href='/property/3-bedroom-townhouse'">
-        <div class="property-card-image-wrapper">
-          <img src="https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=600&q=80" alt="3 bedroom townhouse" class="property-card-image" loading="lazy">
-          <span class="property-card-badge">For Sale</span>
-          <span class="property-card-verified"><i class="fas fa-check"></i> Verified</span>
-          <button class="property-card-favorite" aria-label="Save property">
-            <i class="far fa-heart"></i>
-          </button>
+      const container = document.getElementById('typeFilters');
+      container.innerHTML = types.map(type => `
+        <div class="filter-card ${activeType === type.key ? 'active' : ''}" data-type="${type.key}">
+          <div class="filter-icon"><i class="fas ${type.icon}"></i></div>
+          <div class="filter-label">${type.label}</div>
+          <div class="filter-count">${type.count} listings</div>
         </div>
-        <div class="property-card-info">
-          <div class="property-card-location"><i class="fas fa-map-marker-alt"></i> Kiambu Road</div>
-          <h3 class="property-card-title">3 Bedroom Townhouse</h3>
-          <div class="property-card-features">
-            <span><i class="fas fa-bed"></i> 3 beds</span>
-            <span><i class="fas fa-bath"></i> 2 baths</span>
-            <span><i class="fas fa-ruler-combined"></i> 1,800 sqft</span>
-          </div>
-          <div class="property-card-price">
-            <span class="property-card-price-amount">KSh 18,000,000</span>
-          </div>
-          <div class="property-card-agent">
-            <div class="property-card-agent-avatar">PO</div>
-            <span class="property-card-agent-name">Peter Ochieng</span>
-          </div>
-        </div>
-      </article>
+      `).join('');
 
-      <!-- Property Card 4 -->
-      <article class="property-card" onclick="window.location.href='/property/4-bedroom-house-kilimani'">
-        <div class="property-card-image-wrapper">
-          <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=600&q=80" alt="4 bedroom house in Kilimani" class="property-card-image" loading="lazy">
-          <span class="property-card-badge">For Sale</span>
-          <span class="property-card-verified"><i class="fas fa-check"></i> Verified</span>
-          <button class="property-card-favorite" aria-label="Save property">
-            <i class="far fa-heart"></i>
-          </button>
-        </div>
-        <div class="property-card-info">
-          <div class="property-card-location"><i class="fas fa-map-marker-alt"></i> Kilimani, Nairobi</div>
-          <h3 class="property-card-title">4 Bedroom House Kilimani</h3>
-          <div class="property-card-features">
-            <span><i class="fas fa-bed"></i> 4 beds</span>
-            <span><i class="fas fa-bath"></i> 3 baths</span>
-            <span><i class="fas fa-ruler-combined"></i> 0.25 acre</span>
-          </div>
-          <div class="property-card-price">
-            <span class="property-card-price-amount">KSh 32,000,000</span>
-          </div>
-          <div class="property-card-agent">
-            <div class="property-card-agent-avatar">JW</div>
-            <span class="property-card-agent-name">Jane Wanjiku</span>
-          </div>
-        </div>
-      </article>
-
-      <!-- Property Card 5 -->
-      <article class="property-card" onclick="window.location.href='/property/apartment-westlands'">
-        <div class="property-card-image-wrapper">
-          <img src="https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=600&q=80" alt="Apartment in Westlands" class="property-card-image" loading="lazy">
-          <span class="property-card-badge">For Sale</span>
-          <span class="property-card-verified"><i class="fas fa-check"></i> Verified</span>
-          <button class="property-card-favorite" aria-label="Save property">
-            <i class="far fa-heart"></i>
-          </button>
-        </div>
-        <div class="property-card-info">
-          <div class="property-card-location"><i class="fas fa-map-marker-alt"></i> Westlands, Nairobi</div>
-          <h3 class="property-card-title">2BR Apartment Westlands</h3>
-          <div class="property-card-features">
-            <span><i class="fas fa-bed"></i> 2 beds</span>
-            <span><i class="fas fa-bath"></i> 2 baths</span>
-            <span><i class="fas fa-ruler-combined"></i> 1,200 sqft</span>
-          </div>
-          <div class="property-card-price">
-            <span class="property-card-price-amount">KSh 15,500,000</span>
-          </div>
-          <div class="property-card-agent">
-            <div class="property-card-agent-avatar">MK</div>
-            <span class="property-card-agent-name">Mike Kariuki</span>
-          </div>
-        </div>
-      </article>
-
-      <!-- Property Card 6 -->
-      <article class="property-card" onclick="window.location.href='/property/land-kangundo-road'">
-        <div class="property-card-image-wrapper">
-          <img src="https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=600&q=80" alt="Land for sale Kangundo Road" class="property-card-image" loading="lazy">
-          <span class="property-card-badge">For Sale</span>
-          <span class="property-card-verified"><i class="fas fa-check"></i> Verified</span>
-          <button class="property-card-favorite" aria-label="Save property">
-            <i class="far fa-heart"></i>
-          </button>
-        </div>
-        <div class="property-card-info">
-          <div class="property-card-location"><i class="fas fa-map-marker-alt"></i> Kangundo Road</div>
-          <h3 class="property-card-title">1/8 Acre Plot Kangundo</h3>
-          <div class="property-card-features">
-            <span><i class="fas fa-map"></i> Land</span>
-            <span><i class="fas fa-ruler-combined"></i> 50x100 ft</span>
-            <span><i class="fas fa-file-alt"></i> Title deed</span>
-          </div>
-          <div class="property-card-price">
-            <span class="property-card-price-amount">KSh 3,500,000</span>
-          </div>
-          <div class="property-card-agent">
-            <div class="property-card-agent-avatar">AN</div>
-            <span class="property-card-agent-name">Alice Njeri</span>
-          </div>
-        </div>
-      </article>
-
-      <!-- Property Card 7 -->
-      <article class="property-card" onclick="window.location.href='/property/villa-karen'">
-        <div class="property-card-image-wrapper">
-          <img src="https://images.unsplash.com/photo-1613490493576-7fde63acd811?w=600&q=80" alt="Villa in Karen" class="property-card-image" loading="lazy">
-          <span class="property-card-badge">For Sale</span>
-          <span class="property-card-verified"><i class="fas fa-check"></i> Verified</span>
-          <button class="property-card-favorite" aria-label="Save property">
-            <i class="far fa-heart"></i>
-          </button>
-        </div>
-        <div class="property-card-info">
-          <div class="property-card-location"><i class="fas fa-map-marker-alt"></i> Karen, Nairobi</div>
-          <h3 class="property-card-title">Luxury Villa Karen</h3>
-          <div class="property-card-features">
-            <span><i class="fas fa-bed"></i> 5 beds</span>
-            <span><i class="fas fa-bath"></i> 4 baths</span>
-            <span><i class="fas fa-ruler-combined"></i> 1 acre</span>
-          </div>
-          <div class="property-card-price">
-            <span class="property-card-price-amount">KSh 85,000,000</span>
-          </div>
-          <div class="property-card-agent">
-            <div class="property-card-agent-avatar">DM</div>
-            <span class="property-card-agent-name">David Muthoni</span>
-          </div>
-        </div>
-      </article>
-
-      <!-- Property Card 8 -->
-      <article class="property-card" onclick="window.location.href='/property/commercial-building-cbd'">
-        <div class="property-card-image-wrapper">
-          <img src="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=600&q=80" alt="Commercial building CBD" class="property-card-image" loading="lazy">
-          <span class="property-card-badge">For Sale</span>
-          <span class="property-card-verified"><i class="fas fa-check"></i> Verified</span>
-          <button class="property-card-favorite" aria-label="Save property">
-            <i class="far fa-heart"></i>
-          </button>
-        </div>
-        <div class="property-card-info">
-          <div class="property-card-location"><i class="fas fa-map-marker-alt"></i> CBD, Nairobi</div>
-          <h3 class="property-card-title">Commercial Building CBD</h3>
-          <div class="property-card-features">
-            <span><i class="fas fa-store"></i> Commercial</span>
-            <span><i class="fas fa-ruler-combined"></i> 10,000 sqft</span>
-            <span><i class="fas fa-users"></i> 50 units</span>
-          </div>
-          <div class="property-card-price">
-            <span class="property-card-price-amount">KSh 250,000,000</span>
-          </div>
-          <div class="property-card-agent">
-            <div class="property-card-agent-avatar">RK</div>
-            <span class="property-card-agent-name">Robert Kiprop</span>
-          </div>
-        </div>
-      </article>
-    </div>
-  </section>
-
-  <!-- Agent CTA Section -->
-  <section class="agent-cta-section" aria-labelledby="agent-cta-title">
-    <h2 class="agent-cta-title" id="agent-cta-title">Are you a real estate agent?</h2>
-    <p class="agent-cta-subtitle">
-      List your properties on Properties in Kenya and reach thousands of verified buyers.
-    </p>
-    <a href="login.html?role=agent" class="agent-cta-btn">
-      <i class="fas fa-plus"></i>
-      List Your Properties
-    </a>
-  </section>
-</main>
-
-<!-- Footer -->
-<footer class="footer" role="contentinfo">
-  <div class="footer-content">
-    <div class="footer-top">
-      <div class="footer-brand">
-        <div class="footer-brand-title">
-          <div class="nav-logo-icon" style="width:24px; height:24px; font-size:11px;"><i class="fas fa-home" aria-hidden="true"></i></div>
-          Properties in Kenya
-        </div>
-        <p class="footer-brand-desc">
-          AI-powered real estate platform connecting buyers, renters, and investors with verified properties across Kenya.
-        </p>
-        <div class="footer-powered">
-          <span class="footer-powered-dot" aria-hidden="true"></span>
-          Powered by The Caretaker Intelligence
-        </div>
-      </div>
-      <div>
-        <div class="footer-col-title">Explore</div>
-        <div class="footer-links">
-          <a href="/buy.html" class="footer-link">Buy Property</a>
-          <a href="/" class="footer-link">Rent Property</a>
-          <a href="/" class="footer-link">For Lease</a>
-          <a href="/pikbnb.html" class="footer-link">PIKBNB - Short Stays</a>
-          <a href="/#blog" class="footer-link">Blog</a>
-        </div>
-      </div>
-      <div>
-        <div class="footer-col-title">Company</div>
-        <div class="footer-links">
-          <a href="#" class="footer-link">About Us</a>
-          <a href="#" class="footer-link">Contact</a>
-          <a href="agent-dashboard.html" class="footer-link">For Agents</a>
-          <a href="/agents.html" class="footer-link">Browse Agents</a>
-        </div>
-      </div>
-      <div>
-        <div class="footer-col-title">Legal</div>
-        <div class="footer-links">
-          <a href="#" class="footer-link">Terms</a>
-          <a href="#" class="footer-link">Privacy</a>
-        </div>
-      </div>
-    </div>
-    <div class="footer-bottom">
-      <p class="footer-copyright">© 2026 Properties in Kenya. All rights reserved.</p>
-    </div>
-  </div>
-</footer>
-
-<script>
-// Buy Page Specific JS
-function filterProperties(type) {
-  const cards = document.querySelectorAll('.property-card');
-  cards.forEach(card => {
-    const badge = card.querySelector('.property-card-badge').textContent.toLowerCase();
-    const title = card.querySelector('.property-card-title').textContent.toLowerCase();
-    
-    if (type === 'all') {
-      card.style.display = 'block';
-    } else if (type === 'house' && (title.includes('house') || title.includes('townhouse') || title.includes('villa'))) {
-      card.style.display = 'block';
-    } else if (type === 'apartment' && title.includes('apartment')) {
-      card.style.display = 'block';
-    } else if (type === 'land' && (title.includes('land') || title.includes('plot'))) {
-      card.style.display = 'block';
-    } else if (type === 'villa' && title.includes('villa')) {
-      card.style.display = 'block';
-    } else if (type === 'commercial' && title.includes('commercial')) {
-      card.style.display = 'block';
-    } else {
-      card.style.display = 'none';
+      // attach click events
+      container.querySelectorAll('.filter-card').forEach(card => {
+        card.addEventListener('click', () => {
+          activeType = card.dataset.type;
+          renderTypeFilters();
+          applyFilters();
+        });
+      });
     }
-  });
-  
-  // Scroll to properties
-  document.getElementById('featured-properties-title').scrollIntoView({ behavior: 'smooth', block: 'start' });
-}
 
-// Search functionality
-document.getElementById('buySearchBtn').addEventListener('click', () => {
-  const location = document.getElementById('buyLocation').value.trim();
-  const type = document.getElementById('buyType').value.trim();
-  const budget = document.getElementById('buyBudget').value.trim();
-  
-  if (location || type || budget) {
-    alert(`Searching for properties...\nLocation: ${location || 'Any'}\nType: ${type || 'Any'}\nBudget: ${budget || 'Any'}\n\n(Connect to Supabase to enable real search)`);
-  }
-});
-
-// Favorite toggle
-document.querySelectorAll('.property-card-favorite').forEach(btn => {
-  btn.addEventListener('click', (e) => {
-    e.stopPropagation();
-    const icon = btn.querySelector('i');
-    icon.classList.toggle('far');
-    icon.classList.toggle('fas');
-    if (icon.classList.contains('fas')) {
-      btn.style.color = '#EF4444';
-    } else {
-      btn.style.color = '#9CA3AF';
+    function createPropertyCard(property) {
+      const isFav = favorites.includes(property.id);
+      return `
+        <div class="property-card" data-id="${property.id}" data-type="${property.type}" data-location="${property.location.toLowerCase()}" data-price="${property.price}">
+          <div class="property-image">
+            <img src="${property.image}" alt="${property.type} in ${property.location}" loading="lazy" />
+            <div class="property-badges">
+              <span class="badge badge-sale">For Sale</span>
+              ${property.verified ? '<span class="badge badge-verified">Verified</span>' : ''}
+            </div>
+            <button class="favorite-btn ${isFav ? 'active' : ''}" aria-label="Save property">
+              <i class="${isFav ? 'fas' : 'far'} fa-heart"></i>
+            </button>
+          </div>
+          <div class="property-info">
+            <div class="property-location"><i class="fas fa-map-marker-alt"></i> ${property.location}</div>
+            <h3 class="property-title">${property.type.charAt(0).toUpperCase() + property.type.slice(1)} in ${property.location}</h3>
+            <div class="property-features">
+              ${property.bedrooms > 0 ? `<span class="feature-item"><i class="fas fa-bed"></i> ${property.bedrooms} Beds</span>` : ''}
+              ${property.bathrooms > 0 ? `<span class="feature-item"><i class="fas fa-bath"></i> ${property.bathrooms} Baths</span>` : ''}
+              <span class="feature-item"><i class="fas fa-vector-square"></i> ${property.size}</span>
+            </div>
+            <div class="property-footer">
+              <span class="property-price">KES ${property.price.toLocaleString()}</span>
+              <div class="property-agent">
+                <div class="agent-avatar">${property.agent.initials}</div>
+                ${property.agent.name}
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
     }
-  });
-});
 
-// Mobile menu
-document.getElementById('hamburgerBtn').addEventListener('click', () => {
-  document.getElementById('mobileMenuDrawer').classList.add('active');
-  document.getElementById('mobileMenuOverlay').classList.add('active');
-});
+    function renderProperties(filteredProps) {
+      const grid = document.getElementById('propertyGrid');
+      const noResults = document.getElementById('noResults');
+      if (filteredProps.length === 0) {
+        grid.innerHTML = '';
+        noResults.classList.remove('hidden');
+      } else {
+        noResults.classList.add('hidden');
+        grid.innerHTML = filteredProps.map(createPropertyCard).join('');
+        // attach favorite click events
+        grid.querySelectorAll('.favorite-btn').forEach(btn => {
+          btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const card = btn.closest('.property-card');
+            const id = parseInt(card.dataset.id);
+            toggleFavorite(id);
+          });
+        });
+        // attach card click to navigate to detail page (mock)
+        grid.querySelectorAll('.property-card').forEach(card => {
+          card.addEventListener('click', () => {
+            const id = card.dataset.id;
+            // In production, navigate to detail page
+            alert(`View property details (ID: ${id}). (In production, navigate to /property/${id})`);
+          });
+        });
+      }
+    }
 
-document.getElementById('mobileMenuClose').addEventListener('click', () => {
-  document.getElementById('mobileMenuDrawer').classList.remove('active');
-  document.getElementById('mobileMenuOverlay').classList.remove('active');
-});
+    function applyFilters() {
+      let filtered = properties.filter(p => {
+        // type filter
+        if (activeType !== 'all' && p.type !== activeType) return false;
+        // location search
+        if (searchLocation && !p.location.toLowerCase().includes(searchLocation.toLowerCase())) return false;
+        // property type dropdown
+        if (searchType && p.type !== searchType) return false;
+        // budget
+        if (p.price > searchBudget) return false;
+        return true;
+      });
+      renderProperties(filtered);
+    }
 
-document.getElementById('mobileMenuOverlay').addEventListener('click', () => {
-  document.getElementById('mobileMenuDrawer').classList.remove('active');
-  document.getElementById('mobileMenuOverlay').classList.remove('active');
-});
+    function toggleFavorite(id) {
+      if (favorites.includes(id)) {
+        favorites = favorites.filter(f => f !== id);
+      } else {
+        favorites.push(id);
+      }
+      localStorage.setItem('pik_favorites', JSON.stringify(favorites));
+      // update all cards with same id
+      document.querySelectorAll(`.property-card[data-id="${id}"] .favorite-btn`).forEach(btn => {
+        const icon = btn.querySelector('i');
+        if (favorites.includes(id)) {
+          btn.classList.add('active');
+          icon.className = 'fas fa-heart';
+        } else {
+          btn.classList.remove('active');
+          icon.className = 'far fa-heart';
+        }
+      });
+    }
 
-// Login modal
-document.getElementById('loginBtn').addEventListener('click', () => {
-  document.getElementById('loginModal').classList.add('active');
-});
+    // ======================
+    // EVENT LISTENERS
+    // ======================
+    document.getElementById('searchBtn').addEventListener('click', () => {
+      searchLocation = document.getElementById('searchLocation').value.trim();
+      searchType = document.getElementById('searchType').value;
+      const budgetVal = document.getElementById('searchBudget').value;
+      searchBudget = budgetVal ? parseInt(budgetVal) : Infinity;
+      applyFilters();
+    });
 
-document.getElementById('mobileLoginBtn').addEventListener('click', () => {
-  document.getElementById('loginModal').classList.add('active');
-  document.getElementById('mobileMenuDrawer').classList.remove('active');
-  document.getElementById('mobileMenuOverlay').classList.remove('active');
-});
+    // Enter key triggers search
+    document.querySelectorAll('.search-input').forEach(input => {
+      input.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') document.getElementById('searchBtn').click();
+      });
+    });
 
-document.getElementById('closeLoginModal').addEventListener('click', () => {
-  document.getElementById('loginModal').classList.remove('active');
-});
+    // Mobile menu
+    const hamburger = document.getElementById('hamburgerBtn');
+    const mobileMenu = document.getElementById('mobileMenu');
+    const closeMobile = document.getElementById('closeMobileMenu');
+    hamburger.addEventListener('click', () => mobileMenu.classList.add('active'));
+    closeMobile.addEventListener('click', () => mobileMenu.classList.remove('active'));
 
-document.getElementById('loginModal').addEventListener('click', (e) => {
-  if (e.target.id === 'loginModal') {
-    document.getElementById('loginModal').classList.remove('active');
-  }
-});
-</script>
+    // ======================
+    // INITIAL RENDER
+    // ======================
+    renderTypeFilters();
+    applyFilters();
+  </script>
 </body>
 </html>
