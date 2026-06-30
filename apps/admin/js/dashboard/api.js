@@ -1,9 +1,7 @@
-// js/dashboard/api.js
 import { supabase } from '/js/supabase.js';
 import { Store } from './store.js';
 import { UI } from './ui.js';
 
-// 4. Broken down RPCs
 const RPC_ENDPOINTS = {
   stats: 'rpc_dashboard_stats',
   ai: 'rpc_dashboard_ai',
@@ -13,50 +11,76 @@ const RPC_ENDPOINTS = {
   activity: 'rpc_dashboard_activity'
 };
 
-// 3. Parallelize loading & 11. Contextual Error Handling
-export async function loadDashboardData() {
-  performance.mark('dashboard-api-start'); // 9. Performance instrumentation
-
-  const requests = Object.entries(RPC_ENDPOINTS).map(async ([key, rpcName]) => {
-    try {
-      const { data, error } = await supabase.rpc(rpcName);
-      if (error) throw error;
-      return { key, data, success: true };
-    } catch (err) {
-      return { key, error: err, success: false };
-    }
-  });
-
-  const results = await Promise.allSettled(requests);
-  
-  results.forEach(result => {
-    if (result.status === 'fulfilled' && result.value.success) {
-      Store.set(result.value.key, result.value.data); // Triggers specific renderers
-    } else if (result.status === 'fulfilled' && !result.value.success) {
-      handleModuleError(result.value.key, result.value.error);
-    }
-  });
-
-  performance.mark('dashboard-api-end');
-  performance.measure('dashboard-api-load', 'dashboard-api-start', 'dashboard-api-end');
-}
-
-// Reload a specific module (used by targeted realtime or retry buttons)
-export async function loadModule(key) {
-  const rpcName = RPC_ENDPOINTS[key];
-  if (!rpcName) return;
+// simple retry helper (critical improvement)
+async function safeRpc(rpcName, retries = 2) {
   try {
     const { data, error } = await supabase.rpc(rpcName);
     if (error) throw error;
-    Store.set(key, data);
-  } catch (err) { handleModuleError(key, err); }
+    return data;
+  } catch (err) {
+    if (retries > 0) {
+      return safeRpc(rpcName, retries - 1);
+    }
+    throw err;
+  }
 }
 
+// 3. Parallel loading (clean version)
+export async function loadDashboardData() {
+  performance.mark('dashboard-api-start');
+
+  const entries = Object.entries(RPC_ENDPOINTS);
+
+  const results = await Promise.all(
+    entries.map(async ([key, rpcName]) => {
+      try {
+        const data = await safeRpc(rpcName);
+        return { key, data };
+      } catch (error) {
+        return { key, error };
+      }
+    })
+  );
+
+  results.forEach(({ key, data, error }) => {
+    if (error) {
+      handleModuleError(key, error);
+      return;
+    }
+
+    Store.set(key, data);
+  });
+
+  performance.mark('dashboard-api-end');
+  performance.measure(
+    'dashboard-api-load',
+    'dashboard-api-start',
+    'dashboard-api-end'
+  );
+}
+
+// 5. Targeted reload (clean)
+export async function loadModule(key) {
+  const rpcName = RPC_ENDPOINTS[key];
+  if (!rpcName) return;
+
+  try {
+    const data = await safeRpc(rpcName);
+    Store.set(key, data);
+  } catch (err) {
+    handleModuleError(key, err);
+  }
+}
+
+// 6. Scalable error handling (no hardcoded maps)
 function handleModuleError(key, error) {
-  const messages = {
-    revenue: 'Revenue data is temporarily unavailable.',
-    health: 'System health metrics could not be loaded.',
-    activity: 'Recent activity is unavailable.'
-  };
-  UI.showErrorState(`${key}Container`, messages[key] || 'Module failed to load.', `loadModule('${key}')`);
+  const message = `${key.toUpperCase()} module failed to load.`;
+
+  UI.showErrorState(
+    `${key}Container`,
+    message,
+    `loadModule('${key}')`
+  );
+
+  console.error(`[Dashboard Error] ${key}:`, error);
 }
