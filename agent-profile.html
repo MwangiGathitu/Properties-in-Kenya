@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Agent Profile | Properties in Kenya</title>
 <meta name="description" content="View verified real estate agents in Kenya. See their listings, reviews, trust scores, and contact them directly.">
+<meta name="theme-color" content="#6b21a8">
 <meta property="og:title" content="Agent Profile | Properties in Kenya">
 <meta property="og:description" content="Trusted real estate agents across Kenya">
 <meta property="og:image" content="https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=1200&q=80">
@@ -425,7 +426,6 @@ textarea.input { resize: vertical; min-height: 70px; }
 
     <section class="card">
       <h2 class="card-title"><i class="fas fa-building"></i> Agent's Listings</h2>
-      <!-- 🔒 FIX: Added data-filter attributes for robust JS targeting -->
       <div class="tabs">
         <button class="tab active" data-filter="all">All</button>
         <button class="tab" data-filter="for sale">For Sale</button>
@@ -488,7 +488,6 @@ textarea.input { resize: vertical; min-height: 70px; }
         <input class="input" id="mEmail" placeholder="Your email">
         <input class="input" id="mPhone" placeholder="Phone number">
         <textarea class="input" id="mMsg" placeholder="I'm interested in..."></textarea>
-        <!-- 🔒 FIX: Removed inline onclick, using ID for JS event listener -->
         <button id="sendMsgBtn" class="btn btn-purple" style="width:100%;">
           <i class="fas fa-paper-plane"></i> Send
         </button>
@@ -504,7 +503,6 @@ textarea.input { resize: vertical; min-height: 70px; }
   <a href="#" id="mWA" target="_blank" class="btn btn-wa">
     <i class="fab fa-whatsapp"></i> WA
   </a>
-  <!-- 🔒 FIX: Removed inline onclick -->
   <button id="scrollBottomBtn" class="btn btn-outline">
     <i class="fas fa-envelope"></i> Msg
   </button>
@@ -512,13 +510,8 @@ textarea.input { resize: vertical; min-height: 70px; }
 
 <script>
 // ==========================================
-// 1. DEPENDENCY CHECK & CONFIGURATION
+// 1. CONFIGURATION
 // ==========================================
-if (typeof supabase === 'undefined') {
-    document.body.innerHTML = '<div style="padding:40px; text-align:center; font-family:sans-serif;"><h2>Connection Error</h2><p>Failed to load required scripts. Please refresh the page.</p></div>';
-    throw new Error('Supabase SDK not loaded');
-}
-
 const sb = supabase.createClient(
   "https://nqwvsmuvltbiekfnvovx.supabase.co",
   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5xd3ZzbXV2bHRiaWVrZm52b3Z4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA1NjU4MDAsImV4cCI6MjA5NjE0MTgwMH0.Xrc-bbAuWdvKSPHnVhTaLiQphV61xeYtDepWePqsrdo"
@@ -527,7 +520,7 @@ const sb = supabase.createClient(
 let profile = null;
 let listings = [];
 let reviews = [];
-let formLoadTime = Date.now(); // Anti-spam timestamp
+let formLoadTime = Date.now();
 
 // ==========================================
 // 2. UTILITIES
@@ -554,21 +547,30 @@ function formatWhatsApp(phone) {
 }
 
 // ==========================================
-// 3. MAIN LOAD FUNCTION
+// 3. ID/SLUG EXTRACTION (FIXED)
+// ==========================================
+function getAgentIdentifiers() {
+  const params = new URLSearchParams(location.search);
+  let id = params.get('id');
+  let slug = params.get('slug');
+
+  if (!id && !slug) {
+    const path = location.pathname.replace(/^\/|\/$/g, '');
+    const parts = path.split('/');
+    if (parts[0] === 'agent' && parts[1]) {
+      slug = decodeURIComponent(parts[1]);
+    }
+  }
+
+  return { id, slug };
+}
+
+// ==========================================
+// 4. MAIN LOAD
 // ==========================================
 async function load() {
   try {
-    const params = new URLSearchParams(location.search);
-    let id = params.get('id');
-    let slug = params.get('slug');
-
-    if (!id && !slug) {
-      const cleanPath = location.pathname.replace(/^\/|\/$/g, '');
-      const parts = cleanPath.split('/');
-      if (parts[0] === 'agent' && parts[1]) {
-        slug = decodeURIComponent(parts[1]);
-      }
-    }
+    const { id, slug } = getAgentIdentifiers();
 
     if (!id && !slug) {
       await showAllAgents();
@@ -601,9 +603,9 @@ async function load() {
     listings = listingsRes.data || [];
     reviews = reviewsRes.data || [];
 
-    // Secure RPC call
+    // View increment (non-blocking)
     sb.rpc('increment_profile_views', { p_id: profile.id }).then(({ error }) => {
-      if (error) console.warn('View increment failed:', error.message);
+      if (error) console.warn('View increment skipped:', error.message);
     });
 
     render();
@@ -617,7 +619,7 @@ async function load() {
 }
 
 // ==========================================
-// 4. RENDERING
+// 5. RENDER
 // ==========================================
 function render() {
   const p = profile;
@@ -631,9 +633,10 @@ function render() {
   document.getElementById('revCnt').textContent = p.total_reviews || 0;
   document.getElementById('location').textContent = p.location || 'Kenya';
 
-  const fallbackAvatar = `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=6b21a8&color=fff&size=256`;
+  // Use direct inline SVG fallback instead of external service
+  const fallbackAvatar = `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='110' height='110'%3E%3Crect fill='%236b21a8' width='110' height='110' rx='55'/%3E%3Ctext x='55' y='55' text-anchor='middle' dy='.35em' fill='white' font-size='40' font-weight='bold'%3E${encodeURIComponent(name.charAt(0).toUpperCase())}%3C/text%3E%3C/svg%3E`;
   const avatarUrl = p.avatar_url || fallbackAvatar;
-  document.getElementById('avatar').innerHTML = `<img src="${esc(avatarUrl)}" data-fallback="${fallbackAvatar}" style="width:100%;height:100%;object-fit:cover;">`;
+  document.getElementById('avatar').innerHTML = `<img src="${esc(avatarUrl)}" alt="${esc(name)}" style="width:100%;height:100%;object-fit:cover;" onerror="this.parentElement.innerHTML='<span>${esc(name.charAt(0).toUpperCase())}</span>'">`;
 
   if ((p.total_deals_closed || 0) >= 50 || p.is_featured_agent) {
     document.getElementById('ribbon').style.display = 'inline-block';
@@ -645,7 +648,6 @@ function render() {
   document.getElementById('sSat').textContent = sat + '%';
   document.getElementById('sResp').textContent = p.avg_response_minutes ? `${p.avg_response_minutes}m` : '<2h';
 
-  // 🔒 FIX: Use encodeURIComponent for URIs
   const phone = p.phone || p.whatsapp_number || '';
   const waPhone = formatWhatsApp(p.whatsapp_number || phone);
   
@@ -657,14 +659,21 @@ function render() {
   document.getElementById('mWA').href = `https://wa.me/${waPhone}`;
   document.getElementById('cName').textContent = `Contact ${esc(name.split(' ')[0])}`;
 
+  // Trust items (only include columns that exist in the table)
   const items = [
     { k: 'is_verified_identity', l: 'Verified Identity', i: 'fa-id-card' },
     { k: 'is_verified_phone', l: 'Verified Phone', i: 'fa-phone' },
     { k: 'is_verified_email', l: 'Verified Email', i: 'fa-envelope' },
-    { k: 'is_verified_office', l: 'Verified Office', i: 'fa-building' },
-    { k: 'is_licensed_agent', l: 'Licensed Agent', i: 'fa-certificate' },
-    { k: 'is_premium_member', l: 'Premium Member', i: 'fa-gem' }
+    { k: 'is_verified_office', l: 'Verified Office', i: 'fa-building' }
   ];
+  // Only add 'is_licensed_agent' if column exists in profile
+  if ('is_licensed_agent' in p) {
+    items.push({ k: 'is_licensed_agent', l: 'Licensed Agent', i: 'fa-certificate' });
+  }
+  if ('is_premium_member' in p) {
+    items.push({ k: 'is_premium_member', l: 'Premium Member', i: 'fa-gem' });
+  }
+
   document.getElementById('trustGrid').innerHTML = items.map(it => {
     const ok = p[it.k];
     return `<div class="trust-item ${ok ? 'ok' : ''}">
@@ -728,7 +737,7 @@ function renderListings(filterType) {
     const img = p.images?.[0] || p.image_url || fallbackPropImg;
     return `<div class="prop" data-id="${esc(p.id)}">
       <div class="prop-img">
-        <img src="${esc(img)}" data-fallback="${fallbackPropImg}" loading="lazy">
+        <img src="${esc(img)}" loading="lazy" onerror="this.parentElement.style.background='#f3f4f6'; this.style.display='none';">
         <span class="prop-badge">${esc((p.property_type || 'FOR SALE').toUpperCase())}</span>
       </div>
       <div class="prop-body">
@@ -738,39 +747,19 @@ function renderListings(filterType) {
       </div>
     </div>`;
   }).join('');
-  
-  attachImageErrorHandlers();
 }
 
 // ==========================================
-// 5. EVENT DELEGATION & INTERACTIONS
+// 6. EVENT LISTENERS
 // ==========================================
-function attachImageErrorHandlers() {
-  // Prevents infinite loops and avoids inline onerror CSP violations
-  document.querySelectorAll('img[data-fallback]').forEach(img => {
-    if (img.dataset.errorHandled) return;
-    img.dataset.errorHandled = 'true';
-    
-    img.addEventListener('error', function() {
-      if (this.src !== this.dataset.fallback) {
-        this.src = this.dataset.fallback;
-      } else {
-        this.style.display = 'none'; // Final fallback to prevent infinite loop
-      }
-    }, { once: true });
-  });
-}
-
 function initEventListeners() {
-  // Property Card Clicks
   document.getElementById('listings').addEventListener('click', (e) => {
     const propCard = e.target.closest('.prop');
     if (propCard && propCard.dataset.id) {
-      window.location.href = `/?property=${encodeURIComponent(propCard.dataset.id)}`;
+      window.location.href = `/property/${encodeURIComponent(propCard.dataset.id)}`;
     }
   });
 
-  // 🔒 FIX: Tabs using data-filter
   document.querySelectorAll('.tab').forEach(tab => {
     tab.addEventListener('click', (e) => {
       document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
@@ -780,13 +769,11 @@ function initEventListeners() {
     });
   });
 
-  // 🔒 FIX: Send Message using Event Delegation
   const sendBtn = document.getElementById('sendMsgBtn');
   if (sendBtn) {
     sendBtn.addEventListener('click', handleSendMsg);
   }
 
-  // Mobile scroll button
   const scrollBtn = document.getElementById('scrollBottomBtn');
   if (scrollBtn) {
     scrollBtn.addEventListener('click', () => {
@@ -799,9 +786,9 @@ async function handleSendMsg(e) {
   e.preventDefault();
   const btn = e.currentTarget;
   
-  // 🛡️ ANTI-SPAM: Timestamp check (bot fills form in < 2 seconds)
-  if (Date.now() - formLoadTime < 2000) {
-    return toast('Error', 'Please take a moment to fill out the form.');
+  // Simple anti-spam: require at least 3 seconds since page load
+  if (Date.now() - formLoadTime < 3000) {
+    return toast('Hold on', 'Please take a moment to fill out the form.');
   }
 
   const name = document.getElementById('mName').value.trim();
@@ -828,11 +815,11 @@ async function handleSendMsg(e) {
   toast('Sent!', `${profile.full_name?.split(' ')[0]} will respond soon`);
   ['mName','mEmail','mPhone','mMsg'].forEach(id => document.getElementById(id).value = '');
   
-  formLoadTime = Date.now(); // Reset timer for next message
+  formLoadTime = Date.now();
 }
 
 // ==========================================
-// 6. FALLBACK: SHOW ALL AGENTS
+// 7. FALLBACK: ALL AGENTS
 // ==========================================
 async function showAllAgents() {
   const { data: agents, error } = await sb.from('profiles')
@@ -869,14 +856,11 @@ async function showAllAgents() {
       <div class="agent-grid">
         ${agents.map(a => {
           const name = a.full_name || 'Agent';
-          const fallbackAvatar = `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=6b21a8&color=fff&size=128`;
-          const avatarUrl = a.avatar_url || fallbackAvatar;
           const agentUrl = a.slug ? `/agent/${encodeURIComponent(a.slug)}` : `?id=${a.id}`;
-          
           return `
             <a href="${agentUrl}" class="agent-card">
               <div class="agent-avatar">
-                <img src="${esc(avatarUrl)}" data-fallback="${fallbackAvatar}" style="width:100%;height:100%;object-fit:cover;">
+                <span>${esc(name.charAt(0).toUpperCase())}</span>
               </div>
               <div class="agent-name-small">${esc(name)}</div>
               <div class="agent-company-small">${esc(a.company || 'Independent Agent')}</div>
@@ -893,10 +877,9 @@ async function showAllAgents() {
   `;
 
   document.getElementById('sidebar').style.display = 'none';
-  attachImageErrorHandlers(); 
 }
 
-// Initialize
+// Start
 load();
 </script>
 </body>
