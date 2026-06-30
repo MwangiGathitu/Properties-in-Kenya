@@ -1,306 +1,241 @@
-import { supabase } from '/js/supabase.js';
-import { requireRole, logout } from '/js/auth.js';
-import { showToast, escapeHtml } from '/js/utils.js';
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Dashboard — RealtorOS</title>
 
-// ─── State ──────────────────────────────────────────────
-let healthChart = null;
-let lastHealthKey = '';
-let refreshTimeout = null;
-let initialLoad = true;
-let realtimeChannel = null;
-let refreshQueued = false;                // FIX 1 – true debounce lock
+  <!-- Core Styles -->
+  <link rel="stylesheet" href="/css/style.css">
 
-// Cache keys for partial rendering
-let lastStatsKey = '';
-let lastDecisionsKey = '';
-let lastAlertsKey = '';
-let lastEventsKey = '';
+  <!-- Tabler Icons -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
 
-// ─── Bootstrap ─────────────────────────────────────────
-async function init() {
-  const auth = await requireRole('admin');
-  if (!auth) return;
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js" defer></script>
 
-  document.getElementById('adminEmail').textContent = auth.user.email;
-  document.getElementById('logoutBtn').addEventListener('click', logout);
+  <!-- Main Bootstrap Script (UNCHANGED) -->
+  <script type="module" src="./dashboard.js" defer></script>
+</head>
 
-  await safeLoadDashboard();
-  initialLoad = false;
-  setupRealtime();
-}
+<body>
 
-// ─── Safe loader ──────────────────────────────────────
-async function safeLoadDashboard() {
-  try {
-    await loadDashboard();
-  } catch (err) {
-    console.error('Dashboard error:', err);
-    showToast('error', 'Dashboard error', 'An unexpected error occurred. Please reload.');
-  }
-}
+  <!-- Offline Banner -->
+  <div id="offlineBanner" class="offline-banner"></div>
 
-// ─── Core data loader ─────────────────────────────────
-async function loadDashboard() {
-  if (initialLoad) showLoading(true);
+  <!-- HEADER -->
+  <header class="os-header">
 
-  const { data, error } = await supabase.rpc('get_admin_dashboard');
+    <div class="header-left">
+      <a href="/apps/admin/" class="logo">🏠 RealtorOS</a>
+    </div>
 
-  if (initialLoad) showLoading(false);
-
-  if (error) {
-    showToast('error', 'Load failed', error.message);
-    return;
-  }
-
-  const d = data || {};
-  const stats = d.stats || {};
-  const history = d.health_history || [];
-  const decisions = d.pending_decisions || [];
-  const alerts = d.alerts || [];
-  const events = d.recent_activity || [];
-
-  renderStats(stats);
-  renderHealthChart(history);
-  renderPendingDecisions(decisions);
-  renderAlerts(alerts);
-  renderActivityFeed(events);
-}
-
-// ─── Stats (partial render) ───────────────────────────
-function renderStats(stats) {
-  const key = (stats.total ?? 0) + '-' + (stats.pending ?? 0) + '-' + (stats.approval_rate ?? 0);
-  if (key === lastStatsKey) return;
-  lastStatsKey = key;
-
-  document.getElementById('statTotal').textContent = stats.total ?? 0;
-  document.getElementById('statPending').textContent = stats.pending ?? 0;
-  document.getElementById('statApproved').textContent = stats.approved ?? 0;
-  document.getElementById('statRejected').textContent = stats.rejected ?? 0;
-  document.getElementById('statRate').textContent = (stats.approval_rate ?? 0) + '%';
-}
-
-// ─── Health Chart (smart update – FIX 2) ──────────────
-function renderHealthChart(history) {
-  const ctx = document.getElementById('healthChart').getContext('2d');
-
-  // Skip if data hasn't changed (by snapshot timestamps)
-  const currentKey = history && history.length
-    ? history.map(h => h.snapshot_at).join('|')
-    : '';
-  if (currentKey === lastHealthKey) return;
-  lastHealthKey = currentKey;
-
-  if (!history || history.length === 0) {
-    if (healthChart) {
-      healthChart.destroy();
-      healthChart = null;
-    }
-    return;
-  }
-
-  const labels = history.map(h => new Date(h.snapshot_at).toLocaleDateString()).reverse();
-  const approvalRates = history.map(h => h.approval_rate).reverse();
-  const fraudScores = history.map(h => h.avg_fraud_score).reverse();
-
-  // FIX 2 – update existing chart instead of destroying
-  if (!healthChart) {
-    // First creation
-    healthChart = new Chart(ctx, {
-      type: 'line',
-      data: {
-        labels,
-        datasets: [
-          { label: 'Approval Rate %', data: approvalRates, borderColor: 'green', yAxisID: 'y' },
-          { label: 'Avg Fraud Score', data: fraudScores, borderColor: 'red', yAxisID: 'y1' }
-        ]
-      },
-      options: {
-        scales: {
-          y: { beginAtZero: true, position: 'left', title: { display: true, text: 'Rate' } },
-          y1: { beginAtZero: true, position: 'right', title: { display: true, text: 'Score' }, grid: { drawOnChartArea: false } }
-        }
-      }
-    });
-  } else {
-    // Smart in‑place update (no destroy / recreate)
-    healthChart.data.labels = labels;
-    healthChart.data.datasets[0].data = approvalRates;
-    healthChart.data.datasets[1].data = fraudScores;
-    healthChart.update();
-  }
-}
-
-// ─── Pending Decisions (partial render) ────────────────
-function renderPendingDecisions(decisions) {
-  const key = decisions.length + '-' + (decisions[0]?.id || '');
-  if (key === lastDecisionsKey) return;
-  lastDecisionsKey = key;
-
-  const container = document.getElementById('pendingDecisions');
-  container.innerHTML = '';
-
-  if (!decisions || decisions.length === 0) {
-    container.innerHTML = '<p>No pending decisions.</p>';
-    return;
-  }
-
-  decisions.forEach(d => {
-    container.insertAdjacentHTML('beforeend', `
-      <div class="decision-card">
-        <strong>${escapeHtml(d.property_title || 'Untitled')}</strong>
-        <span class="badge">${escapeHtml(d.action)}</span>
-        <small>${new Date(d.created_at).toLocaleString()}</small>
-        <button data-action="approve-decision" data-id="${d.id}">Approve</button>
-        <button data-action="reject-decision" data-id="${d.id}">Reject</button>
+    <div class="header-center">
+      <div class="global-search-wrapper">
+        <i class="ti ti-search"></i>
+        <input type="text" id="globalSearchInput" placeholder="Search properties, agents, payments...">
+        <div id="globalSearchResults" class="search-results-dropdown"></div>
       </div>
-    `);
-  });
-}
+    </div>
 
-// ─── Alerts (partial render) ───────────────────────────
-function renderAlerts(alerts) {
-  const key = alerts.length + '-' + (alerts[0]?.id || '');
-  if (key === lastAlertsKey) return;
-  lastAlertsKey = key;
+    <div class="header-right">
+      <button id="themeToggle" class="icon-btn" title="Toggle Theme">
+        <i class="ti ti-moon"></i>
+      </button>
 
-  const container = document.getElementById('alerts');
-  container.innerHTML = '';
+      <span id="adminEmail" class="admin-email"></span>
+      <button id="logoutBtn" class="btn btn-outline">Logout</button>
+    </div>
 
-  if (!alerts || alerts.length === 0) {
-    container.innerHTML = '<p>All clear.</p>';
-    return;
-  }
+  </header>
 
-  alerts.forEach(a => {
-    container.insertAdjacentHTML('beforeend', `
-      <div class="alert-card severity-${escapeHtml(a.severity)}">
-        <strong>${escapeHtml(a.title)}</strong>
-        <p>${escapeHtml(a.message)}</p>
-        <small>Occurrences: ${a.occurrences} | First seen: ${new Date(a.first_seen).toLocaleString()}</small>
+  <!-- Toasts -->
+  <div id="toastContainer" class="toast-container"></div>
+
+  <!-- MAIN DASHBOARD SHELL -->
+  <main class="dashboard-os">
+
+    <!-- OPS CENTER -->
+    <section id="operationsCenter" data-module="operations" class="ops-hero-section">
+      <div class="ops-loading">Loading system status...</div>
+    </section>
+
+    <!-- ATTENTION -->
+    <section id="needsAttention" data-module="attention" class="attention-section"></section>
+
+    <!-- GRID: KPI + REVENUE -->
+    <div class="grid-2col">
+
+      <!-- STATS -->
+      <section id="statsContainer" data-module="stats" class="card">
+
+        <div class="card-header">
+          <h3><i class="ti ti-chart-bar"></i> Platform Statistics</h3>
+        </div>
+
+        <div class="stats-grid">
+
+          <div class="stat-card">
+            <span class="stat-label">Total Listings</span>
+            <span class="stat-value" id="statTotal">-</span>
+          </div>
+
+          <div class="stat-card pending">
+            <span class="stat-label">Pending</span>
+            <span class="stat-value" id="statPending">-</span>
+          </div>
+
+          <div class="stat-card approved">
+            <span class="stat-label">Approved</span>
+            <span class="stat-value" id="statApproved">-</span>
+          </div>
+
+          <div class="stat-card rejected">
+            <span class="stat-label">Rejected</span>
+            <span class="stat-value" id="statRejected">-</span>
+          </div>
+
+          <div class="stat-card rate">
+            <span class="stat-label">Approval Rate</span>
+            <span class="stat-value" id="statRate">-</span>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- REVENUE -->
+      <section id="revenueContainer" data-module="revenue" class="card">
+
+        <div class="card-header">
+          <h3><i class="ti ti-credit-card"></i> Revenue Dashboard</h3>
+          <a href="/apps/admin/payments.html" class="btn-link">View All →</a>
+        </div>
+
+        <div id="revenueDashboard">
+          <div class="rev-loading">Loading financial data...</div>
+        </div>
+
+      </section>
+    </div>
+
+    <!-- GRID: QUEUE + ALERTS -->
+    <div class="grid-2col">
+
+      <!-- QUEUE -->
+      <section id="queueContainer" data-module="queue" class="card">
+
+        <div class="card-header">
+          <h3><i class="ti ti-list-check"></i> Moderation Queue</h3>
+          <a href="/apps/admin/moderation.html" class="btn-link">View All →</a>
+        </div>
+
+        <div id="pendingDecisions">
+          <div class="list-loading">Loading queue...</div>
+        </div>
+
+      </section>
+
+      <!-- ALERTS -->
+      <section id="alertsContainer" data-module="alerts" class="card">
+
+        <div class="card-header">
+          <h3><i class="ti ti-alert-triangle"></i> Correction Inbox</h3>
+          <a href="/apps/admin/corrections.html" class="btn-link">Manage →</a>
+        </div>
+
+        <div id="alerts">
+          <div class="list-loading">Loading alerts...</div>
+        </div>
+
+      </section>
+
+    </div>
+
+    <!-- AI + HEALTH -->
+    <div class="grid-2col">
+
+      <!-- AI CENTER -->
+      <section id="aiCommandCenter" data-module="ai" class="card">
+
+        <div class="card-header">
+          <h3><i class="ti ti-robot"></i> AI Command Center</h3>
+        </div>
+
+        <div class="ai-modules-grid">
+          <div class="list-loading">Loading AI modules...</div>
+        </div>
+
+      </section>
+
+      <!-- HEALTH -->
+      <section id="healthContainer" data-module="health" class="card">
+
+        <div class="card-header">
+          <h3><i class="ti ti-heart-rate-monitor"></i> System Health</h3>
+        </div>
+
+        <div class="chart-wrapper">
+          <canvas id="healthChart" width="400" height="200"></canvas>
+        </div>
+
+        <div id="healthIndicators" class="health-indicators"></div>
+
+      </section>
+
+    </div>
+
+    <!-- ACTIVITY + MAP -->
+    <div class="grid-2col">
+
+      <!-- ACTIVITY -->
+      <section id="activityContainer" data-module="activity" class="card">
+
+        <div class="card-header">
+          <h3><i class="ti ti-activity"></i> Live Activity Feed</h3>
+        </div>
+
+        <div id="activityFeed">
+          <div class="list-loading">Loading activity...</div>
+        </div>
+
+      </section>
+
+      <!-- MAP -->
+      <section id="kenyaMapWidget" data-module="map" class="card">
+
+        <div class="card-header">
+          <h3><i class="ti ti-map"></i> Live Kenya Map</h3>
+        </div>
+
+        <div class="map-placeholder">
+          <p>Interactive Heatmap Loading...</p>
+        </div>
+
+      </section>
+
+    </div>
+
+  </main>
+
+  <!-- COMMAND PALETTE -->
+  <div id="commandPaletteModal" class="command-palette-modal" style="display: none;">
+    <div class="command-palette-box">
+
+      <div class="command-palette-input-wrapper">
+        <i class="ti ti-search"></i>
+        <input type="text" id="commandPaletteInput" placeholder="Type a command or search...">
+        <kbd>ESC</kbd>
       </div>
-    `);
-  });
-}
 
-// ─── Activity Feed ─────────────────────────────────────
-function renderActivityFeed(events) {
-  const key = events.length + '-' + (events[0]?.id || '');
-  if (key === lastEventsKey) return;
-  lastEventsKey = key;
+      <div id="commandPaletteList" class="command-palette-list"></div>
 
-  const container = document.getElementById('activityFeed');
-  container.innerHTML = '';
+    </div>
+  </div>
 
-  if (!events || events.length === 0) {
-    container.innerHTML = '<p>No recent activity.</p>';
-    return;
-  }
+  <!-- GLOBAL LOADING -->
+  <div id="globalLoading" class="global-loading">
+    <div class="spinner"></div>
+  </div>
 
-  events.forEach(ev => {
-    container.insertAdjacentHTML('beforeend', `
-      <div class="activity-item">
-        <span class="type">${escapeHtml(ev.type)}</span>
-        <span class="time">${new Date(ev.created_at).toLocaleTimeString()}</span>
-        <pre class="payload-pre"></pre>
-      </div>
-    `);
-    const lastPre = container.querySelector('.activity-item:last-child .payload-pre');
-    if (lastPre) {
-      lastPre.textContent = typeof ev.payload === 'object'
-        ? JSON.stringify(ev.payload, null, 2)
-        : ev.payload;
-    }
-  });
-}
-
-// ─── Realtime ──────────────────────────────────────────
-function setupRealtime() {
-  realtimeChannel = supabase
-    .channel('admin-live')
-    .on('postgres_changes', { event: '*', schema: 'public', table: 'pending_decisions' }, () => requestRefresh())
-    .on('postgres_changes', { event: '*', schema: 'public', table: 'correction_inbox' }, () => requestRefresh())
-    .on('postgres_changes', { event: '*', schema: 'public', table: 'events' }, () => requestRefresh())
-    .subscribe();
-}
-
-// FIX 1 – true debounce: only one refresh at a time, 800ms buffer
-function requestRefresh() {
-  if (refreshQueued) return;               // already waiting
-  refreshQueued = true;
-
-  setTimeout(async () => {
-    try {
-      await safeLoadDashboard();
-    } finally {
-      refreshQueued = false;               // release when done (or error)
-    }
-  }, 800);
-}
-
-// ─── Channel cleanup ───────────────────────────────────
-window.addEventListener('beforeunload', () => {
-  if (realtimeChannel) {
-    supabase.removeChannel(realtimeChannel);
-    realtimeChannel = null;
-  }
-});
-
-// ─── Edge‑function caller (FIX 3 – explicit session guard) ──
-async function callFunction(name, body) {
-  // FIX 3 – fail gracefully if no valid session
-  const { data: sessionData } = await supabase.auth.getSession();
-  const accessToken = sessionData?.session?.access_token;
-
-  if (!accessToken) {
-    showToast('error', 'Session expired', 'Please login again.');
-    return null;
-  }
-
-  const { data, error } = await supabase.functions.invoke(name, {
-    body,
-    headers: { Authorization: `Bearer ${accessToken}` }
-  });
-
-  if (error) {
-    showToast('error', 'Request failed', error.message);
-    return null;
-  }
-  return data;
-}
-
-// ─── Action delegation ─────────────────────────────────
-document.addEventListener('click', async (e) => {
-  const btn = e.target.closest('button[data-action]');
-  if (!btn) return;
-
-  const action = btn.dataset.action;
-  const id = btn.dataset.id;
-
-  if (action === 'approve-decision' || action === 'reject-decision') {
-    const actionType = action === 'approve-decision' ? 'approve' : 'reject';
-
-    const originalHtml = btn.innerHTML;
-    btn.disabled = true;
-    btn.innerHTML = 'Processing…';
-
-    const result = await callFunction('Super-Admin-Review', {
-      decision_id: id,
-      action: actionType
-    });
-
-    btn.disabled = false;
-    btn.innerHTML = originalHtml;
-
-    if (result) {
-      showToast('success', 'Done', `Decision ${actionType}d.`);
-      safeLoadDashboard();
-    }
-  }
-});
-
-// ─── Loading overlay ───────────────────────────────────
-function showLoading(on) {
-  document.getElementById('globalLoading').classList.toggle('active', on);
-}
-
-init();
+</body>
+</html>
