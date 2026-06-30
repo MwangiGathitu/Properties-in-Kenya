@@ -1,3 +1,8 @@
-"scripts": {
-  "start": "echo no build needed"
+{
+  "name": "properties-in-kenya",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "start": "echo 'Static site – no build required'"
+  }
 }
