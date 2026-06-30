@@ -1,0 +1,910 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Real Estate Insights — Properties in Kenya</title>
+  <meta name="description" content="Caretaker Intelligence: expert guides, market analysis, and investment tips for Kenya’s property market." />
+  <meta name="theme-color" content="#0F172A" />
+
+  <!-- Fonts & Icons -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400..700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+
+  <style>
+    /* =============================================
+       DESIGN TOKENS
+    ============================================= */
+    :root {
+      --space-1: 4px; --space-2: 8px; --space-3: 12px; --space-4: 16px; --space-5: 20px;
+      --space-6: 24px; --space-8: 32px; --space-10: 40px; --space-12: 48px; --space-16: 64px;
+
+      --bg-page: #FAFAFA;
+      --bg-surface: #FFFFFF;
+      --border-light: #E8ECF0;
+      --text-primary: #0F172A;
+      --text-secondary: #475569;
+      --text-muted: #94A3B8;
+      --accent: #EA580C;
+      --accent-light: #F97316;
+
+      --shadow-sm: 0 1px 2px rgba(0,0,0,0.04);
+      --shadow-md: 0 4px 12px rgba(0,0,0,0.06);
+      --shadow-lg: 0 12px 32px rgba(0,0,0,0.08);
+      --shadow-featured: 0 20px 48px rgba(0,0,0,0.12);
+
+      --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+      --text-xs: 0.75rem; --text-sm: 0.875rem; --text-base: 1rem; --text-lg: 1.125rem;
+      --text-xl: 1.25rem; --text-2xl: 1.5rem; --text-3xl: 1.875rem; --text-4xl: 2.25rem;
+
+      --radius-sm: 8px; --radius-md: 12px; --radius-lg: 16px; --radius-xl: 24px;
+      --transition-fast: 150ms ease; --transition-base: 250ms ease;
+    }
+
+    /* =============================================
+       RESET & BASE
+    ============================================= */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; -webkit-font-smoothing: antialiased; }
+    body {
+      font-family: var(--font-sans);
+      font-size: var(--text-base);
+      line-height: 1.7;
+      color: var(--text-primary);
+      background: var(--bg-page);
+      overflow-x: hidden;
+    }
+    img { max-width: 100%; height: auto; display: block; }
+    a { color: inherit; text-decoration: none; }
+    button { font: inherit; cursor: pointer; border: none; background: none; }
+    :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+    /* Subtle noise texture */
+    body::before {
+      content: ''; position: fixed; inset: 0; opacity: 0.02; pointer-events: none;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+      z-index: -1;
+    }
+
+    /* Reading progress */
+    #progress-bar {
+      position: fixed; top: 0; left: 0; height: 3px; background: var(--accent);
+      z-index: 9999; width: 0; transition: width 0.1s linear;
+    }
+
+    /* =============================================
+       NAVIGATION (glassmorphic)
+    ============================================= */
+    .nav {
+      position: sticky; top: 0; z-index: 1000;
+      background: rgba(255,255,255,0.85); backdrop-filter: blur(20px);
+      border-bottom: 1px solid rgba(0,0,0,0.05); height: 64px;
+    }
+    .nav-inner {
+      max-width: 1280px; margin: 0 auto; padding: 0 var(--space-6);
+      height: 100%; display: flex; align-items: center; justify-content: space-between;
+    }
+    .nav-logo {
+      display: flex; align-items: center; gap: var(--space-3);
+      font-weight: 700; font-size: var(--text-lg); color: var(--text-primary);
+    }
+    .nav-logo-icon {
+      width: 36px; height: 36px; background: var(--accent); border-radius: var(--radius-md);
+      display: grid; place-items: center; color: white; font-size: 1rem;
+    }
+    .nav-links { display: flex; gap: 4px; }
+    .nav-link {
+      padding: 8px 16px; font-weight: 500; font-size: var(--text-sm);
+      color: var(--text-secondary); border-radius: 9999px;
+      transition: background var(--transition-fast), color var(--transition-fast);
+    }
+    .nav-link:hover, .nav-link.active { background: rgba(234,88,12,0.08); color: var(--accent); }
+    .btn-signin {
+      background: var(--accent); color: white; font-weight: 600; padding: 8px 20px;
+      border-radius: 9999px; font-size: var(--text-sm);
+      box-shadow: 0 4px 12px rgba(234,88,12,0.3);
+      transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+    }
+    .btn-signin:hover { transform: translateY(-1px); box-shadow: 0 8px 20px rgba(234,88,12,0.4); }
+
+    /* Hamburger */
+    .hamburger { display: none; width: 40px; height: 40px; border-radius: var(--radius-sm); flex-direction: column; align-items: center; justify-content: center; gap: 5px; }
+    .hamburger-line { width: 20px; height: 2px; background: var(--text-primary); border-radius: 2px; transition: var(--transition-base); }
+
+    /* Mobile drawer */
+    .mobile-overlay {
+      position: fixed; inset: 0; background: rgba(0,0,0,0.4); backdrop-filter: blur(4px);
+      z-index: 1100; opacity: 0; pointer-events: none; transition: opacity var(--transition-base);
+    }
+    .mobile-overlay.active { opacity: 1; pointer-events: auto; }
+    .mobile-drawer {
+      position: fixed; top: 0; right: -100%; width: 85%; max-width: 360px; height: 100vh;
+      background: var(--bg-surface); z-index: 1200; box-shadow: var(--shadow-featured);
+      transition: right var(--transition-base) ease; overflow-y: auto;
+      display: flex; flex-direction: column;
+    }
+    .mobile-drawer.active { right: 0; }
+    .mobile-header { display: flex; justify-content: space-between; align-items: center; padding: var(--space-4) var(--space-6); border-bottom: 1px solid var(--border-light); }
+    .mobile-close { width: 36px; height: 36px; border-radius: 50%; display: grid; place-items: center; background: var(--bg-page); color: var(--text-secondary); }
+    .mobile-menu { padding: var(--space-4); display: flex; flex-direction: column; gap: var(--space-2); }
+    .mobile-link { display: flex; align-items: center; gap: var(--space-3); padding: 14px 16px; border-radius: var(--radius-md); font-weight: 500; transition: background var(--transition-fast); }
+    .mobile-link:hover { background: var(--bg-page); }
+    .mobile-divider { height: 1px; background: var(--border-light); margin: var(--space-3) 0; }
+    .mobile-cta { display: block; text-align: center; padding: 14px; background: var(--accent); color: white; font-weight: 700; border-radius: var(--radius-md); margin-top: auto; }
+
+    /* =============================================
+       HERO SECTION (centred)
+    ============================================= */
+    .hero {
+      position: relative; padding: var(--space-16) var(--space-6) var(--space-12);
+      background: linear-gradient(135deg, #0F172A 0%, #1E293B 100%);
+      display: flex; align-items: center; justify-content: center;
+    }
+    .hero::before {
+      content: ''; position: absolute; inset: 0;
+      background: url('https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=2000&q=80') center/cover no-repeat;
+      opacity: 0.12; mix-blend-mode: overlay;
+    }
+    .hero-content { position: relative; z-index: 2; max-width: 720px; text-align: center; }
+    .hero-badge {
+      display: inline-flex; align-items: center; gap: var(--space-2);
+      background: rgba(255,255,255,0.12); backdrop-filter: blur(10px);
+      padding: var(--space-2) var(--space-5); border-radius: 9999px;
+      font-size: var(--text-sm); font-weight: 600; color: white; margin-bottom: var(--space-6);
+    }
+    .hero-badge-dot { width: 8px; height: 8px; background: var(--accent); border-radius: 50%; animation: pulse 2s infinite; }
+    @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.7;transform:scale(1.2)} }
+    .hero-title {
+      font-size: clamp(2.5rem, 6vw, 4rem); font-weight: 800;
+      letter-spacing: -0.03em; line-height: 1.1; color: white; margin-bottom: var(--space-4);
+    }
+    .hero-title span { color: var(--accent-light); }
+    .hero-subtitle { font-size: var(--text-lg); color: rgba(255,255,255,0.85); margin: 0 auto var(--space-8); max-width: 560px; }
+
+    .search-bar {
+      background: white; border-radius: 9999px; padding: var(--space-2);
+      box-shadow: var(--shadow-lg); display: flex; align-items: center; gap: 4px;
+      max-width: 600px; margin: 0 auto;
+    }
+    .search-bar i { color: var(--text-muted); margin-left: var(--space-4); }
+    .search-input {
+      flex: 1; border: none; outline: none; padding: 14px 16px;
+      font-size: var(--text-base); background: transparent;
+    }
+    .search-btn {
+      background: var(--accent); color: white; font-weight: 600; padding: 14px 28px;
+      border-radius: 9999px; font-size: var(--text-sm); display: flex; align-items: center; gap: var(--space-2);
+      transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+      box-shadow: 0 4px 12px rgba(234,88,12,0.3);
+    }
+    .search-btn:hover { transform: scale(1.03); box-shadow: 0 8px 20px rgba(234,88,12,0.4); }
+
+    /* Category pills */
+    .category-nav {
+      position: sticky; top: 64px; z-index: 999;
+      background: rgba(255,255,255,0.85); backdrop-filter: blur(20px);
+      border-bottom: 1px solid rgba(0,0,0,0.05); padding: var(--space-4) 0;
+    }
+    .category-scroll {
+      display: flex; gap: var(--space-2); overflow-x: auto; scrollbar-width: none;
+      padding: 0 var(--space-6); scroll-behavior: smooth;
+    }
+    .category-scroll::-webkit-scrollbar { display: none; }
+    .category-pill {
+      flex-shrink: 0; padding: 10px 24px; background: var(--bg-surface);
+      border: 1px solid var(--border-light); border-radius: 9999px;
+      font-size: var(--text-sm); font-weight: 600; color: var(--text-secondary);
+      transition: all var(--transition-fast);
+    }
+    .category-pill:hover { border-color: var(--accent); color: var(--accent); }
+    .category-pill.active {
+      background: var(--accent); border-color: var(--accent); color: white;
+      box-shadow: 0 4px 12px rgba(234,88,12,0.3);
+    }
+
+    /* Featured Story */
+    .featured-story {
+      display: grid; grid-template-columns: 1fr 1fr; background: var(--bg-surface);
+      border-radius: var(--radius-xl); overflow: hidden;
+      box-shadow: var(--shadow-featured); margin: var(--space-8) 0;
+    }
+    .featured-image { position: relative; overflow: hidden; min-height: 420px; }
+    .featured-image img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.6s; }
+    .featured-story:hover .featured-image img { transform: scale(1.04); }
+    .featured-badge {
+      position: absolute; top: var(--space-6); left: var(--space-6);
+      background: var(--accent); color: white; padding: var(--space-2) var(--space-4);
+      border-radius: var(--radius-sm); font-weight: 700; font-size: var(--text-xs);
+      text-transform: uppercase; letter-spacing: 0.5px;
+    }
+    .featured-content {
+      padding: var(--space-10) var(--space-8); display: flex; flex-direction: column; justify-content: center;
+    }
+    .featured-meta { display: flex; gap: var(--space-4); font-size: var(--text-sm); color: var(--text-muted); margin-bottom: var(--space-4); }
+    .featured-title { font-size: var(--text-3xl); font-weight: 700; letter-spacing: -0.02em; margin-bottom: var(--space-4); line-height: 1.2; }
+    .featured-excerpt { font-size: var(--text-lg); color: var(--text-secondary); line-height: 1.7; margin-bottom: var(--space-6); }
+    .author-row { display: flex; align-items: center; gap: var(--space-3); margin-top: auto; }
+    .author-avatar {
+      width: 44px; height: 44px; border-radius: 50%; background: linear-gradient(135deg, var(--accent), var(--accent-light));
+      display: grid; place-items: center; color: white; font-weight: 700; font-size: var(--text-base);
+    }
+    .author-name { font-weight: 600; font-size: var(--text-sm); }
+    .author-role { font-size: var(--text-xs); color: var(--text-muted); }
+
+    /* Editor's Picks */
+    .section-heading {
+      display: flex; align-items: baseline; justify-content: space-between;
+      margin: var(--space-8) 0 var(--space-4);
+    }
+    .section-title { font-size: var(--text-2xl); font-weight: 700; letter-spacing: -0.01em; }
+    .picks-scroll {
+      display: flex; gap: var(--space-4); overflow-x: auto; scrollbar-width: none;
+      padding-bottom: var(--space-2);
+    }
+    .picks-scroll::-webkit-scrollbar { display: none; }
+    .pick-card {
+      flex: 0 0 280px; background: var(--bg-surface); border-radius: var(--radius-lg);
+      overflow: hidden; box-shadow: var(--shadow-sm); transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+    }
+    .pick-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-lg); }
+    .pick-image { height: 160px; overflow: hidden; }
+    .pick-image img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.4s; }
+    .pick-card:hover .pick-image img { transform: scale(1.05); }
+    .pick-body { padding: var(--space-4); }
+    .pick-category { font-size: var(--text-xs); color: var(--accent); font-weight: 600; text-transform: uppercase; margin-bottom: var(--space-2); }
+    .pick-title { font-size: var(--text-base); font-weight: 700; line-height: 1.3; }
+
+    /* =============================================
+       ARTICLE GRID – now with THREE sizes
+    ============================================= */
+    .articles-grid {
+      display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--space-6);
+    }
+    .article-card {
+      background: var(--bg-surface); border-radius: var(--radius-lg); overflow: hidden;
+      box-shadow: var(--shadow-sm); transition: transform var(--transition-base), box-shadow var(--transition-base);
+      display: flex; flex-direction: column;
+    }
+    .article-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-lg); }
+
+    /* Small card – default */
+    .card-image { position: relative; height: 200px; overflow: hidden; }
+    .card-image img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s; }
+    .article-card:hover .card-image img { transform: scale(1.06); }
+
+    /* Medium card – taller image */
+    .article-card--medium .card-image { height: 260px; }
+
+    /* Large card – spans 2 columns, taller image */
+    .article-card--large { grid-column: span 2; }
+    .article-card--large .card-image { height: 300px; }
+
+    /* Common card elements */
+    .card-badge {
+      position: absolute; top: var(--space-4); left: var(--space-4);
+      padding: var(--space-1) var(--space-3); background: rgba(255,255,255,0.95);
+      backdrop-filter: blur(8px); border-radius: var(--radius-sm); font-size: var(--text-xs); font-weight: 700;
+      text-transform: uppercase; color: var(--accent);
+    }
+    .card-bookmark {
+      position: absolute; top: var(--space-4); right: var(--space-4);
+      width: 36px; height: 36px; background: rgba(255,255,255,0.9); backdrop-filter: blur(8px);
+      border-radius: 50%; display: grid; place-items: center; color: var(--text-muted);
+      transition: color var(--transition-fast), transform var(--transition-fast);
+    }
+    .card-bookmark:hover { color: var(--accent); transform: scale(1.1); }
+    .card-body { padding: var(--space-5); flex: 1; display: flex; flex-direction: column; }
+    .card-meta { display: flex; gap: var(--space-3); font-size: var(--text-xs); color: var(--text-muted); margin-bottom: var(--space-2); }
+    .card-title { font-size: var(--text-lg); font-weight: 700; line-height: 1.3; margin-bottom: var(--space-2); }
+    .card-excerpt {
+      font-size: var(--text-sm); color: var(--text-secondary); line-height: 1.6; flex: 1;
+      display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;
+    }
+    .card-footer {
+      display: flex; justify-content: space-between; align-items: center; padding-top: var(--space-4); border-top: 1px solid var(--border-light);
+    }
+    .card-author { display: flex; align-items: center; gap: var(--space-2); font-size: var(--text-xs); font-weight: 600; }
+    .card-author-avatar {
+      width: 24px; height: 24px; border-radius: 50%; background: var(--accent); color: white;
+      display: grid; place-items: center; font-size: 10px; font-weight: 700;
+    }
+    .read-time { font-size: var(--text-xs); color: var(--text-muted); display: flex; align-items: center; gap: 4px; }
+
+    /* Skeleton */
+    .skeleton {
+      background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+      background-size: 200% 100%; animation: shimmer 1.5s infinite; border-radius: var(--radius-sm);
+    }
+    @keyframes shimmer { 0%{background-position:200% 0}100%{background-position:-200% 0} }
+
+    /* Load More */
+    .load-more-wrapper { text-align: center; padding: var(--space-10) 0; }
+    .load-more-btn {
+      background: var(--bg-surface); border: 1px solid var(--border-light);
+      padding: var(--space-4) var(--space-8); border-radius: 9999px;
+      font-weight: 600; font-size: var(--text-base); color: var(--text-secondary);
+      transition: all var(--transition-fast);
+    }
+    .load-more-btn:hover { border-color: var(--accent); color: var(--accent); box-shadow: var(--shadow-md); }
+
+    /* Newsletter */
+    .newsletter {
+      background: linear-gradient(135deg, #0F172A 0%, #1E293B 100%); border-radius: var(--radius-xl);
+      padding: var(--space-16) var(--space-6); text-align: center; color: white;
+      margin: var(--space-12) 0; position: relative; overflow: hidden;
+    }
+    .newsletter::before {
+      content: ''; position: absolute; top: -30%; right: -20%; width: 400px; height: 400px;
+      background: radial-gradient(circle, rgba(234,88,12,0.2), transparent 70%); pointer-events: none;
+    }
+    .newsletter-title { font-size: var(--text-3xl); font-weight: 700; margin-bottom: var(--space-3); position: relative; }
+    .newsletter-subtitle { font-size: var(--text-lg); opacity: 0.85; max-width: 500px; margin: 0 auto var(--space-8); position: relative; }
+    .newsletter-form { display: flex; gap: var(--space-3); max-width: 500px; margin: 0 auto; position: relative; }
+    .newsletter-input {
+      flex: 1; padding: var(--space-4) var(--space-6); border: none; border-radius: 9999px;
+      font-size: var(--text-base); outline: none;
+    }
+    .newsletter-btn {
+      padding: var(--space-4) var(--space-8); background: var(--accent); color: white;
+      border-radius: 9999px; font-weight: 600; font-size: var(--text-base);
+      transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+      box-shadow: 0 4px 12px rgba(234,88,12,0.3);
+    }
+    .newsletter-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(234,88,12,0.4); }
+    .trust-line { font-size: var(--text-xs); opacity: 0.7; margin-top: var(--space-4); position: relative; }
+
+    /* Footer */
+    .footer {
+      border-top: 1px solid var(--border-light); padding: var(--space-8) var(--space-6);
+      display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap;
+      gap: var(--space-4); color: var(--text-muted); font-size: var(--text-sm);
+    }
+    .footer a { transition: color var(--transition-fast); }
+    .footer a:hover { color: var(--accent); }
+
+    /* =============================================
+       RESPONSIVE
+    ============================================= */
+    @media (max-width: 1024px) {
+      .nav-links { display: none; }
+      .hamburger { display: flex; }
+      .articles-grid { grid-template-columns: repeat(2, 1fr); }
+      .article-card--large { grid-column: span 2; }
+      .featured-story { grid-template-columns: 1fr; }
+      .featured-content { padding: var(--space-6); }
+    }
+
+    @media (max-width: 768px) {
+      .hero { padding: var(--space-10) var(--space-4) var(--space-8); }
+      .search-bar { flex-direction: column; border-radius: var(--radius-lg); padding: var(--space-3); }
+      .search-btn { width: 100%; justify-content: center; }
+      .articles-grid { grid-template-columns: 1fr; }
+      .article-card--large, .article-card--medium { grid-column: span 1; }  /* all single column on mobile */
+      .newsletter-form { flex-direction: column; }
+      .newsletter-btn { width: 100%; }
+      .category-scroll { padding: 0 var(--space-4); }
+      .pick-card { flex: 0 0 240px; }
+    }
+  </style>
+</head>
+<body>
+  <!-- Reading progress indicator -->
+  <div id="progress-bar"></div>
+
+  <!-- Navigation -->
+  <nav class="nav" aria-label="Primary">
+    <div class="nav-inner">
+      <a href="/" class="nav-logo">
+        <div class="nav-logo-icon"><i class="fas fa-home"></i></div>
+        <span>Properties in Kenya</span>
+      </a>
+      <div class="nav-links">
+        <a href="/buy.html" class="nav-link">Buy</a>
+        <a href="/rent.html" class="nav-link">Rent</a>
+        <a href="/blog.html" class="nav-link active">Blog</a>
+        <a href="/agents.html" class="nav-link">Agents</a>
+        <a href="/login.html" class="btn-signin">Sign In</a>
+      </div>
+      <button class="hamburger" id="hamburgerBtn" aria-label="Open menu" aria-expanded="false">
+        <span class="hamburger-line"></span>
+        <span class="hamburger-line"></span>
+        <span class="hamburger-line"></span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- Mobile drawer -->
+  <div class="mobile-overlay" id="mobileOverlay" aria-hidden="true"></div>
+  <div class="mobile-drawer" id="mobileDrawer" aria-label="Mobile menu">
+    <div class="mobile-header">
+      <span class="nav-logo" style="font-size:1rem"><i class="fas fa-home" style="color:var(--accent)"></i> Menu</span>
+      <button class="mobile-close" id="closeMobileMenu" aria-label="Close menu"><i class="fas fa-times"></i></button>
+    </div>
+    <div class="mobile-menu">
+      <a href="/buy.html" class="mobile-link"><i class="fas fa-home"></i> Buy</a>
+      <a href="/rent.html" class="mobile-link"><i class="fas fa-key"></i> Rent</a>
+      <a href="/blog.html" class="mobile-link"><i class="fas fa-newspaper"></i> Blog</a>
+      <a href="/agents.html" class="mobile-link"><i class="fas fa-users"></i> Agents</a>
+      <div class="mobile-divider"></div>
+      <a href="/login.html" class="mobile-cta">Sign In</a>
+    </div>
+  </div>
+
+  <main id="main-content">
+    <!-- Hero Section -->
+    <section class="hero">
+      <div class="hero-content">
+        <div class="hero-badge">
+          <span class="hero-badge-dot"></span>
+          Caretaker Intelligence
+        </div>
+        <h1 class="hero-title">Kenya’s <span>Property</span> Market, Decoded</h1>
+        <p class="hero-subtitle">Expert analysis, investment guides, and trusted advice curated by the Caretaker AI.</p>
+        <div class="search-bar">
+          <i class="fas fa-search"></i>
+          <input type="text" class="search-input" id="blogSearch" placeholder="Search articles…" aria-label="Search articles" />
+          <button class="search-btn" id="blogSearchBtn"><i class="fas fa-arrow-right"></i> Search</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Sticky Category Pills -->
+    <div class="category-nav" id="categoryNav">
+      <div class="category-scroll" id="categoryScroll"></div>
+    </div>
+
+    <div class="container" style="max-width:1280px; margin:0 auto; padding:0 var(--space-6);">
+      <!-- Featured Story -->
+      <div id="featuredContainer"></div>
+
+      <!-- Editor's Picks -->
+      <div class="section-heading">
+        <h2 class="section-title">Editor’s Picks</h2>
+      </div>
+      <div class="picks-scroll" id="picksContainer"></div>
+
+      <!-- Main Insights Grid (now with variable sizes) -->
+      <div class="section-heading" style="margin-top:var(--space-12);">
+        <h2 class="section-title">Latest Insights</h2>
+      </div>
+      <div class="articles-grid" id="mainGridContainer"></div>
+
+      <!-- Load More Button -->
+      <div class="load-more-wrapper" id="loadMoreWrapper">
+        <button class="load-more-btn" id="loadMoreBtn"><i class="fas fa-plus" style="margin-right:8px;"></i> Load More Articles</button>
+      </div>
+    </div>
+
+    <!-- Newsletter -->
+    <section class="newsletter" id="newsletter">
+      <h2 class="newsletter-title">Join 12,000+ investors and buyers</h2>
+      <p class="newsletter-subtitle">Weekly market trends, investment tips, and exclusive deals — straight to your inbox.</p>
+      <form class="newsletter-form" id="newsletterForm">
+        <input type="email" class="newsletter-input" placeholder="Enter your email" aria-label="Email address" required />
+        <button type="submit" class="newsletter-btn">Subscribe</button>
+      </form>
+      <p class="trust-line">No spam, unsubscribe anytime.</p>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+      <div>© 2026 Properties in Kenya</div>
+      <div style="display:flex; gap:24px;">
+        <a href="#">Terms</a>
+        <a href="#">Privacy</a>
+        <a href="#">Cookies</a>
+      </div>
+    </footer>
+  </main>
+
+  <script>
+    // ======================
+    // CARETAKER INTELLIGENCE DATA
+    // ======================
+    const caretakerData = {
+      featured_story: {
+        title: "How to Buy Land in Kenya Without Getting Scammed",
+        category: "guide",
+        caretaker_score: 96,
+        tags: ["land-buying", "due-diligence", "scam-prevention", "legal"],
+        excerpt: "A comprehensive step-by-step guide to verifying title deeds, conducting due diligence with licensed surveyors, and completing land purchases safely.",
+        author: { name: "John Kamau", role: "Senior Property Lawyer", initials: "JK" },
+        date: "June 28, 2026",
+        readTime: "12 min",
+        image: "https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=1200&q=80",
+        url: "/blog/buy-land-kenya-safely"
+      },
+      editor_picks: [
+        {
+          title: "Best Nairobi Neighborhoods for Families in 2026",
+          category: "market",
+          caretaker_score: 87,
+          tags: ["nairobi", "families", "neighborhood-guide", "prices"],
+          excerpt: "From Kilimani to Ruai — discover the top estates based on schools, security, and value.",
+          author: { name: "Sarah Mwangi", initials: "SM" },
+          date: "June 25, 2026",
+          readTime: "8 min",
+          image: "https://images.unsplash.com/photo-1582407947304-fd86f028f716?w=600&q=80",
+          url: "/blog/best-nairobi-neighborhoods-2026"
+        },
+        {
+          title: "Ruai Property Investment Guide: Why Prices Are Rising",
+          category: "investment",
+          caretaker_score: 84,
+          tags: ["ruai", "investment", "appreciation", "nairobi"],
+          excerpt: "Analysis of Ruai's rapid growth and why it's becoming one of Nairobi's hottest investment areas.",
+          author: { name: "Peter Ochieng", initials: "PO" },
+          date: "June 22, 2026",
+          readTime: "10 min",
+          image: "https://images.unsplash.com/photo-1551833227-8e3512960a83?w=600&q=80",
+          url: "/blog/ruai-property-investment-guide"
+        },
+        {
+          title: "7 Property Scams in Kenya and How to Avoid Them",
+          category: "legal",
+          caretaker_score: 81,
+          tags: ["scam-prevention", "fraud", "legal-protection"],
+          excerpt: "Protect yourself from fake title deeds, fraudulent agents, and other common property scams.",
+          author: { name: "Jane Wanjiku", initials: "JW" },
+          date: "June 18, 2026",
+          readTime: "7 min",
+          image: "https://images.unsplash.com/photo-1450101499163-c8848c66ca85?w=600&q=80",
+          url: "/blog/property-scams-kenya"
+        }
+      ],
+      main_grid: [
+        {
+          title: "First-Time Home Buyer's Complete Guide to Kenya",
+          category: "guide",
+          caretaker_score: 79,
+          tags: ["first-time-buyer", "mortgage", "budgeting", "checklist"],
+          excerpt: "Everything you need to know about buying your first home in Kenya — from budgeting to closing the deal.",
+          author: { name: "Mike Kariuki", initials: "MK" },
+          date: "June 15, 2026",
+          readTime: "15 min",
+          image: "https://images.unsplash.com/photo-1560520653-9e0e4c89eb11?w=600&q=80",
+          url: "/blog/first-time-home-buyer-kenya"
+        },
+        {
+          title: "Kenya Rental Market 2026: Trends & Predictions",
+          category: "market",
+          caretaker_score: 72,
+          tags: ["rental", "trends", "nairobi", "mombasa"],
+          excerpt: "Analysis of rental price trends across Nairobi, Mombasa, and Kisumu. What tenants and landlords need to know.",
+          author: { name: "Alice Njeri", initials: "AN" },
+          date: "June 12, 2026",
+          readTime: "9 min",
+          image: "https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=600&q=80",
+          url: "/blog/kenya-rental-market-2026"
+        },
+        {
+          title: "Commercial vs Residential: Which Investment Wins?",
+          category: "investment",
+          caretaker_score: 68,
+          tags: ["roi", "commercial", "residential", "comparison"],
+          excerpt: "A detailed comparison of ROI, risks, and management requirements for commercial and residential property investments in Kenya.",
+          author: { name: "David Muthoni", initials: "DM" },
+          date: "June 8, 2026",
+          readTime: "11 min",
+          image: "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=600&q=80",
+          url: "/blog/commercial-vs-residential-investment"
+        },
+        {
+          title: "How to Negotiate Property Prices Like a Pro",
+          category: "tips",
+          caretaker_score: 65,
+          tags: ["negotiation", "saving-money", "buyer-tips"],
+          excerpt: "Proven negotiation tactics used by Kenya's top property buyers to save millions.",
+          author: { name: "Robert Kiprop", initials: "RK" },
+          date: "June 5, 2026",
+          readTime: "6 min",
+          image: "https://images.unsplash.com/photo-1556761175-5973dc0f32e7?w=600&q=80",
+          url: "/blog/negotiate-property-price"
+        },
+        {
+          title: "Complete Mortgage Guide for Kenyan Home Buyers",
+          category: "legal",
+          caretaker_score: 63,
+          tags: ["mortgage", "financing", "banking", "guide"],
+          excerpt: "Everything about mortgages in Kenya — interest rates, requirements, banks, and how to get approved.",
+          author: { name: "John Kamau", initials: "JK" },
+          date: "June 1, 2026",
+          readTime: "13 min",
+          image: "https://images.unsplash.com/photo-1554224155-6726b3ff858f?w=600&q=80",
+          url: "/blog/mortgage-guide-kenya"
+        }
+      ],
+      hidden_archive: [
+        {
+          title: "10 Essential Property Maintenance Tips for Landlords",
+          category: "tips",
+          caretaker_score: 55,
+          tags: ["landlord", "maintenance", "rental-property"],
+          excerpt: "Keep your rental property in top condition and attract quality tenants with these proven maintenance strategies.",
+          author: { name: "Sarah Mwangi", initials: "SM" },
+          date: "May 28, 2026",
+          readTime: "5 min",
+          image: "https://images.unsplash.com/photo-1581578731548-c64695cc6952?w=600&q=80",
+          url: "/blog/property-maintenance-tips"
+        }
+      ],
+      category_map: {
+        guide: { count: 2, priority: "high", pill_label: "Essential Guides", visible: true },
+        market: { count: 2, priority: "high", pill_label: "Market Analysis", visible: true },
+        investment: { count: 2, priority: "high", pill_label: "Investment Hot Zones", visible: true },
+        legal: { count: 2, priority: "high", pill_label: "Legal Protection", visible: true },
+        tips: { count: 2, priority: "low", pill_label: "Quick Tips", visible: false }
+      },
+      search_index: {
+        intent_clusters: {
+          guide: ["buy", "first time", "purchase", "beginner", "home buyer"],
+          market: ["price", "trend", "neighborhood", "rental", "analysis"],
+          investment: ["profit", "ROI", "land banking", "growth", "commercial"],
+          legal: ["safe", "scam", "title deed", "due diligence", "mortgage"],
+          tips: ["hack", "quick", "maintenance", "negotiate"]
+        }
+      }
+    };
+
+    // Determine card size based on caretaker_score
+    function getCardSize(score) {
+      if (score >= 75) return 'large';   // featured in grid
+      if (score >= 65) return 'medium';  // taller image
+      return 'small';                    // default
+    }
+
+    // ======================
+    // RENDER FUNCTIONS
+    // ======================
+    function createArticleCard(article) {
+      const card = document.createElement('article');
+      const size = getCardSize(article.caretaker_score);
+      card.className = `article-card${size === 'large' ? ' article-card--large' : ''}${size === 'medium' ? ' article-card--medium' : ''}`;
+      card.dataset.category = article.category;
+      card.dataset.tags = article.tags.join(',');
+      card.dataset.score = article.caretaker_score;
+
+      card.innerHTML = `
+        <a href="${article.url}" style="display:contents;">
+          <div class="card-image">
+            <img src="${article.image}" alt="${article.title}" loading="lazy" />
+            <span class="card-badge">${article.category.charAt(0).toUpperCase() + article.category.slice(1)}</span>
+            <button class="card-bookmark" aria-label="Save article"><i class="far fa-bookmark"></i></button>
+          </div>
+          <div class="card-body">
+            <div class="card-meta"><span>${article.date}</span><span>${article.readTime} read</span></div>
+            <h3 class="card-title">${article.title}</h3>
+            <p class="card-excerpt">${article.excerpt}</p>
+            <div class="card-footer">
+              <div class="card-author">
+                <div class="card-author-avatar">${article.author.initials}</div>
+                ${article.author.name}
+              </div>
+              <span class="read-time"><i class="far fa-clock"></i> ${article.readTime}</span>
+            </div>
+          </div>
+        </a>
+      `;
+      return card;
+    }
+
+    function renderFeaturedStory() {
+      const container = document.getElementById('featuredContainer');
+      const story = caretakerData.featured_story;
+      container.innerHTML = `
+        <a href="${story.url}" class="featured-story">
+          <div class="featured-image">
+            <img src="${story.image}" alt="${story.title}" loading="lazy" />
+            <span class="featured-badge">Editor’s Pick</span>
+          </div>
+          <div class="featured-content">
+            <div class="featured-meta">
+              <span><i class="far fa-calendar"></i> ${story.date}</span>
+              <span><i class="far fa-clock"></i> ${story.readTime} read</span>
+            </div>
+            <h2 class="featured-title">${story.title}</h2>
+            <p class="featured-excerpt">${story.excerpt}</p>
+            <div class="author-row">
+              <div class="author-avatar">${story.author.initials}</div>
+              <div>
+                <div class="author-name">${story.author.name}</div>
+                <div class="author-role">${story.author.role || ''}</div>
+              </div>
+            </div>
+          </div>
+        </a>
+      `;
+    }
+
+    function renderEditorPicks() {
+      const container = document.getElementById('picksContainer');
+      caretakerData.editor_picks.forEach(pick => {
+        const card = document.createElement('a');
+        card.href = pick.url;
+        card.className = 'pick-card';
+        card.innerHTML = `
+          <div class="pick-image"><img src="${pick.image}" alt="${pick.title}" loading="lazy" /></div>
+          <div class="pick-body">
+            <div class="pick-category">${pick.category}</div>
+            <h3 class="pick-title">${pick.title}</h3>
+          </div>
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    function renderMainGrid() {
+      const container = document.getElementById('mainGridContainer');
+      caretakerData.main_grid.forEach(article => {
+        const card = createArticleCard(article);
+        container.appendChild(card);
+      });
+    }
+
+    function renderCategoryPills() {
+      const scroll = document.getElementById('categoryScroll');
+      const allPill = document.createElement('button');
+      allPill.className = 'category-pill active';
+      allPill.dataset.category = 'all';
+      allPill.textContent = 'All';
+      scroll.appendChild(allPill);
+
+      for (const [key, value] of Object.entries(caretakerData.category_map)) {
+        if (!value.visible) continue;
+        const pill = document.createElement('button');
+        pill.className = 'category-pill';
+        pill.dataset.category = key;
+        pill.textContent = value.pill_label;
+        scroll.appendChild(pill);
+      }
+    }
+
+    // ======================
+    // INITIAL RENDER
+    // ======================
+    renderFeaturedStory();
+    renderEditorPicks();
+    renderMainGrid();
+    renderCategoryPills();
+
+    // ======================
+    // CATEGORY FILTERING
+    // ======================
+    document.querySelectorAll('.category-pill').forEach(pill => {
+      pill.addEventListener('click', () => {
+        document.querySelectorAll('.category-pill').forEach(p => p.classList.remove('active'));
+        pill.classList.add('active');
+        const category = pill.dataset.category;
+        document.querySelectorAll('.article-card, .featured-story, .pick-card').forEach(el => {
+          const cat = el.dataset.category;
+          if (category === 'all' || cat === category) {
+            el.style.display = '';
+          } else {
+            el.style.display = 'none';
+          }
+        });
+      });
+    });
+
+    // ======================
+    // SEARCH (with text highlight)
+    // ======================
+    function removeHighlights() {
+      document.querySelectorAll('.highlight-text').forEach(el => {
+        el.replaceWith(el.textContent);
+      });
+    }
+    document.getElementById('blogSearchBtn').addEventListener('click', () => {
+      const query = document.getElementById('blogSearch').value.trim().toLowerCase();
+      if (!query) return;
+      removeHighlights();
+      const cards = document.querySelectorAll('.article-card, .featured-story, .pick-card');
+      cards.forEach(card => {
+        const text = (card.querySelector('h2, h3')?.textContent || '') + ' ' + (card.querySelector('p')?.textContent || '');
+        if (text.toLowerCase().includes(query)) {
+          card.style.display = '';
+          const titleEl = card.querySelector('h2, h3');
+          const excerptEl = card.querySelector('p');
+          const regex = new RegExp(`(${query})`, 'gi');
+          const highlight = (el) => {
+            if (!el) return;
+            el.innerHTML = el.textContent.replace(regex, '<mark class="highlight-text" style="background:rgba(234,88,12,0.2); border-radius:2px;">$1</mark>');
+          };
+          highlight(titleEl);
+          highlight(excerptEl);
+        } else {
+          card.style.display = 'none';
+        }
+      });
+      document.querySelectorAll('.category-pill').forEach(p => p.classList.remove('active'));
+      document.querySelector('.category-pill[data-category="all"]').classList.add('active');
+    });
+    document.getElementById('blogSearch').addEventListener('keypress', e => {
+      if (e.key === 'Enter') document.getElementById('blogSearchBtn').click();
+    });
+
+    // ======================
+    // LOAD MORE
+    // ======================
+    const loadMoreBtn = document.getElementById('loadMoreBtn');
+    const loadMoreWrapper = document.getElementById('loadMoreWrapper');
+    loadMoreBtn.addEventListener('click', () => {
+      loadMoreBtn.disabled = true;
+      loadMoreBtn.textContent = 'Loading…';
+      setTimeout(() => {
+        const grid = document.getElementById('mainGridContainer');
+        caretakerData.hidden_archive.forEach(article => {
+          const card = createArticleCard(article);
+          grid.appendChild(card);
+        });
+        loadMoreWrapper.style.display = 'none';
+      }, 800);
+    });
+
+    // ======================
+    // BOOKMARK TOGGLE
+    // ======================
+    document.addEventListener('click', (e) => {
+      if (e.target.closest('.card-bookmark')) {
+        e.preventDefault();
+        const btn = e.target.closest('.card-bookmark');
+        const icon = btn.querySelector('i');
+        icon.classList.toggle('far');
+        icon.classList.toggle('fas');
+        btn.style.color = icon.classList.contains('fas') ? 'var(--accent)' : '';
+        btn.setAttribute('aria-label', icon.classList.contains('fas') ? 'Remove from saved' : 'Save article');
+      }
+    });
+
+    // ======================
+    // READING PROGRESS
+    // ======================
+    window.addEventListener('scroll', () => {
+      const scrollTop = document.documentElement.scrollTop;
+      const scrollHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+      const progress = (scrollTop / scrollHeight) * 100;
+      document.getElementById('progress-bar').style.width = progress + '%';
+    });
+
+    // ======================
+    // MOBILE MENU
+    // ======================
+    const hamburgerBtn = document.getElementById('hamburgerBtn');
+    const overlay = document.getElementById('mobileOverlay');
+    const drawer = document.getElementById('mobileDrawer');
+    const closeBtn = document.getElementById('closeMobileMenu');
+    function openMobileMenu() {
+      overlay.classList.add('active');
+      drawer.classList.add('active');
+      hamburgerBtn.setAttribute('aria-expanded', 'true');
+      overlay.setAttribute('aria-hidden', 'false');
+      drawer.setAttribute('aria-hidden', 'false');
+      document.body.style.overflow = 'hidden';
+    }
+    function closeMobileMenu() {
+      overlay.classList.remove('active');
+      drawer.classList.remove('active');
+      hamburgerBtn.setAttribute('aria-expanded', 'false');
+      overlay.setAttribute('aria-hidden', 'true');
+      drawer.setAttribute('aria-hidden', 'true');
+      document.body.style.overflow = '';
+    }
+    hamburgerBtn.addEventListener('click', openMobileMenu);
+    closeBtn.addEventListener('click', closeMobileMenu);
+    overlay.addEventListener('click', closeMobileMenu);
+    document.addEventListener('keydown', e => { if (e.key === 'Escape' && drawer.classList.contains('active')) closeMobileMenu(); });
+
+    // ======================
+    // NEWSLETTER
+    // ======================
+    document.getElementById('newsletterForm').addEventListener('submit', e => {
+      e.preventDefault();
+      const email = e.target.querySelector('input').value;
+      alert(`Thank you! We'll send insights to ${email}`);
+      e.target.reset();
+    });
+  </script>
+</body>
+</html>
