@@ -1,14 +1,33 @@
-// js/dashboard/render/stats.js
 import { Store } from '../store.js';
 import { UI } from '../ui.js';
 
+let lastData = null;
+
+function hasChanged(next, prev) {
+  if (!prev) return true;
+
+  return (
+    next.total !== prev.total ||
+    next.pending !== prev.pending ||
+    next.approved !== prev.approved ||
+    next.approval_rate !== prev.approval_rate
+  );
+}
+
 export function initStatsRenderer() {
   Store.subscribe('stats', (data) => {
-    if (!data) return UI.showErrorState('statsContainer', 'Stats unavailable');
+    if (!data) {
+      UI.showErrorState('statsContainer', 'Stats unavailable');
+      return;
+    }
 
-    UI.updateText('statTotal', data.total?.toLocaleString() || 0);
-    UI.updateText('statPending', data.pending?.toLocaleString() || 0);
-    UI.updateText('statApproved', data.approved?.toLocaleString() || 0);
+    // ⛔ skip unnecessary DOM updates
+    if (!hasChanged(data, lastData)) return;
+    lastData = { ...data };
+
+    UI.updateText('statTotal', (data.total || 0).toLocaleString());
+    UI.updateText('statPending', (data.pending || 0).toLocaleString());
+    UI.updateText('statApproved', (data.approved || 0).toLocaleString());
     UI.updateText('statRate', `${data.approval_rate || 0}%`);
   });
 }
