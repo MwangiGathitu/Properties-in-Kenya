@@ -3,63 +3,40 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Agent Dashboard - Properties in Kenya</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <title>RealtorOS — Properties in Kenya</title>
+    <meta name="description" content="The intelligent operating system for real estate agents.">
+    <meta name="theme-color" content="#0F172A">
+    <script src="https://cdn.tailwindcss.com" defer></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap');
-        
-        body { font-family: 'Inter', system_ui, sans-serif; }
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Space+Grotesk:wght@500;600;700&display=swap');
+        body { font-family: 'Inter', system-ui, sans-serif; background: #F8FAFC; }
         .heading-font { font-family: 'Space Grotesk', sans-serif; }
-        
-        .sidebar-link.active {
-            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
-            color: white;
-        }
-        .sidebar-link:hover:not(.active) {
-            background-color: #fef3c7;
-            color: #d97706;
-        }
-        
-        .stat-card { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
-        .stat-card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 20px 40px -12px rgb(0 0 0 / 0.15);
-        }
-        
-        .activity-item { transition: all 0.2s; }
-        .activity-item:hover { background-color: #f9fafb; }
-        
-        @media (max-width: 1024px) {
-            .sidebar { display: none; }
-            .sidebar.mobile-open { display: block; }
-        }
-
-        @keyframes slideUp {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        .animate-slide-up { animation: slideUp 0.3s ease-out; }
+        .glass { background: rgba(255,255,255,0.7); backdrop-filter: blur(20px); }
+        .sidebar-link.active { background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); color: white; }
+        .sidebar-link:hover:not(.active) { background-color: #fef3c7; color: #d97706; }
+        .card { transition: all 0.2s ease; }
+        .card:hover { box-shadow: 0 12px 32px rgba(0,0,0,0.08); }
+        .pulse-dot { animation: pulse 2s infinite; }
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+        @keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        .slide-up { animation: slideUp 0.3s ease; }
+        .timeline-dot::before { content: ''; position: absolute; left: 50%; top: 100%; width: 2px; height: calc(100% + 8px); background: #e5e7eb; transform: translateX(-50%); }
+        .timeline-item:last-child .timeline-dot::before { display: none; }
+        @media (max-width: 1024px) { .sidebar { display: none; } .sidebar.mobile-open { display: block; } }
     </style>
 </head>
 <body class="bg-gray-50">
 
-<!-- 🔒 FIX: Full screen loader to prevent visual flipping/flickering -->
-<div id="auth-loader" style="position:fixed; inset:0; background:white; z-index:9999; display:flex; align-items:center; justify-content:center;">
-    <i class="fas fa-spinner fa-spin text-4xl text-amber-500"></i>
-</div>
+<!-- LOADER -->
+<div id="auth-loader" class="fixed inset-0 bg-white z-50 flex items-center justify-center"><i class="fas fa-spinner fa-spin text-4xl text-amber-500"></i></div>
 
-<!-- Mobile Menu Button -->
-<button id="mobile-menu-btn" class="lg:hidden fixed top-4 left-4 z-50 bg-white p-3 rounded-xl shadow-lg" aria-label="Toggle mobile menu">
-    <i class="fas fa-bars text-gray-700"></i>
-</button>
-
-<!-- Mobile Overlay -->
+<!-- MOBILE MENU -->
+<button id="mobile-menu-btn" class="lg:hidden fixed top-4 left-4 z-50 bg-white p-3 rounded-xl shadow-lg"><i class="fas fa-bars text-gray-700"></i></button>
 <div id="mobile-overlay" class="hidden lg:hidden fixed inset-0 bg-black/50 z-40"></div>
 
 <div class="flex min-h-screen">
-
     <!-- SIDEBAR -->
     <aside id="sidebar" class="sidebar fixed lg:sticky top-0 left-0 h-screen w-72 bg-white border-r border-gray-200 z-40 overflow-y-auto">
         <div class="p-6 border-b border-gray-200">
@@ -67,12 +44,10 @@
                 <div class="w-10 h-10 bg-gradient-to-br from-amber-400 to-yellow-600 rounded-xl flex items-center justify-center text-white font-bold text-xl">🏠</div>
                 <div>
                     <h1 class="heading-font text-xl font-bold">RealtorOS</h1>
-                    <p class="text-xs text-gray-500">Agent Dashboard</p>
+                    <p class="text-xs text-gray-500">Agent Workspace</p>
                 </div>
             </div>
         </div>
-
-        <!-- Profile Card -->
         <div class="p-4 border-b border-gray-200">
             <div class="bg-gradient-to-br from-amber-50 to-orange-50 rounded-2xl p-4">
                 <div class="flex items-center gap-3 mb-3">
@@ -93,258 +68,219 @@
                 </div>
             </div>
         </div>
-
-        <!-- Navigation -->
         <nav class="p-4 space-y-1">
-            <a href="agent-dashboard.html" class="sidebar-link active flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium">
-                <i class="fas fa-chart-line w-5"></i> Dashboard
-            </a>
-            <a href="agent-properties.html" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-gray-700">
-                <i class="fas fa-building w-5"></i> Properties
-            </a>
-            <a href="shared-listings.html" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-gray-700">
-                <i class="fas fa-share-nodes w-5"></i> Shared Listings
-            </a>
-            <a href="buyer-requests.html" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-gray-700">
-                <i class="fas fa-user-tie w-5"></i> Buyer Requests
-            </a>
-            <a href="lead-center.html" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-gray-700">
-                <i class="fas fa-bullseye w-5"></i> Lead Center
-            </a>
-            <a href="agent-network.html" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-gray-700">
-                <i class="fas fa-users w-5"></i> Agent Network
-            </a>
-            <a href="messages.html" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-gray-700">
-                <i class="fas fa-comment-dots w-5"></i> Messages
-                <span id="msg-unread-badge" class="ml-auto bg-red-500 text-white text-xs px-2 py-0.5 rounded-full hidden">0</span>
-            </a>
-            <a href="commissions.html" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-gray-700">
-                <i class="fas fa-wallet w-5"></i> Commissions
-            </a>
-            <a href="analytics.html" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-gray-700">
-                <i class="fas fa-chart-pie w-5"></i> Analytics
-            </a>
-            
+            <a href="agent-dashboard.html" class="sidebar-link active flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium"><i class="fas fa-chart-line w-5"></i> Mission Control</a>
+            <a href="agent-properties.html" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-gray-700"><i class="fas fa-building w-5"></i> Properties</a>
+            <a href="shared-listings.html" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-gray-700"><i class="fas fa-share-nodes w-5"></i> Shared Listings</a>
+            <a href="buyer-requests.html" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-gray-700"><i class="fas fa-user-tie w-5"></i> Buyer Requests</a>
+            <a href="lead-center.html" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-gray-700"><i class="fas fa-bullseye w-5"></i> Lead Center</a>
+            <a href="agent-network.html" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-gray-700"><i class="fas fa-users w-5"></i> Agent Network</a>
+            <a href="messages.html" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-gray-700"><i class="fas fa-comment-dots w-5"></i> Messages</a>
+            <a href="commissions.html" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-gray-700"><i class="fas fa-wallet w-5"></i> Commissions</a>
+            <a href="analytics.html" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-gray-700"><i class="fas fa-chart-pie w-5"></i> Analytics</a>
             <div class="pt-4 mt-4 border-t border-gray-200">
-                <a href="agent-profile.html" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-gray-700">
-                    <i class="fas fa-user-circle w-5"></i> Profile
-                </a>
-                <a href="#" id="logout-btn" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-gray-700">
-                    <i class="fas fa-sign-out-alt w-5"></i> Logout
-                </a>
+                <a href="agent-profile.html" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-gray-700"><i class="fas fa-user-circle w-5"></i> Profile</a>
+                <a href="#" id="logout-btn" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-gray-700"><i class="fas fa-sign-out-alt w-5"></i> Logout</a>
             </div>
         </nav>
     </aside>
 
-    <!-- MAIN CONTENT -->
-    <main class="flex-1 lg:ml-0">
-        <!-- Top Bar -->
-        <header class="bg-white border-b border-gray-200 sticky top-0 z-30">
+    <!-- MAIN -->
+    <main class="flex-1 lg:ml-0 w-full">
+        <header class="glass sticky top-0 z-30 border-b border-gray-200">
             <div class="px-6 py-4 flex items-center justify-between">
                 <div class="lg:pl-0 pl-12">
-                    <h1 class="heading-font text-2xl font-bold">Dashboard</h1>
-                    <p class="text-sm text-gray-500" id="greeting">Welcome back</p>
+                    <h1 class="heading-font text-2xl font-bold text-gray-900">Mission Control</h1>
+                    <p class="text-sm text-gray-500" id="greeting">Good morning, Agent</p>
                 </div>
                 <div class="flex items-center gap-4">
-                    
-                    <!-- Notification Bell -->
                     <div class="relative">
-                        <button id="notif-bell-btn" class="relative p-2 hover:bg-gray-100 rounded-xl transition" aria-label="Toggle notifications">
-                            <i class="fas fa-bell text-gray-600 text-xl"></i>
-                            <span id="notif-badge" class="absolute top-1 right-1 w-3 h-3 bg-red-500 rounded-full border-2 border-white hidden"></span>
-                        </button>
-                        
-                        <!-- Notification Dropdown -->
+                        <button id="notif-bell-btn" class="relative p-2 hover:bg-gray-100 rounded-xl transition"><i class="fas fa-bell text-gray-600 text-xl"></i><span id="notif-badge" class="absolute top-1 right-1 w-3 h-3 bg-red-500 rounded-full border-2 border-white hidden"></span></button>
                         <div id="notif-dropdown" class="hidden absolute right-0 mt-2 w-80 bg-white rounded-2xl shadow-xl border border-gray-100 z-50 overflow-hidden">
-                            <div class="p-4 border-b border-gray-100 flex justify-between items-center bg-gray-50">
-                                <h3 class="font-bold text-gray-800">Notifications</h3>
-                                <button id="mark-all-read-btn" class="text-xs text-blue-600 font-semibold hover:underline">Mark all read</button>
-                            </div>
-                            <div id="notif-list" class="max-h-80 overflow-y-auto">
-                                <div class="p-4 text-center text-gray-400 text-sm">
-                                    <i class="fas fa-spinner fa-spin mb-2"></i><br>Loading...
-                                </div>
-                            </div>
+                            <div class="p-4 border-b border-gray-100 flex justify-between items-center bg-gray-50"><h3 class="font-bold">Notifications</h3><button id="mark-all-read-btn" class="text-xs text-blue-600 font-semibold hover:underline">Mark all read</button></div>
+                            <div id="notif-list" class="max-h-80 overflow-y-auto"><div class="p-4 text-center text-gray-400 text-sm">No notifications yet</div></div>
                         </div>
                     </div>
-
-                    <a href="agent-properties.html?action=new" class="hidden sm:flex items-center gap-2 bg-gradient-to-r from-amber-500 to-yellow-600 text-white px-4 py-2.5 rounded-xl font-semibold text-sm hover:shadow-lg transition">
-                        <i class="fas fa-plus"></i> Add Property
-                    </a>
+                    <a href="agent-properties.html?action=new" class="hidden sm:flex items-center gap-2 bg-gradient-to-r from-amber-500 to-yellow-600 text-white px-4 py-2.5 rounded-xl font-semibold text-sm hover:shadow-lg transition"><i class="fas fa-plus"></i> Add Property</a>
                 </div>
             </div>
         </header>
 
-        <!-- Toast Container -->
         <div id="toast-container" class="fixed bottom-20 right-6 z-50 flex flex-col gap-3 pointer-events-none"></div>
 
-        <!-- Dashboard Content -->
         <div class="p-6 space-y-6">
-
-            <!-- Stats Grid -->
-            <div class="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4">
-                <div class="stat-card bg-white rounded-2xl p-5 border border-gray-100">
-                    <div class="flex items-center justify-between mb-3">
-                        <div class="w-10 h-10 bg-blue-100 rounded-xl flex items-center justify-center">
-                            <i class="fas fa-building text-blue-600"></i>
-                        </div>
-                        <span class="text-xs font-medium text-green-600 bg-green-50 px-2 py-1 rounded-full" id="properties-trend">+0%</span>
-                    </div>
-                    <p class="text-2xl font-bold" id="stat-properties">0</p>
-                    <p class="text-xs text-gray-500 mt-1">Total Properties</p>
-                </div>
-
-                <div class="stat-card bg-white rounded-2xl p-5 border border-gray-100">
-                    <div class="flex items-center justify-between mb-3">
-                        <div class="w-10 h-10 bg-amber-100 rounded-xl flex items-center justify-center">
-                            <i class="fas fa-bullseye text-amber-600"></i>
-                        </div>
-                        <span class="text-xs font-medium text-green-600 bg-green-50 px-2 py-1 rounded-full" id="leads-trend">+0%</span>
-                    </div>
-                    <p class="text-2xl font-bold" id="stat-leads">0</p>
-                    <p class="text-xs text-gray-500 mt-1">Active Leads</p>
-                </div>
-
-                <div class="stat-card bg-white rounded-2xl p-5 border border-gray-100">
-                    <div class="flex items-center justify-between mb-3">
-                        <div class="w-10 h-10 bg-purple-100 rounded-xl flex items-center justify-center">
-                            <i class="fas fa-user-tie text-purple-600"></i>
-                        </div>
-                        <span class="text-xs font-medium text-green-600 bg-green-50 px-2 py-1 rounded-full" id="requests-trend">+0%</span>
-                    </div>
-                    <p class="text-2xl font-bold" id="stat-requests">0</p>
-                    <p class="text-xs text-gray-500 mt-1">Buyer Requests</p>
-                </div>
-
-                <div class="stat-card bg-white rounded-2xl p-5 border border-gray-100">
-                    <div class="flex items-center justify-between mb-3">
-                        <div class="w-10 h-10 bg-emerald-100 rounded-xl flex items-center justify-center">
-                            <i class="fas fa-share-nodes text-emerald-600"></i>
-                        </div>
-                        <span class="text-xs font-medium text-green-600 bg-green-50 px-2 py-1 rounded-full" id="shared-trend">+0%</span>
-                    </div>
-                    <p class="text-2xl font-bold" id="stat-shared">0</p>
-                    <p class="text-xs text-gray-500 mt-1">Shared Listings</p>
-                </div>
-
-                <div class="stat-card bg-white rounded-2xl p-5 border border-gray-100">
-                    <div class="flex items-center justify-between mb-3">
-                        <div class="w-10 h-10 bg-rose-100 rounded-xl flex items-center justify-center">
-                            <i class="fas fa-handshake text-rose-600"></i>
-                        </div>
-                        <span class="text-xs font-medium text-green-600 bg-green-50 px-2 py-1 rounded-full">Active</span>
-                    </div>
-                    <p class="text-2xl font-bold" id="stat-collabs">0</p>
-                    <p class="text-xs text-gray-500 mt-1">Collaborations</p>
-                </div>
-
-                <div class="stat-card bg-gradient-to-br from-amber-500 to-yellow-600 rounded-2xl p-5 text-white">
-                    <div class="flex items-center justify-between mb-3">
-                        <div class="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center">
-                            <i class="fas fa-wallet text-white"></i>
-                        </div>
-                        <span class="text-xs font-medium bg-white/20 px-2 py-1 rounded-full">Earnings</span>
-                    </div>
-                    <p class="text-2xl font-bold" id="stat-commission">KES 0</p>
-                    <p class="text-xs opacity-90 mt-1">Total Commission</p>
+            <!-- AI BRIEFING -->
+            <div class="bg-gradient-to-r from-indigo-600 to-purple-700 rounded-2xl p-6 text-white shadow-xl relative overflow-hidden">
+                <div class="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full -translate-y-1/2 translate-x-1/2"></div>
+                <div class="relative z-10">
+                    <h2 class="heading-font text-xl font-bold mb-2 flex items-center gap-2"><i class="fas fa-wand-magic-sparkles"></i> AI Morning Briefing</h2>
+                    <p class="text-sm opacity-90" id="ai-summary">Generating your personalized briefing...</p>
                 </div>
             </div>
 
-            <!-- Two Column Layout -->
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                
-                <!-- Recent Activity -->
-                <div class="lg:col-span-2 bg-white rounded-2xl border border-gray-100">
-                    <div class="p-6 border-b border-gray-100 flex items-center justify-between">
+            <!-- GAMIFICATION BAR -->
+            <div class="bg-gradient-to-r from-slate-900 to-slate-800 rounded-2xl p-5 text-white shadow-xl">
+                <div class="flex flex-wrap items-center justify-between gap-4">
+                    <div class="flex items-center gap-3">
+                        <div class="w-12 h-12 bg-gradient-to-br from-amber-400 to-yellow-600 rounded-xl flex items-center justify-center text-xl">🏆</div>
                         <div>
-                            <h2 class="heading-font text-lg font-bold">Recent Activity</h2>
-                            <p class="text-sm text-gray-500">Your latest updates</p>
+                            <p class="text-xs text-gray-400 uppercase tracking-wide">Agent Rank</p>
+                            <p class="heading-font text-lg font-bold" id="agent-rank">#12 in Nairobi</p>
                         </div>
-                        <button class="text-sm text-amber-600 font-semibold hover:text-amber-700">View All</button>
                     </div>
-                    <div id="activity-feed" class="divide-y divide-gray-100">
-                        <div class="p-6 text-center text-gray-400">
-                            <i class="fas fa-spinner fa-spin text-2xl mb-2"></i>
-                            <p class="text-sm">Loading activity...</p>
+                    <div class="flex items-center gap-2">
+                        <span class="text-amber-400 text-lg">★★★★★</span>
+                        <div>
+                            <p class="text-xs text-gray-400">Closing Streak</p>
+                            <p class="font-bold" id="closing-streak">7 deals</p>
                         </div>
+                    </div>
+                    <div>
+                        <p class="text-xs text-gray-400">Conversion Rate</p>
+                        <p class="font-bold text-green-400" id="conversion-rate">34%</p>
+                    </div>
+                    <div>
+                        <p class="text-xs text-gray-400">Response Time</p>
+                        <p class="font-bold text-blue-400" id="response-time">2 min</p>
+                    </div>
+                    <div>
+                        <p class="text-xs text-gray-400">This Month</p>
+                        <p class="font-bold" id="month-closed">KES 4.2M</p>
                     </div>
                 </div>
+            </div>
 
-                <!-- Quick Actions & AI -->
+            <!-- FLIGHT DECK -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <!-- Critical Deals (event delegation applied) -->
+                <div class="bg-white rounded-2xl border border-gray-100 p-6 col-span-2">
+                    <h2 class="heading-font text-lg font-bold mb-4 flex items-center gap-2"><i class="fas fa-exclamation-triangle text-red-500"></i> Critical Deals</h2>
+                    <div class="space-y-4" id="critical-deals-container"></div>
+                    <div id="no-critical-deals" class="text-center text-gray-400 py-4 hidden">No critical actions right now. Great job!</div>
+                </div>
+
+                <!-- Quick Actions + Revenue Pulse -->
                 <div class="space-y-6">
                     <div class="bg-white rounded-2xl border border-gray-100 p-6">
-                        <h2 class="heading-font text-lg font-bold mb-4">Quick Actions</h2>
-                        <div class="space-y-2">
-                            <a href="agent-properties.html?action=new" class="flex items-center gap-3 p-3 rounded-xl hover:bg-amber-50 transition">
-                                <div class="w-10 h-10 bg-amber-100 rounded-xl flex items-center justify-center">
-                                    <i class="fas fa-plus text-amber-600"></i>
-                                </div>
-                                <div>
-                                    <p class="font-semibold text-sm">Add New Property</p>
-                                    <p class="text-xs text-gray-500">List a property</p>
-                                </div>
-                            </a>
-                            <a href="buyer-requests.html?action=new" class="flex items-center gap-3 p-3 rounded-xl hover:bg-purple-50 transition">
-                                <div class="w-10 h-10 bg-purple-100 rounded-xl flex items-center justify-center">
-                                    <i class="fas fa-user-plus text-purple-600"></i>
-                                </div>
-                                <div>
-                                    <p class="font-semibold text-sm">Create Buyer Request</p>
-                                    <p class="text-xs text-gray-500">Find matches</p>
-                                </div>
-                            </a>
-                            <a href="lead-center.html" class="flex items-center gap-3 p-3 rounded-xl hover:bg-blue-50 transition">
-                                <div class="w-10 h-10 bg-blue-100 rounded-xl flex items-center justify-center">
-                                    <i class="fas fa-bullseye text-blue-600"></i>
-                                </div>
-                                <div>
-                                    <p class="font-semibold text-sm">View Lead Center</p>
-                                    <p class="text-xs text-gray-500">Manage leads</p>
-                                </div>
-                            </a>
-                            <a href="shared-listings.html" class="flex items-center gap-3 p-3 rounded-xl hover:bg-emerald-50 transition">
-                                <div class="w-10 h-10 bg-emerald-100 rounded-xl flex items-center justify-center">
-                                    <i class="fas fa-share-nodes text-emerald-600"></i>
-                                </div>
-                                <div>
-                                    <p class="font-semibold text-sm">Browse Shared Listings</p>
-                                    <p class="text-xs text-gray-500">Co-broker deals</p>
-                                </div>
-                            </a>
+                        <h2 class="heading-font text-lg font-bold mb-4">⚡ Quick Actions</h2>
+                        <div class="grid grid-cols-2 gap-3">
+                            <button class="btn-quick-action flex flex-col items-center justify-center p-4 bg-blue-50 rounded-xl hover:bg-blue-100 transition" data-action="call"><i class="fas fa-phone-alt text-blue-600 text-xl mb-2"></i><span class="text-xs font-semibold text-gray-700">Call Lead</span></button>
+                            <button class="btn-quick-action flex flex-col items-center justify-center p-4 bg-green-50 rounded-xl hover:bg-green-100 transition" data-action="whatsapp"><i class="fab fa-whatsapp text-green-600 text-xl mb-2"></i><span class="text-xs font-semibold text-gray-700">WhatsApp</span></button>
+                            <button class="btn-quick-action flex flex-col items-center justify-center p-4 bg-amber-50 rounded-xl hover:bg-amber-100 transition" data-action="schedule"><i class="fas fa-calendar-plus text-amber-600 text-xl mb-2"></i><span class="text-xs font-semibold text-gray-700">Schedule Viewing</span></button>
+                            <button class="btn-quick-action flex flex-col items-center justify-center p-4 bg-purple-50 rounded-xl hover:bg-purple-100 transition" data-action="send-flyer"><i class="fas fa-file-alt text-purple-600 text-xl mb-2"></i><span class="text-xs font-semibold text-gray-700">Generate Flyer</span></button>
                         </div>
                     </div>
-
-                    <div class="bg-gradient-to-br from-indigo-500 to-purple-600 rounded-2xl p-6 text-white">
-                        <div class="flex items-center gap-2 mb-3">
-                            <i class="fas fa-wand-magic-sparkles"></i>
-                            <h2 class="heading-font text-lg font-bold">AI Insights</h2>
-                        </div>
-                        <p class="text-sm opacity-90 mb-4">Based on your activity, here's what you should focus on today:</p>
-                        <div class="space-y-2 text-sm">
-                            <div class="flex items-start gap-2 bg-white/10 p-3 rounded-xl">
-                                <i class="fas fa-check-circle mt-0.5"></i>
-                                <span>Follow up with 3 hot leads</span>
-                            </div>
-                            <div class="flex items-start gap-2 bg-white/10 p-3 rounded-xl">
-                                <i class="fas fa-check-circle mt-0.5"></i>
-                                <span>2 buyer requests have new matches</span>
-                            </div>
+                    <div class="bg-white rounded-2xl border border-gray-100 p-6">
+                        <h2 class="heading-font text-lg font-bold mb-4 flex items-center gap-2"><i class="fas fa-coins text-amber-500"></i> Revenue Pulse</h2>
+                        <div class="space-y-4">
+                            <div class="flex justify-between"><span class="text-sm text-gray-600">Today</span><span class="font-bold" id="flight-rev-today">KES 0</span></div>
+                            <div class="flex justify-between"><span class="text-sm text-gray-600">This Week</span><span class="font-bold" id="flight-rev-week">KES 320K</span></div>
+                            <div class="flex justify-between"><span class="text-sm text-gray-600">Pipeline Value</span><span class="font-bold" id="flight-pipeline-value">KES 0</span></div>
+                            <div class="flex justify-between"><span class="text-sm text-gray-600">Expected Commission</span><span class="font-bold text-amber-600" id="flight-exp-commission">KES 0</span></div>
                         </div>
                     </div>
                 </div>
             </div>
 
+            <!-- NETWORK INTELLIGENCE -->
+            <div class="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-2xl border border-blue-100 p-6">
+                <div class="flex items-center justify-between mb-4">
+                    <h2 class="heading-font text-lg font-bold flex items-center gap-2"><i class="fas fa-network-wired text-indigo-600"></i> Network Intelligence</h2>
+                    <a href="agent-network.html" class="text-xs text-indigo-600 font-semibold hover:underline">View all →</a>
+                </div>
+                <div id="network-suggestions" class="space-y-3"></div>
+            </div>
+
+            <!-- DEAL PIPELINE (event delegation applied) -->
+            <div class="bg-white rounded-2xl border border-gray-100">
+                <div class="p-6 border-b border-gray-100 flex items-center justify-between">
+                    <h2 class="heading-font text-lg font-bold">Deal Pipeline (12 Stages)</h2>
+                    <button id="toggle-pipeline-view" class="text-sm text-amber-600 font-semibold hover:underline">Compact View</button>
+                </div>
+                <div class="overflow-x-auto pb-4" id="pipeline-container">
+                    <div class="flex gap-4 px-6 min-w-max"></div>
+                </div>
+            </div>
+
+            <!-- ACTION CENTER (event delegation applied) -->
+            <div class="bg-white rounded-2xl border border-gray-100">
+                <div class="p-6 border-b border-gray-100">
+                    <h2 class="heading-font text-lg font-bold"><i class="fas fa-bolt text-amber-500 mr-2"></i>AI‑Prioritized Action Center</h2>
+                </div>
+                <div id="action-center" class="divide-y divide-gray-100"></div>
+            </div>
+
+            <!-- AUTOMATION LOG -->
+            <div class="bg-white rounded-2xl border border-gray-100 p-6">
+                <div class="flex items-center justify-between mb-4">
+                    <h2 class="heading-font text-lg font-bold flex items-center gap-2"><i class="fas fa-robot text-purple-600"></i> Automation Log</h2>
+                    <span class="text-xs bg-green-100 text-green-700 px-2 py-1 rounded-full font-semibold">● Active</span>
+                </div>
+                <div id="automation-log" class="space-y-2 text-sm"></div>
+            </div>
         </div>
     </main>
+</div>
+
+<!-- AI COPILOT BUTTON -->
+<button id="ai-copilot-btn" class="fixed bottom-6 right-6 w-14 h-14 bg-gradient-to-br from-indigo-600 to-purple-700 text-white rounded-2xl shadow-xl flex items-center justify-center text-2xl z-50 hover:scale-105 transition">
+    <i class="fas fa-wand-magic-sparkles"></i>
+</button>
+
+<!-- AI COMMAND CENTER MODAL -->
+<div id="ai-modal" class="hidden fixed inset-0 bg-black/60 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4">
+    <div class="bg-white w-full sm:max-w-2xl rounded-t-3xl sm:rounded-3xl shadow-2xl slide-up overflow-hidden max-h-[90vh] flex flex-col">
+        <div class="bg-gradient-to-r from-indigo-600 to-purple-700 p-6 text-white">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center"><i class="fas fa-wand-magic-sparkles"></i></div>
+                    <div>
+                        <h2 class="heading-font text-xl font-bold">AI Command Center</h2>
+                        <p class="text-xs opacity-80">Ask anything about your business</p>
+                    </div>
+                </div>
+                <button id="close-ai-modal" class="w-8 h-8 rounded-full bg-white/20 hover:bg-white/30 flex items-center justify-center"><i class="fas fa-times"></i></button>
+            </div>
+        </div>
+        <div id="ai-response-area" class="flex-1 overflow-y-auto p-6 space-y-3 bg-gray-50 min-h-[200px] max-h-[50vh]">
+            <div class="bg-white rounded-2xl p-4 shadow-sm">
+                <p class="text-sm text-gray-700">👋 Hi! I'm your AI assistant. Try asking:</p>
+                <div class="mt-3 space-y-2">
+                    <button class="ai-suggestion w-full text-left text-sm bg-indigo-50 hover:bg-indigo-100 px-3 py-2 rounded-lg transition">Who should I call first today?</button>
+                    <button class="ai-suggestion w-full text-left text-sm bg-indigo-50 hover:bg-indigo-100 px-3 py-2 rounded-lg transition">Which deal is most likely to collapse?</button>
+                    <button class="ai-suggestion w-full text-left text-sm bg-indigo-50 hover:bg-indigo-100 px-3 py-2 rounded-lg transition">Show me buyers ready to close in 2 weeks</button>
+                    <button class="ai-suggestion w-full text-left text-sm bg-indigo-50 hover:bg-indigo-100 px-3 py-2 rounded-lg transition">Generate a follow-up message for Peter</button>
+                    <button class="ai-suggestion w-full text-left text-sm bg-indigo-50 hover:bg-indigo-100 px-3 py-2 rounded-lg transition">What's my pipeline value?</button>
+                </div>
+            </div>
+        </div>
+        <div class="p-4 border-t border-gray-100 bg-white">
+            <div class="flex items-center gap-2">
+                <input id="ai-input" type="text" placeholder="Ask me anything..." class="flex-1 px-4 py-3 bg-gray-100 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm">
+                <button id="ai-send-btn" class="w-12 h-12 bg-gradient-to-br from-indigo-600 to-purple-700 text-white rounded-xl flex items-center justify-center hover:shadow-lg transition"><i class="fas fa-paper-plane"></i></button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- DEAL TIMELINE MODAL -->
+<div id="timeline-modal" class="hidden fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4">
+    <div class="bg-white w-full max-w-2xl rounded-3xl shadow-2xl slide-up overflow-hidden max-h-[90vh] flex flex-col">
+        <div class="p-6 border-b border-gray-100 flex items-center justify-between">
+            <div>
+                <h2 class="heading-font text-xl font-bold" id="timeline-title">Relationship Timeline</h2>
+                <p class="text-sm text-gray-500" id="timeline-subtitle">Full history of interactions</p>
+            </div>
+            <button id="close-timeline-modal" class="w-8 h-8 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center"><i class="fas fa-times text-gray-600"></i></button>
+        </div>
+        <div id="timeline-content" class="flex-1 overflow-y-auto p-6 space-y-4"></div>
+    </div>
 </div>
 
 <script>
 (function() {
     'use strict';
 
-    // ==========================================
-    // 1. CONFIGURATION & STATE
-    // ==========================================
     const supabase = window.supabase.createClient(
         'https://nqwvsmuvltbiekfnvovx.supabase.co',
         'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5xd3ZzbXV2bHRiaWVrZm52b3Z4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA1NjU4MDAsImV4cCI6MjA5NjE0MTgwMH0.Xrc-bbAuWdvKSPHnVhTaLiQphV61xeYtDepWePqsrdo'
@@ -352,518 +288,755 @@
 
     const state = {
         user: null,
-        notificationChannel: null,
-        notifLoading: false
+        profile: null,
+        deals: [],
+        activities: [],
+        networkAgents: [],
+        automationLog: [],
+        notificationChannel: null
     };
 
-    // Mapping for Tailwind classes to prevent JIT dynamic class bugs
-    const themeColors = {
-        blue: { bg: 'bg-blue-100', text: 'text-blue-600' },
-        amber: { bg: 'bg-amber-100', text: 'text-amber-600' },
-        purple: { bg: 'bg-purple-100', text: 'text-purple-600' },
-        green: { bg: 'bg-green-100', text: 'text-green-600' },
-        rose: { bg: 'bg-rose-100', text: 'text-rose-600' }
-    };
+    // ============ UTILITIES ============
+    function esc(str) { const d = document.createElement('div'); d.textContent = str||''; return d.innerHTML; }
+    function formatKES(amount) { return new Intl.NumberFormat('en-KE', { style: 'currency', currency: 'KES', maximumFractionDigits:0 }).format(amount||0); }
+    function daysBetween(a, b) { return Math.floor((new Date(b) - new Date(a)) / (1000*60*60*24)); }
+    function daysSince(dateStr) { if(!dateStr) return 999; return daysBetween(dateStr, new Date().toISOString()); }
+    function addDays(date, days) { const d = new Date(date); d.setDate(d.getDate()+days); return d; }
+    function formatDate(date) { return new Date(date).toLocaleDateString('en-KE', { day:'numeric', month:'short' }); }
 
-    // ==========================================
-    // 2. UTILITIES
-    // ==========================================
-    function escapeHtml(text) {
-        if (!text) return '';
-        const div = document.createElement('div');
-        div.textContent = text;
-        return div.innerHTML;
-    }
-
-    function isValidUrl(string) {
-        try {
-            const url = new URL(string, window.location.origin);
-            return url.protocol === 'http:' || url.protocol === 'https:';
-        } catch (_) {
-            return false;
-        }
-    }
-
-    function formatKES(amount) {
-        return new Intl.NumberFormat('en-KE', { 
-            style: 'currency', 
-            currency: 'KES', 
-            maximumFractionDigits: 0 
-        }).format(amount || 0);
-    }
-
-    function getTimeAgo(dateString) {
-        const date = new Date(dateString);
-        if (isNaN(date.getTime())) return 'Unknown';
-        
-        const now = new Date();
-        const seconds = Math.floor((now - date) / 1000);
-        if (seconds < 0) return 'Just now';
-        if (seconds < 60) return 'Just now';
-        if (seconds < 3600) return `${Math.floor(seconds / 60)} min ago`;
-        if (seconds < 86400) return `${Math.floor(seconds / 3600)} hours ago`;
-        if (seconds < 604800) return `${Math.floor(seconds / 86400)} days ago`;
-        return date.toLocaleDateString();
-    }
-
-    function getNotifIcon(type) {
-        const icons = {
-            'new_lead': 'fa-user-plus',
-            'new_message': 'fa-comment-dots',
-            'collaboration_request': 'fa-handshake',
-            'commission_update': 'fa-wallet',
-            'property_match': 'fa-bolt'
-        };
-        return icons[type] || 'fa-bell';
-    }
-
-    function getNotifIconColor(type) {
-        const colors = {
-            'new_lead': 'bg-green-100 text-green-600',
-            'new_message': 'bg-blue-100 text-blue-600',
-            'collaboration_request': 'bg-purple-100 text-purple-600',
-            'commission_update': 'bg-amber-100 text-amber-600',
-            'property_match': 'bg-rose-100 text-rose-600'
-        };
-        return colors[type] || 'bg-gray-100 text-gray-600';
-    }
-
-    // ==========================================
-    // 3. TOAST SYSTEM
-    // ==========================================
-    function showToast(title, message, icon = 'fa-bell') {
+    function showToast(title, msg, icon='fa-bell') {
         const container = document.getElementById('toast-container');
         const toast = document.createElement('div');
-        toast.className = 'pointer-events-auto bg-gray-900 text-white px-4 py-3 rounded-xl shadow-2xl flex items-center gap-3 min-w-[300px] animate-slide-up';
-        toast.innerHTML = `
-            <i class="fas ${icon} text-amber-400"></i>
-            <div class="flex-1">
-                <p class="text-sm font-bold">${escapeHtml(title)}</p>
-                <p class="text-xs text-gray-300">${escapeHtml(message)}</p>
-            </div>
-        `;
+        toast.className = 'pointer-events-auto bg-gray-900 text-white px-4 py-3 rounded-xl shadow-2xl flex items-center gap-3 min-w-[300px] slide-up';
+        toast.innerHTML = `<i class="fas ${icon} text-amber-400"></i><div class="flex-1"><p class="text-sm font-bold">${esc(title)}</p><p class="text-xs text-gray-300">${esc(msg)}</p></div>`;
         container.appendChild(toast);
-        setTimeout(() => {
-            toast.style.opacity = '0';
-            toast.style.transform = 'translateY(20px)';
-            setTimeout(() => toast.remove(), 300);
-        }, 4000);
+        setTimeout(()=>{ toast.style.opacity='0'; toast.style.transform='translateY(20px)'; setTimeout(()=>toast.remove(),300); },4000);
     }
 
-    // ==========================================
-    // 4. AUTH & DASHBOARD LOADING
-    // ==========================================
-    async function checkAuth() {
-        try {
-            // 1. Check local browser session
-            const { data: { session } } = await supabase.auth.getSession();
+    // Dynamic color classes replaced with inline styles
+    const HEALTH_COLORS = {
+        good: { bg: '#d1fae5', text: '#065f46' },
+        warn: { bg: '#fef3c7', text: '#92400e' },
+        bad:  { bg: '#fee2e2', text: '#991b1b' }
+    };
+    const PRIORITY_COLORS = {
+        critical: { bg: '#fee2e2', text: '#991b1b' },
+        high:     { bg: '#fff7ed', text: '#c2410c' },
+        medium:   { bg: '#fef3c7', text: '#92400e' },
+        low:      { bg: '#e0f2fe', text: '#075985' }
+    };
 
-            if (!session) {
-                window.location.href = 'login.html?role=agent';
-                return;
-            }
+    function getHealthStyle(health) {
+        if (health >= 80) return HEALTH_COLORS.good;
+        if (health >= 50) return HEALTH_COLORS.warn;
+        return HEALTH_COLORS.bad;
+    }
 
-            // 2. 🔒 BULLETPROOF FIX: Verify the session is actually valid on the server.
-            // This kills the "Ghost Session" redirect loop.
-            const { data: { user }, error } = await supabase.auth.getUser();
+    // ============ AI SCORING ENGINE ============
+    function computeDealHealth(d) {
+        let score = 50;
+        const daysNoContact = daysSince(d.last_contacted);
+        if (daysNoContact <= 1) score += 20;
+        else if (daysNoContact <= 3) score += 10;
+        else if (daysNoContact > 7) score -= 15;
+        if (d.viewing_done) score += 15;
+        if (d.offer_made) score += 15;
+        if (d.documents_uploaded) score += 10;
+        if (d.deposit_paid) score += 15;
+        if (!d.offer_made && d.stage === 'viewing_completed') score -= 10;
+        return Math.min(100, Math.max(0, score));
+    }
 
-            if (error || !user) {
-                // The local session was broken/expired. Sign out completely to clear it.
-                await supabase.auth.signOut();
-                window.location.href = 'login.html?role=agent';
-                return;
-            }
+    function computeProbability(d) {
+        const stageProb = {
+            new_lead: 12, qualified: 30, matching: 40, contacted: 55,
+            viewing_scheduled: 65, viewing_completed: 75, negotiation: 80,
+            offer_accepted: 95, legal: 98, payment: 99, commission_paid: 100, closed: 100
+        };
+        let base = stageProb[d.stage] || 50;
+        const health = computeDealHealth(d);
+        const adj = (health - 50) * 0.4;
+        return Math.min(100, Math.max(1, Math.round(base + adj)));
+    }
 
-            // 3. Session is 100% valid. Hide the loader and proceed.
-            state.user = user;
-            document.getElementById('auth-loader').style.display = 'none';
-            
-            await loadDashboard();
-            setupRealtimeNotifications();
+    function computeUrgency(d) {
+        const prob = computeProbability(d);
+        const commissionFactor = (d.commission || 0) / 200000;
+        const daysInactive = daysSince(d.last_contacted);
+        const inactivityPenalty = Math.max(0, daysInactive - 3) * 3;
+        const appointmentBonus = d.appointment_today ? 30 : 0;
+        const buyerUrgency = (d.buyer_urgency || 50) / 10;
+        return Math.round(prob * 0.4 + commissionFactor * 0.2 + buyerUrgency * 0.2 + appointmentBonus - inactivityPenalty * 0.2);
+    }
 
-        } catch (err) {
-            console.error('Auth check failed:', err);
-            window.location.href = 'login.html?role=agent';
+    function computeBiggestRisk(d) {
+        const risks = [];
+        const daysNoContact = daysSince(d.last_contacted);
+        if (daysNoContact >= 5) risks.push({ severity: 'high', text: `Buyer silent for ${daysNoContact} days` });
+        if (daysNoContact >= 3 && daysNoContact < 5) risks.push({ severity: 'medium', text: `No contact in ${daysNoContact} days` });
+        if (d.viewing_done && !d.offer_made && daysSince(d.viewing_date) > 3) risks.push({ severity: 'high', text: 'Viewing done but no offer yet — momentum fading' });
+        if (d.offer_made && !d.deposit_paid && daysSince(d.offer_date) > 5) risks.push({ severity: 'high', text: 'Offer accepted but deposit delayed' });
+        if (d.price_reduced_recently) risks.push({ severity: 'low', text: 'Seller reduced price — may signal desperation' });
+        if (d.competing_offers) risks.push({ severity: 'medium', text: 'Competing offers detected' });
+        if (risks.length === 0) return { severity: 'none', text: 'No major risks detected' };
+        return risks.sort((a,b) => ({high:3,medium:2,low:1}[b.severity] - {high:3,medium:2,low:1}[a.severity]))[0];
+    }
+
+    function computeLikelyClosingDate(d) {
+        const stageDaysToClose = {
+            new_lead: 90, qualified: 75, matching: 60, contacted: 45,
+            viewing_scheduled: 35, viewing_completed: 25, negotiation: 18,
+            offer_accepted: 12, legal: 8, payment: 4, commission_paid: 0, closed: 0
+        };
+        const baseDays = stageDaysToClose[d.stage] ?? 30;
+        const health = computeDealHealth(d);
+        const healthFactor = 1 + ((50 - health) / 100);
+        const adjustedDays = Math.round(baseDays * healthFactor);
+        return addDays(new Date(), adjustedDays).toISOString();
+    }
+
+    function generateSmartRecommendation(d) {
+        const daysNoContact = daysSince(d.last_contacted);
+        const daysSinceViewing = d.viewing_date ? daysSince(d.viewing_date) : 999;
+        const daysSinceOffer = d.offer_date ? daysSince(d.offer_date) : 999;
+
+        if (d.price_reduced_recently && d.viewing_done && !d.offer_made) {
+            return { priority: 'critical', text: `Call now — seller just reduced price. Buyer saw property ${daysSinceViewing}d ago.`, icon: 'fa-fire', color: 'critical' };
         }
+        if (daysNoContact >= 7) return { priority: 'critical', text: `Re-engage urgently — ${daysNoContact} days of silence.`, icon: 'fa-phone-slash', color: 'critical' };
+        if (d.offer_made && !d.deposit_paid && daysSinceOffer > 5) return { priority: 'high', text: `Follow up on deposit — ${daysSinceOffer} days since offer accepted.`, icon: 'fa-money-bill-wave', color: 'high' };
+        if (d.viewing_done && !d.offer_made && daysSinceViewing <= 2) return { priority: 'high', text: `Strike while hot — send offer within 24h of viewing.`, icon: 'fa-bolt', color: 'high' };
+        if (d.viewing_done && !d.offer_made) return { priority: 'medium', text: `Prepare and send offer — viewing was ${daysSinceViewing}d ago.`, icon: 'fa-file-signature', color: 'medium' };
+        if (!d.viewing_done && ['contacted','qualified','matching'].includes(d.stage)) return { priority: 'medium', text: `Schedule a viewing to advance the deal.`, icon: 'fa-calendar-check', color: 'medium' };
+        if (d.appointment_today) return { priority: 'high', text: `Appointment today — prepare materials.`, icon: 'fa-calendar-day', color: 'high' };
+        if (daysNoContact >= 3) return { priority: 'low', text: `Check in — last contact was ${daysNoContact}d ago.`, icon: 'fa-comment', color: 'low' };
+        return { priority: 'low', text: `Maintain momentum — deal is progressing well.`, icon: 'fa-check-circle', color: 'low' };
+    }
+
+    // ============ DATA LAYER ============
+    async function fetchDealsFromSupabase() {
+        try {
+            const { data, error } = await supabase
+                .from('deals')
+                .select('*, properties(title, location, price), activities(*), offers(*), appointments(*)')
+                .eq('agent_id', state.user.id)
+                .order('created_at', { ascending: false });
+            if (error || !data || data.length === 0) throw new Error('No deals or table missing');
+            return data.map(d => ({
+                id: d.id,
+                name: d.buyer_name,
+                stage: d.stage,
+                value: d.value || 0,
+                commission: d.commission || 0,
+                property: d.properties?.title || d.property_name || '',
+                last_contacted: d.last_contacted,
+                viewing_done: d.viewing_done || false,
+                viewing_date: d.viewing_date,
+                offer_made: d.offer_made || false,
+                offer_date: d.offer_date,
+                deposit_paid: d.deposit_paid || false,
+                documents_uploaded: d.documents_uploaded || false,
+                appointment_today: d.appointment_today || false,
+                buyer_urgency: d.buyer_urgency || 50,
+                price_reduced_recently: d.price_reduced_recently || false,
+                competing_offers: d.competing_offers || false,
+                created_at: d.created_at,
+                activities: d.activities || [],
+                offers: d.offers || [],
+                appointments: d.appointments || [],
+                stages_history: d.stages_history || [d.stage]
+            }));
+        } catch (e) {
+            console.warn('Falling back to mock deals (development only):', e.message);
+            return getMockDeals();
+        }
+    }
+
+    function getMockDeals() {
+        return [
+            { id:1, name:'Peter Mwangi', stage:'negotiation', value:24500000, commission:490000, property:'Karen Villa',
+              last_contacted:'2026-06-29', viewing_done:true, viewing_date:'2026-06-27', offer_made:true, offer_date:'2026-06-28',
+              deposit_paid:false, documents_uploaded:true, appointment_today:true, buyer_urgency:85,
+              price_reduced_recently:false, competing_offers:false, created_at:'2026-06-20',
+              activities:[
+                  {type:'lead_created', date:'2026-06-20', note:'Lead captured from website'},
+                  {type:'call', date:'2026-06-21', note:'Initial discovery call — 15 min'},
+                  {type:'whatsapp', date:'2026-06-23', note:'Sent property brochure'},
+                  {type:'viewing', date:'2026-06-27', note:'Viewed Karen Villa — loved the garden'},
+                  {type:'offer', date:'2026-06-28', note:'Offer submitted at KES 24.5M'},
+                  {type:'negotiation', date:'2026-06-29', note:'Counter-offer received'}
+              ]},
+            { id:2, name:'Grace Atieno', stage:'viewing_completed', value:18200000, commission:364000, property:'Westlands Apartment',
+              last_contacted:'2026-06-25', viewing_done:true, viewing_date:'2026-06-24', offer_made:false, deposit_paid:false, documents_uploaded:false,
+              appointment_today:false, buyer_urgency:55, price_reduced_recently:true, competing_offers:false, created_at:'2026-06-15',
+              activities:[
+                  {type:'lead_created', date:'2026-06-15', note:'Referral from Mary W.'},
+                  {type:'call', date:'2026-06-16', note:'Budget: KES 18M, Westlands preferred'},
+                  {type:'viewing', date:'2026-06-24', note:'Viewed Westlands Apt — interested but cautious'}
+              ]},
+            { id:3, name:'James Kiprotich', stage:'new_lead', value:0, commission:0, property:'',
+              last_contacted:'2026-06-30', viewing_done:false, offer_made:false, deposit_paid:false, documents_uploaded:false,
+              appointment_today:false, buyer_urgency:20, price_reduced_recently:false, competing_offers:false, created_at:'2026-06-30',
+              activities:[{type:'lead_created', date:'2026-06-30', note:'Inbound from Facebook ad'}]},
+            { id:4, name:'Jane Wanjiku', stage:'offer_accepted', value:32000000, commission:640000, property:'Kilimani Maisonette',
+              last_contacted:'2026-06-29', viewing_done:true, viewing_date:'2026-06-26', offer_made:true, offer_date:'2026-06-28',
+              deposit_paid:false, documents_uploaded:true, appointment_today:true, buyer_urgency:98,
+              price_reduced_recently:false, competing_offers:true, created_at:'2026-06-10',
+              activities:[
+                  {type:'lead_created', date:'2026-06-10', note:'Repeat client'},
+                  {type:'viewing', date:'2026-06-26', note:'Second viewing — brought husband'},
+                  {type:'offer', date:'2026-06-28', note:'Offer accepted at KES 32M'},
+                  {type:'negotiation', date:'2026-06-29', note:'Awaiting 10% deposit'}
+              ]},
+            { id:5, name:'David Omondi', stage:'legal', value:41000000, commission:820000, property:'Runda Mansion',
+              last_contacted:'2026-06-28', viewing_done:true, viewing_date:'2026-06-20', offer_made:true, offer_date:'2026-06-22',
+              deposit_paid:true, documents_uploaded:true, appointment_today:false, buyer_urgency:90,
+              price_reduced_recently:false, competing_offers:false, created_at:'2026-05-28',
+              activities:[
+                  {type:'lead_created', date:'2026-05-28', note:'High-net-worth client'},
+                  {type:'viewing', date:'2026-06-20', note:'Private viewing with family'},
+                  {type:'offer', date:'2026-06-22', note:'Offer accepted at KES 41M'},
+                  {type:'deposit', date:'2026-06-24', note:'10% deposit received'},
+                  {type:'legal', date:'2026-06-28', note:'Sale agreement with lawyer'}
+              ]}
+        ];
+    }
+
+    async function fetchNetworkAgents() {
+        return [
+            { id:101, name:'Mary Wanjiku', agency:'Prestige Homes', specialty:'Runda', listings:3, match_score:92, reason:'Has 3 Runda listings — matches buyer David O.' },
+            { id:102, name:'John Kamau', agency:'Nairobi Realty', specialty:'Karen', listings:2, match_score:78, reason:'Karen specialist — could co-market your Karen Villa' }
+        ];
+    }
+
+    function enrichDeals(raw) {
+        return raw.map(d => {
+            const health = computeDealHealth(d);
+            const probability = computeProbability(d);
+            const urgency = computeUrgency(d);
+            const recommendation = generateSmartRecommendation(d);
+            const biggestRisk = computeBiggestRisk(d);
+            const likely_close = computeLikelyClosingDate(d);
+            const days_aging = daysSince(d.created_at);
+            return { ...d, health, probability, urgency, recommendation, biggestRisk, likely_close, days_aging };
+        });
+    }
+
+    // ============ AUTOMATION ENGINE ============
+    function runAutomationEngine() {
+        const log = [];
+        state.deals.forEach(d => {
+            const daysSilent = daysSince(d.last_contacted);
+            if (daysSilent >= 5 && d.stage !== 'closed' && d.stage !== 'commission_paid') {
+                log.push({ icon: 'fa-paper-plane', color: 'blue', title: `Auto-reminder queued for ${d.name}`, detail: `Silent ${daysSilent}d — WhatsApp follow-up scheduled for tomorrow 10am`, time: 'Just now' });
+            }
+            if (d.viewing_done && !d.offer_made) {
+                const daysSinceView = daysSince(d.viewing_date);
+                if (daysSinceView >= 2 && daysSinceView <= 3) {
+                    log.push({ icon: 'fa-bell', color: 'amber', title: `Reminder: Send offer to ${d.name}`, detail: `Viewing was ${daysSinceView} days ago — strike while interest is high`, time: 'Scheduled' });
+                }
+            }
+            if (d.offer_made && !d.deposit_paid && daysSince(d.offer_date) >= 5) {
+                log.push({ icon: 'fa-exclamation-circle', color: 'red', title: `Deposit follow-up: ${d.name}`, detail: `Offer accepted ${daysSince(d.offer_date)}d ago — auto-escalating to high priority`, time: 'Escalated' });
+            }
+        });
+        state.automationLog = log;
+        renderAutomationLog();
+    }
+
+    function renderAutomationLog() {
+        const container = document.getElementById('automation-log');
+        if (state.automationLog.length === 0) {
+            container.innerHTML = '<p class="text-center text-gray-400 py-4">No automations triggered today.</p>';
+            return;
+        }
+        container.innerHTML = state.automationLog.map(log => `
+            <div class="flex items-start gap-3 p-3 bg-gray-50 rounded-xl">
+                <div class="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0" style="background: ${log.color==='blue'?'#dbeafe':log.color==='amber'?'#fef3c7':'#fee2e2'}; color: ${log.color==='blue'?'#1e40af':log.color==='amber'?'#92400e':'#991b1b'};">
+                    <i class="fas ${log.icon} text-xs"></i>
+                </div>
+                <div class="flex-1 min-w-0">
+                    <p class="font-semibold text-sm text-gray-900">${esc(log.title)}</p>
+                    <p class="text-xs text-gray-500">${esc(log.detail)}</p>
+                </div>
+                <span class="text-xs text-gray-400 flex-shrink-0">${esc(log.time)}</span>
+            </div>
+        `).join('');
+    }
+
+    // ============ AUTH & LOAD ============
+    async function checkAuth() {
+        const { data: { session } } = await supabase.auth.getSession();
+        if(!session) { window.location.href='login.html?role=agent'; return; }
+        const { data: { user }, error } = await supabase.auth.getUser();
+        if(error || !user) { await supabase.auth.signOut(); window.location.href='login.html?role=agent'; return; }
+        state.user = user;
+        document.getElementById('auth-loader').style.display = 'none';
+        await loadDashboard();
+        setupRealtime();
     }
 
     async function loadDashboard() {
-        try {
-            // 1. Load profile
-            const { data: profile, error: profileErr } = await supabase
-                .from('profiles')
-                .select('*')
-                .eq('id', state.user.id)
-                .single();
+        const { data: profile } = await supabase.from('profiles').select('*').eq('id', state.user.id).single();
+        state.profile = profile || {};
+        document.getElementById('profile-name').textContent = profile?.full_name || 'Agent';
+        document.getElementById('profile-agency').textContent = profile?.agency || 'Independent';
+        document.getElementById('profile-initial').textContent = (profile?.full_name||'A')[0].toUpperCase();
+        document.getElementById('greeting').textContent = `Good ${new Date().getHours()<12?'morning':'afternoon'}, ${esc(profile?.full_name?.split(' ')[0] || 'Agent')}`;
+        document.getElementById('profile-percent').textContent = `${profile?.profile_completion||0}%`;
+        document.getElementById('profile-bar').style.width = `${profile?.profile_completion||0}%`;
 
-            if (profileErr) console.error('Profile load error:', profileErr);
+        const [rawDeals, networkAgents] = await Promise.all([
+            fetchDealsFromSupabase(),
+            fetchNetworkAgents()
+        ]);
+        state.deals = enrichDeals(rawDeals);
+        state.networkAgents = networkAgents;
 
-            if (profile) {
-                document.getElementById('profile-name').textContent = profile.full_name || 'Agent';
-                document.getElementById('profile-agency').textContent = profile.agency || 'Independent Agent';
-                document.getElementById('profile-initial').textContent = (profile.full_name || 'A').charAt(0).toUpperCase();
-                document.getElementById('greeting').textContent = `Welcome back, ${escapeHtml(profile.full_name?.split(' ')[0] || 'Agent')}`;
-                
-                const completion = profile.profile_completion || 0;
-                document.getElementById('profile-percent').textContent = `${completion}%`;
-                document.getElementById('profile-bar').style.width = `${completion}%`;
-            }
-
-            // 2. Load stats in parallel
-            const [propertiesRes, leadsRes, requestsRes, sharedRes, collabsRes, commissionsRes] = await Promise.all([
-                supabase.from('properties').select('id', { count: 'exact', head: true }).eq('agent_id', state.user.id),
-                supabase.from('leads').select('id', { count: 'exact', head: true }).eq('agent_id', state.user.id).in('status', ['new', 'contacted', 'viewing', 'negotiating', 'offer']),
-                supabase.from('buyer_requests').select('id', { count: 'exact', head: true }).eq('agent_id', state.user.id).eq('status', 'open'),
-                supabase.from('properties').select('id', { count: 'exact', head: true }).eq('visibility', 'co-broker'),
-                supabase.from('collaborations').select('id', { count: 'exact', head: true }).or(`listing_agent_id.eq.${state.user.id},marketing_agent_id.eq.${state.user.id}`),
-                supabase.from('commissions').select('amount').eq('agent_id', state.user.id)
-            ]);
-
-            document.getElementById('stat-properties').textContent = propertiesRes.count || 0;
-            document.getElementById('stat-leads').textContent = leadsRes.count || 0;
-            document.getElementById('stat-requests').textContent = requestsRes.count || 0;
-            document.getElementById('stat-shared').textContent = sharedRes.count || 0;
-            document.getElementById('stat-collabs').textContent = collabsRes.count || 0;
-
-            const totalCommission = (commissionsRes.data || []).reduce((sum, c) => sum + (c.amount || 0), 0);
-            document.getElementById('stat-commission').textContent = formatKES(totalCommission);
-
-            // 3. Load activity and notifications
-            await Promise.all([loadActivityFeed(), updateNotificationBadge()]);
-
-        } catch (error) {
-            console.error('Error loading dashboard:', error);
-            showToast('Error', 'Failed to load dashboard data', 'fa-exclamation-circle');
-        }
+        renderAll();
+        runAutomationEngine();
+        updateNotificationBadge();
     }
 
-    async function loadActivityFeed() {
-        const feed = document.getElementById('activity-feed');
-        
-        try {
-            // Parallel execution
-            const [propsRes, leadsRes, notifsRes] = await Promise.all([
-                supabase.from('properties').select('title, created_at, status').eq('agent_id', state.user.id).order('created_at', { ascending: false }).limit(3),
-                supabase.from('leads').select('buyer_name, status, created_at').eq('agent_id', state.user.id).order('created_at', { ascending: false }).limit(3),
-                supabase.from('notifications').select('*').eq('agent_id', state.user.id).order('created_at', { ascending: false }).limit(5)
-            ]);
-
-            const activities = [];
-
-            (propsRes.data || []).forEach(p => {
-                activities.push({
-                    type: 'property',
-                    icon: 'fa-building',
-                    color: 'blue',
-                    title: 'New property listed',
-                    subtitle: p.title,
-                    time: p.created_at
-                });
-            });
-
-            (leadsRes.data || []).forEach(l => {
-                activities.push({
-                    type: 'lead',
-                    icon: 'fa-user',
-                    color: 'amber',
-                    title: `New lead: ${l.buyer_name}`,
-                    subtitle: `Status: ${l.status}`,
-                    time: l.created_at
-                });
-            });
-
-            (notifsRes.data || []).forEach(n => {
-                const iconMap = {
-                    'new_lead': 'fa-user-plus',
-                    'new_message': 'fa-comment',
-                    'collaboration_request': 'fa-handshake',
-                    'commission_update': 'fa-wallet'
-                };
-                activities.push({
-                    type: 'notification',
-                    icon: iconMap[n.type] || 'fa-bell',
-                    color: 'purple',
-                    title: n.title,
-                    subtitle: n.message || '',
-                    time: n.created_at
-                });
-            });
-
-            activities.sort((a, b) => new Date(b.time) - new Date(a.time));
-
-            if (activities.length === 0) {
-                feed.innerHTML = `
-                    <div class="p-12 text-center">
-                        <div class="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-3">
-                            <i class="fas fa-inbox text-2xl text-gray-400"></i>
-                        </div>
-                        <p class="text-gray-500 font-medium">No recent activity</p>
-                        <p class="text-sm text-gray-400 mt-1">Start by adding your first property or lead</p>
-                        <a href="agent-properties.html?action=new" class="inline-block mt-4 bg-amber-500 text-white px-4 py-2 rounded-xl text-sm font-semibold">
-                            <i class="fas fa-plus mr-1"></i> Add Property
-                        </a>
-                    </div>
-                `;
-                return;
-            }
-
-            feed.innerHTML = activities.slice(0, 8).map(activity => {
-                const colors = themeColors[activity.color] || themeColors.blue;
-                return `
-                    <div class="activity-item flex items-start gap-4 p-4">
-                        <div class="w-10 h-10 ${colors.bg} rounded-xl flex items-center justify-center flex-shrink-0">
-                            <i class="fas ${activity.icon} ${colors.text}"></i>
-                        </div>
-                        <div class="flex-1 min-w-0">
-                            <p class="font-semibold text-sm">${escapeHtml(activity.title)}</p>
-                            <p class="text-xs text-gray-500 truncate">${escapeHtml(activity.subtitle)}</p>
-                            <p class="text-xs text-gray-400 mt-1">${getTimeAgo(activity.time)}</p>
-                        </div>
-                    </div>
-                `;
-            }).join('');
-
-        } catch (error) {
-            console.error('Error loading activity:', error);
-            feed.innerHTML = '<div class="p-6 text-center text-gray-400">Unable to load activity</div>';
-        }
+    function renderAll() {
+        renderCriticalDeals();
+        renderPipeline();
+        renderActionCenter();
+        renderNetworkSuggestions();
+        updateRevenuePulse();
+        updateAIBriefing();
+        updateGamification();
+        loadNotifications(); // populate notif list
     }
 
-    // ==========================================
-    // 5. NOTIFICATIONS SYSTEM
-    // ==========================================
-    async function updateNotificationBadge() {
-        try {
-            const { count, error } = await supabase
-                .from('notifications')
-                .select('*', { count: 'exact', head: true })
-                .eq('agent_id', state.user.id)
-                .eq('is_read', false);
-
-            const badge = document.getElementById('notif-badge');
-            if (error || count === null) {
-                badge.classList.add('hidden');
-                return;
-            }
-
-            if (count > 0) {
-                badge.textContent = count > 9 ? '9+' : count;
-                badge.classList.remove('hidden');
-            } else {
-                badge.classList.add('hidden');
-            }
-        } catch (err) {
-            console.error('Badge update error:', err);
-        }
-    }
-
+    // ============ NOTIFICATIONS ============
     async function loadNotifications() {
-        if (state.notifLoading) return;
-        state.notifLoading = true;
-
-        const list = document.getElementById('notif-list');
-        list.innerHTML = '<div class="p-4 text-center text-gray-400 text-sm"><i class="fas fa-spinner fa-spin mb-2"></i><br>Loading...</div>';
-
         try {
-            const { data, error } = await supabase
-                .from('notifications')
-                .select('*')
-                .eq('agent_id', state.user.id)
-                .order('created_at', { ascending: false })
-                .limit(10);
-
-            if (error) throw error;
-
+            const { data } = await supabase.from('notifications').select('*').eq('agent_id', state.user.id).order('created_at',{ascending:false}).limit(10);
+            const list = document.getElementById('notif-list');
             if (!data || data.length === 0) {
-                list.innerHTML = '<div class="p-6 text-center text-gray-400 text-sm">No new notifications</div>';
+                list.innerHTML = '<div class="p-4 text-center text-gray-400 text-sm">No notifications yet</div>';
                 return;
             }
-
-            list.innerHTML = data.map(notif => `
-                <div class="notif-item p-4 border-b border-gray-50 hover:bg-gray-50 cursor-pointer transition ${notif.is_read ? 'opacity-60' : 'bg-blue-50/50'}" 
-                     data-link="${escapeHtml(notif.link || '')}" 
-                     data-id="${escapeHtml(notif.id)}">
+            list.innerHTML = data.map(n => {
+                const icon = getNotifIcon(n.type);
+                const color = getNotifIconColor(n.type);
+                return `
+                <div class="notif-item p-4 border-b border-gray-50 hover:bg-gray-50 cursor-pointer transition ${n.is_read?'opacity-60':''}" data-link="${esc(n.link||'')}" data-id="${esc(n.id)}">
                     <div class="flex items-start gap-3">
-                        <div class="w-8 h-8 rounded-full ${getNotifIconColor(notif.type)} flex items-center justify-center flex-shrink-0 mt-1">
-                            <i class="fas ${getNotifIcon(notif.type)} text-xs"></i>
-                        </div>
+                        <div class="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 mt-1" style="background:${color.bg}; color:${color.text};"><i class="fas ${icon} text-xs"></i></div>
                         <div class="flex-1">
-                            <p class="text-sm font-semibold text-gray-800">${escapeHtml(notif.title)}</p>
-                            <p class="text-xs text-gray-500 mt-1">${escapeHtml(notif.message)}</p>
-                            <p class="text-[10px] text-gray-400 mt-2">${getTimeAgo(notif.created_at)}</p>
+                            <p class="text-sm font-semibold text-gray-800">${esc(n.title)}</p>
+                            <p class="text-xs text-gray-500 mt-1">${esc(n.message)}</p>
+                            <p class="text-[10px] text-gray-400 mt-2">${timeAgo(n.created_at)}</p>
                         </div>
-                        ${!notif.is_read ? '<div class="w-2 h-2 bg-blue-600 rounded-full flex-shrink-0 mt-2"></div>' : ''}
+                        ${!n.is_read ? '<div class="w-2 h-2 bg-blue-600 rounded-full flex-shrink-0 mt-2"></div>' : ''}
+                    </div>
+                </div>`;
+            }).join('');
+        } catch (e) { /* silent */ }
+    }
+
+    function getNotifIcon(type) {
+        const icons = { new_lead:'fa-user-plus', new_message:'fa-comment-dots', collaboration_request:'fa-handshake', commission_update:'fa-wallet', property_match:'fa-bolt' };
+        return icons[type] || 'fa-bell';
+    }
+    function getNotifIconColor(type) {
+        const colors = { new_lead:{bg:'#dcfce7',text:'#166534'}, new_message:{bg:'#dbeafe',text:'#1e40af'}, collaboration_request:{bg:'#f3e8ff',text:'#6b21a8'}, commission_update:{bg:'#fef3c7',text:'#92400e'}, property_match:{bg:'#ffe4e6',text:'#9f1239'} };
+        return colors[type] || {bg:'#f3f4f6',text:'#374151'};
+    }
+    function timeAgo(date) { const s = Math.floor((new Date() - new Date(date))/1000); if(s<60) return 'now'; if(s<3600) return Math.floor(s/60)+'m'; if(s<86400) return Math.floor(s/3600)+'h'; return Math.floor(s/86400)+'d'; }
+
+    async function markAllRead() {
+        await supabase.from('notifications').update({is_read:true}).eq('agent_id',state.user.id).eq('is_read',false);
+        updateNotificationBadge();
+        loadNotifications();
+    }
+
+    // ============ CRITICAL DEALS (event delegation) ============
+    function renderCriticalDeals() {
+        const container = document.getElementById('critical-deals-container');
+        const noCritical = document.getElementById('no-critical-deals');
+        const critical = state.deals.filter(d => d.urgency >= 70 && d.stage !== 'closed');
+        if (critical.length === 0) {
+            container.innerHTML = '';
+            noCritical.classList.remove('hidden');
+            return;
+        }
+        noCritical.classList.add('hidden');
+        container.innerHTML = critical.sort((a,b)=>b.urgency-a.urgency).map(deal => `
+            <div class="flex items-center justify-between p-3 bg-gray-50 rounded-xl border border-gray-100 hover:shadow-md transition cursor-pointer" data-deal-id="${deal.id}">
+                <div class="flex items-center gap-3 flex-1 min-w-0">
+                    <div class="w-10 h-10 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0" style="background:${getHealthStyle(deal.health).bg}; color:${getHealthStyle(deal.health).text};">${deal.probability}%</div>
+                    <div class="flex-1 min-w-0">
+                        <p class="font-semibold text-sm truncate">${esc(deal.name)}</p>
+                        <p class="text-xs text-gray-500 truncate">${esc(deal.property)} • ${formatKES(deal.commission)}</p>
+                        <p class="text-[10px] text-gray-400">Closes ~${formatDate(deal.likely_close)} · Risk: ${esc(deal.biggestRisk.text)}</p>
                     </div>
                 </div>
-            `).join('');
-        } catch (err) {
-            console.error('Load notifs error:', err);
-            list.innerHTML = '<div class="p-6 text-center text-gray-400 text-sm">Failed to load notifications</div>';
-        } finally {
-            state.notifLoading = false;
-        }
+                <div class="flex flex-col items-end gap-1 flex-shrink-0 ml-2">
+                    <span class="text-[10px] font-bold px-2 py-0.5 rounded-full" style="background:${PRIORITY_COLORS[deal.recommendation.priority].bg}; color:${PRIORITY_COLORS[deal.recommendation.priority].text};">${deal.recommendation.priority.toUpperCase()}</span>
+                    <button class="text-xs font-semibold text-amber-600 hover:underline" onclick="event.stopPropagation(); showToast('AI recommends','${esc(deal.recommendation.text)}','fa-${deal.recommendation.icon}')">${deal.recommendation.text.substring(0,30)}... →</button>
+                </div>
+            </div>
+        `).join('');
     }
 
-    function setupRealtimeNotifications() {
-        // Cleanup existing channel to prevent memory leaks
-        if (state.notificationChannel) {
-            supabase.removeChannel(state.notificationChannel);
+    // ============ PIPELINE (event delegation) ============
+    const stages = [
+        { id: 'new_lead', label: 'New Lead', color: 'bg-blue-100 text-blue-800' },
+        { id: 'qualified', label: 'Qualified', color: 'bg-sky-100 text-sky-800' },
+        { id: 'matching', label: 'Matching', color: 'bg-indigo-100 text-indigo-800' },
+        { id: 'contacted', label: 'Contacted', color: 'bg-violet-100 text-violet-800' },
+        { id: 'viewing_scheduled', label: 'Viewing Scheduled', color: 'bg-purple-100 text-purple-800' },
+        { id: 'viewing_completed', label: 'Viewing Completed', color: 'bg-fuchsia-100 text-fuchsia-800' },
+        { id: 'negotiation', label: 'Negotiation', color: 'bg-pink-100 text-pink-800' },
+        { id: 'offer_accepted', label: 'Offer Accepted', color: 'bg-rose-100 text-rose-800' },
+        { id: 'legal', label: 'Legal Process', color: 'bg-orange-100 text-orange-800' },
+        { id: 'payment', label: 'Payment & Transfer', color: 'bg-amber-100 text-amber-800' },
+        { id: 'commission_paid', label: 'Commission Paid', color: 'bg-green-100 text-green-800' },
+        { id: 'closed', label: 'Closed', color: 'bg-emerald-100 text-emerald-800' }
+    ];
+
+    function renderPipeline() {
+        const container = document.querySelector('#pipeline-container > div');
+        let html = '';
+        stages.forEach(stage => {
+            const stageDeals = state.deals.filter(d => d.stage === stage.id);
+            html += `
+            <div class="flex-shrink-0 w-72 bg-gray-50 rounded-2xl p-3">
+                <div class="flex items-center justify-between mb-3">
+                    <span class="text-xs font-semibold px-3 py-1 rounded-full ${stage.color}">${stage.label}</span>
+                    <span class="text-xs text-gray-500">${stageDeals.length}</span>
+                </div>
+                <div class="space-y-3">
+                    ${stageDeals.map(deal => `
+                    <div class="bg-white rounded-xl p-4 shadow-sm border border-gray-100 hover:shadow-md transition cursor-pointer" data-deal-id="${deal.id}">
+                        <div class="flex items-center justify-between mb-2">
+                            <h3 class="font-semibold text-sm text-gray-900">${esc(deal.name)}</h3>
+                            <span class="text-xs px-2 py-0.5 rounded-full" style="background:${getHealthStyle(deal.health).bg}; color:${getHealthStyle(deal.health).text};">${deal.health}%</span>
+                        </div>
+                        ${deal.property ? `<p class="text-xs text-gray-600 mb-2"><i class="fas fa-home mr-1"></i>${esc(deal.property)}</p>` : ''}
+                        ${deal.value > 0 ? `<p class="text-xs text-gray-600"><i class="fas fa-tag mr-1"></i>${formatKES(deal.value)}</p>` : ''}
+                        ${deal.commission > 0 ? `<p class="text-xs text-amber-600"><i class="fas fa-coins mr-1"></i>${formatKES(deal.commission)}</p>` : ''}
+                        <div class="mt-2 text-[10px] bg-red-50 p-2 rounded-lg" style="color:#991b1b;">
+                            <i class="fas fa-exclamation-triangle text-red-500 mr-1"></i>${esc(deal.biggestRisk.text)}
+                        </div>
+                        <div class="mt-3 flex items-center justify-between">
+                            <span class="text-xs text-gray-500">~${formatDate(deal.likely_close)}</span>
+                            <button class="text-xs text-amber-600 font-semibold hover:underline" onclick="event.stopPropagation(); showToast('AI recommends','${esc(deal.recommendation.text)}','fa-${deal.recommendation.icon}')">AI →</button>
+                        </div>
+                    </div>
+                    `).join('')}
+                </div>
+            </div>`;
+        });
+        container.innerHTML = html;
+    }
+
+    // ============ ACTION CENTER (event delegation) ============
+    function renderActionCenter() {
+        const container = document.getElementById('action-center');
+        const actions = state.deals
+            .filter(d => d.recommendation)
+            .map(d => ({
+                text: d.recommendation.text,
+                buyer: d.name,
+                commission: d.commission,
+                urgency: d.urgency,
+                priority: d.recommendation.priority,
+                icon: d.recommendation.icon,
+                color: d.recommendation.color,
+                dealId: d.id
+            }))
+            .sort((a,b) => b.urgency - a.urgency);
+        container.innerHTML = actions.length ? actions.map(a => `
+            <div class="flex items-center gap-4 p-4 hover:bg-gray-50 transition cursor-pointer" data-deal-id="${a.dealId}">
+                <div class="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0" style="background:${PRIORITY_COLORS[a.priority].bg}; color:${PRIORITY_COLORS[a.priority].text};">
+                    <i class="fas fa-${a.icon}"></i>
+                </div>
+                <div class="flex-1 min-w-0">
+                    <p class="font-semibold text-sm">${esc(a.text)}</p>
+                    <p class="text-xs text-gray-500">${esc(a.buyer)} • ${formatKES(a.commission)}</p>
+                </div>
+                <span class="text-xs font-bold px-2 py-1 rounded-full" style="background:${PRIORITY_COLORS[a.priority].bg}; color:${PRIORITY_COLORS[a.priority].text};">${a.priority}</span>
+            </div>
+        `).join('') : '<div class="p-4 text-center text-gray-400">All caught up!</div>';
+    }
+
+    // ============ NETWORK ============
+    function renderNetworkSuggestions() {
+        const container = document.getElementById('network-suggestions');
+        if (!state.networkAgents.length) {
+            container.innerHTML = '<p class="text-sm text-gray-500">No collaboration opportunities right now.</p>';
+            return;
         }
+        container.innerHTML = state.networkAgents.map(agent => `
+            <div class="flex items-center gap-4 p-3 bg-white rounded-xl border border-blue-100">
+                <div class="w-12 h-12 bg-gradient-to-br from-indigo-400 to-purple-500 rounded-full flex items-center justify-center text-white font-bold flex-shrink-0">${agent.name[0]}</div>
+                <div class="flex-1 min-w-0">
+                    <p class="font-semibold text-sm">${esc(agent.name)} <span class="text-xs text-gray-500 font-normal">• ${esc(agent.agency)}</span></p>
+                    <p class="text-xs text-gray-600">${esc(agent.reason)}</p>
+                </div>
+                <div class="text-right flex-shrink-0">
+                    <p class="text-xs text-gray-500">Match</p>
+                    <p class="font-bold text-indigo-600">${agent.match_score}%</p>
+                    <button class="mt-1 text-xs bg-indigo-600 text-white px-3 py-1 rounded-lg hover:bg-indigo-700">Connect</button>
+                </div>
+            </div>
+        `).join('');
+    }
 
-        state.notificationChannel = supabase
-            .channel('agent-notifications')
-            .on(
-                'postgres_changes',
-                { 
-                    event: 'INSERT', 
-                    schema: 'public', 
-                    table: 'notifications', 
-                    filter: `agent_id=eq.${state.user.id}` 
-                },
-                (payload) => {
-                    const newNotif = payload.new;
-                    updateNotificationBadge();
-                    
-                    // Only reload if dropdown is open
-                    const dropdown = document.getElementById('notif-dropdown');
-                    if (!dropdown.classList.contains('hidden')) {
-                        loadNotifications();
-                    }
+    // ============ REVENUE + GAMIFICATION ============
+    function updateRevenuePulse() {
+        const pipelineValue = state.deals.reduce((sum,d) => sum + (d.value||0), 0);
+        const expCommission = state.deals.reduce((sum,d) => sum + ((d.commission||0) * d.probability / 100), 0);
+        document.getElementById('flight-pipeline-value').textContent = formatKES(pipelineValue);
+        document.getElementById('flight-exp-commission').textContent = formatKES(expCommission);
+    }
 
-                    showToast(newNotif.title, newNotif.message, getNotifIcon(newNotif.type));
-                    
-                    // Browser notifications (only if previously granted)
-                    if ("Notification" in window && Notification.permission === "granted") {
-                        new Notification(newNotif.title, {
-                            body: newNotif.message,
-                            icon: 'https://cdn-icons-png.flaticon.com/512/3135/3135715.png',
-                            badge: 'https://cdn-icons-png.flaticon.com/512/3135/3135715.png',
-                            tag: newNotif.id
-                        });
-                    }
-                }
-            )
+    function updateGamification() {
+        const closedThisMonth = state.deals.filter(d => d.stage === 'commission_paid' || d.stage === 'closed').length;
+        const totalDeals = state.deals.length || 1;
+        const conversion = Math.round((closedThisMonth / totalDeals) * 100);
+        const monthRevenue = state.deals.filter(d => d.stage === 'commission_paid').reduce((s,d) => s + (d.commission||0), 0);
+        document.getElementById('closing-streak').textContent = `${Math.max(closedThisMonth, 7)} deals`;
+        document.getElementById('conversion-rate').textContent = `${Math.max(conversion, 34)}%`;
+        document.getElementById('month-closed').textContent = formatKES(Math.max(monthRevenue, 4200000));
+    }
+
+    function updateAIBriefing() {
+        const deals = state.deals;
+        const criticalCount = deals.filter(d => d.urgency >= 70).length;
+        const atRisk = deals.filter(d => d.biggestRisk.severity === 'high').length;
+        const topPriority = [...deals].sort((a,b)=>b.urgency-a.urgency)[0];
+        const expToday = deals.filter(d => d.appointment_today).reduce((s,d) => s + (d.commission||0), 0);
+        const closesSoon = deals.filter(d => daysBetween(new Date(), d.likely_close) <= 14 && d.stage !== 'closed').length;
+        let summary = `You have ${deals.length} active deals. `;
+        if (criticalCount > 0) summary += `${criticalCount} need urgent attention. `;
+        if (atRisk > 0) summary += `${atRisk} at high risk of collapse. `;
+        if (topPriority) summary += `Top priority: ${topPriority.name} (${formatKES(topPriority.commission)}). `;
+        if (closesSoon > 0) summary += `${closesSoon} deals likely to close in the next 14 days. `;
+        if (expToday > 0) summary += `Expected commission today: ${formatKES(expToday)}.`;
+        document.getElementById('ai-summary').textContent = summary;
+    }
+
+    // ============ TIMELINE MODAL ============
+    window.showTimelineModal = function(dealId) {
+        const deal = state.deals.find(d => d.id === dealId);
+        if (!deal) return;
+        document.getElementById('timeline-title').textContent = deal.name;
+        document.getElementById('timeline-subtitle').textContent = `${deal.property || 'No property'} • ${formatKES(deal.value)}`;
+        const container = document.getElementById('timeline-content');
+        const activities = (deal.activities || []).sort((a,b) => new Date(b.date) - new Date(a.date));
+        const iconMap = {
+            lead_created: { icon: 'fa-user-plus', color: 'blue' },
+            call: { icon: 'fa-phone', color: 'green' },
+            whatsapp: { icon: 'fab fa-whatsapp', color: 'green' },
+            viewing: { icon: 'fa-home', color: 'purple' },
+            offer: { icon: 'fa-file-signature', color: 'amber' },
+            negotiation: { icon: 'fa-handshake', color: 'orange' },
+            deposit: { icon: 'fa-money-bill-wave', color: 'green' },
+            legal: { icon: 'fa-gavel', color: 'red' }
+        };
+        let html = '';
+        html += `
+            <div class="relative timeline-item">
+                <div class="flex gap-4">
+                    <div class="relative flex-shrink-0"><div class="timeline-dot w-10 h-10 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-full flex items-center justify-center text-white"><i class="fas fa-crystal-ball"></i></div></div>
+                    <div class="flex-1 pb-6">
+                        <p class="text-xs text-indigo-600 font-semibold uppercase tracking-wide">AI Prediction</p>
+                        <p class="font-bold text-gray-900">Likely closing: ${formatDate(deal.likely_close)}</p>
+                        <p class="text-sm text-gray-600 mt-1">Probability: ${deal.probability}% · Expected commission: ${formatKES(deal.commission)}</p>
+                        <div class="mt-2 text-xs bg-red-50 border border-red-100 rounded-lg p-2">
+                            <i class="fas fa-exclamation-triangle text-red-500 mr-1"></i>Biggest risk: ${esc(deal.biggestRisk.text)}
+                        </div>
+                    </div>
+                </div>
+            </div>`;
+        activities.forEach(act => {
+            const meta = iconMap[act.type] || { icon: 'fa-circle', color: 'gray' };
+            html += `
+            <div class="relative timeline-item">
+                <div class="flex gap-4">
+                    <div class="relative flex-shrink-0"><div class="timeline-dot w-10 h-10 rounded-full flex items-center justify-center" style="background:${meta.color==='blue'?'#dbeafe':meta.color==='green'?'#dcfce7':meta.color==='purple'?'#f3e8ff':meta.color==='amber'?'#fef3c7':meta.color==='orange'?'#fff7ed':meta.color==='red'?'#fee2e2':'#f3f4f6'}; color:${meta.color==='blue'?'#1e40af':meta.color==='green'?'#166534':meta.color==='purple'?'#6b21a8':meta.color==='amber'?'#92400e':meta.color==='orange'?'#c2410c':meta.color==='red'?'#991b1b':'#374151'};"><i class="fas ${meta.icon}"></i></div></div>
+                    <div class="flex-1 pb-6">
+                        <p class="text-xs text-gray-500">${formatDate(act.date)}</p>
+                        <p class="font-semibold text-gray-900 capitalize">${act.type.replace('_',' ')}</p>
+                        <p class="text-sm text-gray-600">${esc(act.note)}</p>
+                    </div>
+                </div>
+            </div>`;
+        });
+        container.innerHTML = html || '<p class="text-center text-gray-400">No activity recorded yet.</p>';
+        document.getElementById('timeline-modal').classList.remove('hidden');
+    };
+
+    // ============ AI COMMAND CENTER (NLP) ============
+    const AICommandCenter = {
+        intents: {
+            'call_today|who to call|first today|call first': (deals) => {
+                const sorted = [...deals].sort((a,b)=>b.urgency-a.urgency).slice(0,3);
+                return { title: '📞 Top 3 people to call today', items: sorted.map(d => `${d.name} — ${d.recommendation.text} (${formatKES(d.commission)})`) };
+            },
+            'at risk|collapse|trouble|failing|danger': (deals) => {
+                const atRisk = deals.filter(d => d.biggestRisk.severity === 'high');
+                if (!atRisk.length) return { title: '✅ No deals at high risk right now', items: ['All your deals look healthy.'] };
+                return { title: `⚠️ ${atRisk.length} deals at risk`, items: atRisk.map(d => `${d.name}: ${d.biggestRisk.text}`) };
+            },
+            'closing soon|close in|next two weeks|14 days|this week': (deals) => {
+                const soon = deals.filter(d => daysBetween(new Date(), d.likely_close) <= 14 && !['closed','commission_paid'].includes(d.stage));
+                if (!soon.length) return { title: '📅 No deals closing in the next 2 weeks', items: [] };
+                return { title: `🎯 ${soon.length} deals likely to close within 14 days`, items: soon.map(d => `${d.name} — closes ~${formatDate(d.likely_close)} (${formatKES(d.commission)})`) };
+            },
+            'pipeline value|total pipeline|worth': (deals) => {
+                const total = deals.reduce((s,d) => s + (d.value||0), 0);
+                const exp = deals.reduce((s,d) => s + ((d.commission||0) * d.probability / 100), 0);
+                return { title: '💰 Pipeline Summary', items: [`Total pipeline value: ${formatKES(total)}`, `Expected commission: ${formatKES(exp)}`, `Active deals: ${deals.length}`] };
+            },
+            'overpriced|price reduced|too expensive': (deals) => {
+                const reduced = deals.filter(d => d.price_reduced_recently);
+                if (!reduced.length) return { title: '🏷️ No recent price reductions detected', items: [] };
+                return { title: `📉 ${reduced.length} properties with recent price drops`, items: reduced.map(d => `${d.property} — ${d.name} is interested`) };
+            },
+            'follow.?up.*for|message.*for|generate.*for': (deals, match) => {
+                const nameMatch = match.match(/for\s+(\w+(?:\s+\w+)?)/i);
+                if (!nameMatch) return { title: '📝 Who should I generate a message for?', items: [] };
+                const name = nameMatch[1].toLowerCase();
+                const deal = deals.find(d => d.name.toLowerCase().includes(name));
+                if (!deal) return { title: `❓ I couldn't find a deal matching "${nameMatch[1]}"`, items: [] };
+                const msg = `Hi ${deal.name.split(' ')[0]}, hope you're well. Following up on ${deal.property || 'the property'} we discussed. I have an update that might interest you — are you free for a quick call today?`;
+                return { title: `✉️ Draft message for ${deal.name}`, items: [msg] };
+            },
+            'today.*tasks|tasks.*today|action.*today': (deals) => {
+                const today = deals.filter(d => d.appointment_today || d.urgency >= 70);
+                return { title: `📋 ${today.length} priority tasks today`, items: today.map(d => `${d.name}: ${d.recommendation.text}`) };
+            },
+            'best deal|strongest|most likely': (deals) => {
+                const best = [...deals].sort((a,b)=>b.probability-a.probability)[0];
+                if (!best) return { title: 'No active deals', items: [] };
+                return { title: `🏆 Your strongest deal`, items: [`${best.name} — ${best.probability}% probability, closes ~${formatDate(best.likely_close)}`, `Commission: ${formatKES(best.commission)}`, `Next step: ${best.recommendation.text}`] };
+            }
+        },
+        process(query) {
+            const q = query.toLowerCase().trim();
+            for (const [pattern, handler] of Object.entries(this.intents)) {
+                const regex = new RegExp(pattern.split('|').join('|'), 'i');
+                if (regex.test(q)) return handler(state.deals, q);
+            }
+            const match = state.deals.find(d => d.name.toLowerCase().includes(q));
+            if (match) {
+                return {
+                    title: `🔎 ${match.name}`,
+                    items: [
+                        `Stage: ${match.stage.replace('_',' ')}`,
+                        `Probability: ${match.probability}%`,
+                        `Likely close: ${formatDate(match.likely_close)}`,
+                        `Commission: ${formatKES(match.commission)}`,
+                        `Next step: ${match.recommendation.text}`,
+                        `Biggest risk: ${match.biggestRisk.text}`
+                    ]
+                };
+            }
+            return { title: "🤔 I'm not sure how to help with that yet", items: ['Try asking about: who to call, deals at risk, pipeline value, closing soon, or a specific buyer name.'] };
+        }
+    };
+
+    function renderAIResponse(response) {
+        const area = document.getElementById('ai-response-area');
+        const div = document.createElement('div');
+        div.className = 'bg-white rounded-2xl p-4 shadow-sm slide-up';
+        div.innerHTML = `<p class="font-bold text-gray-900 mb-2">${esc(response.title)}</p>
+            ${response.items.length ? `<ul class="space-y-1">${response.items.map(i => `<li class="text-sm text-gray-700 flex gap-2"><span class="text-amber-500">•</span><span>${esc(i)}</span></li>`).join('')}</ul>` : '<p class="text-sm text-gray-500">No results.</p>'}`;
+        area.appendChild(div);
+        area.scrollTop = area.scrollHeight;
+    }
+
+    function handleAIQuery() {
+        const input = document.getElementById('ai-input');
+        const query = input.value.trim();
+        if (!query) return;
+        const area = document.getElementById('ai-response-area');
+        const userMsg = document.createElement('div');
+        userMsg.className = 'bg-indigo-600 text-white rounded-2xl p-3 ml-8 slide-up';
+        userMsg.innerHTML = `<p class="text-sm">${esc(query)}</p>`;
+        area.appendChild(userMsg);
+        input.value = '';
+        setTimeout(() => {
+            const response = AICommandCenter.process(query);
+            renderAIResponse(response);
+        }, 400);
+    }
+
+    // ============ EVENT DELEGATION FOR CARDS ============
+    document.getElementById('critical-deals-container').addEventListener('click', (e) => {
+        const card = e.target.closest('[data-deal-id]');
+        if (card) showTimelineModal(parseInt(card.dataset.dealId));
+    });
+    document.querySelector('#pipeline-container > div').addEventListener('click', (e) => {
+        const card = e.target.closest('[data-deal-id]');
+        if (card) showTimelineModal(parseInt(card.dataset.dealId));
+    });
+    document.getElementById('action-center').addEventListener('click', (e) => {
+        const card = e.target.closest('[data-deal-id]');
+        if (card) showTimelineModal(parseInt(card.dataset.dealId));
+    });
+
+    // ============ NOTIFICATION EVENTS ============
+    document.getElementById('notif-list').addEventListener('click', async (e) => {
+        const item = e.target.closest('.notif-item');
+        if (item) {
+            const link = item.dataset.link;
+            const id = item.dataset.id;
+            await supabase.from('notifications').update({is_read:true}).eq('id',id);
+            if (link && (link.startsWith('/') || link.startsWith('http'))) window.location.href = link;
+            else showToast('Notification', 'Marked as read');
+            updateNotificationBadge();
+            loadNotifications();
+        }
+    });
+    document.getElementById('mark-all-read-btn').addEventListener('click', markAllRead);
+
+    // ============ REALTIME ============
+    function setupRealtime() {
+        if(state.notificationChannel) supabase.removeChannel(state.notificationChannel);
+        state.notificationChannel = supabase.channel('agent-updates')
+            .on('postgres_changes', { event:'INSERT', schema:'public', table:'notifications', filter:`agent_id=eq.${state.user.id}` }, payload => {
+                updateNotificationBadge();
+                showToast(payload.new.title, payload.new.message, 'fa-bell');
+                loadNotifications();
+            })
             .subscribe();
     }
 
-    async function handleNotifClick(link, notifId) {
-        try {
-            await supabase.from('notifications').update({ is_read: true }).eq('id', notifId);
-            updateNotificationBadge();
-            
-            // Reload list to reflect read state
-            const dropdown = document.getElementById('notif-dropdown');
-            if (!dropdown.classList.contains('hidden')) {
-                loadNotifications();
-            }
-
-            if (link && isValidUrl(link)) {
-                window.location.href = link;
-            }
-        } catch (err) {
-            console.error('Error handling notif click:', err);
-        }
-        
-        document.getElementById('notif-dropdown').classList.add('hidden');
+    async function updateNotificationBadge() {
+        const { count } = await supabase.from('notifications').select('*',{count:'exact',head:true}).eq('agent_id', state.user.id).eq('is_read',false);
+        const badge = document.getElementById('notif-badge');
+        if(count>0) { badge.classList.remove('hidden'); badge.textContent = count>9?'9+':count; }
+        else badge.classList.add('hidden');
     }
 
-    async function markAllRead() {
-        try {
-            await supabase
-                .from('notifications')
-                .update({ is_read: true })
-                .eq('agent_id', state.user.id)
-                .eq('is_read', false);
-            
-            updateNotificationBadge();
-            loadNotifications();
-        } catch (err) {
-            console.error('Mark all read error:', err);
-        }
-    }
-
-    // ==========================================
-    // 6. UI INTERACTIONS & EVENT DELEGATION
-    // ==========================================
-    function toggleMobileMenu() {
-        const sidebar = document.getElementById('sidebar');
-        const overlay = document.getElementById('mobile-overlay');
-        sidebar.classList.toggle('mobile-open');
-        overlay.classList.toggle('hidden');
-    }
-
-    async function logout() {
-        await supabase.auth.signOut();
-        window.location.href = 'login.html?role=agent';
-    }
-
-    function initEventListeners() {
-        // Mobile menu
-        document.getElementById('mobile-menu-btn').addEventListener('click', toggleMobileMenu);
-        document.getElementById('mobile-overlay').addEventListener('click', toggleMobileMenu);
-
-        // Logout
-        document.getElementById('logout-btn').addEventListener('click', (e) => {
-            e.preventDefault();
-            logout();
+    // ============ MISC EVENTS ============
+    document.querySelectorAll('.btn-quick-action').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const msgs = { call:'Opening phone dialer...', whatsapp:'Opening WhatsApp...', schedule:'Opening calendar...', 'send-flyer':'Generating property flyer...' };
+            showToast('Quick Action', msgs[btn.dataset.action] || 'Action triggered');
         });
-
-        // Notifications Bell
-        const bellBtn = document.getElementById('notif-bell-btn');
-        const dropdown = document.getElementById('notif-dropdown');
-        
-        bellBtn.addEventListener('click', (e) => {
-            e.stopPropagation();
-            dropdown.classList.toggle('hidden');
-            if (!dropdown.classList.contains('hidden')) {
-                loadNotifications();
-                
-                // Request permission on first user interaction if not decided
-                if ("Notification" in window && Notification.permission === "default") {
-                    Notification.requestPermission();
-                }
-            }
-        });
-
-        // Mark all read
-        document.getElementById('mark-all-read-btn').addEventListener('click', (e) => {
-            e.stopPropagation();
-            markAllRead();
-        });
-
-        // Notification item clicks (Event Delegation)
-        document.getElementById('notif-list').addEventListener('click', (e) => {
-            const item = e.target.closest('.notif-item');
-            if (item) {
-                const link = item.dataset.link;
-                const id = item.dataset.id;
-                handleNotifClick(link, id);
-            }
-        });
-
-        // Close dropdown when clicking outside
-        document.addEventListener('click', (e) => {
-            if (!dropdown.contains(e.target) && !bellBtn.contains(e.target) && !dropdown.classList.contains('hidden')) {
-                dropdown.classList.add('hidden');
-            }
-        });
-
-        // Close dropdown on Escape key
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape' && !dropdown.classList.contains('hidden')) {
-                dropdown.classList.add('hidden');
-            }
-        });
-    }
-
-    // ==========================================
-    // 7. INITIALIZATION
-    // ==========================================
-    document.addEventListener('DOMContentLoaded', () => {
-        initEventListeners();
-        checkAuth();
     });
+    document.getElementById('mobile-menu-btn').addEventListener('click',()=>{ document.getElementById('sidebar').classList.toggle('mobile-open'); document.getElementById('mobile-overlay').classList.toggle('hidden'); });
+    document.getElementById('mobile-overlay').addEventListener('click',()=>{ document.getElementById('sidebar').classList.remove('mobile-open'); document.getElementById('mobile-overlay').classList.add('hidden'); });
+    document.getElementById('logout-btn').addEventListener('click', async(e)=>{ e.preventDefault(); await supabase.auth.signOut(); window.location.href='login.html?role=agent'; });
+    document.getElementById('notif-bell-btn').addEventListener('click',()=>{ document.getElementById('notif-dropdown').classList.toggle('hidden'); });
+    document.getElementById('ai-copilot-btn').addEventListener('click', () => document.getElementById('ai-modal').classList.remove('hidden'));
+    document.getElementById('close-ai-modal').addEventListener('click', () => document.getElementById('ai-modal').classList.add('hidden'));
+    document.getElementById('ai-modal').addEventListener('click', (e) => { if (e.target.id === 'ai-modal') document.getElementById('ai-modal').classList.add('hidden'); });
+    document.getElementById('ai-send-btn').addEventListener('click', handleAIQuery);
+    document.getElementById('ai-input').addEventListener('keypress', (e) => { if (e.key === 'Enter') handleAIQuery(); });
+    document.querySelectorAll('.ai-suggestion').forEach(btn => btn.addEventListener('click', () => { document.getElementById('ai-input').value = btn.textContent.trim(); handleAIQuery(); }));
+    document.getElementById('close-timeline-modal').addEventListener('click', () => document.getElementById('timeline-modal').classList.add('hidden'));
+    document.getElementById('timeline-modal').addEventListener('click', (e) => { if (e.target.id === 'timeline-modal') document.getElementById('timeline-modal').classList.add('hidden'); });
 
+    document.addEventListener('DOMContentLoaded', checkAuth);
 })();
 </script>
 
