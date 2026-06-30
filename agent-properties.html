@@ -1,619 +1,886 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Properties - Properties in Kenya</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap');
-        body { font-family: 'Inter', system_ui, sans-serif; }
-        .heading-font { font-family: 'Space Grotesk', sans-serif; }
-        .sidebar-link.active { background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); color: white; }
-        .sidebar-link:hover:not(.active) { background-color: #fef3c7; color: #d97706; }
-        @media (max-width: 1024px) { .sidebar { display: none; } .sidebar.mobile-open { display: block; } }
-        .modal { animation: modalPop 0.3s cubic-bezier(0.34, 1.56, 0.64, 1); }
-        @keyframes modalPop { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Agent Profile | Properties in Kenya</title>
+<meta name="description" content="View verified real estate agents in Kenya. See their listings, reviews, trust scores, and contact them directly.">
+<meta name="theme-color" content="#6b21a8">
+<meta property="og:title" content="Agent Profile | Properties in Kenya">
+<meta property="og:description" content="Trusted real estate agents across Kenya">
+<meta property="og:image" content="https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=1200&q=80">
+<meta name="twitter:card" content="summary_large_image">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: 'Inter', -apple-system, sans-serif;
+  color: #111827; background: #f4f4f7;
+  line-height: 1.6; padding-bottom: 80px;
+}
+.nav {
+  position: sticky; top: 0; z-index: 100;
+  background: white; border-bottom: 1px solid #e5e7eb;
+  padding: 14px 24px;
+  display: flex; justify-content: space-between; align-items: center;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+}
+.logo {
+  font-size: 16px; font-weight: 700; color: #6b21a8;
+  display: flex; align-items: center; gap: 8px;
+  text-decoration: none;
+}
+.back-btn {
+  background: #f3f4f6; color: #374151;
+  border: none; padding: 8px 14px; border-radius: 8px;
+  font-size: 13px; font-weight: 500; cursor: pointer;
+  display: flex; align-items: center; gap: 6px;
+  text-decoration: none;
+}
+.back-btn:hover { background: #e5e7eb; }
+.container {
+  max-width: 1400px; margin: 24px auto;
+  padding: 0 24px;
+  display: grid;
+  grid-template-columns: 1fr 360px;
+  gap: 24px;
+  align-items: start;
+}
+@media (max-width: 1024px) {
+  .container { grid-template-columns: 1fr; }
+  .sidebar { position: static !important; }
+}
+.card {
+  background: white; border-radius: 16px;
+  padding: 24px; margin-bottom: 20px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+}
+.card-title {
+  font-size: 16px; font-weight: 700;
+  margin-bottom: 16px;
+  display: flex; align-items: center; gap: 8px;
+  color: #111827;
+}
+.card-title i { color: #6b21a8; }
+.hero {
+  background: linear-gradient(135deg, #fff 0%, #faf5ff 100%);
+  border-radius: 16px; padding: 32px;
+  margin-bottom: 20px;
+  box-shadow: 0 2px 8px rgba(107,33,168,0.08);
+  border: 2px solid #e9d5ff;
+  position: relative; overflow: hidden;
+}
+.hero::before {
+  content: ''; position: absolute;
+  top: 0; left: 0; right: 0; height: 4px;
+  background: linear-gradient(90deg, #6b21a8, #a855f7);
+}
+.hero-top { display: flex; gap: 20px; align-items: flex-start; flex-wrap: wrap; }
+.avatar-wrap { position: relative; flex-shrink: 0; }
+.avatar {
+  width: 110px; height: 110px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #6b21a8, #a855f7);
+  display: flex; align-items: center; justify-content: center;
+  color: white; font-size: 40px; font-weight: 800;
+  border: 4px solid white;
+  box-shadow: 0 8px 24px rgba(107,33,168,0.25);
+  overflow: hidden;
+}
+.avatar img { width: 100%; height: 100%; object-fit: cover; }
+.verified-badge {
+  position: absolute; bottom: 4px; right: 4px;
+  width: 32px; height: 32px;
+  background: #10b981;
+  border: 3px solid white;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  color: white; font-size: 13px;
+}
+.hero-info { flex: 1; min-width: 240px; }
+.agent-name {
+  font-size: 26px; font-weight: 800;
+  color: #111827; letter-spacing: -0.5px;
+  display: flex; align-items: center; gap: 8px;
+  flex-wrap: wrap;
+}
+.ribbon {
+  background: linear-gradient(135deg, #fbbf24, #f59e0b);
+  color: white; font-size: 10px; font-weight: 700;
+  padding: 4px 10px; border-radius: 9999px;
+  text-transform: uppercase; letter-spacing: 0.5px;
+}
+.company { color: #6b21a8; font-weight: 600; font-size: 14px; margin: 4px 0 12px; }
+.meta { display: flex; gap: 16px; flex-wrap: wrap; font-size: 13px; color: #6b7280; }
+.meta-item { display: flex; align-items: center; gap: 6px; }
+.meta-item i { color: #6b21a8; }
+.meta-item strong { color: #111827; }
+.hero-stats {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+  gap: 12px; margin-top: 20px;
+  padding-top: 20px; border-top: 1px solid #e5e7eb;
+}
+.stat { text-align: center; }
+.stat-val { font-size: 22px; font-weight: 800; color: #111827; letter-spacing: -0.5px; }
+.stat-lbl {
+  font-size: 11px; color: #6b7280;
+  text-transform: uppercase; letter-spacing: 0.5px;
+  margin-top: 2px;
+}
+.trust-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 10px; margin-bottom: 16px;
+}
+.trust-item {
+  display: flex; align-items: center; gap: 10px;
+  padding: 12px;
+  background: #f9fafb; border-radius: 10px;
+  border: 1px solid #e5e7eb;
+}
+.trust-item.ok { background: #d1fae5; border-color: #10b981; }
+.trust-icon {
+  width: 30px; height: 30px;
+  background: #e5e7eb; color: #6b7280;
+  border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 12px;
+}
+.trust-item.ok .trust-icon { background: #10b981; color: white; }
+.trust-lbl { font-size: 13px; font-weight: 600; }
+.score-card {
+  background: linear-gradient(135deg, #faf5ff, white);
+  border: 2px solid #6b21a8;
+  border-radius: 14px; padding: 20px;
+  display: flex; align-items: center; gap: 20px;
+}
+.score-num { font-size: 48px; font-weight: 800; color: #6b21a8; line-height: 1; }
+.score-num span { font-size: 18px; color: #9ca3af; }
+.score-txt h4 { font-size: 15px; font-weight: 700; margin-bottom: 2px; }
+.score-txt p { font-size: 12px; color: #6b7280; }
+.tabs { display: flex; gap: 6px; margin-bottom: 16px; overflow-x: auto; }
+.tab {
+  padding: 7px 14px; border-radius: 9999px;
+  background: #f3f4f6; border: none;
+  font-size: 12px; font-weight: 600; color: #6b7280;
+  cursor: pointer; white-space: nowrap;
+}
+.tab.active { background: #6b21a8; color: white; }
+.scroll {
+  display: flex; gap: 14px;
+  overflow-x: auto; padding-bottom: 8px;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+}
+.scroll::-webkit-scrollbar { height: 6px; }
+.scroll::-webkit-scrollbar-thumb { background: #a855f7; border-radius: 3px; }
+.prop {
+  flex: 0 0 260px;
+  background: white; border-radius: 14px;
+  overflow: hidden;
+  border: 1px solid #e5e7eb;
+  cursor: pointer;
+  transition: all 0.2s;
+  scroll-snap-align: start;
+}
+.prop:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+  border-color: #a855f7;
+}
+.prop-img {
+  width: 100%; height: 160px;
+  background: #f3f4f6;
+  position: relative; overflow: hidden;
+}
+.prop-img img { width: 100%; height: 100%; object-fit: cover; }
+.prop-badge {
+  position: absolute; top: 8px; left: 8px;
+  background: #6b21a8; color: white;
+  font-size: 10px; font-weight: 700;
+  padding: 4px 10px; border-radius: 9999px;
+  text-transform: uppercase;
+}
+.prop-body { padding: 14px; }
+.prop-price { font-size: 17px; font-weight: 800; color: #10b981; margin-bottom: 3px; }
+.prop-title {
+  font-size: 13px; font-weight: 600;
+  margin-bottom: 4px;
+  overflow: hidden; text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.prop-loc { font-size: 12px; color: #6b7280; display: flex; align-items: center; gap: 4px; }
+.review-summary {
+  display: flex; gap: 20px; align-items: center;
+  padding: 16px; background: #faf5ff;
+  border-radius: 12px; margin-bottom: 16px;
+  flex-wrap: wrap;
+}
+.review-score { text-align: center; flex-shrink: 0; }
+.review-big { font-size: 40px; font-weight: 800; color: #6b21a8; line-height: 1; }
+.review-stars { color: #fbbf24; margin: 6px 0; }
+.review-cnt { font-size: 12px; color: #6b7280; }
+.review-card {
+  padding: 14px; border: 1px solid #e5e7eb;
+  border-radius: 12px; margin-bottom: 10px;
+}
+.review-head { display: flex; gap: 10px; align-items: center; margin-bottom: 8px; }
+.review-avatar {
+  width: 38px; height: 38px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #6b21a8, #a855f7);
+  color: white; font-weight: 700;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 13px;
+}
+.review-info { flex: 1; }
+.review-name { font-size: 13px; font-weight: 700; }
+.review-date { font-size: 11px; color: #9ca3af; }
+.review-text { font-size: 13px; color: #374151; line-height: 1.5; }
+.sidebar { position: sticky; top: 80px; }
+.contact-card {
+  background: white; border-radius: 16px;
+  padding: 22px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+  border: 1px solid #e5e7eb;
+}
+.contact-name { font-size: 16px; font-weight: 700; margin-bottom: 4px; }
+.contact-note {
+  font-size: 12px; color: #6b7280;
+  display: flex; align-items: center; gap: 6px;
+  margin-bottom: 14px;
+}
+.live-dot {
+  width: 7px; height: 7px;
+  background: #10b981; border-radius: 50%;
+  animation: pulse 2s infinite;
+}
+@keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.5; } }
+.privacy {
+  background: #d1fae5; color: #065f46;
+  padding: 10px; border-radius: 8px;
+  font-size: 12px;
+  display: flex; align-items: center; gap: 8px;
+  margin-bottom: 14px;
+}
+.btns { display: flex; flex-direction: column; gap: 8px; margin-bottom: 14px; }
+.btn {
+  padding: 12px; border-radius: 10px;
+  border: none; font-size: 14px; font-weight: 600;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  gap: 8px; text-decoration: none;
+  transition: all 0.2s;
+}
+.btn:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+.btn-purple { background: #6b21a8; color: white; }
+.btn-wa { background: #25D366; color: white; }
+.btn-outline { background: white; color: #6b21a8; border: 1.5px solid #6b21a8; }
+.btn-ghost { background: #f3f4f6; color: #374151; }
+.input {
+  width: 100%; padding: 10px 12px;
+  border: 1px solid #e5e7eb; border-radius: 8px;
+  font-size: 13px; font-family: inherit;
+  margin-bottom: 8px; background: #f9fafb;
+}
+.input:focus { outline: none; border-color: #6b21a8; background: white; }
+textarea.input { resize: vertical; min-height: 70px; }
+.mobile-bar {
+  position: fixed; bottom: 0; left: 0; right: 0;
+  background: white; border-top: 2px solid #6b21a8;
+  padding: 10px; z-index: 99;
+  display: none; gap: 8px;
+  box-shadow: 0 -4px 16px rgba(0,0,0,0.08);
+}
+.mobile-bar .btn { flex: 1; padding: 11px; font-size: 13px; }
+.empty { text-align: center; padding: 32px 20px; color: #9ca3af; }
+.empty i { font-size: 36px; margin-bottom: 10px; }
+.toast {
+  position: fixed; top: 80px; right: 20px;
+  background: white; padding: 12px 18px;
+  border-radius: 10px;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+  border-left: 4px solid #10b981;
+  z-index: 9999; max-width: 300px;
+}
+.agent-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 16px;
+}
+.agent-card {
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 14px;
+  padding: 20px;
+  text-align: center;
+  transition: all 0.2s;
+  cursor: pointer;
+  text-decoration: none;
+  color: inherit;
+  display: block;
+}
+.agent-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 20px rgba(107,33,168,0.1);
+  border-color: #a855f7;
+}
+.agent-avatar {
+  width: 70px; height: 70px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #6b21a8, #a855f7);
+  color: white; font-size: 26px; font-weight: 800;
+  display: flex; align-items: center; justify-content: center;
+  margin: 0 auto 12px;
+  overflow: hidden;
+}
+.agent-avatar img { width: 100%; height: 100%; object-fit: cover; }
+.agent-name-small { font-size: 15px; font-weight: 700; margin-bottom: 4px; }
+.agent-company-small { font-size: 12px; color: #6b21a8; margin-bottom: 8px; }
+.agent-stats-small {
+  display: flex; justify-content: center; gap: 12px;
+  font-size: 11px; color: #6b7280;
+}
+.agent-link-small {
+  margin-top: 10px; font-size: 11px;
+  color: #6b21a8; font-weight: 600;
+}
+@media (max-width: 768px) {
+  .container { padding: 0 16px; }
+  .hero, .card { padding: 18px; }
+  .agent-name { font-size: 22px; }
+  .avatar { width: 90px; height: 90px; font-size: 32px; }
+  .hero-stats { grid-template-columns: repeat(2, 1fr); }
+  .mobile-bar { display: flex; }
+  body { padding-bottom: 90px; }
+  .score-num { font-size: 36px; }
+  .agent-grid { grid-template-columns: 1fr; }
+}
+</style>
 </head>
-<body class="bg-gray-50">
+<body>
 
-<!-- 🔒 FIX: Full screen loader to prevent visual flipping/flickering -->
-<div id="auth-loader" style="position:fixed; inset:0; background:white; z-index:9999; display:flex; align-items:center; justify-content:center;">
-    <i class="fas fa-spinner fa-spin text-4xl text-amber-500"></i>
-</div>
+<nav class="nav">
+  <a href="/" class="logo">
+    <i class="fas fa-home"></i> Properties in Kenya
+  </a>
+  <a href="/" class="back-btn">
+    <i class="fas fa-arrow-left"></i> Back
+  </a>
+</nav>
 
-<button id="mobile-menu-btn" class="lg:hidden fixed top-4 left-4 z-50 bg-white p-3 rounded-xl shadow-lg" aria-label="Toggle menu">
-    <i class="fas fa-bars text-gray-700"></i>
-</button>
-<div id="mobile-overlay" class="hidden lg:hidden fixed inset-0 bg-black/50 z-40"></div>
-
-<div class="flex min-h-screen">
-    <!-- SIDEBAR -->
-    <aside id="sidebar" class="sidebar fixed lg:sticky top-0 left-0 h-screen w-72 bg-white border-r border-gray-200 z-40 overflow-y-auto">
-        <div class="p-6 border-b border-gray-200">
-            <div class="flex items-center gap-3">
-                <div class="w-10 h-10 bg-gradient-to-br from-amber-400 to-yellow-600 rounded-xl flex items-center justify-center text-white font-bold text-xl">🏠</div>
-                <div><h1 class="heading-font text-xl font-bold">RealtorOS</h1><p class="text-xs text-gray-500">Agent Dashboard</p></div>
-            </div>
+<div class="container">
+  <main id="mainContent">
+    <section class="hero" id="hero">
+      <div class="hero-top">
+        <div class="avatar-wrap">
+          <div class="avatar" id="avatar"><span id="avatarInit">A</span></div>
+          <div class="verified-badge"><i class="fas fa-check"></i></div>
         </div>
-        <nav class="p-4 space-y-1">
-            <a href="agent-dashboard.html" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-gray-700"><i class="fas fa-chart-line w-5"></i> Dashboard</a>
-            <a href="agent-properties.html" class="sidebar-link active flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium"><i class="fas fa-building w-5"></i> Properties</a>
-            <a href="shared-listings.html" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-gray-700"><i class="fas fa-share-nodes w-5"></i> Shared Listings</a>
-            <a href="buyer-requests.html" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-gray-700"><i class="fas fa-user-tie w-5"></i> Buyer Requests</a>
-            <a href="lead-center.html" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-gray-700"><i class="fas fa-bullseye w-5"></i> Lead Center</a>
-            <a href="agent-network.html" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-gray-700"><i class="fas fa-users w-5"></i> Agent Network</a>
-            <a href="messages.html" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-gray-700"><i class="fas fa-comment-dots w-5"></i> Messages</a>
-            <a href="commissions.html" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-gray-700"><i class="fas fa-wallet w-5"></i> Commissions</a>
-            <div class="pt-4 mt-4 border-t border-gray-200">
-                <a href="#" id="logout-btn" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-gray-700"><i class="fas fa-sign-out-alt w-5"></i> Logout</a>
+        <div class="hero-info">
+          <div class="agent-name">
+            <span id="agentName">Loading...</span>
+            <span class="ribbon" id="ribbon" style="display:none;"><i class="fas fa-crown"></i> Top Agent</span>
+          </div>
+          <div class="company" id="company">—</div>
+          <div class="meta">
+            <div class="meta-item">
+              <i class="fas fa-briefcase"></i>
+              <span><strong id="exp">0</strong> yrs exp</span>
             </div>
-        </nav>
-    </aside>
-
-    <!-- MAIN CONTENT -->
-    <main class="flex-1 lg:ml-0 w-full">
-        <header class="bg-white border-b border-gray-200 sticky top-0 z-30">
-            <div class="px-6 py-4 flex items-center justify-between">
-                <div class="lg:pl-0 pl-12">
-                    <h1 class="heading-font text-2xl font-bold">My Properties</h1>
-                    <p class="text-sm text-gray-500">Manage your listings and co-broker settings</p>
-                </div>
-                <button id="add-property-btn" class="flex items-center gap-2 bg-gradient-to-r from-amber-500 to-yellow-600 text-white px-4 py-2.5 rounded-xl font-semibold text-sm hover:shadow-lg transition">
-                    <i class="fas fa-plus"></i> Add Property
-                </button>
+            <div class="meta-item">
+              <i class="fas fa-star" style="color:#fbbf24;"></i>
+              <span><strong id="rating">0.0</strong> (<span id="revCnt">0</span>)</span>
             </div>
-        </header>
-
-        <div class="p-6">
-            <!-- Filters -->
-            <div class="bg-white p-4 rounded-2xl border border-gray-100 mb-6 flex flex-col sm:flex-row gap-4">
-                <div class="flex-1 relative">
-                    <i class="fas fa-search absolute left-4 top-3.5 text-gray-400"></i>
-                    <input type="text" id="search-input" placeholder="Search by title or location..." class="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-500">
-                </div>
-                <select id="filter-status" class="px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-500 bg-white">
-                    <option value="all">All Statuses</option>
-                    <option value="available">Available</option>
-                    <option value="pending">Pending</option>
-                    <option value="reserved">Reserved</option>
-                    <option value="sold">Sold</option>
-                </select>
-                <select id="filter-visibility" class="px-4 py-3 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-500 bg-white">
-                    <option value="all">All Visibility</option>
-                    <option value="private">Private</option>
-                    <option value="public">Public</option>
-                    <option value="co-broker">Co-Broker Friendly</option>
-                </select>
+            <div class="meta-item">
+              <i class="fas fa-map-marker-alt"></i>
+              <span id="location">—</span>
             </div>
-
-            <!-- Properties Grid -->
-            <div id="properties-grid" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-                <div class="col-span-full text-center py-12 text-gray-400">
-                    <i class="fas fa-spinner fa-spin text-3xl mb-3"></i>
-                    <p>Loading your properties...</p>
-                </div>
-            </div>
+          </div>
         </div>
-    </main>
-</div>
+      </div>
+      <div class="hero-stats">
+        <div class="stat"><div class="stat-val" id="sList">0</div><div class="stat-lbl">Listings</div></div>
+        <div class="stat"><div class="stat-val" id="sDeals">0</div><div class="stat-lbl">Deals</div></div>
+        <div class="stat"><div class="stat-val" id="sSat">0%</div><div class="stat-lbl">Satisfaction</div></div>
+        <div class="stat"><div class="stat-val" id="sResp">—</div><div class="stat-lbl">Response</div></div>
+      </div>
+    </section>
 
-<!-- ADD/EDIT PROPERTY MODAL -->
-<div id="property-modal" class="fixed inset-0 bg-black/60 hidden flex items-center justify-center z-50 p-4" role="dialog" aria-modal="true" aria-labelledby="modal-title">
-    <div class="modal bg-white rounded-3xl w-full max-w-3xl max-h-[90vh] overflow-y-auto">
-        <div class="p-6 border-b flex items-center justify-between sticky top-0 bg-white z-10">
-            <h2 class="heading-font text-xl font-bold" id="modal-title">Add New Property</h2>
-            <button id="close-modal-btn" class="w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100" aria-label="Close modal"><i class="fas fa-times text-xl"></i></button>
+    <section class="card">
+      <h2 class="card-title"><i class="fas fa-shield-halved"></i> Trust & Verification</h2>
+      <div class="trust-grid" id="trustGrid"></div>
+      <div class="score-card">
+        <div class="score-num"><span id="scoreVal">0</span><span>/100</span></div>
+        <div class="score-txt">
+          <h4 id="scoreTitle">Trust Score</h4>
+          <p id="scoreDesc">Loading...</p>
         </div>
-        
-        <form id="property-form" class="p-6 space-y-6">
-            <input type="hidden" id="prop-id">
-            
-            <!-- Basic Info -->
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div class="md:col-span-2">
-                    <label class="block text-sm font-semibold text-gray-700 mb-2">Property Title</label>
-                    <input type="text" id="prop-title" required maxlength="100" class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-amber-500 focus:outline-none" placeholder="e.g., 4 Bedroom Maisonette in Lavington">
-                </div>
-                <div>
-                    <label class="block text-sm font-semibold text-gray-700 mb-2">Price (KES)</label>
-                    <input type="number" id="prop-price" required min="0" class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-amber-500 focus:outline-none" placeholder="32000000">
-                </div>
-                <div>
-                    <label class="block text-sm font-semibold text-gray-700 mb-2">Property Type</label>
-                    <select id="prop-type" class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-amber-500 focus:outline-none bg-white">
-                        <option>Apartment</option><option>Maisonette</option><option>Villa</option><option>Townhouse</option><option>Land</option><option>Commercial</option>
-                    </select>
-                </div>
-            </div>
+      </div>
+    </section>
 
-            <!-- Location -->
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div>
-                    <label class="block text-sm font-semibold text-gray-700 mb-2">County</label>
-                    <select id="prop-county" class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-amber-500 focus:outline-none bg-white">
-                        <option>Nairobi</option><option>Kiambu</option><option>Kajiado</option><option>Mombasa</option><option>Nakuru</option><option>Machakos</option>
-                    </select>
-                </div>
-                <div>
-                    <label class="block text-sm font-semibold text-gray-700 mb-2">Town/Area</label>
-                    <input type="text" id="prop-town" maxlength="50" class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-amber-500 focus:outline-none" placeholder="e.g., Lavington">
-                </div>
-                <div>
-                    <label class="block text-sm font-semibold text-gray-700 mb-2">Specific Location</label>
-                    <input type="text" id="prop-location" maxlength="100" class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-amber-500 focus:outline-none" placeholder="e.g., Near Junction Mall">
-                </div>
-            </div>
+    <section class="card">
+      <h2 class="card-title"><i class="fas fa-building"></i> Agent's Listings</h2>
+      <div class="tabs">
+        <button class="tab active" data-filter="all">All</button>
+        <button class="tab" data-filter="for sale">For Sale</button>
+        <button class="tab" data-filter="for rent">For Rent</button>
+        <button class="tab" data-filter="lease">Lease</button>
+      </div>
+      <div class="scroll" id="listings"></div>
+    </section>
 
-            <!-- Details -->
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
-                <div>
-                    <label class="block text-sm font-semibold text-gray-700 mb-2">Bedrooms</label>
-                    <input type="number" id="prop-beds" min="0" max="20" class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-amber-500 focus:outline-none" placeholder="4">
-                </div>
-                <div>
-                    <label class="block text-sm font-semibold text-gray-700 mb-2">Bathrooms</label>
-                    <input type="number" id="prop-baths" min="0" max="20" class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-amber-500 focus:outline-none" placeholder="3">
-                </div>
-                <div>
-                    <label class="block text-sm font-semibold text-gray-700 mb-2">Status</label>
-                    <select id="prop-status" class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-amber-500 focus:outline-none bg-white">
-                        <option value="available">Available</option><option value="pending">Pending</option><option value="reserved">Reserved</option><option value="sold">Sold</option>
-                    </select>
-                </div>
-                <div>
-                    <label class="block text-sm font-semibold text-gray-700 mb-2">Visibility</label>
-                    <select id="prop-visibility" class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-amber-500 focus:outline-none bg-white">
-                        <option value="private">Private (Only Me)</option>
-                        <option value="public">Public (Buyers can see)</option>
-                        <option value="co-broker">Co-Broker Friendly (Agents can see)</option>
-                    </select>
-                </div>
-            </div>
+    <section class="card">
+      <h2 class="card-title"><i class="fas fa-user-tie"></i> About</h2>
+      <p id="bio" style="font-size:14px; color:#374151; line-height:1.7;">Loading...</p>
+    </section>
 
-            <!-- Collaboration Settings -->
-            <div id="collab-settings" class="hidden bg-amber-50 p-4 rounded-xl border border-amber-200">
-                <h3 class="font-semibold text-amber-800 mb-2"><i class="fas fa-handshake mr-2"></i>Co-Broker Settings</h3>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                        <label class="block text-sm font-medium text-amber-900 mb-1">Commission Split for Marketing Agent (%)</label>
-                        <input type="number" id="prop-commission" value="50" min="0" max="100" class="w-full px-4 py-2 border border-amber-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:outline-none">
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium text-amber-900 mb-1">Agent Notes (Private)</label>
-                        <input type="text" id="prop-notes" maxlength="200" class="w-full px-4 py-2 border border-amber-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:outline-none" placeholder="e.g., Seller is flexible on price">
-                    </div>
-                </div>
-            </div>
+    <section class="card">
+      <h2 class="card-title"><i class="fas fa-star"></i> Customer Reviews</h2>
+      <div class="review-summary">
+        <div class="review-score">
+          <div class="review-big" id="rBig">0.0</div>
+          <div class="review-stars" id="rStars">
+            <i class="far fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i><i class="far fa-star"></i>
+          </div>
+          <div class="review-cnt"><span id="rCnt">0</span> reviews</div>
+        </div>
+      </div>
+      <div id="reviews">
+        <div class="empty">
+          <i class="fas fa-comment"></i>
+          <p>No reviews yet. Be the first!</p>
+        </div>
+      </div>
+    </section>
+  </main>
 
-            <!-- Description & Images -->
-            <div class="space-y-4">
-                <div>
-                    <label class="block text-sm font-semibold text-gray-700 mb-2">Description</label>
-                    <textarea id="prop-description" rows="3" maxlength="1000" class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-amber-500 focus:outline-none" placeholder="Describe the property features..."></textarea>
-                </div>
-                <div>
-                    <label class="block text-sm font-semibold text-gray-700 mb-2">Main Image URL</label>
-                    <input type="url" id="prop-image" class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-amber-500 focus:outline-none" placeholder="https://example.com/image.jpg">
-                    <p class="text-xs text-gray-500 mt-1">Paste a valid HTTP/HTTPS image URL.</p>
-                </div>
-            </div>
-
-            <div class="flex gap-4 pt-4 border-t">
-                <button type="button" id="cancel-modal-btn" class="flex-1 py-3 border border-gray-300 rounded-xl font-semibold hover:bg-gray-50">Cancel</button>
-                <button type="submit" id="save-property-btn" class="flex-1 py-3 bg-gradient-to-r from-amber-500 to-yellow-600 text-white rounded-xl font-semibold hover:shadow-lg">Save Property</button>
-            </div>
-        </form>
+  <aside class="sidebar" id="sidebar">
+    <div class="contact-card">
+      <h3 class="contact-name" id="cName">Contact Agent</h3>
+      <div class="contact-note">
+        <span class="live-dot"></span>
+        <span id="cNote">Typically replies fast</span>
+      </div>
+      <div class="privacy">
+        <i class="fas fa-shield-halved"></i>
+        <span>Your inquiry is private & protected</span>
+      </div>
+      <div class="btns">
+        <a href="tel:" id="btnCall" class="btn btn-purple">
+          <i class="fas fa-phone"></i> Call Agent
+        </a>
+        <a href="#" id="btnWA" target="_blank" class="btn btn-wa">
+          <i class="fab fa-whatsapp"></i> WhatsApp
+        </a>
+        <a href="mailto:" id="btnEmail" class="btn btn-outline">
+          <i class="fas fa-envelope"></i> Email
+        </a>
+      </div>
+      <div style="padding-top:14px; border-top:1px solid #e5e7eb;">
+        <h4 style="font-size:13px; font-weight:700; margin-bottom:10px;">Send a Message</h4>
+        <input class="input" id="mName" placeholder="Your name">
+        <input class="input" id="mEmail" placeholder="Your email">
+        <input class="input" id="mPhone" placeholder="Phone number">
+        <textarea class="input" id="mMsg" placeholder="I'm interested in..."></textarea>
+        <button id="sendMsgBtn" class="btn btn-purple" style="width:100%;">
+          <i class="fas fa-paper-plane"></i> Send
+        </button>
+      </div>
     </div>
+  </aside>
+</div>
+
+<div class="mobile-bar">
+  <a href="tel:" id="mCall" class="btn btn-purple">
+    <i class="fas fa-phone"></i> Call
+  </a>
+  <a href="#" id="mWA" target="_blank" class="btn btn-wa">
+    <i class="fab fa-whatsapp"></i> WA
+  </a>
+  <button id="scrollBottomBtn" class="btn btn-outline">
+    <i class="fas fa-envelope"></i> Msg
+  </button>
 </div>
 
 <script>
-(function() {
-    'use strict';
+// ==========================================
+// 1. CONFIGURATION
+// ==========================================
+const sb = supabase.createClient(
+  "https://nqwvsmuvltbiekfnvovx.supabase.co",
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5xd3ZzbXV2bHRiaWVrZm52b3Z4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA1NjU4MDAsImV4cCI6MjA5NjE0MTgwMH0.Xrc-bbAuWdvKSPHnVhTaLiQphV61xeYtDepWePqsrdo"
+);
 
-    // ==========================================
-    // 1. CONFIGURATION & STATE
-    // ==========================================
-    const supabase = window.supabase.createClient(
-        'https://nqvsmuvltbiekfnvovx.supabase.co',
-        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5xd3ZzbXV2bHRiaWVrZm52b3Z4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA1NjU4MDAsImV4cCI6MjA5NjE0MTgwMH0.Xrc-bbAuWdvKSPHnVhTaLiQphV61xeYtDepWePqsrdo'
-    );
+let profile = null;
+let listings = [];
+let reviews = [];
+let formLoadTime = Date.now();
 
-    const FALLBACK_IMG = 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=800&auto=format&fit=crop';
-    
-    const state = {
-        user: null,
-        allProperties: []
-    };
+// ==========================================
+// 2. UTILITIES
+// ==========================================
+const esc = t => {
+  const d = document.createElement('div');
+  d.textContent = t || '';
+  return d.innerHTML;
+};
 
-    // ==========================================
-    // 2. UTILITIES
-    // ==========================================
-    function esc(str) {
-        if (!str) return '';
-        const div = document.createElement('div');
-        div.textContent = str;
-        return div.innerHTML;
+const toast = (t, m) => {
+  const el = document.createElement('div');
+  el.className = 'toast';
+  el.innerHTML = `<strong>${esc(t)}</strong><div style="font-size:12px;color:#6b7280;margin-top:2px;">${esc(m)}</div>`;
+  document.body.appendChild(el);
+  setTimeout(() => el.remove(), 3500);
+};
+
+function formatWhatsApp(phone) {
+  let clean = (phone || '').replace(/[^0-9]/g, '');
+  if (clean.startsWith('0')) clean = '254' + clean.substring(1);
+  if (clean.startsWith('+')) clean = clean.substring(1);
+  return clean;
+}
+
+// ==========================================
+// 3. ID/SLUG EXTRACTION (FIXED)
+// ==========================================
+function getAgentIdentifiers() {
+  const params = new URLSearchParams(location.search);
+  let id = params.get('id');
+  let slug = params.get('slug');
+
+  if (!id && !slug) {
+    const path = location.pathname.replace(/^\/|\/$/g, '');
+    const parts = path.split('/');
+    if (parts[0] === 'agent' && parts[1]) {
+      slug = decodeURIComponent(parts[1]);
+    }
+  }
+
+  return { id, slug };
+}
+
+// ==========================================
+// 4. MAIN LOAD
+// ==========================================
+async function load() {
+  try {
+    const { id, slug } = getAgentIdentifiers();
+
+    if (!id && !slug) {
+      await showAllAgents();
+      return;
     }
 
-    function isValidUrl(string) {
-        try {
-            const url = new URL(string);
-            return url.protocol === 'http:' || url.protocol === 'https:';
-        } catch (_) {
-            return false;
-        }
+    let profileData = null;
+    if (id) {
+      const res = await sb.from('profiles').select('*').eq('id', id).maybeSingle();
+      profileData = res.data;
+    } else if (slug) {
+      const res = await sb.from('profiles').select('*').eq('slug', slug).maybeSingle();
+      profileData = res.data;
     }
 
-    function formatKES(amount) {
-        return new Intl.NumberFormat('en-KE', { style: 'currency', currency: 'KES', maximumFractionDigits: 0 }).format(amount || 0);
+    if (!profileData) {
+      document.getElementById('agentName').textContent = 'Agent not found';
+      document.getElementById('bio').textContent = 'The agent you are looking for does not exist. Showing all agents below.';
+      await showAllAgents();
+      return;
     }
 
-    function debounce(func, wait) {
-        let timeout;
-        return (...args) => {
-            clearTimeout(timeout);
-            timeout = setTimeout(() => func(...args), wait);
-        };
-    }
+    profile = profileData;
 
-    function getNumOrNull(id) {
-        const val = document.getElementById(id).value;
-        return val === '' ? null : parseInt(val, 10);
-    }
+    const [listingsRes, reviewsRes] = await Promise.all([
+      sb.from('properties').select('*').eq('agent_id', profile.id).eq('approval_status', 'approved').order('created_at', { ascending: false }),
+      sb.from('reviews').select('*').eq('agent_id', profile.id).eq('is_approved', true).order('created_at', { ascending: false })
+    ]);
 
-    function getNumOrDefault(id, defaultVal) {
-        const val = document.getElementById(id).value;
-        return val === '' ? defaultVal : parseFloat(val);
-    }
+    listings = listingsRes.data || [];
+    reviews = reviewsRes.data || [];
 
-    function showToast(message, type = 'success') {
-        const toast = document.createElement('div');
-        const bgColor = type === 'error' ? 'bg-red-500' : 'bg-green-500';
-        toast.className = `fixed bottom-6 right-6 ${bgColor} text-white px-6 py-3 rounded-xl shadow-lg z-[100] transition-opacity duration-300 flex items-center gap-2`;
-        toast.innerHTML = `<i class="fas ${type === 'error' ? 'fa-exclamation-circle' : 'fa-check-circle'}"></i> ${esc(message)}`;
-        document.body.appendChild(toast);
-        
-        setTimeout(() => {
-            toast.style.opacity = '0';
-            setTimeout(() => toast.remove(), 300);
-        }, 3000);
-    }
-
-    // ==========================================
-    // 3. AUTH & DATA LOADING
-    // ==========================================
-    async function checkAuth() {
-        try {
-            // 1. Check local browser session
-            const { data: { session } } = await supabase.auth.getSession();
-
-            if (!session) {
-                window.location.href = 'login.html?role=agent';
-                return;
-            }
-
-            // 2. 🔒 BULLETPROOF FIX: Verify the session is actually valid on the server.
-            // This kills the "Ghost Session" redirect loop.
-            const { data: { user }, error } = await supabase.auth.getUser();
-
-            if (error || !user) {
-                // The local session was broken/expired. Sign out completely to clear it.
-                await supabase.auth.signOut();
-                window.location.href = 'login.html?role=agent';
-                return;
-            }
-
-            // 3. Session is 100% valid. Hide the loader and proceed.
-            state.user = user;
-            document.getElementById('auth-loader').style.display = 'none';
-            
-            loadProperties();
-
-        } catch (err) {
-            console.error('Auth check failed:', err);
-            window.location.href = 'login.html?role=agent';
-        }
-    }
-
-    supabase.auth.onAuthStateChange((event, session) => {
-        if (event === 'SIGNED_OUT' || !session) {
-            window.location.href = 'login.html?role=agent';
-        }
+    // View increment (non-blocking)
+    sb.rpc('increment_profile_views', { p_id: profile.id }).then(({ error }) => {
+      if (error) console.warn('View increment skipped:', error.message);
     });
 
-    async function loadProperties() {
-        const grid = document.getElementById('properties-grid');
-        try {
-            const { data, error } = await supabase
-                .from('properties')
-                .select('*')
-                .eq('agent_id', state.user.id) 
-                .order('created_at', { ascending: false });
+    render();
+    initEventListeners();
 
-            if (error) {
-                if (error.status === 401 || error.message.includes('JWT')) {
-                    window.location.href = 'login.html?role=agent';
-                    return;
-                }
-                throw error;
-            }
-            
-            state.allProperties = data || [];
-            applyFilters(); 
-        } catch (err) {
-            console.error(err);
-            grid.innerHTML = `<div class="col-span-full text-center text-red-500 py-8"><i class="fas fa-exclamation-triangle mb-2 text-2xl"></i><p>Error loading properties. Please try again.</p></div>`;
-        }
+  } catch (error) {
+    console.error('Load failed:', error);
+    document.getElementById('agentName').textContent = 'Error Loading Profile';
+    document.getElementById('bio').textContent = 'We couldn\'t connect to the server. Please refresh the page.';
+  }
+}
+
+// ==========================================
+// 5. RENDER
+// ==========================================
+function render() {
+  const p = profile;
+  const name = p.full_name || 'Agent';
+  document.title = `${name} | ${p.company || 'Agent'} | Properties in Kenya`;
+
+  document.getElementById('agentName').textContent = name;
+  document.getElementById('company').textContent = p.company || 'Independent Agent';
+  document.getElementById('exp').textContent = p.years_experience || 0;
+  document.getElementById('rating').textContent = (p.average_rating || 0).toFixed(1);
+  document.getElementById('revCnt').textContent = p.total_reviews || 0;
+  document.getElementById('location').textContent = p.location || 'Kenya';
+
+  // Use direct inline SVG fallback instead of external service
+  const fallbackAvatar = `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='110' height='110'%3E%3Crect fill='%236b21a8' width='110' height='110' rx='55'/%3E%3Ctext x='55' y='55' text-anchor='middle' dy='.35em' fill='white' font-size='40' font-weight='bold'%3E${encodeURIComponent(name.charAt(0).toUpperCase())}%3C/text%3E%3C/svg%3E`;
+  const avatarUrl = p.avatar_url || fallbackAvatar;
+  document.getElementById('avatar').innerHTML = `<img src="${esc(avatarUrl)}" alt="${esc(name)}" style="width:100%;height:100%;object-fit:cover;" onerror="this.parentElement.innerHTML='<span>${esc(name.charAt(0).toUpperCase())}</span>'">`;
+
+  if ((p.total_deals_closed || 0) >= 50 || p.is_featured_agent) {
+    document.getElementById('ribbon').style.display = 'inline-block';
+  }
+
+  document.getElementById('sList').textContent = listings.length;
+  document.getElementById('sDeals').textContent = p.total_deals_closed || 0;
+  const sat = p.average_rating ? Math.round((p.average_rating / 5) * 100) : 95;
+  document.getElementById('sSat').textContent = sat + '%';
+  document.getElementById('sResp').textContent = p.avg_response_minutes ? `${p.avg_response_minutes}m` : '<2h';
+
+  const phone = p.phone || p.whatsapp_number || '';
+  const waPhone = formatWhatsApp(p.whatsapp_number || phone);
+  
+  document.getElementById('btnCall').href = `tel:${encodeURIComponent(phone)}`;
+  document.getElementById('btnWA').href = `https://wa.me/${waPhone}?text=${encodeURIComponent(`Hi ${name}, I found you on Properties in Kenya.`)}`;
+  document.getElementById('btnEmail').href = `mailto:${encodeURIComponent(p.email || '')}`;
+  
+  document.getElementById('mCall').href = `tel:${encodeURIComponent(phone)}`;
+  document.getElementById('mWA').href = `https://wa.me/${waPhone}`;
+  document.getElementById('cName').textContent = `Contact ${esc(name.split(' ')[0])}`;
+
+  // Trust items (only include columns that exist in the table)
+  const items = [
+    { k: 'is_verified_identity', l: 'Verified Identity', i: 'fa-id-card' },
+    { k: 'is_verified_phone', l: 'Verified Phone', i: 'fa-phone' },
+    { k: 'is_verified_email', l: 'Verified Email', i: 'fa-envelope' },
+    { k: 'is_verified_office', l: 'Verified Office', i: 'fa-building' }
+  ];
+  // Only add 'is_licensed_agent' if column exists in profile
+  if ('is_licensed_agent' in p) {
+    items.push({ k: 'is_licensed_agent', l: 'Licensed Agent', i: 'fa-certificate' });
+  }
+  if ('is_premium_member' in p) {
+    items.push({ k: 'is_premium_member', l: 'Premium Member', i: 'fa-gem' });
+  }
+
+  document.getElementById('trustGrid').innerHTML = items.map(it => {
+    const ok = p[it.k];
+    return `<div class="trust-item ${ok ? 'ok' : ''}">
+      <div class="trust-icon"><i class="fas ${it.i}"></i></div>
+      <div class="trust-lbl">${it.l}</div>
+    </div>`;
+  }).join('');
+
+  const score = p.trust_score || 0;
+  document.getElementById('scoreVal').textContent = score;
+  let title = 'Trust Score', desc = 'Building verification';
+  if (score >= 90) { title = 'Exceptional Trust'; desc = 'Top 5% of agents on the platform'; }
+  else if (score >= 70) { title = 'Very Trustworthy'; desc = 'Thoroughly verified agent'; }
+  else if (score >= 50) { title = 'Good Standing'; desc = 'Key verifications complete'; }
+  document.getElementById('scoreTitle').textContent = title;
+  document.getElementById('scoreDesc').textContent = desc;
+
+  document.getElementById('bio').textContent = p.bio || 'Experienced real estate professional dedicated to helping clients find their perfect property.';
+
+  renderListings('all');
+
+  const rating = p.average_rating || 0;
+  document.getElementById('rBig').textContent = rating.toFixed(1);
+  document.getElementById('rCnt').textContent = reviews.length;
+  const full = Math.floor(rating);
+  let stars = '';
+  for (let i = 0; i < 5; i++) stars += `<i class="fa${i < full ? 's' : 'r'} fa-star"></i>`;
+  document.getElementById('rStars').innerHTML = stars;
+
+  if (reviews.length > 0) {
+    document.getElementById('reviews').innerHTML = reviews.slice(0, 5).map(r => {
+      const init = (r.reviewer_name || 'A').split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
+      const rStars = '<i class="fas fa-star"></i>'.repeat(r.rating) + '<i class="far fa-star"></i>'.repeat(5 - r.rating);
+      return `<div class="review-card">
+        <div class="review-head">
+          <div class="review-avatar">${esc(init)}</div>
+          <div class="review-info">
+            <div class="review-name">${esc(r.reviewer_name)}</div>
+            <div class="review-date">${new Date(r.created_at).toLocaleDateString()}</div>
+          </div>
+          <div style="color:#fbbf24; font-size:12px;">${rStars}</div>
+        </div>
+        <div class="review-text">${esc(r.review_text || '')}</div>
+      </div>`;
+    }).join('');
+  }
+}
+
+function renderListings(filterType) {
+  const list = filterType === 'all' ? listings : listings.filter(p => p.property_type === filterType);
+  const c = document.getElementById('listings');
+  
+  if (list.length === 0) {
+    c.innerHTML = `<div class="empty" style="width:100%;"><i class="fas fa-building"></i><p>No ${filterType === 'all' ? '' : filterType + ' '}listings</p></div>`;
+    return;
+  }
+
+  const fallbackPropImg = 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=600&q=80';
+
+  c.innerHTML = list.map(p => {
+    const img = p.images?.[0] || p.image_url || fallbackPropImg;
+    return `<div class="prop" data-id="${esc(p.id)}">
+      <div class="prop-img">
+        <img src="${esc(img)}" loading="lazy" onerror="this.parentElement.style.background='#f3f4f6'; this.style.display='none';">
+        <span class="prop-badge">${esc((p.property_type || 'FOR SALE').toUpperCase())}</span>
+      </div>
+      <div class="prop-body">
+        <div class="prop-price">KSh ${Number(p.price || 0).toLocaleString()}</div>
+        <div class="prop-title">${esc(p.title)}</div>
+        <div class="prop-loc"><i class="fas fa-map-marker-alt"></i> ${esc(p.location || 'Kenya')}</div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ==========================================
+// 6. EVENT LISTENERS
+// ==========================================
+function initEventListeners() {
+  document.getElementById('listings').addEventListener('click', (e) => {
+    const propCard = e.target.closest('.prop');
+    if (propCard && propCard.dataset.id) {
+      window.location.href = `/property/${encodeURIComponent(propCard.dataset.id)}`;
     }
+  });
 
-    // ==========================================
-    // 4. RENDERING & FILTERING
-    // ==========================================
-    function applyFilters() {
-        const search = document.getElementById('search-input').value.toLowerCase();
-        const status = document.getElementById('filter-status').value;
-        const visibility = document.getElementById('filter-visibility').value;
-
-        const filtered = state.allProperties.filter(prop => {
-            const matchesSearch = !search || 
-                (prop.title && prop.title.toLowerCase().includes(search)) || 
-                (prop.town && prop.town.toLowerCase().includes(search)) || 
-                (prop.county && prop.county.toLowerCase().includes(search));
-            const matchesStatus = status === 'all' || prop.status === status;
-            const matchesVisibility = visibility === 'all' || prop.visibility === visibility;
-            return matchesSearch && matchesStatus && matchesVisibility;
-        });
-
-        renderProperties(filtered);
-    }
-
-    function renderProperties(properties) {
-        const grid = document.getElementById('properties-grid');
-        if (properties.length === 0) {
-            grid.innerHTML = `
-                <div class="col-span-full text-center py-12">
-                    <div class="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                        <i class="fas fa-building text-3xl text-gray-400"></i>
-                    </div>
-                    <h3 class="text-lg font-semibold text-gray-700">No properties found</h3>
-                    <p class="text-gray-500 mb-4">Start by adding your first listing.</p>
-                    <button id="empty-add-btn" class="bg-amber-500 text-white px-6 py-2 rounded-xl font-semibold">Add Property</button>
-                </div>`;
-            
-            document.getElementById('empty-add-btn').addEventListener('click', openPropertyModal);
-            return;
-        }
-
-        const visibilityColors = { 'private': 'bg-gray-100 text-gray-700', 'public': 'bg-blue-100 text-blue-700', 'co-broker': 'bg-amber-100 text-amber-700' };
-        const statusColors = { 'available': 'bg-green-100 text-green-700', 'pending': 'bg-yellow-100 text-yellow-700', 'reserved': 'bg-purple-100 text-purple-700', 'sold': 'bg-red-100 text-red-700' };
-
-        grid.innerHTML = properties.map(prop => {
-            const imgSrc = (prop.images && prop.images[0] && isValidUrl(prop.images[0])) ? prop.images[0] : FALLBACK_IMG;
-            
-            const hasCommission = prop.visibility === 'co-broker' && prop.commission_split !== undefined && prop.commission_split !== null;
-            const commissionBadge = hasCommission 
-                ? `<div class="absolute top-3 right-3 bg-amber-500 text-white px-3 py-1 rounded-full text-xs font-bold"><i class="fas fa-percentage mr-1"></i>${esc(String(prop.commission_split))}% Split</div>` 
-                : '';
-
-            return `
-            <div class="bg-white rounded-2xl border border-gray-100 overflow-hidden hover:shadow-xl transition-shadow duration-300 group">
-                <div class="relative h-48 bg-gray-200">
-                    <img src="${esc(imgSrc)}" loading="lazy" class="prop-img w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" alt="Property">
-                    <div class="absolute top-3 left-3 flex gap-2">
-                        <span class="px-3 py-1 rounded-full text-xs font-bold uppercase ${visibilityColors[prop.visibility] || 'bg-gray-100'}">${esc(prop.visibility)}</span>
-                        <span class="px-3 py-1 rounded-full text-xs font-bold uppercase ${statusColors[prop.status] || 'bg-gray-100'}">${esc(prop.status)}</span>
-                    </div>
-                    ${commissionBadge}
-                </div>
-                <div class="p-5">
-                    <h3 class="font-bold text-lg text-gray-900 mb-1 line-clamp-1">${esc(prop.title)}</h3>
-                    <p class="text-sm text-gray-500 mb-3"><i class="fas fa-map-marker-alt mr-1 text-amber-500"></i> ${esc(prop.town || prop.county)}, ${esc(prop.county)}</p>
-                    
-                    <div class="flex items-center gap-4 text-sm text-gray-600 mb-4">
-                        ${prop.bedrooms !== null && prop.bedrooms !== undefined ? `<span><i class="fas fa-bed mr-1"></i> ${prop.bedrooms} Beds</span>` : ''}
-                        ${prop.bathrooms !== null && prop.bathrooms !== undefined ? `<span><i class="fas fa-bath mr-1"></i> ${prop.bathrooms} Baths</span>` : ''}
-                        <span><i class="fas fa-home mr-1"></i> ${esc(prop.property_type)}</span>
-                    </div>
-
-                    <div class="flex items-center justify-between pt-4 border-t border-gray-100">
-                        <span class="text-xl font-bold text-amber-600">${formatKES(prop.price)}</span>
-                        <div class="flex gap-2">
-                            <button class="btn-edit w-9 h-9 flex items-center justify-center rounded-lg bg-gray-100 text-gray-600 hover:bg-blue-100 hover:text-blue-600 transition" data-id="${esc(prop.id)}" aria-label="Edit property"><i class="fas fa-pen"></i></button>
-                            <button class="btn-delete w-9 h-9 flex items-center justify-center rounded-lg bg-gray-100 text-gray-600 hover:bg-red-100 hover:text-red-600 transition" data-id="${esc(prop.id)}" aria-label="Delete property"><i class="fas fa-trash"></i></button>
-                        </div>
-                    </div>
-                </div>
-            </div>`;
-        }).join('');
-    }
-
-    // ==========================================
-    // 5. MODAL & FORM HANDLING
-    // ==========================================
-    function openPropertyModal() {
-        document.getElementById('property-form').reset();
-        document.getElementById('prop-id').value = '';
-        document.getElementById('modal-title').textContent = 'Add New Property';
-        document.getElementById('collab-settings').classList.add('hidden');
-        document.getElementById('property-modal').classList.remove('hidden');
-    }
-
-    function closePropertyModal() {
-        document.getElementById('property-modal').classList.add('hidden');
-    }
-
-    function editProperty(prop) {
-        document.getElementById('prop-id').value = prop.id;
-        document.getElementById('modal-title').textContent = 'Edit Property';
-        document.getElementById('prop-title').value = prop.title || '';
-        document.getElementById('prop-price').value = prop.price || '';
-        document.getElementById('prop-type').value = prop.property_type || 'Apartment';
-        document.getElementById('prop-county').value = prop.county || 'Nairobi';
-        document.getElementById('prop-town').value = prop.town || '';
-        document.getElementById('prop-location').value = prop.location || '';
-        
-        document.getElementById('prop-beds').value = prop.bedrooms !== null && prop.bedrooms !== undefined ? prop.bedrooms : '';
-        document.getElementById('prop-baths').value = prop.bathrooms !== null && prop.bathrooms !== undefined ? prop.bathrooms : '';
-        
-        document.getElementById('prop-status').value = prop.status || 'available';
-        document.getElementById('prop-visibility').value = prop.visibility || 'private';
-        document.getElementById('prop-commission').value = prop.commission_split !== null && prop.commission_split !== undefined ? prop.commission_split : 50;
-        document.getElementById('prop-notes').value = prop.agent_notes || '';
-        document.getElementById('prop-description').value = prop.description || '';
-        
-        const imgUrl = (prop.images && prop.images[0] && isValidUrl(prop.images[0])) ? prop.images[0] : '';
-        document.getElementById('prop-image').value = imgUrl;
-
-        document.getElementById('collab-settings').classList.toggle('hidden', prop.visibility !== 'co-broker');
-        document.getElementById('property-modal').classList.remove('hidden');
-    }
-
-    async function handleFormSubmit(e) {
-        e.preventDefault();
-        const submitBtn = document.getElementById('save-property-btn');
-        
-        const price = parseFloat(document.getElementById('prop-price').value);
-        if (isNaN(price) || price < 0) {
-            showToast('Please enter a valid positive number for the price.', 'error');
-            return;
-        }
-
-        const imgUrl = document.getElementById('prop-image').value.trim();
-        if (imgUrl && !isValidUrl(imgUrl)) {
-            showToast('Please enter a valid HTTP or HTTPS image URL.', 'error');
-            return;
-        }
-
-        submitBtn.disabled = true;
-        submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Saving...';
-
-        const propData = {
-            agent_id: state.user.id,
-            title: document.getElementById('prop-title').value.trim(),
-            price: price,
-            property_type: document.getElementById('prop-type').value,
-            county: document.getElementById('prop-county').value,
-            town: document.getElementById('prop-town').value.trim(),
-            location: document.getElementById('prop-location').value.trim(),
-            bedrooms: getNumOrNull('prop-beds'),
-            bathrooms: getNumOrNull('prop-baths'),
-            status: document.getElementById('prop-status').value,
-            visibility: document.getElementById('prop-visibility').value,
-            commission_split: getNumOrDefault('prop-commission', 50),
-            agent_notes: document.getElementById('prop-notes').value.trim(),
-            description: document.getElementById('prop-description').value.trim(),
-            images: imgUrl ? [imgUrl] : []
-        };
-
-        const propId = document.getElementById('prop-id').value;
-
-        try {
-            if (propId) {
-                const { error } = await supabase.from('properties').update(propData).eq('id', propId).eq('agent_id', state.user.id);
-                if (error) throw error;
-                showToast('Property updated successfully!');
-            } else {
-                const { error } = await supabase.from('properties').insert([propData]);
-                if (error) throw error;
-                showToast('Property added successfully!');
-            }
-
-            closePropertyModal();
-            loadProperties();
-        } catch (err) {
-            console.error(err);
-            showToast('Error saving property: ' + err.message, 'error');
-        } finally {
-            submitBtn.disabled = false;
-            submitBtn.innerHTML = 'Save Property';
-        }
-    }
-
-    async function deleteProperty(id) {
-        if (!confirm('Are you sure you want to delete this property? This cannot be undone.')) return;
-        
-        try {
-            const { error } = await supabase.from('properties').delete().eq('id', id).eq('agent_id', state.user.id);
-            if (error) throw error;
-            showToast('Property deleted successfully!');
-            loadProperties();
-        } catch (err) {
-            console.error(err);
-            showToast('Error deleting property: ' + err.message, 'error');
-        }
-    }
-
-    // ==========================================
-    // 6. EVENT DELEGATION & INITIALIZATION
-    // ==========================================
-    function initEventListeners() {
-        document.getElementById('mobile-menu-btn').addEventListener('click', () => {
-            document.getElementById('sidebar').classList.toggle('mobile-open');
-            document.getElementById('mobile-overlay').classList.toggle('hidden');
-        });
-        document.getElementById('mobile-overlay').addEventListener('click', () => {
-            document.getElementById('sidebar').classList.remove('mobile-open');
-            document.getElementById('mobile-overlay').classList.add('hidden');
-        });
-
-        document.getElementById('logout-btn').addEventListener('click', async (e) => {
-            e.preventDefault();
-            await supabase.auth.signOut();
-            window.location.href = 'login.html?role=agent';
-        });
-
-        document.getElementById('add-property-btn').addEventListener('click', openPropertyModal);
-        document.getElementById('close-modal-btn').addEventListener('click', closePropertyModal);
-        document.getElementById('cancel-modal-btn').addEventListener('click', closePropertyModal);
-        
-        document.getElementById('prop-visibility').addEventListener('change', function() {
-            document.getElementById('collab-settings').classList.toggle('hidden', this.value !== 'co-broker');
-        });
-
-        document.getElementById('property-form').addEventListener('submit', handleFormSubmit);
-
-        const debouncedFilter = debounce(applyFilters, 300);
-        document.getElementById('search-input').addEventListener('input', debouncedFilter);
-        document.getElementById('filter-status').addEventListener('change', applyFilters);
-        document.getElementById('filter-visibility').addEventListener('change', applyFilters);
-
-        document.getElementById('properties-grid').addEventListener('click', (e) => {
-            const editBtn = e.target.closest('.btn-edit');
-            if (editBtn) {
-                const prop = state.allProperties.find(p => p.id === editBtn.dataset.id);
-                if (prop) editProperty(prop);
-                return;
-            }
-
-            const deleteBtn = e.target.closest('.btn-delete');
-            if (deleteBtn) {
-                deleteProperty(deleteBtn.dataset.id);
-                return;
-            }
-        });
-
-        document.addEventListener('error', (e) => {
-            if (e.target.tagName === 'IMG' && e.target.classList.contains('prop-img')) {
-                if (e.target.src !== FALLBACK_IMG) {
-                    e.target.src = FALLBACK_IMG;
-                } else {
-                    e.target.style.display = 'none'; 
-                }
-            }
-        }, true);
-    }
-
-    document.addEventListener('DOMContentLoaded', () => {
-        initEventListeners();
-        checkAuth();
+  document.querySelectorAll('.tab').forEach(tab => {
+    tab.addEventListener('click', (e) => {
+      document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+      const clickedTab = e.target.closest('.tab');
+      clickedTab.classList.add('active');
+      renderListings(clickedTab.dataset.filter);
     });
+  });
 
-})();
+  const sendBtn = document.getElementById('sendMsgBtn');
+  if (sendBtn) {
+    sendBtn.addEventListener('click', handleSendMsg);
+  }
+
+  const scrollBtn = document.getElementById('scrollBottomBtn');
+  if (scrollBtn) {
+    scrollBtn.addEventListener('click', () => {
+      window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+    });
+  }
+}
+
+async function handleSendMsg(e) {
+  e.preventDefault();
+  const btn = e.currentTarget;
+  
+  // Simple anti-spam: require at least 3 seconds since page load
+  if (Date.now() - formLoadTime < 3000) {
+    return toast('Hold on', 'Please take a moment to fill out the form.');
+  }
+
+  const name = document.getElementById('mName').value.trim();
+  const msg = document.getElementById('mMsg').value.trim();
+  if (!name || !msg) return toast('Error', 'Please fill in your name and message');
+  
+  btn.disabled = true;
+  btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
+
+  const { error } = await sb.from('inquiries').insert([{
+    agent_id: profile.id,
+    property_id: listings[0]?.id || null,
+    buyer_name: name,
+    buyer_email: document.getElementById('mEmail').value.trim(),
+    buyer_phone: document.getElementById('mPhone').value.trim(),
+    message: msg,
+    read: false
+  }]);
+
+  btn.disabled = false;
+  btn.innerHTML = '<i class="fas fa-paper-plane"></i> Send';
+
+  if (error) return toast('Error', error.message);
+  toast('Sent!', `${profile.full_name?.split(' ')[0]} will respond soon`);
+  ['mName','mEmail','mPhone','mMsg'].forEach(id => document.getElementById(id).value = '');
+  
+  formLoadTime = Date.now();
+}
+
+// ==========================================
+// 7. FALLBACK: ALL AGENTS
+// ==========================================
+async function showAllAgents() {
+  const { data: agents, error } = await sb.from('profiles')
+    .select('*')
+    .eq('role', 'agent')
+    .order('trust_score', { ascending: false })
+    .limit(20);
+
+  const main = document.getElementById('mainContent');
+
+  if (error || !agents || agents.length === 0) {
+    main.innerHTML = `
+      <div class="card">
+        <div class="empty">
+          <i class="fas fa-users"></i>
+          <h3>No Agents Yet</h3>
+          <p>Be the first to register as an agent!</p>
+          <a href="/agent-dashboard.html" class="btn btn-purple" style="display:inline-flex; margin-top:16px;">
+            <i class="fas fa-user-plus"></i> Register as Agent
+          </a>
+        </div>
+      </div>
+    `;
+    document.getElementById('sidebar').style.display = 'none';
+    return;
+  }
+
+  main.innerHTML = `
+    <div class="card">
+      <h2 class="card-title"><i class="fas fa-users"></i> Browse All Agents</h2>
+      <p style="font-size:14px; color:#6b7280; margin-bottom:20px;">
+        Choose an agent to view their profile, listings, and reviews.
+      </p>
+      <div class="agent-grid">
+        ${agents.map(a => {
+          const name = a.full_name || 'Agent';
+          const agentUrl = a.slug ? `/agent/${encodeURIComponent(a.slug)}` : `?id=${a.id}`;
+          return `
+            <a href="${agentUrl}" class="agent-card">
+              <div class="agent-avatar">
+                <span>${esc(name.charAt(0).toUpperCase())}</span>
+              </div>
+              <div class="agent-name-small">${esc(name)}</div>
+              <div class="agent-company-small">${esc(a.company || 'Independent Agent')}</div>
+              <div class="agent-stats-small">
+                <span><i class="fas fa-star" style="color:#fbbf24;"></i> ${(a.average_rating || 0).toFixed(1)}</span>
+                <span><i class="fas fa-shield-halved"></i> ${a.trust_score || 0}</span>
+              </div>
+              <div class="agent-link-small">View Profile →</div>
+            </a>
+          `;
+        }).join('')}
+      </div>
+    </div>
+  `;
+
+  document.getElementById('sidebar').style.display = 'none';
+}
+
+// Start
+load();
 </script>
-
 </body>
 </html>
