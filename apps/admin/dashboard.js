@@ -1,10 +1,9 @@
-// apps/admin/dashboard.js
 import { supabase } from '/js/supabase.js';
 
 import { requireRole } from '/js/auth.js';
 import { UI } from '/js/dashboard/ui.js';
 import { loadDashboardData } from '/js/dashboard/api.js';
-import { setupTargetedRealtime } from '/js/dashboard/realtime.js';
+import { setupTargetedRealtime, teardownRealtime } from '/js/dashboard/realtime.js';
 import { checkPermissions } from '/js/dashboard/permissions.js';
 import { initCommandPalette } from '/js/dashboard/command.js';
 
@@ -14,9 +13,14 @@ import { initQueueRenderer } from '/js/dashboard/render/queue.js';
 import { initRevenueRenderer } from '/js/dashboard/render/revenue.js';
 
 let realtimeChannel = null;
+let isBooted = false;
 
 async function init() {
   try {
+    // prevent double init (important in SPA scenarios)
+    if (isBooted) return;
+    isBooted = true;
+
     // 1. AUTH
     const auth = await requireRole('admin');
     if (!auth) return;
@@ -24,6 +28,7 @@ async function init() {
     // 2. CORE BOOT
     UI.cacheElements();
     UI.initOfflineAwareness();
+
     checkPermissions(auth.user.role);
     initCommandPalette();
 
@@ -32,7 +37,7 @@ async function init() {
     initQueueRenderer();
     initRevenueRenderer();
 
-    // 4. DATA LOAD
+    // 4. DATA LOAD (critical system step)
     await loadDashboardData();
 
     // 5. REALTIME
@@ -40,21 +45,39 @@ async function init() {
 
   } catch (error) {
     console.error('Dashboard init failed:', error);
-    UI.showError('System initialization failed');
+
+    UI.showErrorState(
+      'globalLoading',
+      'System failed to initialize. Please refresh.',
+      () => window.location.reload()
+    );
   }
 }
 
-// Safe cleanup handler (prevents crashes)
+/**
+ * Full system cleanup (important for SPA safety)
+ */
 function cleanup() {
-  if (realtimeChannel && supabase) {
-    try {
+  try {
+    // realtime cleanup
+    teardownRealtime();
+
+    // supabase channel safety fallback
+    if (realtimeChannel && supabase) {
       supabase.removeChannel(realtimeChannel);
-    } catch (err) {
-      console.warn('Realtime cleanup failed:', err);
+      realtimeChannel = null;
     }
+
+    // UI cleanup (if implemented)
+    UI.destroy?.();
+
+  } catch (err) {
+    console.warn('Dashboard cleanup issue:', err);
   }
 }
 
+// SPA safety (not just page unload)
 window.addEventListener('beforeunload', cleanup);
+window.addEventListener('pagehide', cleanup);
 
 init();
