@@ -1,1 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Create Property</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
 
+<body class="bg-gray-100 p-6">
+
+<h1 class="text-2xl font-bold mb-4">Create Property</h1>
+
+<form id="form" class="bg-white p-6 rounded shadow space-y-4">
+
+<input id="title" placeholder="Title" class="border p-2 w-full" required>
+
+<input id="price" type="number" placeholder="Price" class="border p-2 w-full" required>
+
+<select id="status" class="border p-2 w-full">
+  <option value="available">Available</option>
+  <option value="pending">Pending</option>
+  <option value="sold">Sold</option>
+</select>
+
+<input id="image" placeholder="Image URL" class="border p-2 w-full">
+
+<button class="bg-green-600 text-white px-4 py-2 rounded">
+  Save Property
+</button>
+
+</form>
+
+<script>
+const supabase = window.supabase.createClient(
+  "https://nqwvsmuvltbiekfnvovx.supabase.co",
+  "YOUR_ANON_KEY"
+);
+
+let user = null;
+
+async function auth() {
+  const { data } = await supabase.auth.getUser();
+  user = data.user;
+
+  if (!user) {
+    window.location.href = "../auth/login.html?role=agent";
+  }
+}
+
+document.getElementById("form").addEventListener("submit", async (e) => {
+  e.preventDefault();
+
+  await supabase.from("properties").insert([{
+    agent_id: user.id,
+    title: document.getElementById("title").value,
+    price: parseFloat(document.getElementById("price").value),
+    status: document.getElementById("status").value,
+    images: [document.getElementById("image").value]
+  }]);
+
+  window.location.href = "index.html";
+});
+
+auth();
+</script>
+
+</body>
+</html>
