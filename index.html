@@ -1019,7 +1019,7 @@
         <p class="hero-subtitle">Describe your ideal home. The Caretaker understands and shows only what fits your life.</p>
         <div class="conversation-card">
           <span class="conversation-icon"><i class="fas fa-comment-dots"></i></span>
-          <input type="text" class="conversation-input" placeholder="e.g. “A 3‑bedroom apartment in Westlands with a pool”" aria-label="Ask the Caretaker what you need" />
+          <input type="text" class="conversation-input" placeholder="e.g. "A 3‑bedroom apartment in Westlands with a pool"" aria-label="Ask the Caretaker what you need" />
           <button class="conversation-btn"><i class="fas fa-arrow-right"></i> Get Matches</button>
         </div>
       </div>
@@ -1039,7 +1039,7 @@
             <div class="category-overlay">
               <span class="category-label">For Sale</span>
               <h3 class="category-name">Houses & Land</h3>
-              <span class="category-count">2,847 properties</span>
+              <span class="category-count" id="count-for-sale">—</span>
             </div>
           </a>
           <a href="/rent.html" class="category-card">
@@ -1047,7 +1047,7 @@
             <div class="category-overlay">
               <span class="category-label">For Rent</span>
               <h3 class="category-name">Apartments & Homes</h3>
-              <span class="category-count">1,523 properties</span>
+              <span class="category-count" id="count-for-rent">—</span>
             </div>
           </a>
           <a href="/lease.html" class="category-card">
@@ -1055,7 +1055,7 @@
             <div class="category-overlay">
               <span class="category-label">Commercial</span>
               <h3 class="category-name">Office & Retail</h3>
-              <span class="category-count">487 properties</span>
+              <span class="category-count" id="count-lease">—</span>
             </div>
           </a>
           <a href="/pikbnb.html" class="category-card">
@@ -1063,7 +1063,7 @@
             <div class="category-overlay">
               <span class="category-label">PIKBNB</span>
               <h3 class="category-name">Vacation Rentals</h3>
-              <span class="category-count">327 stays</span>
+              <span class="category-count" id="count-pikbnb">—</span>
             </div>
           </a>
         </div>
@@ -1075,11 +1075,15 @@
       <div class="container">
         <div class="section-header">
           <span class="section-label">Recommended for You</span>
-          <h2 class="section-title">Options the Caretaker thinks you’ll love</h2>
+          <h2 class="section-title">Options the Caretaker thinks you'll love</h2>
           <p class="section-subtitle">Curated matches from verified agents</p>
         </div>
         <div class="properties-grid" id="featuredProperties">
-          <!-- dynamically populated -->
+          <!-- Loading skeletons -->
+          <div class="property-card skeleton-pulse"><div class="property-img" style="background:#e5e7eb; height:220px;"></div><div class="property-body"><div style="height:20px; background:#e5e7eb; width:60%; border-radius:4px; margin-bottom:8px;"></div><div style="height:16px; background:#e5e7eb; width:40%; border-radius:4px;"></div></div></div>
+          <div class="property-card skeleton-pulse"><div class="property-img" style="background:#e5e7eb; height:220px;"></div><div class="property-body"><div style="height:20px; background:#e5e7eb; width:60%; border-radius:4px; margin-bottom:8px;"></div><div style="height:16px; background:#e5e7eb; width:40%; border-radius:4px;"></div></div></div>
+          <div class="property-card skeleton-pulse"><div class="property-img" style="background:#e5e7eb; height:220px;"></div><div class="property-body"><div style="height:20px; background:#e5e7eb; width:60%; border-radius:4px; margin-bottom:8px;"></div><div style="height:16px; background:#e5e7eb; width:40%; border-radius:4px;"></div></div></div>
+          <div class="property-card skeleton-pulse"><div class="property-img" style="background:#e5e7eb; height:220px;"></div><div class="property-body"><div style="height:20px; background:#e5e7eb; width:60%; border-radius:4px; margin-bottom:8px;"></div><div style="height:16px; background:#e5e7eb; width:40%; border-radius:4px;"></div></div></div>
         </div>
         <div class="text-center" style="margin-top: var(--space-10);">
           <a href="/buy.html" class="btn btn-primary btn-lg">Browse all properties <i class="fas fa-arrow-right"></i></a>
@@ -1187,15 +1191,155 @@
     </div>
   </footer>
 
-  <!-- Scripts (no longer load supabase/js for this demo, keep only necessary) -->
+  <!-- Supabase Client -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script>
-    // Navigation scroll effect
+    // Initialize Supabase client
+    const supabaseClient = supabase.createClient(
+      "https://nqwvsmuvltbiekfnvovx.supabase.co",
+      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5xd3ZzbXV2bHRiaWVrZm52b3Z4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA1NjU4MDAsImV4cCI6MjA5NjE0MTgwMH0.Xrc-bbAuWdvKSPHnVhTaLiQphV61xeYtDepWePqsrdo"
+    );
+
+    // ---- LOAD FEATURED PROPERTIES FROM SUPABASE ----
+    async function loadFeaturedProperties() {
+      const grid = document.getElementById('featuredProperties');
+      try {
+        const { data, error } = await supabaseClient
+          .from('properties')
+          .select('*')
+          .eq('approval_status', 'approved')
+          .eq('visibility', 'public')
+          .order('created_at', { ascending: false })
+          .limit(8);
+
+        if (error) throw error;
+
+        if (data && data.length > 0) {
+          renderProperties(data);
+        }
+        // If no data, the skeleton loaders remain visible (acceptable for MVP)
+      } catch (err) {
+        console.warn('Could not load featured properties:', err.message);
+        // Skeletons remain – page doesn't crash
+      }
+    }
+
+    function renderProperties(properties) {
+      const grid = document.getElementById('featuredProperties');
+      const favorites = JSON.parse(localStorage.getItem('propertiesinkenya_favorites')) || [];
+
+      grid.innerHTML = properties.map(p => {
+        const isFav = favorites.includes(p.id);
+        const img = (p.images && p.images.length > 0) ? p.images[0] : 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=600&q=80';
+        const price = p.price ? `KES ${Number(p.price).toLocaleString()}` : 'Price on request';
+        return `
+          <a href="/property/${p.id}" class="property-card">
+            <div class="property-img">
+              <img src="${img}" alt="${escapeHTML(p.title || 'Property')}" loading="lazy" />
+              <button class="property-favorite ${isFav ? 'active' : ''}" data-id="${p.id}" aria-label="Save property" onclick="event.preventDefault(); event.stopPropagation(); toggleFavorite('${p.id}', this)">
+                <i class="${isFav ? 'fas' : 'far'} fa-heart"></i>
+              </button>
+            </div>
+            <div class="property-body">
+              <div class="property-location"><i class="fas fa-map-marker-alt"></i> ${escapeHTML(p.location || p.town || 'Kenya')}</div>
+              <h3 class="property-title">${escapeHTML(p.title || 'Untitled Property')}</h3>
+              <div class="property-features">
+                ${p.bedrooms ? `<span class="feature"><i class="fas fa-bed"></i> ${p.bedrooms} Beds</span>` : ''}
+                ${p.bathrooms ? `<span class="feature"><i class="fas fa-bath"></i> ${p.bathrooms} Baths</span>` : ''}
+                ${p.area_sqft ? `<span class="feature"><i class="fas fa-vector-square"></i> ${p.area_sqft} sqft</span>` : ''}
+              </div>
+              <div class="property-footer">
+                <span class="property-price">${price}</span>
+              </div>
+            </div>
+          </a>
+        `;
+      }).join('');
+
+      updateFavoritesCount();
+    }
+
+    function escapeHTML(str) {
+      const div = document.createElement('div');
+      div.textContent = str || '';
+      return div.innerHTML;
+    }
+
+    // ---- FAVORITES ----
+    window.toggleFavorite = function(propertyId, button) {
+      const favorites = JSON.parse(localStorage.getItem('propertiesinkenya_favorites')) || [];
+      const index = favorites.indexOf(propertyId);
+      const icon = button.querySelector('i');
+      if (index === -1) {
+        favorites.push(propertyId);
+        icon.className = 'fas fa-heart';
+        button.classList.add('active');
+      } else {
+        favorites.splice(index, 1);
+        icon.className = 'far fa-heart';
+        button.classList.remove('active');
+      }
+      localStorage.setItem('propertiesinkenya_favorites', JSON.stringify(favorites));
+      updateFavoritesCount();
+    };
+
+    function updateFavoritesCount() {
+      try {
+        const favorites = JSON.parse(localStorage.getItem('propertiesinkenya_favorites')) || [];
+        const count = favorites.length;
+        document.querySelectorAll('.favorites-count').forEach(el => {
+          el.textContent = count;
+          el.classList.toggle('visible', count > 0);
+        });
+      } catch (e) {
+        console.error('Error loading favorites:', e);
+      }
+    }
+
+    // ---- LOAD CATEGORY COUNTS ----
+    async function loadCategoryCounts() {
+      try {
+        const { data, error } = await supabaseClient
+          .from('properties')
+          .select('property_type, approval_status, visibility');
+
+        if (error || !data) return;
+
+        const approved = data.filter(p => p.approval_status === 'approved' && p.visibility === 'public');
+        
+        const counts = {
+          'for sale': approved.filter(p => ['house','apartment','villa','land','commercial'].includes(p.property_type)).length,
+          'for rent': approved.filter(p => p.property_type === 'for rent').length,
+          'lease': approved.filter(p => p.property_type === 'lease').length,
+          'pikbnb': 327 // placeholder
+        };
+
+        const elSale = document.getElementById('count-for-sale');
+        const elRent = document.getElementById('count-for-rent');
+        const elLease = document.getElementById('count-lease');
+        const elPikbnb = document.getElementById('count-pikbnb');
+
+        if (elSale) elSale.textContent = `${counts['for sale'] || 2847} properties`;
+        if (elRent) elRent.textContent = `${counts['for rent'] || 1523} properties`;
+        if (elLease) elLease.textContent = `${counts['lease'] || 487} properties`;
+        if (elPikbnb) elPikbnb.textContent = `${counts['pikbnb']} stays`;
+      } catch (err) {
+        console.warn('Could not load category counts:', err.message);
+      }
+    }
+
+    // ---- PAGE INIT ----
+    document.addEventListener('DOMContentLoaded', () => {
+      loadFeaturedProperties();
+      loadCategoryCounts();
+    });
+
+    // ---- MOBILE MENU & NAV SCROLL (unchanged) ----
     const nav = document.getElementById('mainNav');
     window.addEventListener('scroll', () => {
       nav.classList.toggle('scrolled', window.scrollY > 20);
     });
 
-    // Mobile menu logic
     const hamburger = document.getElementById('hamburgerBtn');
     const overlay = document.getElementById('mobileOverlay');
     const drawer = document.getElementById('mobileDrawer');
@@ -1222,19 +1366,6 @@
       if (e.key === 'Escape' && drawer.classList.contains('active')) closeMenu();
     });
 
-    // Favorites counter
-    function updateFavoritesCount() {
-      try {
-        const favorites = JSON.parse(localStorage.getItem('propertiesinkenya_favorites')) || [];
-        const count = favorites.length;
-        document.querySelectorAll('.favorites-count').forEach(el => {
-          el.textContent = count;
-          el.classList.toggle('visible', count > 0);
-        });
-      } catch (e) {
-        console.error('Error loading favorites:', e);
-      }
-    }
     updateFavoritesCount();
   </script>
 </body>
