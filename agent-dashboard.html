@@ -6,9 +6,7 @@
     <title>RealtorOS — Properties in Kenya</title>
     <meta name="description" content="The intelligent operating system for real estate agents.">
     <meta name="theme-color" content="#0F172A">
-    <script src="https://cdn.tailwindcss.com" defer></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Space+Grotesk:wght@500;600;700&display=swap');
         body { font-family: 'Inter', system-ui, sans-serif; background: #F8FAFC; }
@@ -37,8 +35,9 @@
 <div id="mobile-overlay" class="hidden lg:hidden fixed inset-0 bg-black/50 z-40"></div>
 
 <div class="flex min-h-screen">
-    <!-- SIDEBAR -->
+    <!-- SIDEBAR (identical) -->
     <aside id="sidebar" class="sidebar fixed lg:sticky top-0 left-0 h-screen w-72 bg-white border-r border-gray-200 z-40 overflow-y-auto">
+        <!-- ... sidebar unchanged ... -->
         <div class="p-6 border-b border-gray-200">
             <div class="flex items-center gap-3">
                 <div class="w-10 h-10 bg-gradient-to-br from-amber-400 to-yellow-600 rounded-xl flex items-center justify-center text-white font-bold text-xl">🏠</div>
@@ -85,8 +84,9 @@
         </nav>
     </aside>
 
-    <!-- MAIN -->
+    <!-- MAIN CONTENT (unchanged) -->
     <main class="flex-1 lg:ml-0 w-full">
+        <!-- ... main content exactly as before ... -->
         <header class="glass sticky top-0 z-30 border-b border-gray-200">
             <div class="px-6 py-4 flex items-center justify-between">
                 <div class="lg:pl-0 pl-12">
@@ -152,14 +152,12 @@
 
             <!-- FLIGHT DECK -->
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                <!-- Critical Deals (event delegation applied) -->
                 <div class="bg-white rounded-2xl border border-gray-100 p-6 col-span-2">
                     <h2 class="heading-font text-lg font-bold mb-4 flex items-center gap-2"><i class="fas fa-exclamation-triangle text-red-500"></i> Critical Deals</h2>
                     <div class="space-y-4" id="critical-deals-container"></div>
                     <div id="no-critical-deals" class="text-center text-gray-400 py-4 hidden">No critical actions right now. Great job!</div>
                 </div>
 
-                <!-- Quick Actions + Revenue Pulse -->
                 <div class="space-y-6">
                     <div class="bg-white rounded-2xl border border-gray-100 p-6">
                         <h2 class="heading-font text-lg font-bold mb-4">⚡ Quick Actions</h2>
@@ -191,7 +189,7 @@
                 <div id="network-suggestions" class="space-y-3"></div>
             </div>
 
-            <!-- DEAL PIPELINE (event delegation applied) -->
+            <!-- DEAL PIPELINE -->
             <div class="bg-white rounded-2xl border border-gray-100">
                 <div class="p-6 border-b border-gray-100 flex items-center justify-between">
                     <h2 class="heading-font text-lg font-bold">Deal Pipeline (12 Stages)</h2>
@@ -202,7 +200,7 @@
                 </div>
             </div>
 
-            <!-- ACTION CENTER (event delegation applied) -->
+            <!-- ACTION CENTER -->
             <div class="bg-white rounded-2xl border border-gray-100">
                 <div class="p-6 border-b border-gray-100">
                     <h2 class="heading-font text-lg font-bold"><i class="fas fa-bolt text-amber-500 mr-2"></i>AI‑Prioritized Action Center</h2>
@@ -277,6 +275,9 @@
     </div>
 </div>
 
+<!-- SCRIPTS LOADED SYNCHRONOUSLY AT BOTTOM -->
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
 (function() {
     'use strict';
@@ -286,6 +287,9 @@
         'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5xd3ZzbXV2bHRiaWVrZm52b3Z4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA1NjU4MDAsImV4cCI6MjA5NjE0MTgwMH0.Xrc-bbAuWdvKSPHnVhTaLiQphV61xeYtDepWePqsrdo'
     );
 
+    // ... rest of JavaScript (identical to previous version) ...
+    // (Keeping the entire script from the previous "fixed" version)
+    
     const state = {
         user: null,
         profile: null,
@@ -296,7 +300,6 @@
         notificationChannel: null
     };
 
-    // ============ UTILITIES ============
     function esc(str) { const d = document.createElement('div'); d.textContent = str||''; return d.innerHTML; }
     function formatKES(amount) { return new Intl.NumberFormat('en-KE', { style: 'currency', currency: 'KES', maximumFractionDigits:0 }).format(amount||0); }
     function daysBetween(a, b) { return Math.floor((new Date(b) - new Date(a)) / (1000*60*60*24)); }
@@ -313,7 +316,6 @@
         setTimeout(()=>{ toast.style.opacity='0'; toast.style.transform='translateY(20px)'; setTimeout(()=>toast.remove(),300); },4000);
     }
 
-    // Dynamic color classes replaced with inline styles
     const HEALTH_COLORS = {
         good: { bg: '#d1fae5', text: '#065f46' },
         warn: { bg: '#fef3c7', text: '#92400e' },
@@ -332,7 +334,6 @@
         return HEALTH_COLORS.bad;
     }
 
-    // ============ AI SCORING ENGINE ============
     function computeDealHealth(d) {
         let score = 50;
         const daysNoContact = daysSince(d.last_contacted);
@@ -413,7 +414,6 @@
         return { priority: 'low', text: `Maintain momentum — deal is progressing well.`, icon: 'fa-check-circle', color: 'low' };
     }
 
-    // ============ DATA LAYER ============
     async function fetchDealsFromSupabase() {
         try {
             const { data, error } = await supabase
@@ -522,7 +522,6 @@
         });
     }
 
-    // ============ AUTOMATION ENGINE ============
     function runAutomationEngine() {
         const log = [];
         state.deals.forEach(d => {
@@ -564,7 +563,6 @@
         `).join('');
     }
 
-    // ============ AUTH & LOAD ============
     async function checkAuth() {
         const { data: { session } } = await supabase.auth.getSession();
         if(!session) { window.location.href='login.html?role=agent'; return; }
@@ -606,10 +604,9 @@
         updateRevenuePulse();
         updateAIBriefing();
         updateGamification();
-        loadNotifications(); // populate notif list
+        loadNotifications();
     }
 
-    // ============ NOTIFICATIONS ============
     async function loadNotifications() {
         try {
             const { data } = await supabase.from('notifications').select('*').eq('agent_id', state.user.id).order('created_at',{ascending:false}).limit(10);
@@ -653,7 +650,6 @@
         loadNotifications();
     }
 
-    // ============ CRITICAL DEALS (event delegation) ============
     function renderCriticalDeals() {
         const container = document.getElementById('critical-deals-container');
         const noCritical = document.getElementById('no-critical-deals');
@@ -682,7 +678,6 @@
         `).join('');
     }
 
-    // ============ PIPELINE (event delegation) ============
     const stages = [
         { id: 'new_lead', label: 'New Lead', color: 'bg-blue-100 text-blue-800' },
         { id: 'qualified', label: 'Qualified', color: 'bg-sky-100 text-sky-800' },
@@ -734,7 +729,6 @@
         container.innerHTML = html;
     }
 
-    // ============ ACTION CENTER (event delegation) ============
     function renderActionCenter() {
         const container = document.getElementById('action-center');
         const actions = state.deals
@@ -764,7 +758,6 @@
         `).join('') : '<div class="p-4 text-center text-gray-400">All caught up!</div>';
     }
 
-    // ============ NETWORK ============
     function renderNetworkSuggestions() {
         const container = document.getElementById('network-suggestions');
         if (!state.networkAgents.length) {
@@ -787,7 +780,6 @@
         `).join('');
     }
 
-    // ============ REVENUE + GAMIFICATION ============
     function updateRevenuePulse() {
         const pipelineValue = state.deals.reduce((sum,d) => sum + (d.value||0), 0);
         const expCommission = state.deals.reduce((sum,d) => sum + ((d.commission||0) * d.probability / 100), 0);
@@ -821,7 +813,6 @@
         document.getElementById('ai-summary').textContent = summary;
     }
 
-    // ============ TIMELINE MODAL ============
     window.showTimelineModal = function(dealId) {
         const deal = state.deals.find(d => d.id === dealId);
         if (!deal) return;
@@ -872,7 +863,6 @@
         document.getElementById('timeline-modal').classList.remove('hidden');
     };
 
-    // ============ AI COMMAND CENTER (NLP) ============
     const AICommandCenter = {
         intents: {
             'call_today|who to call|first today|call first': (deals) => {
@@ -968,7 +958,7 @@
         }, 400);
     }
 
-    // ============ EVENT DELEGATION FOR CARDS ============
+    // Event delegation for cards
     document.getElementById('critical-deals-container').addEventListener('click', (e) => {
         const card = e.target.closest('[data-deal-id]');
         if (card) showTimelineModal(parseInt(card.dataset.dealId));
@@ -982,7 +972,7 @@
         if (card) showTimelineModal(parseInt(card.dataset.dealId));
     });
 
-    // ============ NOTIFICATION EVENTS ============
+    // Notifications
     document.getElementById('notif-list').addEventListener('click', async (e) => {
         const item = e.target.closest('.notif-item');
         if (item) {
@@ -997,7 +987,6 @@
     });
     document.getElementById('mark-all-read-btn').addEventListener('click', markAllRead);
 
-    // ============ REALTIME ============
     function setupRealtime() {
         if(state.notificationChannel) supabase.removeChannel(state.notificationChannel);
         state.notificationChannel = supabase.channel('agent-updates')
@@ -1016,7 +1005,7 @@
         else badge.classList.add('hidden');
     }
 
-    // ============ MISC EVENTS ============
+    // Misc events
     document.querySelectorAll('.btn-quick-action').forEach(btn => {
         btn.addEventListener('click', () => {
             const msgs = { call:'Opening phone dialer...', whatsapp:'Opening WhatsApp...', schedule:'Opening calendar...', 'send-flyer':'Generating property flyer...' };
