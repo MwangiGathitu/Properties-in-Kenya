@@ -1,7 +1,39 @@
-// js/dashboard/audit.js
 import { supabase } from '/js/supabase.js';
-export async function logAudit(action, targetId, metadata = {}) {
-  await supabase.functions.invoke('audit-logger', { 
-    body: { action, targetId, timestamp: new Date(), ...metadata } 
+
+let queue = [];
+let flushTimer = null;
+
+async function flushQueue() {
+  if (queue.length === 0) return;
+
+  const batch = [...queue];
+  queue = [];
+
+  try {
+    await supabase.functions.invoke('audit-logger', {
+      body: { events: batch }
+    });
+  } catch (err) {
+    console.warn('Audit batch failed, retrying...', err);
+
+    // simple retry fallback
+    queue = [...batch, ...queue];
+  }
+}
+
+export function logAudit(action, targetId, metadata = {}) {
+  queue.push({
+    action,
+    targetId,
+    metadata,
+    timestamp: new Date().toISOString()
   });
+
+  // debounce flush (batching)
+  if (!flushTimer) {
+    flushTimer = setTimeout(async () => {
+      flushTimer = null;
+      await flushQueue();
+    }, 1000);
+  }
 }
