@@ -1,1312 +1,306 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>PropDesk Admin — Properties in Kenya</title>
-  
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-  
-  <style>
-    :root {
-      --primary: #6b21a8;
-      --primary-light: #f5f3ff;
-      --primary-border: #c4b5fd;
-      --success: #10b981;
-      --danger: #ef4444;
-      --warn: #f59e0b;
-      --info: #3b82f6;
-      --gray-50: #f9fafb;
-      --gray-100: #f3f4f6;
-      --gray-200: #e5e7eb;
-      --gray-300: #d1d5db;
-      --gray-500: #6b7280;
-      --gray-700: #374151;
-      --gray-900: #111827;
-      --radius: 12px;
-      --shadow-sm: 0 1px 3px rgba(0,0,0,0.06);
-      --shadow-md: 0 4px 12px rgba(0,0,0,0.08);
-      --shadow-lg: 0 8px 24px rgba(0,0,0,0.15);
-    }
+import { supabase } from '/js/supabase.js';
+import { requireRole, logout } from '/js/auth.js';
+import { showToast, escapeHtml } from '/js/utils.js';
 
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-      background: #f4f4f7;
-      color: var(--gray-900);
-      min-height: 100vh;
-    }
+// ─── State ──────────────────────────────────────────────
+let healthChart = null;
+let lastHealthKey = '';
+let refreshTimeout = null;
+let initialLoad = true;
+let realtimeChannel = null;
+let refreshQueued = false;                // FIX 1 – true debounce lock
 
-    /* Header */
-    header {
-      padding: 14px 24px;
-      background: white;
-      border-bottom: 1px solid var(--gray-200);
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      flex-wrap: wrap;
-      gap: 10px;
-      position: sticky;
-      top: 0;
-      z-index: 100;
-      box-shadow: var(--shadow-sm);
-    }
-    .logo { font-size: 18px; font-weight: 700; color: var(--primary); display: flex; align-items: center; gap: 8px; }
-    .header-right { display: flex; align-items: center; gap: 12px; font-size: 14px; color: var(--gray-500); }
+// Cache keys for partial rendering
+let lastStatsKey = '';
+let lastDecisionsKey = '';
+let lastAlertsKey = '';
+let lastEventsKey = '';
 
-    /* Buttons */
-    button {
-      padding: 8px 14px;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
-      font-size: 14px;
-      font-weight: 500;
-      transition: all 0.2s;
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-    }
-    button:hover:not(:disabled) { transform: translateY(-1px); box-shadow: var(--shadow-md); }
-    button:disabled { opacity: 0.5; cursor: not-allowed; transform: none; box-shadow: none; }
-    .btn-primary { background: var(--primary); color: white; }
-    .btn-success { background: var(--success); color: white; }
-    .btn-danger { background: var(--danger); color: white; }
-    .btn-warn { background: var(--warn); color: white; }
-    .btn-ghost { background: var(--gray-100); color: var(--gray-700); }
-    .btn-ghost:hover:not(:disabled) { background: var(--gray-200); }
-    .btn-sm { padding: 6px 10px; font-size: 13px; }
+// ─── Bootstrap ─────────────────────────────────────────
+async function init() {
+  const auth = await requireRole('admin');
+  if (!auth) return;
 
-    /* Login */
-    .login-box {
-      max-width: 420px;
-      margin: 80px auto;
-      padding: 32px;
-      background: white;
-      border-radius: var(--radius);
-      box-shadow: var(--shadow-lg);
-    }
-    .login-box h2 { margin-bottom: 20px; color: var(--primary); }
-    .login-box input {
-      padding: 12px;
-      margin: 8px 0;
-      width: 100%;
-      border: 1px solid var(--gray-300);
-      border-radius: 8px;
-      font-size: 15px;
-    }
-    .login-box input:focus { outline: none; border-color: var(--primary); }
-    .error { color: var(--danger); margin-top: 10px; font-size: 14px; }
+  document.getElementById('adminEmail').textContent = auth.user.email;
+  document.getElementById('logoutBtn').addEventListener('click', logout);
 
-    /* Dashboard */
-    .dashboard { max-width: 1280px; margin: 0 auto; padding: 24px; }
+  await safeLoadDashboard();
+  initialLoad = false;
+  setupRealtime();
+}
 
-    /* Stats */
-    .stats-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-      gap: 16px;
-      margin-bottom: 24px;
-    }
-    .stat-card {
-      background: white;
-      padding: 20px;
-      border-radius: var(--radius);
-      box-shadow: var(--shadow-sm);
-      border-left: 4px solid var(--primary);
-    }
-    .stat-card.pending { border-left-color: var(--warn); }
-    .stat-card.approved { border-left-color: var(--success); }
-    .stat-card.rejected { border-left-color: var(--danger); }
-    .stat-card.rate { border-left-color: var(--info); }
-    .stat-label { font-size: 13px; color: var(--gray-500); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px; }
-    .stat-value { font-size: 28px; font-weight: 700; color: var(--gray-900); }
-    .stat-icon { float: right; font-size: 24px; opacity: 0.3; }
+// ─── Safe loader ──────────────────────────────────────
+async function safeLoadDashboard() {
+  try {
+    await loadDashboard();
+  } catch (err) {
+    console.error('Dashboard error:', err);
+    showToast('error', 'Dashboard error', 'An unexpected error occurred. Please reload.');
+  }
+}
 
-    /* Filters */
-    .filter-bar {
-      background: white;
-      padding: 16px;
-      border-radius: var(--radius);
-      box-shadow: var(--shadow-sm);
-      margin-bottom: 16px;
-      display: grid;
-      grid-template-columns: 2fr 1fr 1fr 1fr 1fr auto;
-      gap: 10px;
-      align-items: center;
-    }
-    .filter-bar input, .filter-bar select {
-      padding: 10px 12px;
-      border: 1px solid var(--gray-300);
-      border-radius: 8px;
-      font-size: 14px;
-      width: 100%;
-    }
-    .filter-bar input:focus, .filter-bar select:focus { outline: none; border-color: var(--primary); }
-    @media (max-width: 900px) { .filter-bar { grid-template-columns: 1fr 1fr; } }
-    @media (max-width: 500px) { .filter-bar { grid-template-columns: 1fr; } }
+// ─── Core data loader ─────────────────────────────────
+async function loadDashboard() {
+  if (initialLoad) showLoading(true);
 
-    /* Bulk Actions */
-    .bulk-bar {
-      background: var(--primary);
-      color: white;
-      padding: 12px 20px;
-      border-radius: var(--radius);
-      margin-bottom: 16px;
-      display: none;
-      align-items: center;
-      justify-content: space-between;
-      flex-wrap: wrap;
-      gap: 10px;
-      animation: slideDown 0.3s ease;
-    }
-    .bulk-bar.active { display: flex; }
-    .bulk-bar .bulk-info { font-weight: 500; }
-    .bulk-bar button { background: rgba(255,255,255,0.2); color: white; }
-    .bulk-bar button:hover:not(:disabled) { background: rgba(255,255,255,0.3); }
-    @keyframes slideDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+  const { data, error } = await supabase.rpc('get_admin_dashboard');
 
-    /* Property Card */
-    .card {
-      background: white;
-      padding: 16px;
-      margin-bottom: 12px;
-      border-radius: var(--radius);
-      box-shadow: var(--shadow-sm);
-      display: grid;
-      grid-template-columns: auto 100px 1fr auto;
-      gap: 16px;
-      align-items: center;
-      transition: all 0.2s;
-      border: 1px solid transparent;
-    }
-    .card:hover { box-shadow: var(--shadow-md); }
-    .card.selected { background: var(--primary-light); border: 1px solid var(--primary-border); }
-    .card-checkbox { width: 20px; height: 20px; cursor: pointer; accent-color: var(--primary); }
-    .card-thumb {
-      width: 100px;
-      height: 75px;
-      border-radius: 8px;
-      object-fit: cover;
-      cursor: pointer;
-      background: var(--gray-100);
-    }
-    .property-info strong { font-size: 16px; display: block; margin-bottom: 4px; color: var(--gray-900); }
-    .property-info .meta {
-      font-size: 13px;
-      color: var(--gray-500);
-      margin-bottom: 6px;
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-      align-items: center;
-    }
-    .property-info .desc { font-size: 13px; color: #555; margin-top: 6px; line-height: 1.4; }
-    .status-badge {
-      display: inline-block;
-      padding: 3px 10px;
-      border-radius: 9999px;
-      font-size: 11px;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-    }
-    .status-approved { background: #d1fae5; color: #065f46; }
-    .status-pending { background: #fef3c7; color: #92400e; }
-    .status-rejected { background: #fee2e2; color: #991b1b; }
-    .card-actions { display: flex; flex-direction: column; gap: 6px; }
-    @media (max-width: 768px) {
-      .card {
-        grid-template-columns: auto 1fr;
-        grid-template-areas: "check info" "thumb info" "actions actions";
-      }
-      .card-checkbox { grid-area: check; }
-      .card-thumb { grid-area: thumb; width: 100%; height: 150px; }
-      .property-info { grid-area: info; }
-      .card-actions { grid-area: actions; flex-direction: row; flex-wrap: wrap; }
-    }
+  if (initialLoad) showLoading(false);
 
-    /* Pagination */
-    .pagination { display: flex; justify-content: center; align-items: center; gap: 6px; margin-top: 24px; flex-wrap: wrap; }
-    .pagination button { min-width: 36px; height: 36px; padding: 0 10px; background: white; color: var(--gray-700); border: 1px solid var(--gray-300); }
-    .pagination button.active { background: var(--primary); color: white; border-color: var(--primary); }
-    .pagination button:disabled { opacity: 0.4; }
-    .page-info { font-size: 14px; color: var(--gray-500); margin: 0 10px; }
-
-    /* Modal */
-    .modal-overlay {
-      display: none;
-      position: fixed;
-      inset: 0;
-      background: rgba(0,0,0,0.6);
-      z-index: 1000;
-      align-items: center;
-      justify-content: center;
-      padding: 20px;
-      animation: fadeIn 0.2s;
-    }
-    .modal-overlay.active { display: flex; }
-    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-    .modal {
-      background: white;
-      border-radius: 16px;
-      max-width: 700px;
-      width: 100%;
-      max-height: 90vh;
-      overflow-y: auto;
-      animation: slideUp 0.3s;
-    }
-    @keyframes slideUp { from { transform: translateY(30px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
-    .modal-header {
-      padding: 20px 24px;
-      border-bottom: 1px solid var(--gray-200);
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      position: sticky;
-      top: 0;
-      background: white;
-      z-index: 10;
-      border-radius: 16px 16px 0 0;
-    }
-    .modal-header h3 { font-size: 20px; color: var(--gray-900); }
-    .modal-close { background: none; border: none; font-size: 28px; color: #9ca3af; cursor: pointer; padding: 0; width: 32px; height: 32px; }
-    .modal-close:hover { color: var(--gray-900); transform: none; box-shadow: none; }
-    .modal-body { padding: 24px; }
-    .modal-footer { padding: 16px 24px; border-top: 1px solid var(--gray-200); display: flex; justify-content: flex-end; gap: 10px; }
-
-    /* Form */
-    .form-group { margin-bottom: 16px; }
-    .form-group label { display: block; font-size: 13px; font-weight: 600; color: var(--gray-700); margin-bottom: 6px; }
-    .form-group input, .form-group select, .form-group textarea {
-      width: 100%;
-      padding: 10px 12px;
-      border: 1px solid var(--gray-300);
-      border-radius: 8px;
-      font-size: 14px;
-      font-family: inherit;
-    }
-    .form-group textarea { resize: vertical; min-height: 80px; }
-    .form-group input:focus, .form-group select:focus, .form-group textarea:focus { outline: none; border-color: var(--primary); }
-    .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-    @media (max-width: 500px) { .form-row { grid-template-columns: 1fr; } }
-
-    /* Image Preview */
-    .image-preview { max-width: 100%; max-height: 70vh; border-radius: 8px; display: block; margin: 0 auto; }
-    .image-nav { display: flex; justify-content: space-between; align-items: center; margin-top: 16px; }
-    .image-counter { font-size: 14px; color: var(--gray-500); }
-
-    /* Toast */
-    .toast-container { position: fixed; top: 80px; right: 20px; z-index: 2000; display: flex; flex-direction: column; gap: 10px; max-width: 360px; }
-    .toast {
-      background: white;
-      padding: 14px 18px;
-      border-radius: 10px;
-      box-shadow: var(--shadow-lg);
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      animation: slideInRight 0.3s;
-      border-left: 4px solid var(--gray-500);
-      cursor: pointer;
-    }
-    @keyframes slideInRight { from { transform: translateX(400px); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
-    .toast.success { border-left-color: var(--success); }
-    .toast.error { border-left-color: var(--danger); }
-    .toast.warning { border-left-color: var(--warn); }
-    .toast.info { border-left-color: var(--info); }
-    .toast-icon { font-size: 20px; }
-    .toast.success .toast-icon { color: var(--success); }
-    .toast.error .toast-icon { color: var(--danger); }
-    .toast.warning .toast-icon { color: var(--warn); }
-    .toast.info .toast-icon { color: var(--info); }
-    .toast-content { flex: 1; font-size: 14px; }
-    .toast-title { font-weight: 600; margin-bottom: 2px; }
-    .toast-message { color: var(--gray-500); font-size: 13px; }
-
-    /* Empty State & Loading */
-    .empty-state { text-align: center; padding: 60px 20px; color: #9ca3af; }
-    .empty-state i { font-size: 48px; margin-bottom: 16px; }
-    .empty-state h3 { color: var(--gray-500); margin-bottom: 8px; }
-    .loading { text-align: center; padding: 40px; color: var(--gray-500); }
-    .spinner { border: 3px solid var(--gray-100); border-top: 3px solid var(--primary); border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; margin: 0 auto 16px; }
-    @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-    
-    /* Global Loading Overlay */
-    .global-loading {
-      display: none;
-      position: fixed;
-      inset: 0;
-      background: rgba(255,255,255,0.7);
-      z-index: 3000;
-      align-items: center;
-      justify-content: center;
-    }
-    .global-loading.active { display: flex; }
-  </style>
-</head>
-<body>
-
-<header>
-  <div class="logo">
-    <i class="fas fa-home"></i>
-    <span>PropDesk Admin</span>
-  </div>
-  <div class="header-right">
-    <span id="adminEmail"></span>
-    <button id="logoutBtn" class="btn-ghost" style="display:none;" data-action="logout" aria-label="Logout">
-      <i class="fas fa-sign-out-alt"></i> Logout
-    </button>
-  </div>
-</header>
-
-<!-- LOGIN -->
-<div id="loginBox" class="login-box">
-  <h2><i class="fas fa-lock"></i> Admin Login</h2>
-  <input type="email" id="email" placeholder="Email" autocomplete="email" aria-label="Email">
-  <input type="password" id="password" placeholder="Password" autocomplete="current-password" aria-label="Password">
-  <br><br>
-  <button class="btn-primary" style="width:100%;" data-action="login" aria-label="Log in">
-    <i class="fas fa-sign-in-alt"></i> Log in
-  </button>
-  <p id="loginError" class="error" role="alert"></p>
-</div>
-
-<!-- DASHBOARD -->
-<div id="dashboard" class="dashboard" style="display:none;">
-  <!-- Stats -->
-  <div class="stats-grid">
-    <div class="stat-card">
-      <i class="fas fa-building stat-icon"></i>
-      <div class="stat-label">Total Properties</div>
-      <div class="stat-value" id="statTotal">0</div>
-    </div>
-    <div class="stat-card pending">
-      <i class="fas fa-clock stat-icon"></i>
-      <div class="stat-label">Pending Review</div>
-      <div class="stat-value" id="statPending">0</div>
-    </div>
-    <div class="stat-card approved">
-      <i class="fas fa-check-circle stat-icon"></i>
-      <div class="stat-label">Approved</div>
-      <div class="stat-value" id="statApproved">0</div>
-    </div>
-    <div class="stat-card rejected">
-      <i class="fas fa-times-circle stat-icon"></i>
-      <div class="stat-label">Rejected</div>
-      <div class="stat-value" id="statRejected">0</div>
-    </div>
-    <div class="stat-card rate">
-      <i class="fas fa-chart-line stat-icon"></i>
-      <div class="stat-label">Approval Rate</div>
-      <div class="stat-value" id="statRate">0%</div>
-    </div>
-  </div>
-
-  <!-- Filters -->
-  <div class="filter-bar">
-    <input type="text" id="searchInput" placeholder="🔍 Search title or location..." aria-label="Search properties">
-    <select id="statusFilter" aria-label="Filter by status">
-      <option value="all">All Status</option>
-      <option value="pending">Pending</option>
-      <option value="approved">Approved</option>
-      <option value="rejected">Rejected</option>
-    </select>
-    <select id="locationFilter" aria-label="Filter by location">
-      <option value="all">All Locations</option>
-    </select>
-    <input type="number" id="minPrice" placeholder="Min Price" min="0" aria-label="Minimum price">
-    <input type="number" id="maxPrice" placeholder="Max Price" min="0" aria-label="Maximum price">
-    <button class="btn-ghost" data-action="reset-filters" aria-label="Reset filters">
-      <i class="fas fa-redo"></i> Reset
-    </button>
-  </div>
-
-  <!-- Bulk Actions -->
-  <div id="bulkBar" class="bulk-bar" role="region" aria-label="Bulk actions">
-    <div class="bulk-info">
-      <i class="fas fa-check-square"></i>
-      <span id="selectedCount">0</span> properties selected
-    </div>
-    <div style="display:flex; gap:8px; flex-wrap:wrap;">
-      <button data-action="bulk-status" data-status="approved" aria-label="Approve selected"><i class="fas fa-check"></i> Approve</button>
-      <button data-action="bulk-status" data-status="rejected" aria-label="Reject selected"><i class="fas fa-times"></i> Reject</button>
-      <button data-action="bulk-delete" aria-label="Delete selected"><i class="fas fa-trash"></i> Delete</button>
-      <button data-action="clear-selection" aria-label="Clear selection"><i class="fas fa-times"></i> Clear</button>
-    </div>
-  </div>
-
-  <!-- List -->
-  <div id="list" role="list" aria-label="Properties list"></div>
-
-  <!-- Pagination -->
-  <div id="pagination" class="pagination" role="navigation" aria-label="Pagination"></div>
-</div>
-
-<!-- Edit Modal -->
-<div id="editModal" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="editModalTitle">
-  <div class="modal">
-    <div class="modal-header">
-      <h3 id="editModalTitle"><i class="fas fa-edit"></i> Edit Property</h3>
-      <button class="modal-close" data-action="close-edit" aria-label="Close modal">×</button>
-    </div>
-    <div class="modal-body">
-      <input type="hidden" id="editId">
-      <div class="form-group">
-        <label for="editTitle">Title</label>
-        <input type="text" id="editTitle" maxlength="200" required>
-      </div>
-      <div class="form-row">
-        <div class="form-group">
-          <label for="editPrice">Price (KES)</label>
-          <input type="number" id="editPrice" min="0" step="1" required>
-        </div>
-        <div class="form-group">
-          <label for="editLocation">Location</label>
-          <input type="text" id="editLocation" required>
-        </div>
-      </div>
-      <div class="form-row">
-        <div class="form-group">
-          <label for="editType">Property Type</label>
-          <select id="editType">
-            <option value="for sale">For Sale</option>
-            <option value="for rent">For Rent</option>
-            <option value="lease">Lease</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label for="editStatus">Status</label>
-          <select id="editStatus">
-            <option value="pending">Pending</option>
-            <option value="approved">Approved</option>
-            <option value="rejected">Rejected</option>
-          </select>
-        </div>
-      </div>
-      <div class="form-group">
-        <label for="editDescription">Description</label>
-        <textarea id="editDescription"></textarea>
-      </div>
-      <div class="form-group">
-        <label for="editImages">Images (comma-separated URLs)</label>
-        <textarea id="editImages" style="min-height:60px;"></textarea>
-      </div>
-    </div>
-    <div class="modal-footer">
-      <button class="btn-ghost" data-action="close-edit">Cancel</button>
-      <button class="btn-primary" data-action="save-edit"><i class="fas fa-save"></i> Save Changes</button>
-    </div>
-  </div>
-</div>
-
-<!-- Image Preview Modal -->
-<div id="imageModal" class="modal-overlay" role="dialog" aria-modal="true" aria-label="Property images">
-  <div class="modal" style="max-width:900px;">
-    <div class="modal-header">
-      <h3>Property Images</h3>
-      <button class="modal-close" data-action="close-image" aria-label="Close modal">×</button>
-    </div>
-    <div class="modal-body" style="text-align:center;">
-      <img id="previewImage" class="image-preview" src="" alt="Property">
-      <div class="image-nav">
-        <button class="btn-ghost" data-action="prev-image" aria-label="Previous image"><i class="fas fa-chevron-left"></i> Previous</button>
-        <span class="image-counter" id="imageCounter">1 / 1</span>
-        <button class="btn-ghost" data-action="next-image" aria-label="Next image">Next <i class="fas fa-chevron-right"></i></button>
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- Toast Container -->
-<div id="toastContainer" class="toast-container" role="alert" aria-live="polite"></div>
-
-<!-- Global Loading Overlay -->
-<div id="globalLoading" class="global-loading">
-  <div class="spinner"></div>
-</div>
-
-<script>
-(function() {
-  'use strict';
-
-  // ==========================================
-  // 1. CONFIGURATION & CONSTANTS
-  // ==========================================
-  const CONFIG = {
-    supabaseUrl: "https://nqwvsmuvltbiekfnvovx.supabase.co",
-    supabaseKey: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5xd3ZzbXV2bHRiaWVrZm52b3Z4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA1NjU4MDAsImV4cCI6MjA5NjE0MTgwMH0.Xrc-bbAuWdvKSPHnVhTaLiQphV61xeYtDepWePqsrdo",
-    pageSize: 10,
-    fallbackImage: (id) => `https://picsum.photos/seed/${id}/200/150`,
-    fallbackPreview: (id) => `https://picsum.photos/seed/${id}/800/600`
-  };
-
-  const STATUSES = {
-    PENDING: 'pending',
-    APPROVED: 'approved',
-    REJECTED: 'rejected'
-  };
-
-  // ==========================================
-  // 2. STATE MANAGEMENT
-  // ==========================================
-  const state = {
-    user: null,
-    properties: [],
-    totalCount: 0,
-    currentPage: 1,
-    filters: {
-      search: '',
-      status: 'all',
-      location: 'all',
-      minPrice: null,
-      maxPrice: null
-    },
-    selectedIds: new Set(),
-    locations: [],
-    currentImages: [],
-    currentImageIndex: 0,
-    lastFocusedElement: null,
-    filterTimeout: null
-  };
-
-  // ==========================================
-  // 3. SUPABASE CLIENT
-  // ==========================================
-  const supabaseClient = supabase.createClient(CONFIG.supabaseUrl, CONFIG.supabaseKey);
-
-  // ==========================================
-  // 4. UTILITIES
-  // ==========================================
-  function escapeHtml(text) {
-    if (!text) return '';
-    const div = document.createElement('div');
-    div.textContent = text;
-    return div.innerHTML;
+  if (error) {
+    showToast('error', 'Load failed', error.message);
+    return;
   }
 
-  function isValidUrl(string) {
+  const d = data || {};
+  const stats = d.stats || {};
+  const history = d.health_history || [];
+  const decisions = d.pending_decisions || [];
+  const alerts = d.alerts || [];
+  const events = d.recent_activity || [];
+
+  renderStats(stats);
+  renderHealthChart(history);
+  renderPendingDecisions(decisions);
+  renderAlerts(alerts);
+  renderActivityFeed(events);
+}
+
+// ─── Stats (partial render) ───────────────────────────
+function renderStats(stats) {
+  const key = (stats.total ?? 0) + '-' + (stats.pending ?? 0) + '-' + (stats.approval_rate ?? 0);
+  if (key === lastStatsKey) return;
+  lastStatsKey = key;
+
+  document.getElementById('statTotal').textContent = stats.total ?? 0;
+  document.getElementById('statPending').textContent = stats.pending ?? 0;
+  document.getElementById('statApproved').textContent = stats.approved ?? 0;
+  document.getElementById('statRejected').textContent = stats.rejected ?? 0;
+  document.getElementById('statRate').textContent = (stats.approval_rate ?? 0) + '%';
+}
+
+// ─── Health Chart (smart update – FIX 2) ──────────────
+function renderHealthChart(history) {
+  const ctx = document.getElementById('healthChart').getContext('2d');
+
+  // Skip if data hasn't changed (by snapshot timestamps)
+  const currentKey = history && history.length
+    ? history.map(h => h.snapshot_at).join('|')
+    : '';
+  if (currentKey === lastHealthKey) return;
+  lastHealthKey = currentKey;
+
+  if (!history || history.length === 0) {
+    if (healthChart) {
+      healthChart.destroy();
+      healthChart = null;
+    }
+    return;
+  }
+
+  const labels = history.map(h => new Date(h.snapshot_at).toLocaleDateString()).reverse();
+  const approvalRates = history.map(h => h.approval_rate).reverse();
+  const fraudScores = history.map(h => h.avg_fraud_score).reverse();
+
+  // FIX 2 – update existing chart instead of destroying
+  if (!healthChart) {
+    // First creation
+    healthChart = new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels,
+        datasets: [
+          { label: 'Approval Rate %', data: approvalRates, borderColor: 'green', yAxisID: 'y' },
+          { label: 'Avg Fraud Score', data: fraudScores, borderColor: 'red', yAxisID: 'y1' }
+        ]
+      },
+      options: {
+        scales: {
+          y: { beginAtZero: true, position: 'left', title: { display: true, text: 'Rate' } },
+          y1: { beginAtZero: true, position: 'right', title: { display: true, text: 'Score' }, grid: { drawOnChartArea: false } }
+        }
+      }
+    });
+  } else {
+    // Smart in‑place update (no destroy / recreate)
+    healthChart.data.labels = labels;
+    healthChart.data.datasets[0].data = approvalRates;
+    healthChart.data.datasets[1].data = fraudScores;
+    healthChart.update();
+  }
+}
+
+// ─── Pending Decisions (partial render) ────────────────
+function renderPendingDecisions(decisions) {
+  const key = decisions.length + '-' + (decisions[0]?.id || '');
+  if (key === lastDecisionsKey) return;
+  lastDecisionsKey = key;
+
+  const container = document.getElementById('pendingDecisions');
+  container.innerHTML = '';
+
+  if (!decisions || decisions.length === 0) {
+    container.innerHTML = '<p>No pending decisions.</p>';
+    return;
+  }
+
+  decisions.forEach(d => {
+    container.insertAdjacentHTML('beforeend', `
+      <div class="decision-card">
+        <strong>${escapeHtml(d.property_title || 'Untitled')}</strong>
+        <span class="badge">${escapeHtml(d.action)}</span>
+        <small>${new Date(d.created_at).toLocaleString()}</small>
+        <button data-action="approve-decision" data-id="${d.id}">Approve</button>
+        <button data-action="reject-decision" data-id="${d.id}">Reject</button>
+      </div>
+    `);
+  });
+}
+
+// ─── Alerts (partial render) ───────────────────────────
+function renderAlerts(alerts) {
+  const key = alerts.length + '-' + (alerts[0]?.id || '');
+  if (key === lastAlertsKey) return;
+  lastAlertsKey = key;
+
+  const container = document.getElementById('alerts');
+  container.innerHTML = '';
+
+  if (!alerts || alerts.length === 0) {
+    container.innerHTML = '<p>All clear.</p>';
+    return;
+  }
+
+  alerts.forEach(a => {
+    container.insertAdjacentHTML('beforeend', `
+      <div class="alert-card severity-${escapeHtml(a.severity)}">
+        <strong>${escapeHtml(a.title)}</strong>
+        <p>${escapeHtml(a.message)}</p>
+        <small>Occurrences: ${a.occurrences} | First seen: ${new Date(a.first_seen).toLocaleString()}</small>
+      </div>
+    `);
+  });
+}
+
+// ─── Activity Feed ─────────────────────────────────────
+function renderActivityFeed(events) {
+  const key = events.length + '-' + (events[0]?.id || '');
+  if (key === lastEventsKey) return;
+  lastEventsKey = key;
+
+  const container = document.getElementById('activityFeed');
+  container.innerHTML = '';
+
+  if (!events || events.length === 0) {
+    container.innerHTML = '<p>No recent activity.</p>';
+    return;
+  }
+
+  events.forEach(ev => {
+    container.insertAdjacentHTML('beforeend', `
+      <div class="activity-item">
+        <span class="type">${escapeHtml(ev.type)}</span>
+        <span class="time">${new Date(ev.created_at).toLocaleTimeString()}</span>
+        <pre class="payload-pre"></pre>
+      </div>
+    `);
+    const lastPre = container.querySelector('.activity-item:last-child .payload-pre');
+    if (lastPre) {
+      lastPre.textContent = typeof ev.payload === 'object'
+        ? JSON.stringify(ev.payload, null, 2)
+        : ev.payload;
+    }
+  });
+}
+
+// ─── Realtime ──────────────────────────────────────────
+function setupRealtime() {
+  realtimeChannel = supabase
+    .channel('admin-live')
+    .on('postgres_changes', { event: '*', schema: 'public', table: 'pending_decisions' }, () => requestRefresh())
+    .on('postgres_changes', { event: '*', schema: 'public', table: 'correction_inbox' }, () => requestRefresh())
+    .on('postgres_changes', { event: '*', schema: 'public', table: 'events' }, () => requestRefresh())
+    .subscribe();
+}
+
+// FIX 1 – true debounce: only one refresh at a time, 800ms buffer
+function requestRefresh() {
+  if (refreshQueued) return;               // already waiting
+  refreshQueued = true;
+
+  setTimeout(async () => {
     try {
-      const url = new URL(string);
-      return url.protocol === 'http:' || url.protocol === 'https:';
-    } catch (_) {
-      return false;
+      await safeLoadDashboard();
+    } finally {
+      refreshQueued = false;               // release when done (or error)
     }
+  }, 800);
+}
+
+// ─── Channel cleanup ───────────────────────────────────
+window.addEventListener('beforeunload', () => {
+  if (realtimeChannel) {
+    supabase.removeChannel(realtimeChannel);
+    realtimeChannel = null;
+  }
+});
+
+// ─── Edge‑function caller (FIX 3 – explicit session guard) ──
+async function callFunction(name, body) {
+  // FIX 3 – fail gracefully if no valid session
+  const { data: sessionData } = await supabase.auth.getSession();
+  const accessToken = sessionData?.session?.access_token;
+
+  if (!accessToken) {
+    showToast('error', 'Session expired', 'Please login again.');
+    return null;
   }
 
-  function getSafeImageUrl(images, id) {
-    if (Array.isArray(images) && images.length > 0) {
-      const url = images[0];
-      if (typeof url === 'string' && isValidUrl(url)) return url;
-    }
-    return CONFIG.fallbackImage(id);
+  const { data, error } = await supabase.functions.invoke(name, {
+    body,
+    headers: { Authorization: `Bearer ${accessToken}` }
+  });
+
+  if (error) {
+    showToast('error', 'Request failed', error.message);
+    return null;
   }
+  return data;
+}
 
-  function showLoading(show) {
-    document.getElementById('globalLoading').classList.toggle('active', show);
-  }
+// ─── Action delegation ─────────────────────────────────
+document.addEventListener('click', async (e) => {
+  const btn = e.target.closest('button[data-action]');
+  if (!btn) return;
 
-  // ==========================================
-  // 5. TOAST SYSTEM
-  // ==========================================
-  function toast(type, title, message) {
-    const container = document.getElementById('toastContainer');
-    const icons = {
-      success: 'fa-check-circle',
-      error: 'fa-exclamation-circle',
-      warning: 'fa-exclamation-triangle',
-      info: 'fa-info-circle'
-    };
+  const action = btn.dataset.action;
+  const id = btn.dataset.id;
 
-    const el = document.createElement('div');
-    el.className = `toast ${type}`;
-    el.setAttribute('role', 'alert');
-    el.innerHTML = `
-      <i class="fas ${icons[type]} toast-icon"></i>
-      <div class="toast-content">
-        <div class="toast-title">${escapeHtml(title)}</div>
-        ${message ? `<div class="toast-message">${escapeHtml(message)}</div>` : ''}
-      </div>
-    `;
+  if (action === 'approve-decision' || action === 'reject-decision') {
+    const actionType = action === 'approve-decision' ? 'approve' : 'reject';
 
-    container.appendChild(el);
+    const originalHtml = btn.innerHTML;
+    btn.disabled = true;
+    btn.innerHTML = 'Processing…';
 
-    const timer = setTimeout(() => {
-      el.style.animation = 'slideInRight 0.3s reverse';
-      setTimeout(() => el.remove(), 300);
-    }, 3500);
-
-    el.addEventListener('click', () => {
-      clearTimeout(timer);
-      el.remove();
-    });
-  }
-
-  // ==========================================
-  // 6. API LAYER
-  // ==========================================
-  async function fetchProperties() {
-    showLoading(true);
-    let query = supabaseClient
-      .from('properties')
-      .select('*', { count: 'exact' })
-      .order('created_at', { ascending: false });
-
-    const { search, status, location, minPrice, maxPrice } = state.filters;
-
-    if (search) {
-      query = query.or(`title.ilike.%${search}%,location.ilike.%${search}%`);
-    }
-    if (status !== 'all') {
-      query = query.eq('approval_status', status);
-    }
-    if (location !== 'all') {
-      query = query.eq('location', location);
-    }
-    if (minPrice !== null) {
-      query = query.gte('price', minPrice);
-    }
-    if (maxPrice !== null) {
-      query = query.lte('price', maxPrice);
-    }
-
-    const from = (state.currentPage - 1) * CONFIG.pageSize;
-    const to = from + CONFIG.pageSize - 1;
-    query = query.range(from, to);
-
-    const { data, error, count } = await query;
-    showLoading(false);
-
-    if (error) {
-      toast('error', 'Load Failed', error.message);
-      return;
-    }
-
-    state.properties = data || [];
-    state.totalCount = count || 0;
-    renderList();
-    renderPagination();
-  }
-
-  async function fetchGlobalStats() {
-    const { data, error } = await supabaseClient
-      .from('properties')
-      .select('approval_status');
-
-    if (error) return;
-
-    const stats = { total: data.length, pending: 0, approved: 0, rejected: 0 };
-    data.forEach(p => {
-      const status = p.approval_status || STATUSES.PENDING;
-      if (status === STATUSES.PENDING) stats.pending++;
-      else if (status === STATUSES.APPROVED) stats.approved++;
-      else if (status === STATUSES.REJECTED) stats.rejected++;
+    const result = await callFunction('Super-Admin-Review', {
+      decision_id: id,
+      action: actionType
     });
 
-    document.getElementById('statTotal').textContent = stats.total;
-    document.getElementById('statPending').textContent = stats.pending;
-    document.getElementById('statApproved').textContent = stats.approved;
-    document.getElementById('statRejected').textContent = stats.rejected;
-    const rate = stats.total > 0 ? Math.round((stats.approved / stats.total) * 100) : 0;
-    document.getElementById('statRate').textContent = rate + '%';
-  }
+    btn.disabled = false;
+    btn.innerHTML = originalHtml;
 
-  async function fetchLocations() {
-    const { data, error } = await supabaseClient
-      .from('properties')
-      .select('location')
-      .not('location', 'is', null);
-
-    if (error) return;
-
-    state.locations = [...new Set(data.map(p => p.location))].sort();
-    renderLocationFilter();
-  }
-
-  // ==========================================
-  // 7. UI RENDERING
-  // ==========================================
-  function renderList() {
-    const listContainer = document.getElementById('list');
-    listContainer.innerHTML = '';
-
-    if (state.properties.length === 0) {
-      listContainer.innerHTML = `
-        <div class="empty-state">
-          <i class="fas fa-search"></i>
-          <h3>No properties found</h3>
-          <p>Try adjusting your filters or search terms.</p>
-        </div>
-      `;
-      return;
-    }
-
-    const fragment = document.createDocumentFragment();
-
-    state.properties.forEach(prop => {
-      const card = document.createElement('div');
-      card.className = 'card' + (state.selectedIds.has(prop.id) ? ' selected' : '');
-      card.dataset.id = prop.id;
-      card.setAttribute('role', 'listitem');
-
-      const safeThumb = getSafeImageUrl(prop.images, prop.id);
-      const desc = prop.description ? escapeHtml(prop.description.substring(0, 120)) + (prop.description.length > 120 ? '...' : '') : '';
-      const status = prop.approval_status || STATUSES.PENDING;
-      const safeId = escapeHtml(prop.id);
-
-      card.innerHTML = `
-        <input type="checkbox" class="card-checkbox" data-action="toggle-select" data-id="${safeId}" ${state.selectedIds.has(prop.id) ? 'checked' : ''} aria-label="Select property">
-        <img src="${safeThumb}" class="card-thumb" data-action="preview" data-id="${safeId}" alt="Property thumbnail">
-        <div class="property-info">
-          <strong>${escapeHtml(prop.title || 'Untitled Property')}</strong>
-          <div class="meta">
-            <span><i class="fas fa-map-marker-alt"></i> ${escapeHtml(prop.location || 'No location')}</span>
-            <span><i class="fas fa-tag"></i> KSh ${prop.price ? Number(prop.price).toLocaleString() : '—'}</span>
-            <span class="status-badge status-${status}">${status.toUpperCase()}</span>
-          </div>
-          ${desc ? `<div class="desc">${desc}</div>` : ''}
-        </div>
-        <div class="card-actions">
-          <button class="btn-sm btn-primary" data-action="edit" data-id="${safeId}" aria-label="Edit property"><i class="fas fa-edit"></i> Edit</button>
-          ${status !== STATUSES.APPROVED ? `<button class="btn-sm btn-success" data-action="status" data-id="${safeId}" data-status="${STATUSES.APPROVED}" aria-label="Approve property"><i class="fas fa-check"></i> Approve</button>` : ''}
-          ${status !== STATUSES.REJECTED ? `<button class="btn-sm btn-warn" data-action="status" data-id="${safeId}" data-status="${STATUSES.REJECTED}" aria-label="Reject property"><i class="fas fa-times"></i> Reject</button>` : ''}
-          <button class="btn-sm btn-danger" data-action="delete" data-id="${safeId}" aria-label="Delete property"><i class="fas fa-trash"></i> Delete</button>
-        </div>
-      `;
-      fragment.appendChild(card);
-    });
-
-    listContainer.appendChild(fragment);
-  }
-
-  function renderPagination() {
-    const totalPages = Math.ceil(state.totalCount / CONFIG.pageSize);
-    const pagination = document.getElementById('pagination');
-    pagination.innerHTML = '';
-
-    if (totalPages <= 1) {
-      if (state.totalCount > 0) {
-        pagination.innerHTML = `<span class="page-info">Showing ${state.totalCount} of ${state.totalCount} properties</span>`;
-      }
-      return;
-    }
-
-    let html = `<button data-action="page" data-page="${state.currentPage - 1}" ${state.currentPage === 1 ? 'disabled' : ''} aria-label="Previous page"><i class="fas fa-chevron-left"></i></button>`;
-
-    const maxVisible = 5;
-    let startPage = Math.max(1, state.currentPage - Math.floor(maxVisible / 2));
-    let endPage = Math.min(totalPages, startPage + maxVisible - 1);
-
-    if (endPage - startPage < maxVisible - 1) {
-      startPage = Math.max(1, endPage - maxVisible + 1);
-    }
-
-    if (startPage > 1) {
-      html += `<button data-action="page" data-page="1">1</button>`;
-      if (startPage > 2) html += `<span class="page-info">...</span>`;
-    }
-
-    for (let i = startPage; i <= endPage; i++) {
-      html += `<button class="${i === state.currentPage ? 'active' : ''}" data-action="page" data-page="${i}">${i}</button>`;
-    }
-
-    if (endPage < totalPages) {
-      if (endPage < totalPages - 1) html += `<span class="page-info">...</span>`;
-      html += `<button data-action="page" data-page="${totalPages}">${totalPages}</button>`;
-    }
-
-    html += `<button data-action="page" data-page="${state.currentPage + 1}" ${state.currentPage === totalPages ? 'disabled' : ''} aria-label="Next page"><i class="fas fa-chevron-right"></i></button>`;
-    html += `<span class="page-info">Page ${state.currentPage} of ${totalPages}</span>`;
-
-    pagination.innerHTML = html;
-  }
-
-  function renderLocationFilter() {
-    const select = document.getElementById('locationFilter');
-    const currentVal = select.value;
-    select.innerHTML = '<option value="all">All Locations</option>' + 
-      state.locations.map(loc => `<option value="${escapeHtml(loc)}">${escapeHtml(loc)}</option>`).join('');
-    select.value = currentVal;
-  }
-
-  function updateBulkBar() {
-    const bar = document.getElementById('bulkBar');
-    if (state.selectedIds.size > 0) {
-      bar.classList.add('active');
-      document.getElementById('selectedCount').textContent = state.selectedIds.size;
-    } else {
-      bar.classList.remove('active');
+    if (result) {
+      showToast('success', 'Done', `Decision ${actionType}d.`);
+      safeLoadDashboard();
     }
   }
+});
 
-  // ==========================================
-  // 8. ACTIONS & MUTATIONS
-  // ==========================================
-  function applyFilters() {
-    const search = document.getElementById('searchInput').value.trim();
-    const status = document.getElementById('statusFilter').value;
-    const location = document.getElementById('locationFilter').value;
-    let minPrice = parseFloat(document.getElementById('minPrice').value);
-    let maxPrice = parseFloat(document.getElementById('maxPrice').value);
+// ─── Loading overlay ───────────────────────────────────
+function showLoading(on) {
+  document.getElementById('globalLoading').classList.toggle('active', on);
+}
 
-    if (isNaN(minPrice)) minPrice = null;
-    if (isNaN(maxPrice)) maxPrice = null;
-    if (minPrice !== null && minPrice < 0) minPrice = 0;
-    if (maxPrice !== null && maxPrice < 0) maxPrice = 0;
-    
-    if (minPrice !== null && maxPrice !== null && minPrice > maxPrice) {
-      toast('warning', 'Invalid Filter', 'Min price cannot be greater than max price.');
-      return;
-    }
-
-    state.filters = { search, status, location, minPrice, maxPrice };
-    state.currentPage = 1;
-    fetchProperties();
-  }
-
-  function resetFilters() {
-    document.getElementById('searchInput').value = '';
-    document.getElementById('statusFilter').value = 'all';
-    document.getElementById('locationFilter').value = 'all';
-    document.getElementById('minPrice').value = '';
-    document.getElementById('maxPrice').value = '';
-    
-    state.filters = { search: '', status: 'all', location: 'all', minPrice: null, maxPrice: null };
-    state.currentPage = 1;
-    fetchProperties();
-    toast('info', 'Filters Reset', 'Showing all properties.');
-  }
-
-  function goToPage(page) {
-    const totalPages = Math.ceil(state.totalCount / CONFIG.pageSize);
-    if (page < 1 || page > totalPages) return;
-    state.currentPage = page;
-    fetchProperties();
-    window.scrollTo({ top: 300, behavior: 'smooth' });
-  }
-
-  async function updateStatus(propertyId, newStatus) {
-    showLoading(true);
-    const { error } = await supabaseClient
-      .from('properties')
-      .update({ approval_status: newStatus })
-      .eq('id', propertyId);
-    showLoading(false);
-
-    if (error) {
-      toast('error', 'Update Failed', error.message);
-    } else {
-      state.properties = state.properties.map(p => 
-        p.id === propertyId ? { ...p, approval_status: newStatus } : p
-      );
-      renderList();
-      fetchGlobalStats();
-      toast('success', 'Updated', `Property ${newStatus} successfully.`);
-    }
-  }
-
-  async function confirmDelete(propertyId) {
-    if (!confirm("⚠️ Permanently delete this property? This cannot be undone.")) return;
-
-    showLoading(true);
-    const { error } = await supabaseClient
-      .from('properties')
-      .delete()
-      .eq('id', propertyId);
-    showLoading(false);
-
-    if (error) {
-      toast('error', 'Delete Failed', error.message);
-    } else {
-      state.properties = state.properties.filter(p => p.id !== propertyId);
-      state.totalCount--;
-      
-      if (state.properties.length === 0 && state.currentPage > 1) {
-        state.currentPage--;
-      }
-      
-      renderList();
-      renderPagination();
-      fetchGlobalStats();
-      toast('success', 'Deleted', 'Property permanently removed.');
-    }
-  }
-
-  async function bulkAction(newStatus) {
-    if (state.selectedIds.size === 0) return;
-    if (!confirm(`Are you sure you want to ${newStatus} ${state.selectedIds.size} properties?`)) return;
-
-    const ids = Array.from(state.selectedIds);
-    showLoading(true);
-
-    const { error } = await supabaseClient
-      .from('properties')
-      .update({ approval_status: newStatus })
-      .in('id', ids);
-    showLoading(false);
-
-    if (error) {
-      toast('error', 'Bulk Update Failed', error.message);
-    } else {
-      state.properties = state.properties.map(p => 
-        ids.includes(p.id) ? { ...p, approval_status: newStatus } : p
-      );
-      state.selectedIds.clear();
-      updateBulkBar();
-      renderList();
-      fetchGlobalStats();
-      toast('success', 'Bulk Update', `${ids.length} properties ${newStatus}.`);
-    }
-  }
-
-  async function bulkDelete() {
-    if (state.selectedIds.size === 0) return;
-    if (!confirm(`⚠️ Permanently delete ${state.selectedIds.size} properties? This cannot be undone.`)) return;
-
-    const ids = Array.from(state.selectedIds);
-    showLoading(true);
-
-    const { error } = await supabaseClient
-      .from('properties')
-      .delete()
-      .in('id', ids);
-    showLoading(false);
-
-    if (error) {
-      toast('error', 'Bulk Delete Failed', error.message);
-    } else {
-      state.properties = state.properties.filter(p => !ids.includes(p.id));
-      state.totalCount -= ids.length;
-      state.selectedIds.clear();
-      updateBulkBar();
-      
-      if (state.properties.length === 0 && state.currentPage > 1) {
-        state.currentPage--;
-      }
-      
-      renderList();
-      renderPagination();
-      fetchGlobalStats();
-      toast('success', 'Deleted', `${ids.length} properties permanently deleted.`);
-    }
-  }
-
-  function clearSelection() {
-    state.selectedIds.clear();
-    updateBulkBar();
-    renderList();
-  }
-
-  // ==========================================
-  // 9. MODALS
-  // ==========================================
-  function openEditModal(propertyId) {
-    const prop = state.properties.find(p => p.id === propertyId);
-    if (!prop) return;
-
-    document.getElementById('editId').value = prop.id;
-    document.getElementById('editTitle').value = prop.title || '';
-    document.getElementById('editPrice').value = prop.price || '';
-    document.getElementById('editLocation').value = prop.location || '';
-    document.getElementById('editType').value = prop.property_type || 'for sale';
-    document.getElementById('editStatus').value = prop.approval_status || STATUSES.PENDING;
-    document.getElementById('editDescription').value = prop.description || '';
-    
-    const images = Array.isArray(prop.images) ? prop.images.join(', ') : '';
-    document.getElementById('editImages').value = images;
-
-    document.getElementById('editModal').classList.add('active');
-    document.getElementById('editTitle').focus();
-  }
-
-  function closeEditModal() {
-    document.getElementById('editModal').classList.remove('active');
-    if (state.lastFocusedElement) {
-      state.lastFocusedElement.focus();
-      state.lastFocusedElement = null;
-    }
-  }
-
-  async function saveEdit() {
-    const id = document.getElementById('editId').value;
-    const title = document.getElementById('editTitle').value.trim();
-    const price = parseFloat(document.getElementById('editPrice').value);
-    const location = document.getElementById('editLocation').value.trim();
-    const property_type = document.getElementById('editType').value;
-    const approval_status = document.getElementById('editStatus').value;
-    const description = document.getElementById('editDescription').value.trim();
-    const imagesText = document.getElementById('editImages').value.trim();
-
-    if (!title) return toast('error', 'Validation Error', 'Title is required.');
-    if (title.length > 200) return toast('error', 'Validation Error', 'Title is too long.');
-    if (isNaN(price) || price < 0) return toast('error', 'Validation Error', 'Price must be a positive number.');
-
-    const images = imagesText ? imagesText.split(',').map(s => s.trim()).filter(Boolean) : [];
-    const invalidUrls = images.filter(url => !isValidUrl(url));
-    if (invalidUrls.length > 0) return toast('error', 'Validation Error', 'Invalid image URLs detected.');
-
-    const updates = { title, price, location, property_type, approval_status, description, images };
-
-    const saveBtn = document.querySelector('[data-action="save-edit"]');
-    saveBtn.disabled = true;
-    saveBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving...';
-
-    const { error } = await supabaseClient.from('properties').update(updates).eq('id', id);
-
-    saveBtn.disabled = false;
-    saveBtn.innerHTML = '<i class="fas fa-save"></i> Save Changes';
-
-    if (error) {
-      toast('error', 'Save Failed', error.message);
-    } else {
-      toast('success', 'Saved', 'Property updated successfully.');
-      closeEditModal();
-      
-      state.properties = state.properties.map(p => p.id === id ? { ...p, ...updates } : p);
-      renderList();
-      fetchGlobalStats();
-    }
-  }
-
-  function openImagePreview(propertyId) {
-    const prop = state.properties.find(p => p.id === propertyId);
-    if (!prop) return;
-
-    let images = [];
-    if (Array.isArray(prop.images)) {
-      images = prop.images.filter(isValidUrl);
-    }
-    if (images.length === 0) {
-      images = [CONFIG.fallbackPreview(prop.id)];
-    }
-
-    state.currentImages = images;
-    state.currentImageIndex = 0;
-    updateImagePreview();
-    document.getElementById('imageModal').classList.add('active');
-  }
-
-  function updateImagePreview() {
-    document.getElementById('previewImage').src = state.currentImages[state.currentImageIndex];
-    document.getElementById('imageCounter').textContent = `${state.currentImageIndex + 1} / ${state.currentImages.length}`;
-  }
-
-  function prevImage() {
-    state.currentImageIndex = (state.currentImageIndex - 1 + state.currentImages.length) % state.currentImages.length;
-    updateImagePreview();
-  }
-
-  function nextImage() {
-    state.currentImageIndex = (state.currentImageIndex + 1) % state.currentImages.length;
-    updateImagePreview();
-  }
-
-  function closeImageModal() {
-    document.getElementById('imageModal').classList.remove('active');
-  }
-
-  // ==========================================
-  // 10. AUTH
-  // ==========================================
-  async function login() {
-    const loginError = document.getElementById('loginError');
-    loginError.textContent = '';
-    
-    const email = document.getElementById('email').value.trim();
-    const password = document.getElementById('password').value;
-
-    const loginBtn = document.querySelector('[data-action="login"]');
-    loginBtn.disabled = true;
-    loginBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Logging in...';
-
-    const { error } = await supabaseClient.auth.signInWithPassword({ email, password });
-
-    loginBtn.disabled = false;
-    loginBtn.innerHTML = '<i class="fas fa-sign-in-alt"></i> Log in';
-
-    if (error) {
-      loginError.textContent = error.message;
-      toast('error', 'Login Failed', error.message);
-      return;
-    }
-
-    await checkAndShowAdmin();
-  }
-
-  async function logout() {
-    await supabaseClient.auth.signOut();
-    resetUI();
-    toast('info', 'Logged Out', 'You have been signed out.');
-  }
-
-  function resetUI() {
-    document.getElementById('loginBox').style.display = 'block';
-    document.getElementById('dashboard').style.display = 'none';
-    document.getElementById('logoutBtn').style.display = 'none';
-    document.getElementById('adminEmail').textContent = '';
-  }
-
-  async function checkAndShowAdmin() {
-    const { data: { user } } = await supabaseClient.auth.getUser();
-    if (!user) return resetUI();
-
-    const { data: profile } = await supabaseClient
-      .from('profiles')
-      .select('role')
-      .eq('id', user.id)
-      .single();
-
-    if (!profile || profile.role !== 'admin') {
-      await supabaseClient.auth.signOut();
-      document.getElementById('loginError').textContent = 'Access denied. Not an admin account.';
-      resetUI();
-      toast('error', 'Access Denied', 'Your account is not authorized.');
-      return;
-    }
-
-    state.user = user;
-    document.getElementById('loginBox').style.display = 'none';
-    document.getElementById('dashboard').style.display = 'block';
-    document.getElementById('logoutBtn').style.display = 'inline-flex';
-    document.getElementById('adminEmail').textContent = user.email || '';
-
-    await Promise.all([fetchProperties(), fetchGlobalStats(), fetchLocations()]);
-  }
-
-  // ==========================================
-  // 11. EVENT DELEGATION & INITIALIZATION
-  // ==========================================
-  function initEventListeners() {
-    document.body.addEventListener('click', async (e) => {
-      const btn = e.target.closest('button[data-action], [data-action="toggle-select"]');
-      if (!btn) return;
-
-      const action = btn.dataset.action;
-      const id = btn.dataset.id;
-
-      switch (action) {
-        case 'login':
-          await login();
-          break;
-        case 'logout':
-          await logout();
-          break;
-        case 'reset-filters':
-          resetFilters();
-          break;
-        case 'toggle-select':
-          if (btn.checked) state.selectedIds.add(id);
-          else state.selectedIds.delete(id);
-          updateBulkBar();
-          btn.closest('.card').classList.toggle('selected', btn.checked);
-          break;
-        case 'clear-selection':
-          clearSelection();
-          break;
-        case 'bulk-status':
-          await bulkAction(btn.dataset.status);
-          break;
-        case 'bulk-delete':
-          await bulkDelete();
-          break;
-        case 'edit':
-          state.lastFocusedElement = btn;
-          openEditModal(id);
-          break;
-        case 'delete':
-          await confirmDelete(id);
-          break;
-        case 'status':
-          await updateStatus(id, btn.dataset.status);
-          break;
-        case 'preview':
-          openImagePreview(id);
-          break;
-        case 'save-edit':
-          await saveEdit();
-          break;
-        case 'close-edit':
-          closeEditModal();
-          break;
-        case 'close-image':
-          closeImageModal();
-          break;
-        case 'prev-image':
-          prevImage();
-          break;
-        case 'next-image':
-          nextImage();
-          break;
-        case 'page':
-          goToPage(parseInt(btn.dataset.page));
-          break;
-      }
-    });
-
-    document.getElementById('searchInput').addEventListener('input', () => {
-      clearTimeout(state.filterTimeout);
-      state.filterTimeout = setTimeout(applyFilters, 300);
-    });
-
-    ['statusFilter', 'locationFilter'].forEach(id => {
-      document.getElementById(id).addEventListener('change', applyFilters);
-    });
-
-    ['minPrice', 'maxPrice'].forEach(id => {
-      document.getElementById(id).addEventListener('input', () => {
-        clearTimeout(state.filterTimeout);
-        state.filterTimeout = setTimeout(applyFilters, 300);
-      });
-    });
-
-    document.getElementById('list').addEventListener('error', (e) => {
-      if (e.target.tagName === 'IMG' && e.target.classList.contains('card-thumb')) {
-        e.target.src = CONFIG.fallbackImage(e.target.dataset.id);
-      }
-    }, true);
-
-    document.getElementById('editModal').addEventListener('click', (e) => {
-      if (e.target.id === 'editModal') closeEditModal();
-    });
-    document.getElementById('imageModal').addEventListener('click', (e) => {
-      if (e.target.id === 'imageModal') closeImageModal();
-    });
-
-    document.addEventListener('keydown', (e) => {
-      if (e.key === 'Escape') {
-        closeEditModal();
-        closeImageModal();
-      }
-      if (document.getElementById('imageModal').classList.contains('active')) {
-        if (e.key === 'ArrowLeft') prevImage();
-        if (e.key === 'ArrowRight') nextImage();
-      }
-    });
-
-    supabaseClient.auth.onAuthStateChange((event, session) => {
-      if (event === 'SIGNED_OUT') {
-        resetUI();
-      }
-    });
-  }
-
-  async function init() {
-    initEventListeners();
-    
-    const { data: { session } } = await supabaseClient.auth.getSession();
-    if (session?.user) {
-      await checkAndShowAdmin();
-    } else {
-      document.getElementById('loginBox').style.display = 'block';
-    }
-  }
-
-  init();
-
-})();
-</script>
-
-</body>
-</html>
+init();
