@@ -7,7 +7,6 @@
   <meta name="description" content="Find verified houses, apartments, land, villas, and commercial properties for sale across Kenya." />
   <meta name="theme-color" content="#B8922E" />
 
-  <!-- Fonts & Icons -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;500;600;700;800&display=swap" rel="stylesheet" />
@@ -39,10 +38,7 @@
       --transition-base: 250ms ease;
     }
 
-    /* =============================================
-       RESET & BASE
-    ============================================= */
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
     html { scroll-behavior: smooth; -webkit-font-smoothing: antialiased; }
     body {
       font-family: 'Inter', system-ui, -apple-system, sans-serif;
@@ -57,14 +53,8 @@
     button { font: inherit; cursor: pointer; border: none; background: none; }
     :focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
 
-    /* =============================================
-       UTILITY
-    ============================================= */
     .container { max-width: 1280px; margin: 0 auto; padding: 0 24px; }
 
-    /* =============================================
-       NAVIGATION
-    ============================================= */
     .nav {
       position: sticky; top: 0; z-index: 100;
       background: rgba(255,255,255,0.9); backdrop-filter: blur(20px);
@@ -94,18 +84,13 @@
     }
     .btn-signin:hover { transform: translateY(-1px); box-shadow: 0 8px 20px rgba(184,146,46,0.4); }
 
-    /* Hamburger */
     .hamburger { display: none; width: 40px; height: 40px; border-radius: var(--radius-sm); flex-direction: column; align-items: center; justify-content: center; gap: 5px; }
     .hamburger-line { width: 20px; height: 2px; background: var(--text-primary); border-radius: 2px; transition: var(--transition-base); }
 
-    /* Mobile menu */
     .mobile-menu { display: none; position: fixed; inset: 0; z-index: 200; background: white; flex-direction: column; padding: 24px; }
     .mobile-menu.active { display: flex; }
     .mobile-link { padding: 14px 0; border-bottom: 1px solid var(--border); font-weight: 500; }
 
-    /* =============================================
-       HERO (glassmorphism search container)
-    ============================================= */
     .hero {
       position: relative; background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.6)),
                   url('https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=1500&q=80') center/cover no-repeat;
@@ -116,7 +101,6 @@
     .hero-title { font-size: clamp(2rem, 5vw, 3.5rem); font-weight: 800; letter-spacing: -0.02em; margin-bottom: 12px; }
     .hero-subtitle { font-size: 1.125rem; opacity: 0.9; margin-bottom: 32px; }
 
-    /* Search container – glassmorphism */
     .search-container {
       background: rgba(255,255,255,0.15); backdrop-filter: blur(20px);
       border-radius: 60px; padding: 8px; display: flex; flex-wrap: wrap; gap: 8px;
@@ -140,9 +124,6 @@
     }
     .search-btn:hover { background: var(--gold-dark); transform: translateY(-2px); }
 
-    /* =============================================
-       PROPERTY TYPE FILTER CARDS
-    ============================================= */
     .type-filters { padding: 48px 0 24px; }
     .filter-grid {
       display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
@@ -160,9 +141,6 @@
     .filter-label { font-weight: 600; margin-bottom: 4px; }
     .filter-count { font-size: 0.75rem; color: var(--text-muted); }
 
-    /* =============================================
-       PROPERTY GRID
-    ============================================= */
     .properties-section { padding: 24px 0 64px; }
     .section-header { margin-bottom: 32px; }
     .section-title { font-size: 1.75rem; font-weight: 700; }
@@ -219,9 +197,6 @@
 
     .no-results { text-align: center; padding: 64px; color: var(--text-muted); display: none; }
 
-    /* =============================================
-       AGENT CTA
-    ============================================= */
     .agent-cta {
       background: linear-gradient(135deg, var(--gold), var(--gold-dark));
       border-radius: var(--radius-xl); padding: 64px 24px;
@@ -238,18 +213,12 @@
     }
     .cta-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(0,0,0,0.25); }
 
-    /* =============================================
-       FOOTER
-    ============================================= */
     .footer {
       border-top: 1px solid var(--border); padding: 32px 0;
       display: flex; justify-content: space-between; align-items: center;
       flex-wrap: wrap; gap: 16px; color: var(--text-muted); font-size: 0.8125rem;
     }
 
-    /* =============================================
-       RESPONSIVE
-    ============================================= */
     @media (max-width: 1024px) {
       .property-grid { grid-template-columns: repeat(2, 1fr); }
     }
@@ -264,7 +233,6 @@
   </style>
 </head>
 <body>
-  <!-- Navigation -->
   <nav class="nav" aria-label="Primary">
     <div class="nav-inner">
       <a href="/" class="nav-logo">
@@ -286,7 +254,6 @@
     </div>
   </nav>
 
-  <!-- Mobile Menu -->
   <div class="mobile-menu" id="mobileMenu">
     <button id="closeMobileMenu" style="align-self:flex-end; font-size:1.5rem;">&times;</button>
     <a href="/buy.html" class="mobile-link">Buy</a>
@@ -297,7 +264,6 @@
   </div>
 
   <main>
-    <!-- Hero -->
     <section class="hero">
       <div class="hero-content">
         <h1 class="hero-title">Find your dream home in Kenya</h1>
@@ -328,12 +294,10 @@
     </section>
 
     <div class="container">
-      <!-- Property Type Filter Cards -->
       <section class="type-filters">
         <div class="filter-grid" id="typeFilters"></div>
       </section>
 
-      <!-- Property Listings -->
       <section class="properties-section">
         <div class="section-header">
           <h2 class="section-title" id="listingTitle">Featured Properties for Sale</h2>
@@ -345,7 +309,6 @@
         </div>
       </section>
 
-      <!-- Agent CTA -->
       <section class="agent-cta">
         <h2>Are you a real estate agent?</h2>
         <p>List your properties and reach thousands of buyers across Kenya.</p>
@@ -354,7 +317,6 @@
     </div>
   </main>
 
-  <!-- Footer -->
   <footer class="footer container">
     <div>© 2026 Properties in Kenya</div>
     <div style="display:flex; gap:16px;">
@@ -364,194 +326,199 @@
     </div>
   </footer>
 
+  <!-- Supabase client: use local copy if CDN fails -->
+  <script src="supabase-js-2.js"></script>
   <script>
-    // ======================
-    // STRUCTURED PROPERTY DATA (ready for Supabase)
-    // ======================
-    const properties = [
-      { id: 1, type: 'house', location: 'Ruai', price: 12000000, bedrooms: 4, bathrooms: 3, size: '0.25 acres', verified: true, image: 'https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=600&q=80', agent: { name: 'John Kamau', initials: 'JK' } },
-      { id: 2, type: 'apartment', location: 'Kilimani', price: 15000000, bedrooms: 3, bathrooms: 2, size: '1,800 sqft', verified: true, image: 'https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=600&q=80', agent: { name: 'Sarah Mwangi', initials: 'SM' } },
-      { id: 3, type: 'land', location: 'Syokimau', price: 3500000, bedrooms: 0, bathrooms: 0, size: '0.5 acres', verified: false, image: 'https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=600&q=80', agent: { name: 'Peter Ochieng', initials: 'PO' } },
-      { id: 4, type: 'villa', location: 'Karen', price: 85000000, bedrooms: 5, bathrooms: 4, size: '1 acre', verified: true, image: 'https://images.unsplash.com/photo-1613490493576-7fde63acd811?w=600&q=80', agent: { name: 'Mike Kariuki', initials: 'MK' } },
-      { id: 5, type: 'commercial', location: 'Westlands', price: 250000000, bedrooms: 0, bathrooms: 2, size: '10,000 sqft', verified: true, image: 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=600&q=80', agent: { name: 'Alice Njeri', initials: 'AN' } },
-      { id: 6, type: 'house', location: 'Rongai', price: 6800000, bedrooms: 3, bathrooms: 2, size: '1,600 sqft', verified: true, image: 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=600&q=80', agent: { name: 'David Muthoni', initials: 'DM' } },
-      { id: 7, type: 'apartment', location: 'Kileleshwa', price: 12000000, bedrooms: 2, bathrooms: 2, size: '1,200 sqft', verified: true, image: 'https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=600&q=80', agent: { name: 'Jane Wanjiku', initials: 'JW' } },
-      { id: 8, type: 'land', location: 'Kangundo Road', price: 3500000, bedrooms: 0, bathrooms: 0, size: '50x100 ft', verified: false, image: 'https://images.unsplash.com/photo-1500530859303-6b24e3c7c6c4?w=600&q=80', agent: { name: 'Robert Kiprop', initials: 'RK' } }
-    ];
+    (function() {
+      // Initialize Supabase
+      const supabase = window.supabase.createClient(
+        'https://nqwvsmuvltbiekfnvovx.supabase.co',
+        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5xd3ZzbXV2bHRiaWVrZm52b3Z4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA1NjU4MDAsImV4cCI6MjA5NjE0MTgwMH0.Xrc-bbAuWdvKSPHnVhTaLiQphV61xeYtDepWePqsrdo'
+      );
 
-    // ======================
-    // STATE
-    // ======================
-    let activeType = 'all';
-    let favorites = JSON.parse(localStorage.getItem('pik_favorites')) || [];
-    let currentFilter = { location: '', type: '', budget: Infinity };
+      // State
+      let properties = []; // will hold the fetched properties
+      let activeType = 'all';
+      let favorites = JSON.parse(localStorage.getItem('pik_favorites')) || [];
+      let currentFilter = { location: '', type: '', budget: Infinity };
 
-    // ======================
-    // HELPER: count per type
-    // ======================
-    const countByType = (type) => properties.filter(p => type === 'all' || p.type === type).length;
+      // Helper: count per type
+      const countByType = (type) => properties.filter(p => type === 'all' || p.property_type === type).length;
 
-    // ======================
-    // RENDER TYPE FILTER CARDS
-    // ======================
-    function renderTypeFilters() {
-      const types = [
-        { key: 'all', label: 'View All', icon: 'fa-list' },
-        { key: 'house', label: 'Houses', icon: 'fa-home' },
-        { key: 'apartment', label: 'Apartments', icon: 'fa-building' },
-        { key: 'land', label: 'Land', icon: 'fa-map' },
-        { key: 'villa', label: 'Villas', icon: 'fa-tree' },
-        { key: 'commercial', label: 'Commercial', icon: 'fa-store' }
-      ];
-      const container = document.getElementById('typeFilters');
-      container.innerHTML = types.map(t => `
-        <div class="filter-card ${activeType === t.key ? 'active' : ''}" data-type="${t.key}">
-          <div class="filter-icon"><i class="fas ${t.icon}"></i></div>
-          <div class="filter-label">${t.label}</div>
-          <div class="filter-count">${countByType(t.key)} listings</div>
-        </div>
-      `).join('');
-      container.querySelectorAll('.filter-card').forEach(card => {
-        card.addEventListener('click', () => {
-          activeType = card.dataset.type;
-          renderTypeFilters();
-          applyFilters();
-        });
-      });
-    }
-
-    // ======================
-    // RENDER PROPERTY CARDS
-    // ======================
-    function renderProperties(filtered) {
-      const grid = document.getElementById('propertyGrid');
-      const noRes = document.getElementById('noResults');
-      if (filtered.length === 0) {
-        grid.innerHTML = '';
-        noRes.style.display = 'block';
-      } else {
-        noRes.style.display = 'none';
-        grid.innerHTML = filtered.map(p => {
-          const isFav = favorites.includes(p.id);
-          return `
-            <div class="property-card" data-id="${p.id}" data-type="${p.type}" data-location="${p.location.toLowerCase()}" data-price="${p.price}">
-              <div class="property-image">
-                <img src="${p.image}" alt="${p.type} in ${p.location}" loading="lazy" />
-                <div class="property-badges">
-                  <span class="badge badge-sale">For Sale</span>
-                  ${p.verified ? '<span class="badge badge-verified"><i class="fas fa-check-circle"></i> Verified</span>' : ''}
-                </div>
-                <button class="favorite-btn ${isFav ? 'active' : ''}" aria-label="Save property">
-                  <i class="${isFav ? 'fas' : 'far'} fa-heart"></i>
-                </button>
-              </div>
-              <div class="property-info">
-                <div class="property-location"><i class="fas fa-map-marker-alt"></i> ${p.location}</div>
-                <h3 class="property-title">${p.type.charAt(0).toUpperCase() + p.type.slice(1)} in ${p.location}</h3>
-                <div class="property-features">
-                  ${p.bedrooms > 0 ? `<span class="feature-item"><i class="fas fa-bed"></i> ${p.bedrooms} Beds</span>` : ''}
-                  ${p.bathrooms > 0 ? `<span class="feature-item"><i class="fas fa-bath"></i> ${p.bathrooms} Baths</span>` : ''}
-                  <span class="feature-item"><i class="fas fa-vector-square"></i> ${p.size}</span>
-                </div>
-                <div class="property-footer">
-                  <span class="property-price">KES ${p.price.toLocaleString()}</span>
-                  <div class="property-agent">
-                    <div class="agent-avatar">${p.agent.initials}</div>
-                    ${p.agent.name}
-                  </div>
-                </div>
-              </div>
-            </div>
-          `;
-        }).join('');
-
-        // Attach event listeners
-        grid.querySelectorAll('.favorite-btn').forEach(btn => {
-          btn.addEventListener('click', (e) => {
-            e.stopPropagation();
-            const card = btn.closest('.property-card');
-            const id = parseInt(card.dataset.id);
-            toggleFavorite(id);
-            // re-render to update icon (or just toggle classes)
-            // simpler: just re-render all
+      // Render type filter cards
+      function renderTypeFilters() {
+        const types = [
+          { key: 'all', label: 'View All', icon: 'fa-list' },
+          { key: 'house', label: 'Houses', icon: 'fa-home' },
+          { key: 'apartment', label: 'Apartments', icon: 'fa-building' },
+          { key: 'land', label: 'Land', icon: 'fa-map' },
+          { key: 'villa', label: 'Villas', icon: 'fa-tree' },
+          { key: 'commercial', label: 'Commercial', icon: 'fa-store' }
+        ];
+        const container = document.getElementById('typeFilters');
+        container.innerHTML = types.map(t => `
+          <div class="filter-card ${activeType === t.key ? 'active' : ''}" data-type="${t.key}">
+            <div class="filter-icon"><i class="fas ${t.icon}"></i></div>
+            <div class="filter-label">${t.label}</div>
+            <div class="filter-count">${countByType(t.key)} listings</div>
+          </div>
+        `).join('');
+        container.querySelectorAll('.filter-card').forEach(card => {
+          card.addEventListener('click', () => {
+            activeType = card.dataset.type;
+            renderTypeFilters();
             applyFilters();
           });
         });
+      }
 
-        grid.querySelectorAll('.property-card').forEach(card => {
-          card.addEventListener('click', () => {
-            const id = card.dataset.id;
-            // Navigate to detail page (mock)
-            alert(`View property details (ID: ${id}). In production, navigate to /property/${id}`);
+      // Render property cards
+      function renderProperties(filtered) {
+        const grid = document.getElementById('propertyGrid');
+        const noRes = document.getElementById('noResults');
+        if (filtered.length === 0) {
+          grid.innerHTML = '';
+          noRes.style.display = 'block';
+        } else {
+          noRes.style.display = 'none';
+          grid.innerHTML = filtered.map(p => {
+            const isFav = favorites.includes(p.id);
+            const img = (p.images && p.images.length > 0) ? p.images[0] : 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=600&q=80';
+            const typeLabel = (p.property_type || 'house').charAt(0).toUpperCase() + (p.property_type || 'house').slice(1);
+            const agentInitials = p.agent?.initials || (p.agent_name ? p.agent_name.split(' ').map(n=>n[0]).join('') : 'AG');
+            const agentName = p.agent?.name || p.agent_name || 'Agent';
+            return `
+              <div class="property-card" data-id="${p.id}">
+                <div class="property-image">
+                  <img src="${img}" alt="${p.title}" loading="lazy" />
+                  <div class="property-badges">
+                    <span class="badge badge-sale">For Sale</span>
+                    ${p.approval_status === 'approved' ? '<span class="badge badge-verified"><i class="fas fa-check-circle"></i> Verified</span>' : ''}
+                  </div>
+                  <button class="favorite-btn ${isFav ? 'active' : ''}" aria-label="Save property">
+                    <i class="${isFav ? 'fas' : 'far'} fa-heart"></i>
+                  </button>
+                </div>
+                <div class="property-info">
+                  <div class="property-location"><i class="fas fa-map-marker-alt"></i> ${p.location || ''}</div>
+                  <h3 class="property-title">${p.title || 'Untitled'}</h3>
+                  <div class="property-features">
+                    ${p.bedrooms ? `<span class="feature-item"><i class="fas fa-bed"></i> ${p.bedrooms} Beds</span>` : ''}
+                    ${p.bathrooms ? `<span class="feature-item"><i class="fas fa-bath"></i> ${p.bathrooms} Baths</span>` : ''}
+                    ${p.area_sqft ? `<span class="feature-item"><i class="fas fa-vector-square"></i> ${p.area_sqft} sqft</span>` : ''}
+                  </div>
+                  <div class="property-footer">
+                    <span class="property-price">KES ${(p.price || 0).toLocaleString()}</span>
+                    <div class="property-agent">
+                      <div class="agent-avatar">${agentInitials}</div>
+                      ${agentName}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            `;
+          }).join('');
+
+          // Favorite button
+          grid.querySelectorAll('.favorite-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+              e.stopPropagation();
+              const card = btn.closest('.property-card');
+              const id = card.dataset.id;
+              toggleFavorite(id);
+              applyFilters();
+            });
           });
+
+          // Card click → property detail page
+          grid.querySelectorAll('.property-card').forEach(card => {
+            card.addEventListener('click', () => {
+              window.location.href = `/property/${card.dataset.id}`;
+            });
+          });
+        }
+      }
+
+      function applyFilters() {
+        let filtered = properties.filter(p => {
+          if (activeType !== 'all' && p.property_type !== activeType) return false;
+          if (currentFilter.location && !p.location?.toLowerCase().includes(currentFilter.location.toLowerCase())) return false;
+          if (currentFilter.type && p.property_type !== currentFilter.type) return false;
+          if ((p.price || 0) > currentFilter.budget) return false;
+          return true;
         });
+        renderProperties(filtered);
       }
-    }
 
-    // ======================
-    // FILTER LOGIC (structured data)
-    // ======================
-    function applyFilters() {
-      let filtered = properties.filter(p => {
-        // type filter
-        if (activeType !== 'all' && p.type !== activeType) return false;
-        // location (search)
-        if (currentFilter.location && !p.location.toLowerCase().includes(currentFilter.location.toLowerCase())) return false;
-        // type dropdown
-        if (currentFilter.type && p.type !== currentFilter.type) return false;
-        // budget
-        if (p.price > currentFilter.budget) return false;
-        return true;
-      });
-      renderProperties(filtered);
-    }
-
-    // ======================
-    // FAVORITES PERSISTENCE
-    // ======================
-    function toggleFavorite(id) {
-      if (favorites.includes(id)) {
-        favorites = favorites.filter(f => f !== id);
-      } else {
-        favorites.push(id);
+      function toggleFavorite(id) {
+        if (favorites.includes(id)) {
+          favorites = favorites.filter(f => f !== id);
+        } else {
+          favorites.push(id);
+        }
+        localStorage.setItem('pik_favorites', JSON.stringify(favorites));
       }
-      localStorage.setItem('pik_favorites', JSON.stringify(favorites));
-    }
 
-    // ======================
-    // EVENT LISTENERS
-    // ======================
-    document.getElementById('searchBtn').addEventListener('click', () => {
-      currentFilter.location = document.getElementById('searchLocation').value.trim();
-      currentFilter.type = document.getElementById('searchType').value;
-      const budgetVal = document.getElementById('searchBudget').value;
-      currentFilter.budget = budgetVal ? parseInt(budgetVal) : Infinity;
-      // Reset active type to 'all' when searching?
-      activeType = 'all';
-      renderTypeFilters();
-      applyFilters();
-    });
+      // Load properties from Supabase
+      async function loadProperties() {
+        try {
+          const { data, error } = await supabase
+            .from('properties')
+            .select('*')
+            .eq('approval_status', 'approved')
+            .order('created_at', { ascending: false });
 
-    // Enter key triggers search
-    document.querySelectorAll('.search-input').forEach(input => {
-      input.addEventListener('keypress', (e) => {
-        if (e.key === 'Enter') document.getElementById('searchBtn').click();
+          if (error) throw error;
+          properties = data || [];
+          if (properties.length === 0) {
+            console.warn('No approved properties found. Showing mock data.');
+            properties = getMockProperties(); // fallback to static data for demo
+          }
+        } catch (err) {
+          console.error('Failed to load properties:', err);
+          properties = getMockProperties();
+        }
+        renderTypeFilters();
+        applyFilters();
+      }
+
+      function getMockProperties() {
+        return [
+          { id: 1, property_type: 'house', location: 'Ruai', price: 12000000, bedrooms: 4, bathrooms: 3, area_sqft: '0.25 acres', approval_status: 'approved', images: ['https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=600&q=80'], agent_name: 'John Kamau', title: '4 Bed House in Ruai' },
+          { id: 2, property_type: 'apartment', location: 'Kilimani', price: 15000000, bedrooms: 3, bathrooms: 2, area_sqft: '1,800 sqft', approval_status: 'approved', images: ['https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=600&q=80'], agent_name: 'Sarah Mwangi', title: '3 Bed Apartment in Kilimani' },
+          { id: 3, property_type: 'land', location: 'Syokimau', price: 3500000, bedrooms: 0, bathrooms: 0, area_sqft: '0.5 acres', approval_status: 'approved', images: ['https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=600&q=80'], agent_name: 'Peter Ochieng', title: 'Plot in Syokimau' },
+          { id: 4, property_type: 'villa', location: 'Karen', price: 85000000, bedrooms: 5, bathrooms: 4, area_sqft: '1 acre', approval_status: 'approved', images: ['https://images.unsplash.com/photo-1613490493576-7fde63acd811?w=600&q=80'], agent_name: 'Mike Kariuki', title: 'Luxury Villa in Karen' },
+          { id: 5, property_type: 'commercial', location: 'Westlands', price: 250000000, bedrooms: 0, bathrooms: 2, area_sqft: '10,000 sqft', approval_status: 'approved', images: ['https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=600&q=80'], agent_name: 'Alice Njeri', title: 'Commercial Building' }
+        ];
+      }
+
+      // Event listeners
+      document.getElementById('searchBtn').addEventListener('click', () => {
+        currentFilter.location = document.getElementById('searchLocation').value.trim();
+        currentFilter.type = document.getElementById('searchType').value;
+        const budgetVal = document.getElementById('searchBudget').value;
+        currentFilter.budget = budgetVal ? parseInt(budgetVal) : Infinity;
+        activeType = 'all';
+        renderTypeFilters();
+        applyFilters();
       });
-    });
 
-    // Mobile menu
-    document.getElementById('hamburgerBtn').addEventListener('click', () => {
-      document.getElementById('mobileMenu').classList.add('active');
-    });
-    document.getElementById('closeMobileMenu').addEventListener('click', () => {
-      document.getElementById('mobileMenu').classList.remove('active');
-    });
+      document.querySelectorAll('.search-input').forEach(input => {
+        input.addEventListener('keypress', (e) => {
+          if (e.key === 'Enter') document.getElementById('searchBtn').click();
+        });
+      });
 
-    // ======================
-    // INITIAL RENDER
-    // ======================
-    renderTypeFilters();
-    applyFilters();
+      document.getElementById('hamburgerBtn').addEventListener('click', () => {
+        document.getElementById('mobileMenu').classList.add('active');
+      });
+      document.getElementById('closeMobileMenu').addEventListener('click', () => {
+        document.getElementById('mobileMenu').classList.remove('active');
+      });
+
+      // Start
+      loadProperties();
+    })();
   </script>
 </body>
 </html>
