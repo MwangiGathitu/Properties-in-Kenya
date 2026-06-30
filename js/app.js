@@ -190,5 +190,36 @@
         initEventListeners();
         loadHomepageData();
     });
+async function askAI(message) {
+    try {
+        const response = await fetch("/api/chat", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                messages: [
+                    { role: "user", content: message }
+                ]
+            })
+        });
+
+        const data = await response.json();
+
+        console.log("AI RESPONSE:", data);
+
+        const aiText = data?.choices?.[0]?.message?.content;
+
+        if (aiText) {
+            alert(aiText);
+        }
+
+        return data;
+
+    } catch (error) {
+        console.error("AI Error:", error);
+        alert("AI request failed. Check Vercel function.");
+    }
+}
 
 })();
