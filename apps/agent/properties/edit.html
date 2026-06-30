@@ -1,1 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Edit Property</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
 
+<body class="bg-gray-100 p-6">
+
+<h1 class="text-2xl font-bold mb-4">Edit Property</h1>
+
+<form id="form" class="bg-white p-6 rounded shadow space-y-4">
+
+<input id="title" class="border p-2 w-full">
+<input id="price" type="number" class="border p-2 w-full">
+
+<select id="status" class="border p-2 w-full">
+  <option value="available">Available</option>
+  <option value="pending">Pending</option>
+  <option value="sold">Sold</option>
+</select>
+
+<input id="image" class="border p-2 w-full">
+
+<button class="bg-blue-600 text-white px-4 py-2 rounded">
+  Update Property
+</button>
+
+</form>
+
+<script>
+const supabase = window.supabase.createClient(
+  "https://nqwvsmuvltbiekfnvovx.supabase.co",
+  "YOUR_ANON_KEY"
+);
+
+let user = null;
+let propertyId = null;
+
+async function auth() {
+  const { data } = await supabase.auth.getUser();
+  user = data.user;
+
+  if (!user) {
+    window.location.href = "../auth/login.html?role=agent";
+  }
+
+  const url = new URL(window.location.href);
+  propertyId = url.searchParams.get("id");
+
+  loadProperty();
+}
+
+async function loadProperty() {
+  const { data } = await supabase
+    .from("properties")
+    .select("*")
+    .eq("id", propertyId)
+    .single();
+
+  document.getElementById("title").value = data.title;
+  document.getElementById("price").value = data.price;
+  document.getElementById("status").value = data.status;
+  document.getElementById("image").value = data.images?.[0] || "";
+}
+
+document.getElementById("form").addEventListener("submit", async (e) => {
+  e.preventDefault();
+
+  await supabase.from("properties")
+    .update({
+      title: document.getElementById("title").value,
+      price: parseFloat(document.getElementById("price").value),
+      status: document.getElementById("status").value,
+      images: [document.getElementById("image").value]
+    })
+    .eq("id", propertyId)
+    .eq("agent_id", user.id);
+
+  window.location.href = "index.html";
+});
+
+auth();
+</script>
+
+</body>
+</html>
