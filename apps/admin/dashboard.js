@@ -1,15 +1,15 @@
-// FIXED IMPORTS - Root-relative paths for Cloudflare
+// FIXED IMPORTS - Root-relative + local relative
 import { supabase } from '/shared/js/supabase.js';
 import { requireRole } from '/js/auth.js';
 
-// Local dashboard modules (same folder)
+// Local dashboard modules (same folder as this file)
 import { UI } from './ui.js';
 import { loadDashboardData } from './api.js';
 import { setupTargetedRealtime, teardownRealtime } from './realtime.js';
 import { checkPermissions } from './permissions.js';
 import { initCommandPalette } from './command.js';
 
-// Render modules
+// Renderers
 import { initOperationsRenderer } from './render/operations.js';
 import { initQueueRenderer } from './render/queue.js';
 import { initRevenueRenderer } from './render/revenue.js';
