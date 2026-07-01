@@ -1,17 +1,430 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Properties in Kenya</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Properties in Kenya — Choose Your Portal</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-primary: #0f172a;
+            --bg-secondary: #1e293b;
+            --text-primary: #f8fafc;
+            --text-secondary: #94a3b8;
+            --glass-bg: rgba(255, 255, 255, 0.03);
+            --glass-border: rgba(255, 255, 255, 0.08);
+        }
 
-  <!-- Redirect users to admin dashboard or main app -->
-  <script>
-    // Simple router entry point
-    window.location.href = "/apps/admin/dashboard.html";
-  </script>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            min-height: 100vh;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* Subtle Tech Grid Background */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-image: 
+                linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px);
+            background-size: 40px 40px;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        /* Animated Background Blobs */
+        .bg-blobs {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            z-index: 0;
+            overflow: hidden;
+            pointer-events: none;
+        }
+        .blob {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(80px);
+            opacity: 0.15;
+            animation: float 25s infinite ease-in-out;
+        }
+        .blob-1 { width: 500px; height: 500px; background: #8b5cf6; top: 10%; left: 10%; }
+        .blob-2 { width: 600px; height: 600px; background: #f59e0b; bottom: 10%; right: 10%; animation-delay: -7s; }
+        .blob-3 { width: 400px; height: 400px; background: #10b981; top: 40%; left: 60%; animation-delay: -14s; }
+
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            33% { transform: translate(60px, -60px) scale(1.1); }
+            66% { transform: translate(-40px, 40px) scale(0.9); }
+        }
+
+        /* Main Container */
+        .container {
+            text-align: center;
+            max-width: 800px;
+            width: 100%;
+            position: relative;
+            z-index: 1;
+            animation: fadeIn 1s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Hero Section */
+        .hero { margin-bottom: 48px; }
+        
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(16, 185, 129, 0.1);
+            border: 1px solid rgba(16, 185, 129, 0.2);
+            color: #34d399;
+            padding: 6px 14px;
+            border-radius: 50px;
+            font-size: 12px;
+            font-weight: 500;
+            margin-bottom: 24px;
+        }
+        .status-dot {
+            width: 6px; height: 6px;
+            background: #10b981;
+            border-radius: 50%;
+            box-shadow: 0 0 8px #10b981;
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .logo-wrapper {
+            position: relative;
+            display: inline-block;
+            margin-bottom: 20px;
+        }
+        .logo-icon {
+            font-size: 56px;
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .logo-badge {
+            position: absolute;
+            top: -5px; right: -25px;
+            background: #8b5cf6;
+            color: white;
+            font-size: 10px;
+            font-weight: 800;
+            padding: 2px 6px;
+            border-radius: 6px;
+            letter-spacing: 1px;
+        }
+
+        h1 {
+            font-size: 36px;
+            font-weight: 800;
+            margin-bottom: 12px;
+            letter-spacing: -0.5px;
+            background: linear-gradient(to right, #fff, #cbd5e1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        p.subtitle {
+            color: var(--text-secondary);
+            font-size: 16px;
+            line-height: 1.6;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        /* Portals Grid */
+        .portals {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 24px;
+            margin-bottom: 60px;
+        }
+
+        /* Portal Cards */
+        .portal-card {
+            --theme-color: #fff;
+            --theme-glow: rgba(255,255,255,0.1);
+            
+            position: relative;
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid var(--glass-border);
+            border-radius: 20px;
+            padding: 32px 24px;
+            text-decoration: none;
+            color: white;
+            text-align: left;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            opacity: 0;
+            animation: slideUp 0.6s ease-out forwards;
+        }
+
+        .portal-card:nth-child(1) { animation-delay: 0.1s; }
+        .portal-card:nth-child(2) { animation-delay: 0.2s; }
+        .portal-card:nth-child(3) { animation-delay: 0.3s; }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .portal-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 3px;
+            background: var(--theme-color);
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform 0.4s ease;
+        }
+
+        .portal-card:hover {
+            transform: translateY(-8px);
+            border-color: var(--theme-color);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.4), 0 0 30px var(--theme-glow);
+            background: rgba(255,255,255,0.05);
+        }
+
+        .portal-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        /* Card Themes */
+        .portal-card.admin { --theme-color: #a855f7; --theme-glow: rgba(168, 85, 247, 0.2); }
+        .portal-card.agent { --theme-color: #f59e0b; --theme-glow: rgba(245, 158, 11, 0.2); }
+        .portal-card.buyer { --theme-color: #10b981; --theme-glow: rgba(16, 185, 129, 0.2); }
+
+        .card-icon {
+            width: 56px; height: 56px;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            color: var(--theme-color);
+            margin-bottom: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .portal-card:hover .card-icon {
+            background: var(--theme-glow);
+            border-color: var(--theme-color);
+            transform: scale(1.05);
+        }
+
+        .card-title {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 6px;
+        }
+
+        .card-desc {
+            font-size: 14px;
+            color: var(--text-secondary);
+            margin-bottom: 20px;
+        }
+
+        .card-features {
+            list-style: none;
+            margin-bottom: 24px;
+            flex-grow: 1;
+        }
+
+        .card-features li {
+            font-size: 13px;
+            color: #cbd5e1;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .card-features li i {
+            color: var(--theme-color);
+            font-size: 10px;
+            opacity: 0.8;
+        }
+
+        .card-footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            transition: all 0.3s ease;
+            border-top: 1px solid rgba(255,255,255,0.05);
+            padding-top: 16px;
+            margin-top: auto;
+        }
+
+        .portal-card:hover .card-footer {
+            color: var(--theme-color);
+        }
+
+        .card-footer i {
+            transition: transform 0.3s ease;
+        }
+
+        .portal-card:hover .card-footer i {
+            transform: translateX(5px);
+        }
+
+        /* Footer */
+        .footer {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            align-items: center;
+            font-size: 13px;
+            color: var(--text-secondary);
+        }
+
+        .footer a {
+            color: #cbd5e1;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.2s;
+        }
+
+        .footer a:hover {
+            color: white;
+        }
+
+        .footer a i {
+            font-size: 10px;
+            margin-left: 4px;
+            transition: transform 0.2s;
+        }
+
+        .footer a:hover i {
+            transform: translateX(3px);
+        }
+
+        /* Mobile Responsiveness */
+        @media (max-width: 768px) {
+            h1 { font-size: 28px; }
+            .portals { grid-template-columns: 1fr; max-width: 340px; margin-left: auto; margin-right: auto; }
+            .blob { filter: blur(60px); opacity: 0.1; }
+        }
+    </style>
 </head>
 <body>
-  <p>Loading application...</p>
+
+    <!-- Animated Background -->
+    <div class="bg-blobs">
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
+        <div class="blob blob-3"></div>
+    </div>
+
+    <div class="container">
+        <header class="hero">
+            <div class="status-badge">
+                <span class="status-dot"></span>
+                All Systems Operational
+            </div>
+            <div class="logo-wrapper">
+                <div class="logo-icon">🏠</div>
+                <span class="logo-badge">OS</span>
+            </div>
+            <h1>Properties in Kenya</h1>
+            <p class="subtitle">The intelligent operating system for Kenyan real estate. <br>Select your portal to continue.</p>
+        </header>
+
+        <main class="portals" role="navigation" aria-label="Portal Selection">
+            <!-- Admin Portal -->
+            <a href="/apps/auth/login?role=admin" class="portal-card admin" aria-label="Enter Admin Portal">
+                <div class="card-icon">
+                    <i class="fas fa-user-shield"></i>
+                </div>
+                <h2 class="card-title">Admin Console</h2>
+                <p class="card-desc">Full system control & oversight</p>
+                <ul class="card-features">
+                    <li><i class="fas fa-circle"></i> User & role management</li>
+                    <li><i class="fas fa-circle"></i> Platform analytics</li>
+                    <li><i class="fas fa-circle"></i> System health monitoring</li>
+                </ul>
+                <div class="card-footer">
+                    <span>Enter Portal</span>
+                    <i class="fas fa-arrow-right"></i>
+                </div>
+            </a>
+
+            <!-- Agent Portal -->
+            <a href="/apps/auth/login?role=agent" class="portal-card agent" aria-label="Enter Agent Portal">
+                <div class="card-icon">
+                    <i class="fas fa-user-tie"></i>
+                </div>
+                <h2 class="card-title">Agent Workspace</h2>
+                <p class="card-desc">Grow your real estate business</p>
+                <ul class="card-features">
+                    <li><i class="fas fa-circle"></i> AI-powered lead routing</li>
+                    <li><i class="fas fa-circle"></i> 12-stage deal pipeline</li>
+                    <li><i class="fas fa-circle"></i> Commission tracking</li>
+                </ul>
+                <div class="card-footer">
+                    <span>Enter Portal</span>
+                    <i class="fas fa-arrow-right"></i>
+                </div>
+            </a>
+
+            <!-- Buyer Portal -->
+            <a href="/apps/auth/login?role=buyer" class="portal-card buyer" aria-label="Enter Buyer Portal">
+                <div class="card-icon">
+                    <i class="fas fa-key"></i>
+                </div>
+                <h2 class="card-title">Buyer Hub</h2>
+                <p class="card-desc">Find your dream property</p>
+                <ul class="card-features">
+                    <li><i class="fas fa-circle"></i> Smart property search</li>
+                    <li><i class="fas fa-circle"></i> Saved favorites & alerts</li>
+                    <li><i class="fas fa-circle"></i> Direct agent messaging</li>
+                </ul>
+                <div class="card-footer">
+                    <span>Enter Portal</span>
+                    <i class="fas fa-arrow-right"></i>
+                </div>
+            </a>
+        </main>
+
+        <footer class="footer">
+            <p>&copy; 2026 Properties in Kenya. All rights reserved.</p>
+            <a href="#">Need help logging in? <i class="fas fa-arrow-right"></i></a>
+        </footer>
+    </div>
+
 </body>
 </html>
