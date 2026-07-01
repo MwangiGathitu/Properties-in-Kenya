@@ -20,3 +20,9 @@ export function hasPermission(module) {
   const caps = ROLE_CAPABILITIES[currentUserRole] || [];
   return caps.includes('*') || caps.includes(module);
 }
+
+// NEW: The missing function that dashboard.js expects
+export function checkPermissions(role) {
+  setRole(role);
+  // You can add further checks here later if needed
+}
