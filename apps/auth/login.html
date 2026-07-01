@@ -30,41 +30,6 @@
         .logo i { font-size: 48px; color: #6b21a8; margin-bottom: 8px; display: block; }
         .logo h1 { font-size: 22px; color: #111; margin-bottom: 4px; }
         .logo p { color: #6b7280; font-size: 14px; }
-        
-        /* Role Selector Styles */
-        .role-selector {
-            display: flex;
-            gap: 8px;
-            margin-bottom: 20px;
-        }
-        .role-btn {
-            flex: 1;
-            padding: 10px 8px;
-            border: 1.5px solid #e5e7eb;
-            border-radius: 10px;
-            background: #f9fafb;
-            color: #4b5563;
-            font-weight: 500;
-            font-size: 13px;
-            cursor: pointer;
-            transition: all 0.2s;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 6px;
-        }
-        .role-btn:hover {
-            border-color: #a855f7;
-            background: #faf5ff;
-        }
-        .role-btn.active {
-            border-color: #6b21a8;
-            background: #f3e8ff;
-            color: #6b21a8;
-            font-weight: 600;
-            box-shadow: 0 2px 4px rgba(107, 33, 168, 0.1);
-        }
-
         .tabs {
             display: flex;
             background: #f3f4f6;
@@ -208,20 +173,14 @@
     <div class="logo">
       <i class="fas fa-home"></i>
       <h1>Properties in Kenya</h1>
-      <p id="login-subtitle">Agent Login</p>
+      <p id="login-subtitle">Agent Portal</p>
     </div>
 
     <!-- ROLE SELECTOR -->
-    <div class="role-selector" id="roleSelector">
-      <button type="button" class="role-btn active" data-role="agent">
-        <i class="fas fa-user-tie"></i> Agent
-      </button>
-      <button type="button" class="role-btn" data-role="buyer">
-        <i class="fas fa-shopping-bag"></i> Buyer
-      </button>
-      <button type="button" class="role-btn" data-role="admin">
-        <i class="fas fa-user-shield"></i> Admin
-      </button>
+    <div class="tabs" id="roleTabs" style="margin-bottom: 12px;">
+      <button class="tab active" data-role="agent"><i class="fas fa-user-tie" style="margin-right: 6px;"></i>Agent</button>
+      <button class="tab" data-role="buyer"><i class="fas fa-shopping-bag" style="margin-right: 6px;"></i>Buyer</button>
+      <button class="tab" data-role="admin"><i class="fas fa-user-shield" style="margin-right: 6px;"></i>Admin</button>
     </div>
 
     <div class="tabs" id="mainTabs">
@@ -338,6 +297,16 @@
         const urlParams = new URLSearchParams(window.location.search);
         let currentRole = urlParams.get('role') || 'agent'; 
 
+        const ROLE_SUBTITLES = {
+            agent: 'Agent Portal',
+            buyer: 'Buyer Portal',
+            admin: 'Admin Console'
+        };
+
+        function getRoleSubtitle(role) {
+            return ROLE_SUBTITLES[role] || 'Portal';
+        }
+
         // ===== UI HELPERS =====
         function showForm(formId) {
             ['loginForm', 'signupForm', 'forgotForm', 'recoveryForm'].forEach(id => {
@@ -350,6 +319,22 @@
             document.getElementById('login-subtitle').textContent = text;
         }
 
+        function setRole(role) {
+            currentRole = role;
+            const url = new URL(window.location);
+            url.searchParams.set('role', role);
+            window.history.pushState({}, '', url);
+
+            document.querySelectorAll('#roleTabs .tab').forEach(t => t.classList.remove('active'));
+            const activeRoleBtn = document.querySelector(`#roleTabs .tab[data-role="${role}"]`);
+            if (activeRoleBtn) activeRoleBtn.classList.add('active');
+
+            const activeMainTab = document.querySelector('#mainTabs .tab.active')?.dataset.tab || 'login';
+            if (activeMainTab !== 'forgot') {
+                updateSubtitle(getRoleSubtitle(role));
+            }
+        }
+
         // ===== INITIALIZATION & RECOVERY DETECTION =====
         (async () => {
             // 1. Check if user clicked a "Reset Password" link from their email
@@ -358,7 +343,7 @@
                 document.getElementById('auth-loader').style.display = 'none';
                 document.getElementById('loginBox').style.display = 'block';
                 document.getElementById('mainTabs').style.display = 'none'; // Hide tabs during recovery
-                document.getElementById('roleSelector').style.display = 'none'; // Hide role selector during recovery
+                document.getElementById('roleTabs').style.display = 'none'; // Hide role tabs during recovery
                 showForm('recoveryForm');
                 updateSubtitle('Account Recovery');
                 return;
@@ -399,25 +384,28 @@
             // 3. If we reach here, user is definitely logged out – show login box
             document.getElementById('auth-loader').style.display = 'none';
             document.getElementById('loginBox').style.display = 'block';
-            
-            // Initialize role buttons based on URL param
-            document.querySelectorAll('.role-btn').forEach(btn => {
-                if (btn.dataset.role === currentRole) btn.classList.add('active');
-                else btn.classList.remove('active');
-            });
-            updateSubtitle(currentRole === 'buyer' ? 'Buyer Login' : currentRole === 'admin' ? 'Admin Login' : 'Agent Login');
+            setRole(currentRole);
         })();
 
+        // ===== ROLE SWITCHING =====
+        document.querySelectorAll('#roleTabs .tab').forEach(el => {
+            el.addEventListener('click', (e) => {
+                e.preventDefault();
+                const role = el.dataset.role;
+                if (role) setRole(role);
+            });
+        });
+
         // ===== TAB SWITCHING =====
-        document.querySelectorAll('.tab, .footer a').forEach(el => {
+        document.querySelectorAll('#mainTabs .tab, .footer a').forEach(el => {
             el.addEventListener('click', (e) => {
                 e.preventDefault();
                 const tab = el.dataset.tab;
                 if (!tab) return;
 
                 // Update active tab visual
-                document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-                const activeTabBtn = document.querySelector(`.tab[data-tab="${tab}"]`);
+                document.querySelectorAll('#mainTabs .tab').forEach(t => t.classList.remove('active'));
+                const activeTabBtn = document.querySelector(`#mainTabs .tab[data-tab="${tab}"]`);
                 if (activeTabBtn) activeTabBtn.classList.add('active');
 
                 // Show correct form
@@ -425,27 +413,10 @@
 
                 // Update subtitle
                 if (tab === 'forgot') updateSubtitle('Reset Password');
-                else if (tab === 'signup') updateSubtitle(currentRole === 'buyer' ? 'Buyer Sign Up' : currentRole === 'admin' ? 'Admin Sign Up' : 'Agent Sign Up');
-                else updateSubtitle(currentRole === 'buyer' ? 'Buyer Login' : currentRole === 'admin' ? 'Admin Login' : 'Agent Login');
+                else updateSubtitle(getRoleSubtitle(currentRole));
 
                 // Clear errors
                 document.querySelectorAll('.error, .success').forEach(err => err.classList.remove('show'));
-            });
-        });
-
-        // ===== ROLE SELECTOR =====
-        document.querySelectorAll('.role-btn').forEach(btn => {
-            btn.addEventListener('click', () => {
-                currentRole = btn.dataset.role;
-                document.querySelectorAll('.role-btn').forEach(b => b.classList.remove('active'));
-                btn.classList.add('active');
-                
-                // Update subtitle based on current visible form
-                const loginVisible = !document.getElementById('loginForm').classList.contains('hidden');
-                const signupVisible = !document.getElementById('signupForm').classList.contains('hidden');
-                
-                if (loginVisible) updateSubtitle(currentRole === 'buyer' ? 'Buyer Login' : currentRole === 'admin' ? 'Admin Login' : 'Agent Login');
-                else if (signupVisible) updateSubtitle(currentRole === 'buyer' ? 'Buyer Sign Up' : currentRole === 'admin' ? 'Admin Sign Up' : 'Agent Sign Up');
             });
         });
 
