@@ -1,4 +1,7 @@
-import { supabase } from '/public/shared/js/supabase.js';
+// apps/admin/js/dashboard/api.js
+
+// Correct import - root-relative path
+import { supabase } from '/js/shared/supabase.js';
 import { Store } from './store.js';
 import { UI } from './ui.js';
 
@@ -11,7 +14,7 @@ const RPC_ENDPOINTS = {
   activity: 'rpc_dashboard_activity'
 };
 
-// simple retry helper (critical improvement)
+// Simple retry helper
 async function safeRpc(rpcName, retries = 2) {
   try {
     const { data, error } = await supabase.rpc(rpcName);
@@ -25,12 +28,12 @@ async function safeRpc(rpcName, retries = 2) {
   }
 }
 
-// 3. Parallel loading (clean version)
+// Parallel loading of all dashboard data
 export async function loadDashboardData() {
   performance.mark('dashboard-api-start');
 
   const entries = Object.entries(RPC_ENDPOINTS);
-
+  
   const results = await Promise.all(
     entries.map(async ([key, rpcName]) => {
       try {
@@ -47,19 +50,14 @@ export async function loadDashboardData() {
       handleModuleError(key, error);
       return;
     }
-
     Store.set(key, data);
   });
 
   performance.mark('dashboard-api-end');
-  performance.measure(
-    'dashboard-api-load',
-    'dashboard-api-start',
-    'dashboard-api-end'
-  );
+  performance.measure('dashboard-api-load', 'dashboard-api-start', 'dashboard-api-end');
 }
 
-// 5. Targeted reload (clean)
+// Load single module
 export async function loadModule(key) {
   const rpcName = RPC_ENDPOINTS[key];
   if (!rpcName) return;
@@ -72,15 +70,13 @@ export async function loadModule(key) {
   }
 }
 
-// 6. Scalable error handling (no hardcoded maps)
+// Error handler
 function handleModuleError(key, error) {
   const message = `${key.toUpperCase()} module failed to load.`;
-
   UI.showErrorState(
     `${key}Container`,
     message,
     `loadModule('${key}')`
   );
-
   console.error(`[Dashboard Error] ${key}:`, error);
 }
