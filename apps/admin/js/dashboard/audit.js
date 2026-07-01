@@ -1,4 +1,4 @@
-import { supabase } from '/public/shared/js/supabase.js';
+import { supabase } from '/public/js/supabase.js';
 
 let queue = [];
 let flushTimer = null;
@@ -15,8 +15,6 @@ async function flushQueue() {
     });
   } catch (err) {
     console.warn('Audit batch failed, retrying...', err);
-
-    // simple retry fallback
     queue = [...batch, ...queue];
   }
 }
@@ -29,7 +27,6 @@ export function logAudit(action, targetId, metadata = {}) {
     timestamp: new Date().toISOString()
   });
 
-  // debounce flush (batching)
   if (!flushTimer) {
     flushTimer = setTimeout(async () => {
       flushTimer = null;
