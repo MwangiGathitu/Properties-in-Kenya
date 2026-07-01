@@ -1,7 +1,4 @@
-// apps/admin/js/dashboard/api.js
-
-// Correct import - root-relative path
-import { supabase } from '/js/shared/supabase.js';
+import { supabase } from '/public/js/supabase.js';
 import { Store } from './store.js';
 import { UI } from './ui.js';
 
@@ -14,7 +11,6 @@ const RPC_ENDPOINTS = {
   activity: 'rpc_dashboard_activity'
 };
 
-// Simple retry helper
 async function safeRpc(rpcName, retries = 2) {
   try {
     const { data, error } = await supabase.rpc(rpcName);
@@ -28,12 +24,11 @@ async function safeRpc(rpcName, retries = 2) {
   }
 }
 
-// Parallel loading of all dashboard data
 export async function loadDashboardData() {
   performance.mark('dashboard-api-start');
 
   const entries = Object.entries(RPC_ENDPOINTS);
-  
+
   const results = await Promise.all(
     entries.map(async ([key, rpcName]) => {
       try {
@@ -54,10 +49,13 @@ export async function loadDashboardData() {
   });
 
   performance.mark('dashboard-api-end');
-  performance.measure('dashboard-api-load', 'dashboard-api-start', 'dashboard-api-end');
+  performance.measure(
+    'dashboard-api-load',
+    'dashboard-api-start',
+    'dashboard-api-end'
+  );
 }
 
-// Load single module
 export async function loadModule(key) {
   const rpcName = RPC_ENDPOINTS[key];
   if (!rpcName) return;
@@ -70,7 +68,6 @@ export async function loadModule(key) {
   }
 }
 
-// Error handler
 function handleModuleError(key, error) {
   const message = `${key.toUpperCase()} module failed to load.`;
   UI.showErrorState(
