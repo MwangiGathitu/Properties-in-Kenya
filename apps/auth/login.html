@@ -30,6 +30,41 @@
         .logo i { font-size: 48px; color: #6b21a8; margin-bottom: 8px; display: block; }
         .logo h1 { font-size: 22px; color: #111; margin-bottom: 4px; }
         .logo p { color: #6b7280; font-size: 14px; }
+        
+        /* Role Selector Styles */
+        .role-selector {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 20px;
+        }
+        .role-btn {
+            flex: 1;
+            padding: 10px 8px;
+            border: 1.5px solid #e5e7eb;
+            border-radius: 10px;
+            background: #f9fafb;
+            color: #4b5563;
+            font-weight: 500;
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+        .role-btn:hover {
+            border-color: #a855f7;
+            background: #faf5ff;
+        }
+        .role-btn.active {
+            border-color: #6b21a8;
+            background: #f3e8ff;
+            color: #6b21a8;
+            font-weight: 600;
+            box-shadow: 0 2px 4px rgba(107, 33, 168, 0.1);
+        }
+
         .tabs {
             display: flex;
             background: #f3f4f6;
@@ -176,6 +211,19 @@
       <p id="login-subtitle">Agent Login</p>
     </div>
 
+    <!-- ROLE SELECTOR -->
+    <div class="role-selector" id="roleSelector">
+      <button type="button" class="role-btn active" data-role="agent">
+        <i class="fas fa-user-tie"></i> Agent
+      </button>
+      <button type="button" class="role-btn" data-role="buyer">
+        <i class="fas fa-shopping-bag"></i> Buyer
+      </button>
+      <button type="button" class="role-btn" data-role="admin">
+        <i class="fas fa-user-shield"></i> Admin
+      </button>
+    </div>
+
     <div class="tabs" id="mainTabs">
       <button class="tab active" data-tab="login">Log In</button>
       <button class="tab" data-tab="signup">Sign Up</button>
@@ -288,7 +336,7 @@
         const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
 
         const urlParams = new URLSearchParams(window.location.search);
-        const currentRole = urlParams.get('role') || 'agent'; 
+        let currentRole = urlParams.get('role') || 'agent'; 
 
         // ===== UI HELPERS =====
         function showForm(formId) {
@@ -310,6 +358,7 @@
                 document.getElementById('auth-loader').style.display = 'none';
                 document.getElementById('loginBox').style.display = 'block';
                 document.getElementById('mainTabs').style.display = 'none'; // Hide tabs during recovery
+                document.getElementById('roleSelector').style.display = 'none'; // Hide role selector during recovery
                 showForm('recoveryForm');
                 updateSubtitle('Account Recovery');
                 return;
@@ -350,7 +399,13 @@
             // 3. If we reach here, user is definitely logged out – show login box
             document.getElementById('auth-loader').style.display = 'none';
             document.getElementById('loginBox').style.display = 'block';
-            updateSubtitle(currentRole === 'buyer' ? 'Buyer Login' : 'Agent Login');
+            
+            // Initialize role buttons based on URL param
+            document.querySelectorAll('.role-btn').forEach(btn => {
+                if (btn.dataset.role === currentRole) btn.classList.add('active');
+                else btn.classList.remove('active');
+            });
+            updateSubtitle(currentRole === 'buyer' ? 'Buyer Login' : currentRole === 'admin' ? 'Admin Login' : 'Agent Login');
         })();
 
         // ===== TAB SWITCHING =====
@@ -370,10 +425,27 @@
 
                 // Update subtitle
                 if (tab === 'forgot') updateSubtitle('Reset Password');
-                else updateSubtitle(currentRole === 'buyer' ? 'Buyer Login' : 'Agent Login');
+                else if (tab === 'signup') updateSubtitle(currentRole === 'buyer' ? 'Buyer Sign Up' : currentRole === 'admin' ? 'Admin Sign Up' : 'Agent Sign Up');
+                else updateSubtitle(currentRole === 'buyer' ? 'Buyer Login' : currentRole === 'admin' ? 'Admin Login' : 'Agent Login');
 
                 // Clear errors
                 document.querySelectorAll('.error, .success').forEach(err => err.classList.remove('show'));
+            });
+        });
+
+        // ===== ROLE SELECTOR =====
+        document.querySelectorAll('.role-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                currentRole = btn.dataset.role;
+                document.querySelectorAll('.role-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                
+                // Update subtitle based on current visible form
+                const loginVisible = !document.getElementById('loginForm').classList.contains('hidden');
+                const signupVisible = !document.getElementById('signupForm').classList.contains('hidden');
+                
+                if (loginVisible) updateSubtitle(currentRole === 'buyer' ? 'Buyer Login' : currentRole === 'admin' ? 'Admin Login' : 'Agent Login');
+                else if (signupVisible) updateSubtitle(currentRole === 'buyer' ? 'Buyer Sign Up' : currentRole === 'admin' ? 'Admin Sign Up' : 'Agent Sign Up');
             });
         });
 
@@ -531,7 +603,8 @@
                 }
 
                 // 🔁 FIXED: Absolute root‑relative paths
-                if (currentRole === 'buyer') window.location.href = '/index.html';
+                if (currentRole === 'admin') window.location.href = '/apps/admin/dashboard.html';
+                else if (currentRole === 'buyer') window.location.href = '/index.html';
                 else window.location.href = '/apps/agent/dashboard.html';
 
             } catch (err) {
@@ -622,7 +695,8 @@
                 window.location.hash = ''; 
                 setTimeout(() => {
                     // 🔁 FIXED: Absolute root‑relative paths
-                    if (currentRole === 'buyer') window.location.href = '/index.html';
+                    if (currentRole === 'admin') window.location.href = '/apps/admin/dashboard.html';
+                    else if (currentRole === 'buyer') window.location.href = '/index.html';
                     else window.location.href = '/apps/agent/dashboard.html';
                 }, 2000);
 
