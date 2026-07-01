@@ -1,5 +1,3 @@
-import { showToast } from '/js/utils.js';
-
 export const UI = {
   els: {},
   offlineHandler: null,
