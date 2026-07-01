@@ -4,25 +4,25 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Admin Dashboard — RealtorOS</title>
-  
+ 
   <!-- Core Styles -->
   <link rel="stylesheet" href="/css/design-system.css">
   <link rel="stylesheet" href="/css/components.css">
   <link rel="stylesheet" href="/css/responsive.css">
-  
+ 
   <!-- Tabler Icons -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css">
-  
+ 
   <!-- Chart.js -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js" defer></script>
-  
+ 
   <!-- Main Bootstrap Script -->
-  <script type="module" src="/apps/admin/js/dashboard/dashboard.js" defer></script>
+  <script type="module" src="./dashboard.js" defer></script>
 </head>
 <body>
   <!-- Offline Banner -->
   <div id="offlineBanner" class="offline-banner"></div>
-  
+ 
   <!-- HEADER -->
   <header class="os-header">
     <div class="header-left">
@@ -43,20 +43,20 @@
       <button id="logoutBtn" class="btn btn-outline">Logout</button>
     </div>
   </header>
-
+  
   <!-- Toasts -->
   <div id="toastContainer" class="toast-container"></div>
-
+  
   <!-- MAIN DASHBOARD SHELL -->
   <main class="dashboard-os">
     <!-- OPS CENTER -->
     <section id="operationsCenter" data-module="operations" class="ops-hero-section">
       <div class="ops-loading">Loading system status...</div>
     </section>
-    
+   
     <!-- ATTENTION -->
     <section id="needsAttention" data-module="attention" class="attention-section"></section>
-    
+   
     <!-- GRID: KPI + REVENUE -->
     <div class="grid-2col">
       <!-- STATS -->
@@ -87,7 +87,7 @@
           </div>
         </div>
       </section>
-      
+     
       <!-- REVENUE -->
       <section id="revenueContainer" data-module="revenue" class="card">
         <div class="card-header">
@@ -99,7 +99,7 @@
         </div>
       </section>
     </div>
-
+    
     <!-- GRID: QUEUE + ALERTS -->
     <div class="grid-2col">
       <!-- QUEUE -->
@@ -112,7 +112,7 @@
           <div class="list-loading">Loading queue...</div>
         </div>
       </section>
-      
+     
       <!-- ALERTS -->
       <section id="alertsContainer" data-module="alerts" class="card">
         <div class="card-header">
@@ -124,7 +124,7 @@
         </div>
       </section>
     </div>
-
+    
     <!-- AI + HEALTH -->
     <div class="grid-2col">
       <!-- AI CENTER -->
@@ -136,7 +136,7 @@
           <div class="list-loading">Loading AI modules...</div>
         </div>
       </section>
-      
+     
       <!-- HEALTH -->
       <section id="healthContainer" data-module="health" class="card">
         <div class="card-header">
@@ -148,7 +148,7 @@
         <div id="healthIndicators" class="health-indicators"></div>
       </section>
     </div>
-
+    
     <!-- ACTIVITY + MAP -->
     <div class="grid-2col">
       <!-- ACTIVITY -->
@@ -160,7 +160,7 @@
           <div class="list-loading">Loading activity...</div>
         </div>
       </section>
-      
+     
       <!-- MAP -->
       <section id="kenyaMapWidget" data-module="map" class="card">
         <div class="card-header">
@@ -184,7 +184,7 @@
       <div id="commandPaletteList" class="command-palette-list"></div>
     </div>
   </div>
-
+  
   <!-- GLOBAL LOADING -->
   <div id="globalLoading" class="global-loading">
     <div class="spinner"></div>
