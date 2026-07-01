@@ -1,5 +1,5 @@
 // FIXED IMPORTS – exact real file locations
-import { supabase } from '/public/shared/js/supabase.js';   // real path
+import { supabase } from '/public/shared/js/supabase.js';   // real path (public/shared/js/supabase.js exists)
 import { requireRole } from './auth.js';                   // same folder (auth.js is here)
 
 // Local dashboard modules (same folder as this file)
