@@ -1,3 +1,6 @@
+/css/* /css/:splat 200
+/js/* /js/:splat 200
+
 /dashboard /apps/admin/dashboard.html 200
 /queue /apps/admin/dashboard.html 200
 /revenue /apps/admin/dashboard.html 200
