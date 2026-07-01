@@ -4,6 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Admin Dashboard — RealtorOS</title>
+  <meta name="description" content="RealtorOS Admin Control Center - Manage properties, agents, and platform health.">
+  <meta name="theme-color" content="#0F172A">
  
   <!-- Core Styles (absolute paths to real files) -->
   <link rel="stylesheet" href="/apps/admin/css/design-system.css">
@@ -15,23 +17,55 @@
  
   <!-- Chart.js -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js" defer></script>
- 
-  <!-- Main Bootstrap Script (absolute path to real file) -->
-  <script type="module" src="/apps/admin/js/dashboard/dashboard.js" defer></script>
+
+  <style>
+    /* Fallback styles for loading and access denied states before external CSS loads */
+    body { margin: 0; font-family: 'Inter', system-ui, sans-serif; background: #0f172a; color: #f8fafc; }
+    
+    .global-loading {
+      position: fixed; inset: 0; background: rgba(15, 23, 42, 0.95);
+      display: flex; align-items: center; justify-content: center; z-index: 9999;
+      backdrop-filter: blur(8px);
+    }
+    .spinner {
+      width: 48px; height: 48px; border: 4px solid rgba(255,255,255,0.1);
+      border-top-color: #f59e0b; border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    
+    .offline-banner {
+      background: #ef4444; color: white; text-align: center; padding: 10px;
+      font-size: 14px; font-weight: 500; display: none;
+      box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+    }
+    .offline-banner.active { display: block; }
+    
+    .logo-text sup {
+      font-size: 10px; background: #f59e0b; color: #0f172a; 
+      padding: 2px 6px; border-radius: 6px; font-weight: 800; 
+      vertical-align: middle; margin-left: 6px; text-transform: uppercase;
+    }
+  </style>
 </head>
 <body>
   <!-- Offline Banner -->
-  <div id="offlineBanner" class="offline-banner"></div>
+  <div id="offlineBanner" class="offline-banner">
+    <i class="ti ti-wifi-off"></i> You are currently offline. Some features may be unavailable.
+  </div>
  
   <!-- HEADER -->
   <header class="os-header">
     <div class="header-left">
-      <a href="/apps/admin/" class="logo">🏠 RealtorOS</a>
+      <a href="/apps/admin/" class="logo">
+        <span class="logo-icon">🏠</span>
+        <span class="logo-text">RealtorOS <sup>Admin</sup></span>
+      </a>
     </div>
     <div class="header-center">
       <div class="global-search-wrapper">
         <i class="ti ti-search"></i>
-        <input type="text" id="globalSearchInput" placeholder="Search properties, agents, payments...">
+        <input type="text" id="globalSearchInput" placeholder="Search properties, agents, payments... (Ctrl+K)">
         <div id="globalSearchResults" class="search-results-dropdown"></div>
       </div>
     </div>
@@ -39,8 +73,10 @@
       <button id="themeToggle" class="icon-btn" title="Toggle Theme">
         <i class="ti ti-moon"></i>
       </button>
-      <span id="adminEmail" class="admin-email"></span>
-      <button id="logoutBtn" class="btn btn-outline">Logout</button>
+      <span id="adminEmail" class="admin-email">Loading...</span>
+      <button id="logoutBtn" class="btn btn-outline">
+        <i class="ti ti-logout"></i> Logout
+      </button>
     </div>
   </header>
   
@@ -51,7 +87,10 @@
   <main class="dashboard-os">
     <!-- OPS CENTER -->
     <section id="operationsCenter" data-module="operations" class="ops-hero-section">
-      <div class="ops-loading">Loading system status...</div>
+      <div class="ops-loading">
+        <div class="spinner" style="width:32px;height:32px;border-width:3px;margin:0 auto 12px;"></div>
+        Loading system status...
+      </div>
     </section>
    
     <!-- ATTENTION -->
@@ -95,7 +134,10 @@
           <a href="/apps/admin/payments.html" class="btn-link">View All →</a>
         </div>
         <div id="revenueDashboard">
-          <div class="rev-loading">Loading financial data...</div>
+          <div class="rev-loading">
+            <div class="spinner" style="width:24px;height:24px;border-width:3px;margin:0 auto 8px;"></div>
+            Loading financial data...
+          </div>
         </div>
       </section>
     </div>
@@ -109,7 +151,10 @@
           <a href="/apps/admin/moderation.html" class="btn-link">View All →</a>
         </div>
         <div id="pendingDecisions">
-          <div class="list-loading">Loading queue...</div>
+          <div class="list-loading">
+            <div class="spinner" style="width:24px;height:24px;border-width:3px;margin:0 auto 8px;"></div>
+            Loading queue...
+          </div>
         </div>
       </section>
      
@@ -120,7 +165,10 @@
           <a href="/apps/admin/corrections.html" class="btn-link">Manage →</a>
         </div>
         <div id="alerts">
-          <div class="list-loading">Loading alerts...</div>
+          <div class="list-loading">
+            <div class="spinner" style="width:24px;height:24px;border-width:3px;margin:0 auto 8px;"></div>
+            Loading alerts...
+          </div>
         </div>
       </section>
     </div>
@@ -133,7 +181,10 @@
           <h3><i class="ti ti-robot"></i> AI Command Center</h3>
         </div>
         <div class="ai-modules-grid">
-          <div class="list-loading">Loading AI modules...</div>
+          <div class="list-loading">
+            <div class="spinner" style="width:24px;height:24px;border-width:3px;margin:0 auto 8px;"></div>
+            Loading AI modules...
+          </div>
         </div>
       </section>
      
@@ -157,7 +208,10 @@
           <h3><i class="ti ti-activity"></i> Live Activity Feed</h3>
         </div>
         <div id="activityFeed">
-          <div class="list-loading">Loading activity...</div>
+          <div class="list-loading">
+            <div class="spinner" style="width:24px;height:24px;border-width:3px;margin:0 auto 8px;"></div>
+            Loading activity...
+          </div>
         </div>
       </section>
      
@@ -167,6 +221,7 @@
           <h3><i class="ti ti-map"></i> Live Kenya Map</h3>
         </div>
         <div class="map-placeholder">
+          <div class="spinner" style="width:32px;height:32px;border-width:3px;margin:0 auto 12px;"></div>
           <p>Interactive Heatmap Loading...</p>
         </div>
       </section>
@@ -189,5 +244,95 @@
   <div id="globalLoading" class="global-loading">
     <div class="spinner"></div>
   </div>
+
+  <!-- ========================================== -->
+  <!-- AUTHENTICATION & BOOTSTRAP SCRIPT          -->
+  <!-- ========================================== -->
+  <script type="module">
+    import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.108.2/+esm';
+    
+    const supabase = createClient(
+      'https://nqwvsmuvltbiekfnvovx.supabase.co',
+      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5xd3ZzbXV2bHRiaWVrZm52b3Z4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA1NjU4MDAsImV4cCI6MjA5NjE0MTgwMH0.Xrc-bbAuWdvKSPHnVhTaLiQphV61xeYtDepWePqsrdo',
+      {
+        auth: { autoRefreshToken: true, persistSession: true, detectSessionInUrl: true }
+      }
+    );
+
+    // Offline detection
+    const offlineBanner = document.getElementById('offlineBanner');
+    const updateOfflineStatus = () => {
+      if (navigator.onLine) offlineBanner.classList.remove('active');
+      else offlineBanner.classList.add('active');
+    };
+    window.addEventListener('online', updateOfflineStatus);
+    window.addEventListener('offline', updateOfflineStatus);
+    updateOfflineStatus();
+
+    async function bootAdminOS() {
+      const { data: { session } } = await supabase.auth.getSession();
+      
+      if (!session) {
+        window.location.href = '/apps/auth/login?role=admin';
+        return;
+      }
+
+      const { data: { user }, error } = await supabase.auth.getUser();
+      if (error || !user) {
+        await supabase.auth.signOut();
+        window.location.href = '/apps/auth/login?role=admin';
+        return;
+      }
+
+      const { data: profile, error: profileError } = await supabase
+        .from('profiles')
+        .select('role, full_name, email')
+        .eq('id', user.id)
+        .single();
+
+      // 🔒 ROLE VERIFICATION
+      if (profileError || !profile || profile.role !== 'admin') {
+        document.body.innerHTML = `
+          <div style="display:flex;align-items:center;justify-content:center;height:100vh;font-family:'Inter',system-ui,sans-serif;background:linear-gradient(135deg, #0f172a, #1e293b);color:#f8fafc;margin:0;padding:20px;">
+            <div style="text-align:center;max-width:420px;padding:48px 32px;background:rgba(255,255,255,0.03);border-radius:24px;border:1px solid rgba(255,255,255,0.08);backdrop-filter:blur(20px);box-shadow:0 20px 40px rgba(0,0,0,0.4);">
+              <div style="font-size:72px;margin-bottom:24px;filter:drop-shadow(0 0 20px rgba(239,68,68,0.5));">🚫</div>
+              <h1 style="font-size:32px;font-weight:800;margin-bottom:16px;background:linear-gradient(to right, #fff, #cbd5e1);-webkit-background-clip:text;-webkit-text-fill-color:transparent;letter-spacing:-0.5px;">Access Denied</h1>
+              <p style="color:#94a3b8;font-size:16px;margin-bottom:32px;line-height:1.6;">You do not have the required administrative privileges to access the RealtorOS Control Center.</p>
+              <a href="/apps/auth/login?role=admin" style="display:inline-flex;align-items:center;gap:8px;padding:14px 28px;background:linear-gradient(135deg, #f59e0b, #d97706);color:white;text-decoration:none;border-radius:12px;font-weight:600;font-size:15px;transition:all 0.3s;box-shadow:0 8px 20px rgba(245,158,11,0.3);">
+                <i class="ti ti-arrow-left" style="font-size:18px;"></i> Return to Login
+              </a>
+            </div>
+          </div>
+        `;
+        throw new Error('Not admin');
+      }
+
+      // ✅ USER IS VERIFIED ADMIN
+      const adminEmailEl = document.getElementById('adminEmail');
+      if (adminEmailEl) {
+        adminEmailEl.textContent = profile.full_name || profile.email || 'Admin';
+      }
+
+      // Hide global loading overlay
+      const globalLoading = document.getElementById('globalLoading');
+      if (globalLoading) globalLoading.style.display = 'none';
+
+      // Dynamically import the main dashboard module ONLY after auth is verified
+      import('/apps/admin/js/dashboard/dashboard.js')
+        .then(module => {
+          if (typeof module.initDashboard === 'function') {
+            module.initDashboard(supabase, user, profile);
+          } else if (typeof module.default === 'function') {
+            module.default(supabase, user, profile);
+          }
+        })
+        .catch(err => {
+          console.error('Failed to load dashboard module:', err);
+          document.body.innerHTML = `<div style="padding:40px;text-align:center;color:#ef4444;">Failed to load dashboard modules. Check console.</div>`;
+        });
+    }
+
+    bootAdminOS();
+  </script>
 </body>
 </html>
