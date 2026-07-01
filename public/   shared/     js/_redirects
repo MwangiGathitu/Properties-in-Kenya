@@ -1,9 +1,2 @@
-# Admin dashboard
-/admin/dashboard /apps/admin/dashboard.html 200
-
-# Static assets (CSS, JS, shared modules)
- /shared/* /shared/:splat 200
- /apps/* /apps/:splat 200
-
-# SPA fallback (optional but useful)
- /* /index.html 200
+# Redirect the homepage to the admin dashboard
+/   /apps/admin/dashboard.html   301
