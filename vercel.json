@@ -1,31 +1,8 @@
 {
-  "version": 2,
-  "cleanUrls": true,
-  "trailingSlash": false,
   "rewrites": [
-    {
-      "source": "/apps/admin/(.*)",
-      "destination": "/apps/admin/$1"
-    }
-  ],
-  "headers": [
-    {
-      "source": "/(.*).js",
-      "headers": [
-        {
-          "key": "Content-Type",
-          "value": "application/javascript; charset=utf-8"
-        }
-      ]
-    },
-    {
-      "source": "/(.*).css",
-      "headers": [
-        {
-          "key": "Content-Type",
-          "value": "text/css; charset=utf-8"
-        }
-      ]
-    }
+    { "source": "/css/:path*", "destination": "/public/css/:path*" },
+    { "source": "/js/:path*", "destination": "/public/js/:path*" },
+    { "source": "/shared/:path*", "destination": "/public/shared/:path*" },
+    { "source": "/", "destination": "/apps/admin/dashboard.html" }
   ]
 }
