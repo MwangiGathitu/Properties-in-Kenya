@@ -1,4 +1,4 @@
-import { supabase } from '/js/supabase.js';
+import { supabase } from '/public/shared/js/supabase.js';
 
 let queue = [];
 let flushTimer = null;
