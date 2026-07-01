@@ -1,7 +1,8 @@
-# Named routes to dashboard
-/dashboard   /apps/admin/dashboard.html   200
-/admin       /apps/admin/dashboard.html   200
+# Serve stylesheets from /public/css/
+/css/*    /public/css/:splat    200
 
-# (Optional) If you still want a SPA‑style fallback for unknown routes,
-# serve index.html ONLY for paths that are not files.
-# But for static sites it's better to NOT have a blanket fallback.
+# Serve utility JS (like /js/utils.js) from /public/js/
+/js/*     /public/js/:splat     200
+
+# Optional: if you want the homepage to open the admin dashboard
+/         /apps/admin/dashboard.html  301
