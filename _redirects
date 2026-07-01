@@ -1,3 +1,7 @@
-/dashboard /apps/admin/dashboard.html 200
-/admin /apps/admin/dashboard.html 200
-/* /index.html 200
+# Named routes to dashboard
+/dashboard   /apps/admin/dashboard.html   200
+/admin       /apps/admin/dashboard.html   200
+
+# (Optional) If you still want a SPA‑style fallback for unknown routes,
+# serve index.html ONLY for paths that are not files.
+# But for static sites it's better to NOT have a blanket fallback.
