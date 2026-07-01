@@ -1,18 +1,18 @@
-// FIXED IMPORTS – correct relative paths from apps/admin/
-import { supabase } from '/public/shared/js/supabase.js';   // absolute – file in public/shared/js/
-import { requireRole } from './js/dashboard/auth.js';       // relative from apps/admin/
+// FIXED IMPORTS – all relative to this file's location (apps/admin/js/dashboard/)
+import { supabase } from '/js/shared/supabase.js';          // absolute – actual file at /js/shared/supabase.js
+import { requireRole } from './auth.js';                   // same folder (auth.js is here)
 
-// Dashboard modules – inside apps/admin/js/dashboard/
-import { UI } from './js/dashboard/ui.js';
-import { loadDashboardData } from './js/dashboard/api.js';
-import { setupTargetedRealtime, teardownRealtime } from './js/dashboard/realtime.js';
-import { checkPermissions } from './js/dashboard/permissions.js';
-import { initCommandPalette } from './js/dashboard/command.js';
+// Local dashboard modules (same folder)
+import { UI } from './ui.js';
+import { loadDashboardData } from './api.js';
+import { setupTargetedRealtime, teardownRealtime } from './realtime.js';
+import { checkPermissions } from './permissions.js';
+import { initCommandPalette } from './command.js';
 
-// Renderers – inside apps/admin/js/dashboard/render/
-import { initOperationsRenderer } from './js/dashboard/render/operations.js';
-import { initQueueRenderer } from './js/dashboard/render/queue.js';
-import { initRevenueRenderer } from './js/dashboard/render/revenue.js';
+// Renderers
+import { initOperationsRenderer } from './render/operations.js';
+import { initQueueRenderer } from './render/queue.js';
+import { initRevenueRenderer } from './render/revenue.js';
 
 let realtimeChannel = null;
 let isBooted = false;
