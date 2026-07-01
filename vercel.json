@@ -1,5 +1,6 @@
 {
   "rewrites": [
-    { "source": "/admin/dashboard", "destination": "/apps/admin/dashboard.html" }
+    { "source": "/admin/dashboard", "destination": "/apps/admin/dashboard.html" },
+    { "source": "/apps/admin/css/:path*", "destination": "/public/css/:path*" }
   ]
 }
