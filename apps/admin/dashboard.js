@@ -1,16 +1,15 @@
-import { supabase } from '/js/supabase.js';
-
+import { supabase } from '/shared/js/supabase.js';
 import { requireRole } from '/js/auth.js';
-import { UI } from '/js/dashboard/ui.js';
-import { loadDashboardData } from '/js/dashboard/api.js';
-import { setupTargetedRealtime, teardownRealtime } from '/js/dashboard/realtime.js';
-import { checkPermissions } from '/js/dashboard/permissions.js';
-import { initCommandPalette } from '/js/dashboard/command.js';
+import { UI } from '/apps/admin/js/dashboard/ui.js';
+import { loadDashboardData } from '/apps/admin/js/dashboard/api.js';
+import { setupTargetedRealtime, teardownRealtime } from '/apps/admin/js/dashboard/realtime.js';
+import { checkPermissions } from '/apps/admin/js/dashboard/permissions.js';
+import { initCommandPalette } from '/apps/admin/js/dashboard/command.js';
 
 // Renderers
-import { initOperationsRenderer } from '/js/dashboard/render/operations.js';
-import { initQueueRenderer } from '/js/dashboard/render/queue.js';
-import { initRevenueRenderer } from '/js/dashboard/render/revenue.js';
+import { initOperationsRenderer } from '/apps/admin/js/dashboard/render/operations.js';
+import { initQueueRenderer } from '/apps/admin/js/dashboard/render/queue.js';
+import { initRevenueRenderer } from '/apps/admin/js/dashboard/render/revenue.js';
 
 let realtimeChannel = null;
 let isBooted = false;
@@ -28,7 +27,6 @@ async function init() {
     // 2. CORE BOOT
     UI.cacheElements();
     UI.initOfflineAwareness();
-
     checkPermissions(auth.user.role);
     initCommandPalette();
 
@@ -42,10 +40,8 @@ async function init() {
 
     // 5. REALTIME
     realtimeChannel = setupTargetedRealtime();
-
   } catch (error) {
     console.error('Dashboard init failed:', error);
-
     UI.showErrorState(
       'globalLoading',
       'System failed to initialize. Please refresh.',
@@ -61,16 +57,13 @@ function cleanup() {
   try {
     // realtime cleanup
     teardownRealtime();
-
     // supabase channel safety fallback
     if (realtimeChannel && supabase) {
       supabase.removeChannel(realtimeChannel);
       realtimeChannel = null;
     }
-
     // UI cleanup (if implemented)
     UI.destroy?.();
-
   } catch (err) {
     console.warn('Dashboard cleanup issue:', err);
   }
