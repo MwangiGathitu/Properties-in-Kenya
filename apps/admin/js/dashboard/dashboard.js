@@ -1,5 +1,5 @@
 // FIXED IMPORTS – all relative to this file's location (apps/admin/js/dashboard/)
-import { supabase } from '/public/shared/js/supabase.js';   // correct absolute path
+import { supabase } from '/public/js/supabase.js';          // updated path
 import { requireRole } from './auth.js';                   // same folder (auth.js is here)
 
 // Local dashboard modules (same folder)
