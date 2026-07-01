@@ -101,6 +101,11 @@
                         </div>
                     </div>
                     <a href="agent-properties.html?action=new" class="hidden sm:flex items-center gap-2 bg-gradient-to-r from-amber-500 to-yellow-600 text-white px-4 py-2.5 rounded-xl font-semibold text-sm hover:shadow-lg transition"><i class="fas fa-plus"></i> Add Property</a>
+                    
+                    <!-- NEW HEADER LOGOUT BUTTON -->
+                    <button id="header-logout-btn" class="hidden sm:flex items-center gap-2 bg-gray-100 hover:bg-red-50 text-gray-700 hover:text-red-600 px-4 py-2.5 rounded-xl font-semibold text-sm transition">
+                        <i class="fas fa-sign-out-alt"></i> Logout
+                    </button>
                 </div>
             </div>
         </header>
@@ -1039,6 +1044,15 @@ function initRealtorOS() {
     });
     document.getElementById('mobile-menu-btn').addEventListener('click',()=>{ document.getElementById('sidebar').classList.toggle('mobile-open'); document.getElementById('mobile-overlay').classList.toggle('hidden'); });
     document.getElementById('mobile-overlay').addEventListener('click',()=>{ document.getElementById('sidebar').classList.remove('mobile-open'); document.getElementById('mobile-overlay').classList.add('hidden'); });
+    
+    // Header Logout Button Event
+    document.getElementById('header-logout-btn').addEventListener('click', async(e)=>{ 
+        e.preventDefault(); 
+        await supabase.auth.signOut(); 
+        window.location.href='login.html?role=agent'; 
+    });
+    
+    // Sidebar Logout Button Event
     document.getElementById('logout-btn').addEventListener('click', async(e)=>{ e.preventDefault(); await supabase.auth.signOut(); window.location.href='login.html?role=agent'; });
     document.getElementById('notif-bell-btn').addEventListener('click',()=>{ document.getElementById('notif-dropdown').classList.toggle('hidden'); });
     document.getElementById('ai-copilot-btn').addEventListener('click', () => document.getElementById('ai-modal').classList.remove('hidden'));
