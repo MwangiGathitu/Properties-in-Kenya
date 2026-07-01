@@ -1,6 +1,6 @@
-// FIXED IMPORTS - Root-relative + local relative
-import { supabase } from '/shared/js/supabase.js';
-import { requireRole } from '/js/auth.js';
+// FIXED IMPORTS – exact real file locations
+import { supabase } from '/public/shared/js/supabase.js';   // real path
+import { requireRole } from './auth.js';                   // same folder (auth.js is here)
 
 // Local dashboard modules (same folder as this file)
 import { UI } from './ui.js';
