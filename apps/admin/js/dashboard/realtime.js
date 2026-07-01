@@ -1,10 +1,8 @@
-import { supabase } from '/public/shared/js/supabase.js';
+import { supabase } from '/public/js/supabase.js';
 import { Store } from './store.js';
 import { loadModule } from './api.js';
 
 let channelInstance = null;
-
-// prevent duplicate optimistic updates
 const processedPayments = new Set();
 
 export function setupTargetedRealtime() {
@@ -14,22 +12,16 @@ export function setupTargetedRealtime() {
 
   channelInstance = supabase
     .channel('admin-os-realtime')
-
-    // Queue updates (only when meaningful changes happen)
     .on('postgres_changes',
       { event: 'INSERT', table: 'pending_decisions' },
       () => loadModule('queue')
     )
-
-    // Safe optimistic revenue update
     .on('postgres_changes',
       { event: 'INSERT', table: 'payments' },
       (payload) => {
         const id = payload.new?.id;
         if (!id || processedPayments.has(id)) return;
-
         processedPayments.add(id);
-
         Store.update('revenue', (current) => ({
           ...current,
           today: (current?.today || 0) + (payload.new.amount || 0),
@@ -37,8 +29,6 @@ export function setupTargetedRealtime() {
         }));
       }
     )
-
-    // Activity feed updates
     .on('postgres_changes',
       { event: 'INSERT', table: 'events' },
       () => loadModule('activity')
@@ -52,7 +42,6 @@ export function setupTargetedRealtime() {
   return channelInstance;
 }
 
-// safe cleanup hook (important for dashboard reloads)
 export function teardownRealtime() {
   if (channelInstance) {
     supabase.removeChannel(channelInstance);
