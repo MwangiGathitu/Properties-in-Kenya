@@ -1,8 +1,0 @@
-# Serve stylesheets from /public/css/
-/css/*    /public/css/:splat    200
-
-# Serve utility JS (like /js/utils.js) from /public/js/
-/js/*     /public/js/:splat     200
-
-# Optional: if you want the homepage to open the admin dashboard
-/         /apps/admin/dashboard.html  301
