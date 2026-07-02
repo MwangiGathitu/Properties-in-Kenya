@@ -1,31 +1,16 @@
-// public/js/auth.js
-import { supabase } from './supabase.js';
-
+// public/js/auth.js – minimal placeholder
 export async function requireRole(role) {
-  const { data: { session } } = await supabase.auth.getSession();
-
-  if (!session) {
+  // Replace this with real Supabase auth logic later
+  const sessionStr = localStorage.getItem('supabase.auth.token');
+  const session = sessionStr ? JSON.parse(sessionStr) : null;
+  const user = session?.currentSession?.user;
+  if (!user) {
     window.location.href = '/apps/auth/login.html';
     return null;
   }
-
-  const { data: { user }, error } = await supabase.auth.getUser();
-  if (error || !user) {
-    await supabase.auth.signOut();
-    window.location.href = '/apps/auth/login.html';
-    return null;
-  }
-
-  const { data: profile, error: profileError } = await supabase
-    .from('profiles')
-    .select('role, full_name, email')
-    .eq('id', user.id)
-    .single();
-
-  if (profileError || !profile || profile.role !== role) {
-    window.location.href = '/apps/auth/login.html';
-    return null;
-  }
-
-  return { user, role: profile.role, profile };
+  return { user };
 }
+
+import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.108.2/+esm';
+const supabaseUrl = 'https://nqwvsmuvltbiekfnvovx.supabase.co';
+const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5xd3ZzbXV2bHRiaWVrZm52b3Z4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA1NjU4MDAsImV4cCI6MjA5NjE0MTgwMH0.Xrc-bbAuWdvKSPHnVhTaLiQphV61xeYtDepWePqsrdo';
