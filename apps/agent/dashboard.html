@@ -10,100 +10,309 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Space+Grotesk:wght@500;600;700&display=swap');
-        body { font-family: 'Inter', system-ui, sans-serif; background: #F8FAFC; }
-        .heading-font { font-family: 'Space Grotesk', sans-serif; }
-        .glass { background: rgba(255,255,255,0.7); backdrop-filter: blur(20px); }
-        .sidebar-link.active { background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); color: white; }
-        .sidebar-link:hover:not(.active) { background-color: #fef3c7; color: #d97706; }
-        .card { transition: all 0.2s ease; }
-        .card:hover { box-shadow: 0 12px 32px rgba(0,0,0,0.08); }
+        
+        :root {
+            --bg-base: #F9FAFB;
+            --surface: #FFFFFF;
+            --border-subtle: #F3F4F6;
+            --border-medium: #E5E7EB;
+            --text-primary: #111827;
+            --text-secondary: #6B7280;
+            --accent-amber: #F59E0B;
+            --accent-amber-dark: #D97706;
+        }
+
+        body { 
+            font-family: 'Inter', system-ui, sans-serif; 
+            background: var(--bg-base); 
+            color: var(--text-primary);
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+        
+        .heading-font { 
+            font-family: 'Space Grotesk', sans-serif; 
+            letter-spacing: -0.02em;
+        }
+
+        /* Premium Scrollbars */
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #E5E7EB; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: #D1D5DB; }
+
+        /* Sidebar Enhancements */
+        .sidebar {
+            background: var(--surface);
+            border-right: 1px solid var(--border-subtle);
+            box-shadow: 0 0 0 1px rgba(0,0,0,0.01);
+        }
+        .sidebar-link {
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            color: #4B5563;
+            position: relative;
+        }
+        .sidebar-link:hover:not(.active) {
+            background-color: #F9FAFB;
+            color: var(--text-primary);
+            transform: translateX(3px);
+        }
+        .sidebar-link.active {
+            background: linear-gradient(135deg, var(--accent-amber) 0%, var(--accent-amber-dark) 100%);
+            color: white;
+            box-shadow: 0 4px 12px rgba(245, 158, 11, 0.25);
+        }
+        .sidebar-link.active::before {
+            content: '';
+            position: absolute;
+            left: 0; top: 20%; bottom: 20%;
+            width: 3px;
+            background: white;
+            border-radius: 0 4px 4px 0;
+        }
+
+        /* Header Glassmorphism */
+        .glass-header {
+            background: rgba(255, 255, 255, 0.75);
+            backdrop-filter: blur(16px) saturate(180%);
+            -webkit-backdrop-filter: blur(16px) saturate(180%);
+            border-bottom: 1px solid var(--border-subtle);
+        }
+
+        /* Premium Cards */
+        .card-premium {
+            background: var(--surface);
+            border: 1px solid var(--border-subtle);
+            border-radius: 20px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.02), 0 1px 2px rgba(0,0,0,0.01);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .card-premium:hover {
+            box-shadow: 0 10px 25px -5px rgba(0,0,0,0.05), 0 8px 10px -6px rgba(0,0,0,0.02);
+            border-color: var(--border-medium);
+        }
+
+        /* AI Briefing Hero */
+        .ai-briefing-hero {
+            background: linear-gradient(135deg, #4F46E5 0%, #7C3AED 50%, #9333EA 100%);
+            position: relative;
+            overflow: hidden;
+            border-radius: 24px;
+            box-shadow: 0 10px 30px -10px rgba(79, 70, 229, 0.4);
+        }
+        .ai-briefing-hero::before {
+            content: '';
+            position: absolute;
+            top: -50%; right: -20%;
+            width: 400px; height: 400px;
+            background: radial-gradient(circle, rgba(255,255,255,0.15) 0%, transparent 70%);
+            border-radius: 50%;
+        }
+
+        /* Gamification Bar */
+        .gamification-bar {
+            background: linear-gradient(135deg, #0F172A 0%, #1E293B 100%);
+            border-radius: 24px;
+            position: relative;
+            overflow: hidden;
+            border: 1px solid rgba(255,255,255,0.05);
+            box-shadow: 0 10px 30px -10px rgba(15, 23, 42, 0.5);
+        }
+        .gamification-bar::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: radial-gradient(circle at 20% 50%, rgba(245, 158, 11, 0.1) 0%, transparent 50%),
+                        radial-gradient(circle at 80% 50%, rgba(139, 92, 246, 0.1) 0%, transparent 50%);
+        }
+
+        /* Pipeline Enhancements */
+        .pipeline-column {
+            background: #F9FAFB;
+            border-radius: 16px;
+            border: 1px solid var(--border-subtle);
+        }
+        .pipeline-card {
+            background: var(--surface);
+            border: 1px solid var(--border-subtle);
+            border-radius: 14px;
+            transition: all 0.25s ease;
+        }
+        .pipeline-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 16px -4px rgba(0,0,0,0.05);
+            border-color: var(--border-medium);
+        }
+
+        /* Modals */
+        .modal-backdrop {
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+        }
+        .modal-container {
+            border-radius: 24px;
+            border: 1px solid rgba(255,255,255,0.1);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+        }
+
+        /* Buttons */
+        .btn-primary-premium {
+            background: linear-gradient(135deg, var(--accent-amber) 0%, var(--accent-amber-dark) 100%);
+            box-shadow: 0 4px 12px rgba(245, 158, 11, 0.25);
+            transition: all 0.2s ease;
+        }
+        .btn-primary-premium:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 6px 16px rgba(245, 158, 11, 0.35);
+        }
+        .btn-primary-premium:active {
+            transform: translateY(0);
+        }
+
+        .quick-action-btn {
+            transition: all 0.2s ease;
+            border: 1px solid transparent;
+        }
+        .quick-action-btn:hover {
+            transform: translateY(-2px);
+            border-color: currentColor;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
+
+        /* Toasts */
+        .toast-premium {
+            background: rgba(17, 24, 39, 0.9);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255,255,255,0.1);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Network Cards */
+        .network-card {
+            background: var(--surface);
+            border: 1px solid #EEF2FF;
+            border-radius: 16px;
+            transition: all 0.2s ease;
+        }
+        .network-card:hover {
+            border-color: #C7D2FE;
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.05);
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fade-in-up {
+            animation: fadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            opacity: 0;
+        }
+        
         .pulse-dot { animation: pulse 2s infinite; }
         @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+        
         @keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
         .slide-up { animation: slideUp 0.3s ease; }
+        
         .timeline-dot::before { content: ''; position: absolute; left: 50%; top: 100%; width: 2px; height: calc(100% + 8px); background: #e5e7eb; transform: translateX(-50%); }
         .timeline-item:last-child .timeline-dot::before { display: none; }
+        
         @media (max-width: 1024px) { .sidebar { display: none; } .sidebar.mobile-open { display: block; } }
     </style>
 </head>
-<body class="bg-gray-50">
+<body>
 
 <!-- LOADER -->
-<div id="auth-loader" class="fixed inset-0 bg-white z-50 flex items-center justify-center"><i class="fas fa-spinner fa-spin text-4xl text-amber-500"></i></div>
+<div id="auth-loader" class="fixed inset-0 bg-white z-50 flex items-center justify-center">
+    <div class="flex flex-col items-center gap-4">
+        <div class="w-12 h-12 border-4 border-gray-100 border-t-amber-500 rounded-full animate-spin"></div>
+        <p class="text-sm text-gray-500 font-medium">Initializing RealtorOS...</p>
+    </div>
+</div>
 
 <!-- MOBILE MENU -->
-<button id="mobile-menu-btn" class="lg:hidden fixed top-4 left-4 z-50 bg-white p-3 rounded-xl shadow-lg"><i class="fas fa-bars text-gray-700"></i></button>
-<div id="mobile-overlay" class="hidden lg:hidden fixed inset-0 bg-black/50 z-40"></div>
+<button id="mobile-menu-btn" class="lg:hidden fixed top-4 left-4 z-50 bg-white p-3 rounded-xl shadow-lg border border-gray-100"><i class="fas fa-bars text-gray-700"></i></button>
+<div id="mobile-overlay" class="hidden lg:hidden fixed inset-0 bg-black/50 backdrop-blur-sm z-40"></div>
 
 <div class="flex min-h-screen">
     <!-- SIDEBAR -->
-    <aside id="sidebar" class="sidebar fixed lg:sticky top-0 left-0 h-screen w-72 bg-white border-r border-gray-200 z-40 overflow-y-auto">
-        <div class="p-6 border-b border-gray-200">
+    <aside id="sidebar" class="sidebar fixed lg:sticky top-0 left-0 h-screen w-72 z-40 overflow-y-auto">
+        <div class="p-6 border-b border-gray-100">
             <div class="flex items-center gap-3">
-                <div class="w-10 h-10 bg-gradient-to-br from-amber-400 to-yellow-600 rounded-xl flex items-center justify-center text-white font-bold text-xl">🏠</div>
+                <div class="w-10 h-10 bg-gradient-to-br from-amber-400 to-yellow-600 rounded-xl flex items-center justify-center text-white font-bold text-xl shadow-lg shadow-amber-500/20">🏠</div>
                 <div>
-                    <h1 class="heading-font text-xl font-bold">RealtorOS</h1>
-                    <p class="text-xs text-gray-500">Agent Workspace</p>
+                    <h1 class="heading-font text-xl font-bold text-gray-900">RealtorOS</h1>
+                    <p class="text-xs text-gray-500 font-medium">Agent Workspace</p>
                 </div>
             </div>
         </div>
-        <div class="p-4 border-b border-gray-200">
-            <div class="bg-gradient-to-br from-amber-50 to-orange-50 rounded-2xl p-4">
+        <div class="p-4 border-b border-gray-100">
+            <div class="bg-gradient-to-br from-amber-50 to-orange-50 rounded-2xl p-4 border border-amber-100/50">
                 <div class="flex items-center gap-3 mb-3">
-                    <div class="w-12 h-12 bg-gradient-to-br from-amber-400 to-yellow-600 rounded-full flex items-center justify-center text-white font-bold text-lg" id="profile-initial">A</div>
+                    <div class="w-12 h-12 bg-gradient-to-br from-amber-400 to-yellow-600 rounded-full flex items-center justify-center text-white font-bold text-lg shadow-md shadow-amber-500/20" id="profile-initial">A</div>
                     <div class="flex-1 min-w-0">
-                        <p class="font-semibold text-sm truncate" id="profile-name">Loading...</p>
-                        <p class="text-xs text-gray-500 truncate" id="profile-agency">Agent</p>
+                        <p class="font-semibold text-sm truncate text-gray-900" id="profile-name">Loading...</p>
+                        <p class="text-xs text-gray-500 truncate font-medium" id="profile-agency">Agent</p>
                     </div>
                 </div>
-                <div class="bg-white rounded-xl p-3">
-                    <div class="flex justify-between items-center mb-1">
-                        <span class="text-xs font-medium text-gray-600">Profile Completion</span>
+                <div class="bg-white/80 backdrop-blur-sm rounded-xl p-3 border border-white/50">
+                    <div class="flex justify-between items-center mb-1.5">
+                        <span class="text-xs font-semibold text-gray-600">Profile Completion</span>
                         <span class="text-xs font-bold text-amber-600" id="profile-percent">0%</span>
                     </div>
-                    <div class="h-2 bg-gray-200 rounded-full overflow-hidden">
-                        <div id="profile-bar" class="h-full bg-gradient-to-r from-amber-400 to-yellow-600 transition-all duration-500" style="width: 0%"></div>
+                    <div class="h-1.5 bg-gray-200/50 rounded-full overflow-hidden">
+                        <div id="profile-bar" class="h-full bg-gradient-to-r from-amber-400 to-yellow-600 transition-all duration-500 rounded-full" style="width: 0%"></div>
                     </div>
                 </div>
             </div>
         </div>
         <nav class="p-4 space-y-1">
-            <a href="agent-dashboard.html" class="sidebar-link active flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium"><i class="fas fa-chart-line w-5"></i> Mission Control</a>
-            <a href="agent-properties.html" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-gray-700"><i class="fas fa-building w-5"></i> Properties</a>
-            <a href="shared-listings.html" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-gray-700"><i class="fas fa-share-nodes w-5"></i> Shared Listings</a>
-            <a href="buyer-requests.html" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-gray-700"><i class="fas fa-user-tie w-5"></i> Buyer Requests</a>
-            <a href="lead-center.html" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-gray-700"><i class="fas fa-bullseye w-5"></i> Lead Center</a>
-            <a href="agent-network.html" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-gray-700"><i class="fas fa-users w-5"></i> Agent Network</a>
-            <a href="messages.html" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-gray-700"><i class="fas fa-comment-dots w-5"></i> Messages</a>
-            <a href="commissions.html" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-gray-700"><i class="fas fa-wallet w-5"></i> Commissions</a>
-            <a href="analytics.html" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-gray-700"><i class="fas fa-chart-pie w-5"></i> Analytics</a>
-            <div class="pt-4 mt-4 border-t border-gray-200">
-                <a href="agent-profile.html" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-gray-700"><i class="fas fa-user-circle w-5"></i> Profile</a>
-                <a href="#" id="logout-btn" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-gray-700"><i class="fas fa-sign-out-alt w-5"></i> Logout</a>
+            <a href="agent-dashboard.html" class="sidebar-link active flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold"><i class="fas fa-chart-line w-5 text-center"></i> Mission Control</a>
+            <a href="agent-properties.html" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium"><i class="fas fa-building w-5 text-center"></i> Properties</a>
+            <a href="shared-listings.html" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium"><i class="fas fa-share-nodes w-5 text-center"></i> Shared Listings</a>
+            <a href="buyer-requests.html" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium"><i class="fas fa-user-tie w-5 text-center"></i> Buyer Requests</a>
+            <a href="lead-center.html" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium"><i class="fas fa-bullseye w-5 text-center"></i> Lead Center</a>
+            <a href="agent-network.html" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium"><i class="fas fa-users w-5 text-center"></i> Agent Network</a>
+            <a href="messages.html" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium"><i class="fas fa-comment-dots w-5 text-center"></i> Messages</a>
+            <a href="commissions.html" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium"><i class="fas fa-wallet w-5 text-center"></i> Commissions</a>
+            <a href="analytics.html" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium"><i class="fas fa-chart-pie w-5 text-center"></i> Analytics</a>
+            <div class="pt-4 mt-4 border-t border-gray-100">
+                <a href="agent-profile.html" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium"><i class="fas fa-user-circle w-5 text-center"></i> Profile</a>
+                <a href="#" id="logout-btn" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-red-500 hover:!text-red-600 hover:!bg-red-50"><i class="fas fa-sign-out-alt w-5 text-center"></i> Logout</a>
             </div>
         </nav>
     </aside>
 
     <!-- MAIN CONTENT -->
     <main class="flex-1 lg:ml-0 w-full">
-        <header class="glass sticky top-0 z-30 border-b border-gray-200">
+        <header class="glass-header sticky top-0 z-30">
             <div class="px-6 py-4 flex items-center justify-between">
                 <div class="lg:pl-0 pl-12">
                     <h1 class="heading-font text-2xl font-bold text-gray-900">Mission Control</h1>
-                    <p class="text-sm text-gray-500" id="greeting">Good morning, Agent</p>
+                    <p class="text-sm text-gray-500 font-medium" id="greeting">Good morning, Agent</p>
                 </div>
-                <div class="flex items-center gap-4">
+                <div class="flex items-center gap-3">
                     <div class="relative">
-                        <button id="notif-bell-btn" class="relative p-2 hover:bg-gray-100 rounded-xl transition"><i class="fas fa-bell text-gray-600 text-xl"></i><span id="notif-badge" class="absolute top-1 right-1 w-3 h-3 bg-red-500 rounded-full border-2 border-white hidden"></span></button>
-                        <div id="notif-dropdown" class="hidden absolute right-0 mt-2 w-80 bg-white rounded-2xl shadow-xl border border-gray-100 z-50 overflow-hidden">
-                            <div class="p-4 border-b border-gray-100 flex justify-between items-center bg-gray-50"><h3 class="font-bold">Notifications</h3><button id="mark-all-read-btn" class="text-xs text-blue-600 font-semibold hover:underline">Mark all read</button></div>
-                            <div id="notif-list" class="max-h-80 overflow-y-auto"><div class="p-4 text-center text-gray-400 text-sm">No notifications yet</div></div>
+                        <button id="notif-bell-btn" class="relative p-2.5 hover:bg-gray-100 rounded-xl transition-all duration-200 active:scale-95">
+                            <i class="fas fa-bell text-gray-600 text-lg"></i>
+                            <span id="notif-badge" class="absolute top-1.5 right-1.5 w-2.5 h-2.5 bg-red-500 rounded-full border-2 border-white hidden shadow-sm"></span>
+                        </button>
+                        <div id="notif-dropdown" class="hidden absolute right-0 mt-2 w-80 bg-white rounded-2xl shadow-2xl border border-gray-100 z-50 overflow-hidden">
+                            <div class="p-4 border-b border-gray-100 flex justify-between items-center bg-gray-50/50">
+                                <h3 class="font-bold text-gray-900">Notifications</h3>
+                                <button id="mark-all-read-btn" class="text-xs text-indigo-600 font-semibold hover:underline">Mark all read</button>
+                            </div>
+                            <div id="notif-list" class="max-h-80 overflow-y-auto">
+                                <div class="p-6 text-center text-gray-400 text-sm">No notifications yet</div>
+                            </div>
                         </div>
                     </div>
-                    <a href="agent-properties.html?action=new" class="hidden sm:flex items-center gap-2 bg-gradient-to-r from-amber-500 to-yellow-600 text-white px-4 py-2.5 rounded-xl font-semibold text-sm hover:shadow-lg transition"><i class="fas fa-plus"></i> Add Property</a>
-                    
-                    <!-- NEW HEADER LOGOUT BUTTON -->
-                    <button id="header-logout-btn" class="hidden sm:flex items-center gap-2 bg-gray-100 hover:bg-red-50 text-gray-700 hover:text-red-600 px-4 py-2.5 rounded-xl font-semibold text-sm transition">
+                    <a href="agent-properties.html?action=new" class="hidden sm:flex items-center gap-2 btn-primary-premium text-white px-4 py-2.5 rounded-xl font-semibold text-sm">
+                        <i class="fas fa-plus"></i> Add Property
+                    </a>
+                    <button id="header-logout-btn" class="hidden sm:flex items-center gap-2 bg-gray-100 hover:bg-red-50 text-gray-700 hover:text-red-600 px-4 py-2.5 rounded-xl font-semibold text-sm transition-all duration-200 active:scale-95">
                         <i class="fas fa-sign-out-alt"></i> Logout
                     </button>
                 </div>
@@ -114,109 +323,133 @@
 
         <div class="p-6 space-y-6">
             <!-- AI BRIEFING -->
-            <div class="bg-gradient-to-r from-indigo-600 to-purple-700 rounded-2xl p-6 text-white shadow-xl relative overflow-hidden">
-                <div class="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full -translate-y-1/2 translate-x-1/2"></div>
+            <div class="ai-briefing-hero p-8 text-white relative overflow-hidden animate-fade-in-up">
+                <div class="absolute top-0 right-0 w-96 h-96 bg-white/10 rounded-full -translate-y-1/2 translate-x-1/2 blur-3xl"></div>
+                <div class="absolute bottom-0 left-0 w-64 h-64 bg-purple-400/20 rounded-full translate-y-1/2 -translate-x-1/2 blur-3xl"></div>
                 <div class="relative z-10">
-                    <h2 class="heading-font text-xl font-bold mb-2 flex items-center gap-2"><i class="fas fa-wand-magic-sparkles"></i> AI Morning Briefing</h2>
-                    <p class="text-sm opacity-90" id="ai-summary">Generating your personalized briefing...</p>
+                    <h2 class="heading-font text-2xl font-bold mb-3 flex items-center gap-3">
+                        <span class="w-10 h-10 bg-white/20 backdrop-blur-sm rounded-xl flex items-center justify-center"><i class="fas fa-wand-magic-sparkles text-lg"></i></span>
+                        AI Morning Briefing
+                    </h2>
+                    <p class="text-base opacity-90 leading-relaxed max-w-3xl" id="ai-summary">Generating your personalized briefing...</p>
                 </div>
             </div>
 
             <!-- GAMIFICATION BAR -->
-            <div class="bg-gradient-to-r from-slate-900 to-slate-800 rounded-2xl p-5 text-white shadow-xl">
-                <div class="flex flex-wrap items-center justify-between gap-4">
+            <div class="gamification-bar p-6 text-white relative overflow-hidden animate-fade-in-up" style="animation-delay: 0.1s;">
+                <div class="relative z-10 flex flex-wrap items-center justify-between gap-6">
                     <div class="flex items-center gap-3">
-                        <div class="w-12 h-12 bg-gradient-to-br from-amber-400 to-yellow-600 rounded-xl flex items-center justify-center text-xl">🏆</div>
+                        <div class="w-12 h-12 bg-gradient-to-br from-amber-400 to-yellow-600 rounded-xl flex items-center justify-center text-xl shadow-lg shadow-amber-500/20">🏆</div>
                         <div>
-                            <p class="text-xs text-gray-400 uppercase tracking-wide">Agent Rank</p>
+                            <p class="text-xs text-gray-400 uppercase tracking-wider font-semibold">Agent Rank</p>
                             <p class="heading-font text-lg font-bold" id="agent-rank">#12 in Nairobi</p>
                         </div>
                     </div>
                     <div class="flex items-center gap-2">
                         <span class="text-amber-400 text-lg">★★★★★</span>
                         <div>
-                            <p class="text-xs text-gray-400">Closing Streak</p>
+                            <p class="text-xs text-gray-400 uppercase tracking-wider font-semibold">Closing Streak</p>
                             <p class="font-bold" id="closing-streak">7 deals</p>
                         </div>
                     </div>
                     <div>
-                        <p class="text-xs text-gray-400">Conversion Rate</p>
-                        <p class="font-bold text-green-400" id="conversion-rate">34%</p>
+                        <p class="text-xs text-gray-400 uppercase tracking-wider font-semibold">Conversion Rate</p>
+                        <p class="font-bold text-green-400 text-lg" id="conversion-rate">34%</p>
                     </div>
                     <div>
-                        <p class="text-xs text-gray-400">Response Time</p>
-                        <p class="font-bold text-blue-400" id="response-time">2 min</p>
+                        <p class="text-xs text-gray-400 uppercase tracking-wider font-semibold">Response Time</p>
+                        <p class="font-bold text-blue-400 text-lg" id="response-time">2 min</p>
                     </div>
                     <div>
-                        <p class="text-xs text-gray-400">This Month</p>
-                        <p class="font-bold" id="month-closed">KES 4.2M</p>
+                        <p class="text-xs text-gray-400 uppercase tracking-wider font-semibold">This Month</p>
+                        <p class="font-bold text-lg" id="month-closed">KES 4.2M</p>
                     </div>
                 </div>
             </div>
 
             <!-- FLIGHT DECK -->
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                <div class="bg-white rounded-2xl border border-gray-100 p-6 col-span-2">
-                    <h2 class="heading-font text-lg font-bold mb-4 flex items-center gap-2"><i class="fas fa-exclamation-triangle text-red-500"></i> Critical Deals</h2>
-                    <div class="space-y-4" id="critical-deals-container"></div>
-                    <div id="no-critical-deals" class="text-center text-gray-400 py-4 hidden">No critical actions right now. Great job!</div>
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 animate-fade-in-up" style="animation-delay: 0.2s;">
+                <div class="card-premium p-6 col-span-2">
+                    <h2 class="heading-font text-lg font-bold mb-4 flex items-center gap-2 text-gray-900">
+                        <span class="w-8 h-8 bg-red-50 rounded-lg flex items-center justify-center"><i class="fas fa-exclamation-triangle text-red-500 text-sm"></i></span>
+                        Critical Deals
+                    </h2>
+                    <div class="space-y-3" id="critical-deals-container"></div>
+                    <div id="no-critical-deals" class="text-center text-gray-400 py-8 hidden">
+                        <i class="fas fa-check-circle text-3xl text-green-400 mb-3"></i>
+                        <p class="font-medium">No critical actions right now. Great job!</p>
+                    </div>
                 </div>
 
                 <div class="space-y-6">
-                    <div class="bg-white rounded-2xl border border-gray-100 p-6">
-                        <h2 class="heading-font text-lg font-bold mb-4">⚡ Quick Actions</h2>
+                    <div class="card-premium p-6">
+                        <h2 class="heading-font text-lg font-bold mb-4 text-gray-900">⚡ Quick Actions</h2>
                         <div class="grid grid-cols-2 gap-3">
-                            <button class="btn-quick-action flex flex-col items-center justify-center p-4 bg-blue-50 rounded-xl hover:bg-blue-100 transition" data-action="call"><i class="fas fa-phone-alt text-blue-600 text-xl mb-2"></i><span class="text-xs font-semibold text-gray-700">Call Lead</span></button>
-                            <button class="btn-quick-action flex flex-col items-center justify-center p-4 bg-green-50 rounded-xl hover:bg-green-100 transition" data-action="whatsapp"><i class="fab fa-whatsapp text-green-600 text-xl mb-2"></i><span class="text-xs font-semibold text-gray-700">WhatsApp</span></button>
-                            <button class="btn-quick-action flex flex-col items-center justify-center p-4 bg-amber-50 rounded-xl hover:bg-amber-100 transition" data-action="schedule"><i class="fas fa-calendar-plus text-amber-600 text-xl mb-2"></i><span class="text-xs font-semibold text-gray-700">Schedule Viewing</span></button>
-                            <button class="btn-quick-action flex flex-col items-center justify-center p-4 bg-purple-50 rounded-xl hover:bg-purple-100 transition" data-action="send-flyer"><i class="fas fa-file-alt text-purple-600 text-xl mb-2"></i><span class="text-xs font-semibold text-gray-700">Generate Flyer</span></button>
+                            <button class="quick-action-btn btn-quick-action flex flex-col items-center justify-center p-4 bg-blue-50 text-blue-600 rounded-xl" data-action="call"><i class="fas fa-phone-alt text-xl mb-2"></i><span class="text-xs font-semibold">Call Lead</span></button>
+                            <button class="quick-action-btn btn-quick-action flex flex-col items-center justify-center p-4 bg-green-50 text-green-600 rounded-xl" data-action="whatsapp"><i class="fab fa-whatsapp text-xl mb-2"></i><span class="text-xs font-semibold">WhatsApp</span></button>
+                            <button class="quick-action-btn btn-quick-action flex flex-col items-center justify-center p-4 bg-amber-50 text-amber-600 rounded-xl" data-action="schedule"><i class="fas fa-calendar-plus text-xl mb-2"></i><span class="text-xs font-semibold">Schedule Viewing</span></button>
+                            <button class="quick-action-btn btn-quick-action flex flex-col items-center justify-center p-4 bg-purple-50 text-purple-600 rounded-xl" data-action="send-flyer"><i class="fas fa-file-alt text-xl mb-2"></i><span class="text-xs font-semibold">Generate Flyer</span></button>
                         </div>
                     </div>
-                    <div class="bg-white rounded-2xl border border-gray-100 p-6">
-                        <h2 class="heading-font text-lg font-bold mb-4 flex items-center gap-2"><i class="fas fa-coins text-amber-500"></i> Revenue Pulse</h2>
+                    <div class="card-premium p-6">
+                        <h2 class="heading-font text-lg font-bold mb-4 flex items-center gap-2 text-gray-900">
+                            <span class="w-8 h-8 bg-amber-50 rounded-lg flex items-center justify-center"><i class="fas fa-coins text-amber-500 text-sm"></i></span>
+                            Revenue Pulse
+                        </h2>
                         <div class="space-y-4">
-                            <div class="flex justify-between"><span class="text-sm text-gray-600">Today</span><span class="font-bold" id="flight-rev-today">KES 0</span></div>
-                            <div class="flex justify-between"><span class="text-sm text-gray-600">This Week</span><span class="font-bold" id="flight-rev-week">KES 320K</span></div>
-                            <div class="flex justify-between"><span class="text-sm text-gray-600">Pipeline Value</span><span class="font-bold" id="flight-pipeline-value">KES 0</span></div>
-                            <div class="flex justify-between"><span class="text-sm text-gray-600">Expected Commission</span><span class="font-bold text-amber-600" id="flight-exp-commission">KES 0</span></div>
+                            <div class="flex justify-between items-center"><span class="text-sm text-gray-500 font-medium">Today</span><span class="font-bold text-gray-900" id="flight-rev-today">KES 0</span></div>
+                            <div class="flex justify-between items-center"><span class="text-sm text-gray-500 font-medium">This Week</span><span class="font-bold text-gray-900" id="flight-rev-week">KES 320K</span></div>
+                            <div class="flex justify-between items-center"><span class="text-sm text-gray-500 font-medium">Pipeline Value</span><span class="font-bold text-gray-900" id="flight-pipeline-value">KES 0</span></div>
+                            <div class="flex justify-between items-center pt-3 border-t border-gray-100"><span class="text-sm text-gray-500 font-medium">Expected Commission</span><span class="font-bold text-amber-600 text-lg" id="flight-exp-commission">KES 0</span></div>
                         </div>
                     </div>
                 </div>
             </div>
 
             <!-- NETWORK INTELLIGENCE -->
-            <div class="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-2xl border border-blue-100 p-6">
+            <div class="card-premium p-6 bg-gradient-to-br from-blue-50/50 to-indigo-50/50 border-indigo-100/50 animate-fade-in-up" style="animation-delay: 0.3s;">
                 <div class="flex items-center justify-between mb-4">
-                    <h2 class="heading-font text-lg font-bold flex items-center gap-2"><i class="fas fa-network-wired text-indigo-600"></i> Network Intelligence</h2>
-                    <a href="agent-network.html" class="text-xs text-indigo-600 font-semibold hover:underline">View all →</a>
+                    <h2 class="heading-font text-lg font-bold flex items-center gap-2 text-gray-900">
+                        <span class="w-8 h-8 bg-indigo-100 rounded-lg flex items-center justify-center"><i class="fas fa-network-wired text-indigo-600 text-sm"></i></span>
+                        Network Intelligence
+                    </h2>
+                    <a href="agent-network.html" class="text-xs text-indigo-600 font-semibold hover:underline flex items-center gap-1">View all <i class="fas fa-arrow-right text-[10px]"></i></a>
                 </div>
                 <div id="network-suggestions" class="space-y-3"></div>
             </div>
 
             <!-- DEAL PIPELINE -->
-            <div class="bg-white rounded-2xl border border-gray-100">
+            <div class="card-premium overflow-hidden animate-fade-in-up" style="animation-delay: 0.4s;">
                 <div class="p-6 border-b border-gray-100 flex items-center justify-between">
-                    <h2 class="heading-font text-lg font-bold">Deal Pipeline (12 Stages)</h2>
+                    <h2 class="heading-font text-lg font-bold text-gray-900">Deal Pipeline <span class="text-sm font-normal text-gray-500">(12 Stages)</span></h2>
                     <button id="toggle-pipeline-view" class="text-sm text-amber-600 font-semibold hover:underline">Compact View</button>
                 </div>
-                <div class="overflow-x-auto pb-4" id="pipeline-container">
-                    <div class="flex gap-4 px-6 min-w-max"></div>
+                <div class="overflow-x-auto pb-6 pt-6 px-6 bg-gray-50/50" id="pipeline-container">
+                    <div class="flex gap-4 min-w-max"></div>
                 </div>
             </div>
 
             <!-- ACTION CENTER -->
-            <div class="bg-white rounded-2xl border border-gray-100">
+            <div class="card-premium overflow-hidden animate-fade-in-up" style="animation-delay: 0.5s;">
                 <div class="p-6 border-b border-gray-100">
-                    <h2 class="heading-font text-lg font-bold"><i class="fas fa-bolt text-amber-500 mr-2"></i>AI‑Prioritized Action Center</h2>
+                    <h2 class="heading-font text-lg font-bold flex items-center gap-2 text-gray-900">
+                        <span class="w-8 h-8 bg-amber-50 rounded-lg flex items-center justify-center"><i class="fas fa-bolt text-amber-500 text-sm"></i></span>
+                        AI‑Prioritized Action Center
+                    </h2>
                 </div>
                 <div id="action-center" class="divide-y divide-gray-100"></div>
             </div>
 
             <!-- AUTOMATION LOG -->
-            <div class="bg-white rounded-2xl border border-gray-100 p-6">
+            <div class="card-premium p-6 animate-fade-in-up" style="animation-delay: 0.6s;">
                 <div class="flex items-center justify-between mb-4">
-                    <h2 class="heading-font text-lg font-bold flex items-center gap-2"><i class="fas fa-robot text-purple-600"></i> Automation Log</h2>
-                    <span class="text-xs bg-green-100 text-green-700 px-2 py-1 rounded-full font-semibold">● Active</span>
+                    <h2 class="heading-font text-lg font-bold flex items-center gap-2 text-gray-900">
+                        <span class="w-8 h-8 bg-purple-50 rounded-lg flex items-center justify-center"><i class="fas fa-robot text-purple-600 text-sm"></i></span>
+                        Automation Log
+                    </h2>
+                    <span class="text-xs bg-green-100 text-green-700 px-2.5 py-1 rounded-full font-semibold flex items-center gap-1.5">
+                        <span class="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse"></span> Active
+                    </span>
                 </div>
                 <div id="automation-log" class="space-y-2 text-sm"></div>
             </div>
@@ -225,57 +458,58 @@
 </div>
 
 <!-- AI COPILOT BUTTON -->
-<button id="ai-copilot-btn" class="fixed bottom-6 right-6 w-14 h-14 bg-gradient-to-br from-indigo-600 to-purple-700 text-white rounded-2xl shadow-xl flex items-center justify-center text-2xl z-50 hover:scale-105 transition">
+<button id="ai-copilot-btn" class="fixed bottom-6 right-6 w-14 h-14 bg-gradient-to-br from-indigo-600 to-purple-700 text-white rounded-2xl shadow-xl flex items-center justify-center text-2xl z-50 hover:scale-105 transition-all duration-200 active:scale-95 ring-4 ring-white/20">
     <i class="fas fa-wand-magic-sparkles"></i>
 </button>
 
 <!-- AI COMMAND CENTER MODAL -->
-<div id="ai-modal" class="hidden fixed inset-0 bg-black/60 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4">
-    <div class="bg-white w-full sm:max-w-2xl rounded-t-3xl sm:rounded-3xl shadow-2xl slide-up overflow-hidden max-h-[90vh] flex flex-col">
-        <div class="bg-gradient-to-r from-indigo-600 to-purple-700 p-6 text-white">
-            <div class="flex items-center justify-between">
+<div id="ai-modal" class="hidden fixed inset-0 modal-backdrop z-50 flex items-end sm:items-center justify-center p-0 sm:p-4">
+    <div class="bg-white w-full sm:max-w-2xl modal-container slide-up overflow-hidden max-h-[90vh] flex flex-col">
+        <div class="bg-gradient-to-r from-indigo-600 to-purple-700 p-6 text-white relative overflow-hidden">
+            <div class="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full -translate-y-1/2 translate-x-1/2 blur-3xl"></div>
+            <div class="relative z-10 flex items-center justify-between">
                 <div class="flex items-center gap-3">
-                    <div class="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center"><i class="fas fa-wand-magic-sparkles"></i></div>
+                    <div class="w-10 h-10 bg-white/20 backdrop-blur-sm rounded-xl flex items-center justify-center"><i class="fas fa-wand-magic-sparkles"></i></div>
                     <div>
                         <h2 class="heading-font text-xl font-bold">AI Command Center</h2>
                         <p class="text-xs opacity-80">Ask anything about your business</p>
                     </div>
                 </div>
-                <button id="close-ai-modal" class="w-8 h-8 rounded-full bg-white/20 hover:bg-white/30 flex items-center justify-center"><i class="fas fa-times"></i></button>
+                <button id="close-ai-modal" class="w-8 h-8 rounded-full bg-white/20 hover:bg-white/30 flex items-center justify-center transition-colors"><i class="fas fa-times"></i></button>
             </div>
         </div>
         <div id="ai-response-area" class="flex-1 overflow-y-auto p-6 space-y-3 bg-gray-50 min-h-[200px] max-h-[50vh]">
-            <div class="bg-white rounded-2xl p-4 shadow-sm">
-                <p class="text-sm text-gray-700">👋 Hi! I'm your AI assistant. Try asking:</p>
+            <div class="bg-white rounded-2xl p-4 shadow-sm border border-gray-100">
+                <p class="text-sm text-gray-700 font-medium">👋 Hi! I'm your AI assistant. Try asking:</p>
                 <div class="mt-3 space-y-2">
-                    <button class="ai-suggestion w-full text-left text-sm bg-indigo-50 hover:bg-indigo-100 px-3 py-2 rounded-lg transition">Who should I call first today?</button>
-                    <button class="ai-suggestion w-full text-left text-sm bg-indigo-50 hover:bg-indigo-100 px-3 py-2 rounded-lg transition">Which deal is most likely to collapse?</button>
-                    <button class="ai-suggestion w-full text-left text-sm bg-indigo-50 hover:bg-indigo-100 px-3 py-2 rounded-lg transition">Show me buyers ready to close in 2 weeks</button>
-                    <button class="ai-suggestion w-full text-left text-sm bg-indigo-50 hover:bg-indigo-100 px-3 py-2 rounded-lg transition">Generate a follow-up message for Peter</button>
-                    <button class="ai-suggestion w-full text-left text-sm bg-indigo-50 hover:bg-indigo-100 px-3 py-2 rounded-lg transition">What's my pipeline value?</button>
+                    <button class="ai-suggestion w-full text-left text-sm bg-indigo-50 hover:bg-indigo-100 text-indigo-700 px-3 py-2 rounded-lg transition-colors font-medium">Who should I call first today?</button>
+                    <button class="ai-suggestion w-full text-left text-sm bg-indigo-50 hover:bg-indigo-100 text-indigo-700 px-3 py-2 rounded-lg transition-colors font-medium">Which deal is most likely to collapse?</button>
+                    <button class="ai-suggestion w-full text-left text-sm bg-indigo-50 hover:bg-indigo-100 text-indigo-700 px-3 py-2 rounded-lg transition-colors font-medium">Show me buyers ready to close in 2 weeks</button>
+                    <button class="ai-suggestion w-full text-left text-sm bg-indigo-50 hover:bg-indigo-100 text-indigo-700 px-3 py-2 rounded-lg transition-colors font-medium">Generate a follow-up message for Peter</button>
+                    <button class="ai-suggestion w-full text-left text-sm bg-indigo-50 hover:bg-indigo-100 text-indigo-700 px-3 py-2 rounded-lg transition-colors font-medium">What's my pipeline value?</button>
                 </div>
             </div>
         </div>
         <div class="p-4 border-t border-gray-100 bg-white">
             <div class="flex items-center gap-2">
-                <input id="ai-input" type="text" placeholder="Ask me anything..." class="flex-1 px-4 py-3 bg-gray-100 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm">
-                <button id="ai-send-btn" class="w-12 h-12 bg-gradient-to-br from-indigo-600 to-purple-700 text-white rounded-xl flex items-center justify-center hover:shadow-lg transition"><i class="fas fa-paper-plane"></i></button>
+                <input id="ai-input" type="text" placeholder="Ask me anything..." class="flex-1 px-4 py-3 bg-gray-100 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:bg-white text-sm transition-all">
+                <button id="ai-send-btn" class="w-12 h-12 bg-gradient-to-br from-indigo-600 to-purple-700 text-white rounded-xl flex items-center justify-center hover:shadow-lg transition-all active:scale-95"><i class="fas fa-paper-plane"></i></button>
             </div>
         </div>
     </div>
 </div>
 
 <!-- DEAL TIMELINE MODAL -->
-<div id="timeline-modal" class="hidden fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4">
-    <div class="bg-white w-full max-w-2xl rounded-3xl shadow-2xl slide-up overflow-hidden max-h-[90vh] flex flex-col">
+<div id="timeline-modal" class="hidden fixed inset-0 modal-backdrop z-50 flex items-center justify-center p-4">
+    <div class="bg-white w-full max-w-2xl modal-container slide-up overflow-hidden max-h-[90vh] flex flex-col">
         <div class="p-6 border-b border-gray-100 flex items-center justify-between">
             <div>
-                <h2 class="heading-font text-xl font-bold" id="timeline-title">Relationship Timeline</h2>
-                <p class="text-sm text-gray-500" id="timeline-subtitle">Full history of interactions</p>
+                <h2 class="heading-font text-xl font-bold text-gray-900" id="timeline-title">Relationship Timeline</h2>
+                <p class="text-sm text-gray-500 font-medium" id="timeline-subtitle">Full history of interactions</p>
             </div>
-            <button id="close-timeline-modal" class="w-8 h-8 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center"><i class="fas fa-times text-gray-600"></i></button>
+            <button id="close-timeline-modal" class="w-8 h-8 rounded-full bg-gray-100 hover:bg-gray-200 flex items-center justify-center transition-colors"><i class="fas fa-times text-gray-600"></i></button>
         </div>
-        <div id="timeline-content" class="flex-1 overflow-y-auto p-6 space-y-4"></div>
+        <div id="timeline-content" class="flex-1 overflow-y-auto p-6 space-y-4 bg-gray-50/50"></div>
     </div>
 </div>
 
@@ -326,7 +560,7 @@ function initRealtorOS() {
     function showToast(title, msg, icon='fa-bell') {
         const container = document.getElementById('toast-container');
         const toast = document.createElement('div');
-        toast.className = 'pointer-events-auto bg-gray-900 text-white px-4 py-3 rounded-xl shadow-2xl flex items-center gap-3 min-w-[300px] slide-up';
+        toast.className = 'pointer-events-auto toast-premium text-white px-4 py-3 rounded-xl flex items-center gap-3 min-w-[300px] slide-up';
         toast.innerHTML = `<i class="fas ${icon} text-amber-400"></i><div class="flex-1"><p class="text-sm font-bold">${esc(title)}</p><p class="text-xs text-gray-300">${esc(msg)}</p></div>`;
         container.appendChild(toast);
         setTimeout(()=>{ toast.style.opacity='0'; toast.style.transform='translateY(20px)'; setTimeout(()=>toast.remove(),300); },4000);
@@ -570,7 +804,7 @@ function initRealtorOS() {
             return;
         }
         container.innerHTML = state.automationLog.map(log => `
-            <div class="flex items-start gap-3 p-3 bg-gray-50 rounded-xl">
+            <div class="flex items-start gap-3 p-3 bg-gray-50 rounded-xl border border-gray-100">
                 <div class="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0" style="background: ${log.color==='blue'?'#dbeafe':log.color==='amber'?'#fef3c7':'#fee2e2'}; color: ${log.color==='blue'?'#1e40af':log.color==='amber'?'#92400e':'#991b1b'};">
                     <i class="fas ${log.icon} text-xs"></i>
                 </div>
@@ -578,7 +812,7 @@ function initRealtorOS() {
                     <p class="font-semibold text-sm text-gray-900">${esc(log.title)}</p>
                     <p class="text-xs text-gray-500">${esc(log.detail)}</p>
                 </div>
-                <span class="text-xs text-gray-400 flex-shrink-0">${esc(log.time)}</span>
+                <span class="text-xs text-gray-400 flex-shrink-0 font-medium">${esc(log.time)}</span>
             </div>
         `).join('');
     }
@@ -634,7 +868,7 @@ function initRealtorOS() {
             const { data } = await supabase.from('notifications').select('*').eq('agent_id', state.user.id).order('created_at',{ascending:false}).limit(10);
             const list = document.getElementById('notif-list');
             if (!data || data.length === 0) {
-                list.innerHTML = '<div class="p-4 text-center text-gray-400 text-sm">No notifications yet</div>';
+                list.innerHTML = '<div class="p-6 text-center text-gray-400 text-sm">No notifications yet</div>';
                 return;
             }
             list.innerHTML = data.map(n => {
@@ -647,7 +881,7 @@ function initRealtorOS() {
                         <div class="flex-1">
                             <p class="text-sm font-semibold text-gray-800">${esc(n.title)}</p>
                             <p class="text-xs text-gray-500 mt-1">${esc(n.message)}</p>
-                            <p class="text-[10px] text-gray-400 mt-2">${timeAgo(n.created_at)}</p>
+                            <p class="text-[10px] text-gray-400 mt-2 font-medium">${timeAgo(n.created_at)}</p>
                         </div>
                         ${!n.is_read ? '<div class="w-2 h-2 bg-blue-600 rounded-full flex-shrink-0 mt-2"></div>' : ''}
                     </div>
@@ -684,13 +918,13 @@ function initRealtorOS() {
         }
         noCritical.classList.add('hidden');
         container.innerHTML = critical.sort((a,b)=>b.urgency-a.urgency).map(deal => `
-            <div class="flex items-center justify-between p-3 bg-gray-50 rounded-xl border border-gray-100 hover:shadow-md transition cursor-pointer" data-deal-id="${deal.id}">
+            <div class="flex items-center justify-between p-4 bg-gray-50 rounded-xl border border-gray-100 hover:shadow-md hover:border-gray-200 transition-all cursor-pointer group" data-deal-id="${deal.id}">
                 <div class="flex items-center gap-3 flex-1 min-w-0">
-                    <div class="w-10 h-10 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0" style="background:${getHealthStyle(deal.health).bg}; color:${getHealthStyle(deal.health).text};">${deal.probability}%</div>
+                    <div class="w-10 h-10 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0 shadow-sm" style="background:${getHealthStyle(deal.health).bg}; color:${getHealthStyle(deal.health).text};">${deal.probability}%</div>
                     <div class="flex-1 min-w-0">
-                        <p class="font-semibold text-sm truncate">${esc(deal.name)}</p>
-                        <p class="text-xs text-gray-500 truncate">${esc(deal.property)} • ${formatKES(deal.commission)}</p>
-                        <p class="text-[10px] text-gray-400">Closes ~${formatDate(deal.likely_close)} · Risk: ${esc(deal.biggestRisk.text)}</p>
+                        <p class="font-semibold text-sm truncate text-gray-900 group-hover:text-amber-600 transition-colors">${esc(deal.name)}</p>
+                        <p class="text-xs text-gray-500 truncate font-medium">${esc(deal.property)} • ${formatKES(deal.commission)}</p>
+                        <p class="text-[10px] text-gray-400 mt-0.5">Closes ~${formatDate(deal.likely_close)} · Risk: ${esc(deal.biggestRisk.text)}</p>
                     </div>
                 </div>
                 <div class="flex flex-col items-end gap-1 flex-shrink-0 ml-2">
@@ -723,26 +957,26 @@ function initRealtorOS() {
         stages.forEach(stage => {
             const stageDeals = state.deals.filter(d => d.stage === stage.id);
             html += `
-            <div class="flex-shrink-0 w-72 bg-gray-50 rounded-2xl p-3">
-                <div class="flex items-center justify-between mb-3">
+            <div class="flex-shrink-0 w-72 pipeline-column p-3">
+                <div class="flex items-center justify-between mb-3 px-1">
                     <span class="text-xs font-semibold px-3 py-1 rounded-full ${stage.color}">${stage.label}</span>
-                    <span class="text-xs text-gray-500">${stageDeals.length}</span>
+                    <span class="text-xs text-gray-500 font-bold bg-white px-2 py-0.5 rounded-full shadow-sm">${stageDeals.length}</span>
                 </div>
                 <div class="space-y-3">
                     ${stageDeals.map(deal => `
-                    <div class="bg-white rounded-xl p-4 shadow-sm border border-gray-100 hover:shadow-md transition cursor-pointer" data-deal-id="${deal.id}">
+                    <div class="pipeline-card p-4 cursor-pointer" data-deal-id="${deal.id}">
                         <div class="flex items-center justify-between mb-2">
                             <h3 class="font-semibold text-sm text-gray-900">${esc(deal.name)}</h3>
-                            <span class="text-xs px-2 py-0.5 rounded-full" style="background:${getHealthStyle(deal.health).bg}; color:${getHealthStyle(deal.health).text};">${deal.health}%</span>
+                            <span class="text-xs px-2 py-0.5 rounded-full font-bold shadow-sm" style="background:${getHealthStyle(deal.health).bg}; color:${getHealthStyle(deal.health).text};">${deal.health}%</span>
                         </div>
-                        ${deal.property ? `<p class="text-xs text-gray-600 mb-2"><i class="fas fa-home mr-1"></i>${esc(deal.property)}</p>` : ''}
-                        ${deal.value > 0 ? `<p class="text-xs text-gray-600"><i class="fas fa-tag mr-1"></i>${formatKES(deal.value)}</p>` : ''}
-                        ${deal.commission > 0 ? `<p class="text-xs text-amber-600"><i class="fas fa-coins mr-1"></i>${formatKES(deal.commission)}</p>` : ''}
-                        <div class="mt-2 text-[10px] bg-red-50 p-2 rounded-lg" style="color:#991b1b;">
+                        ${deal.property ? `<p class="text-xs text-gray-600 mb-2 font-medium"><i class="fas fa-home mr-1 text-gray-400"></i>${esc(deal.property)}</p>` : ''}
+                        ${deal.value > 0 ? `<p class="text-xs text-gray-600 font-medium"><i class="fas fa-tag mr-1 text-gray-400"></i>${formatKES(deal.value)}</p>` : ''}
+                        ${deal.commission > 0 ? `<p class="text-xs text-amber-600 font-bold mt-1"><i class="fas fa-coins mr-1"></i>${formatKES(deal.commission)}</p>` : ''}
+                        <div class="mt-3 text-[10px] bg-red-50 p-2 rounded-lg border border-red-100" style="color:#991b1b;">
                             <i class="fas fa-exclamation-triangle text-red-500 mr-1"></i>${esc(deal.biggestRisk.text)}
                         </div>
-                        <div class="mt-3 flex items-center justify-between">
-                            <span class="text-xs text-gray-500">~${formatDate(deal.likely_close)}</span>
+                        <div class="mt-3 flex items-center justify-between pt-3 border-t border-gray-100">
+                            <span class="text-xs text-gray-500 font-medium">~${formatDate(deal.likely_close)}</span>
                             <button class="text-xs text-amber-600 font-semibold hover:underline" onclick="event.stopPropagation(); showToast('AI recommends','${esc(deal.recommendation.text)}','fa-${deal.recommendation.icon}')">AI →</button>
                         </div>
                     </div>
@@ -770,37 +1004,37 @@ function initRealtorOS() {
             }))
             .sort((a,b) => b.urgency - a.urgency);
         container.innerHTML = actions.length ? actions.map(a => `
-            <div class="flex items-center gap-4 p-4 hover:bg-gray-50 transition cursor-pointer" data-deal-id="${a.dealId}">
-                <div class="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0" style="background:${PRIORITY_COLORS[a.priority].bg}; color:${PRIORITY_COLORS[a.priority].text};">
+            <div class="flex items-center gap-4 p-4 hover:bg-gray-50 transition-all cursor-pointer group" data-deal-id="${a.dealId}">
+                <div class="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 shadow-sm" style="background:${PRIORITY_COLORS[a.priority].bg}; color:${PRIORITY_COLORS[a.priority].text};">
                     <i class="fas fa-${a.icon}"></i>
                 </div>
                 <div class="flex-1 min-w-0">
-                    <p class="font-semibold text-sm">${esc(a.text)}</p>
-                    <p class="text-xs text-gray-500">${esc(a.buyer)} • ${formatKES(a.commission)}</p>
+                    <p class="font-semibold text-sm text-gray-900 group-hover:text-amber-600 transition-colors">${esc(a.text)}</p>
+                    <p class="text-xs text-gray-500 font-medium">${esc(a.buyer)} • ${formatKES(a.commission)}</p>
                 </div>
-                <span class="text-xs font-bold px-2 py-1 rounded-full" style="background:${PRIORITY_COLORS[a.priority].bg}; color:${PRIORITY_COLORS[a.priority].text};">${a.priority}</span>
+                <span class="text-xs font-bold px-2.5 py-1 rounded-full shadow-sm" style="background:${PRIORITY_COLORS[a.priority].bg}; color:${PRIORITY_COLORS[a.priority].text};">${a.priority}</span>
             </div>
-        `).join('') : '<div class="p-4 text-center text-gray-400">All caught up!</div>';
+        `).join('') : '<div class="p-6 text-center text-gray-400 font-medium">All caught up!</div>';
     }
 
     // ============ NETWORK ============
     function renderNetworkSuggestions() {
         const container = document.getElementById('network-suggestions');
         if (!state.networkAgents.length) {
-            container.innerHTML = '<p class="text-sm text-gray-500">No collaboration opportunities right now.</p>';
+            container.innerHTML = '<p class="text-sm text-gray-500 font-medium">No collaboration opportunities right now.</p>';
             return;
         }
         container.innerHTML = state.networkAgents.map(agent => `
-            <div class="flex items-center gap-4 p-3 bg-white rounded-xl border border-blue-100">
-                <div class="w-12 h-12 bg-gradient-to-br from-indigo-400 to-purple-500 rounded-full flex items-center justify-center text-white font-bold flex-shrink-0">${agent.name[0]}</div>
+            <div class="network-card flex items-center gap-4 p-4">
+                <div class="w-12 h-12 bg-gradient-to-br from-indigo-400 to-purple-500 rounded-full flex items-center justify-center text-white font-bold flex-shrink-0 shadow-md shadow-indigo-500/20">${agent.name[0]}</div>
                 <div class="flex-1 min-w-0">
-                    <p class="font-semibold text-sm">${esc(agent.name)} <span class="text-xs text-gray-500 font-normal">• ${esc(agent.agency)}</span></p>
-                    <p class="text-xs text-gray-600">${esc(agent.reason)}</p>
+                    <p class="font-semibold text-sm text-gray-900">${esc(agent.name)} <span class="text-xs text-gray-500 font-normal">• ${esc(agent.agency)}</span></p>
+                    <p class="text-xs text-gray-600 mt-0.5">${esc(agent.reason)}</p>
                 </div>
                 <div class="text-right flex-shrink-0">
-                    <p class="text-xs text-gray-500">Match</p>
-                    <p class="font-bold text-indigo-600">${agent.match_score}%</p>
-                    <button class="mt-1 text-xs bg-indigo-600 text-white px-3 py-1 rounded-lg hover:bg-indigo-700">Connect</button>
+                    <p class="text-xs text-gray-500 font-medium">Match</p>
+                    <p class="font-bold text-indigo-600 text-lg">${agent.match_score}%</p>
+                    <button class="mt-1 text-xs bg-indigo-600 text-white px-3 py-1.5 rounded-lg hover:bg-indigo-700 transition-colors font-semibold shadow-sm">Connect</button>
                 </div>
             </div>
         `).join('');
@@ -862,12 +1096,12 @@ function initRealtorOS() {
         html += `
             <div class="relative timeline-item">
                 <div class="flex gap-4">
-                    <div class="relative flex-shrink-0"><div class="timeline-dot w-10 h-10 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-full flex items-center justify-center text-white"><i class="fas fa-crystal-ball"></i></div></div>
+                    <div class="relative flex-shrink-0"><div class="timeline-dot w-10 h-10 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-full flex items-center justify-center text-white shadow-md shadow-indigo-500/20"><i class="fas fa-crystal-ball"></i></div></div>
                     <div class="flex-1 pb-6">
                         <p class="text-xs text-indigo-600 font-semibold uppercase tracking-wide">AI Prediction</p>
-                        <p class="font-bold text-gray-900">Likely closing: ${formatDate(deal.likely_close)}</p>
-                        <p class="text-sm text-gray-600 mt-1">Probability: ${deal.probability}% · Expected commission: ${formatKES(deal.commission)}</p>
-                        <div class="mt-2 text-xs bg-red-50 border border-red-100 rounded-lg p-2">
+                        <p class="font-bold text-gray-900 text-lg">Likely closing: ${formatDate(deal.likely_close)}</p>
+                        <p class="text-sm text-gray-600 mt-1 font-medium">Probability: ${deal.probability}% · Expected commission: ${formatKES(deal.commission)}</p>
+                        <div class="mt-2 text-xs bg-red-50 border border-red-100 rounded-lg p-3">
                             <i class="fas fa-exclamation-triangle text-red-500 mr-1"></i>Biggest risk: ${esc(deal.biggestRisk.text)}
                         </div>
                     </div>
@@ -878,9 +1112,9 @@ function initRealtorOS() {
             html += `
             <div class="relative timeline-item">
                 <div class="flex gap-4">
-                    <div class="relative flex-shrink-0"><div class="timeline-dot w-10 h-10 rounded-full flex items-center justify-center" style="background:${meta.color==='blue'?'#dbeafe':meta.color==='green'?'#dcfce7':meta.color==='purple'?'#f3e8ff':meta.color==='amber'?'#fef3c7':meta.color==='orange'?'#fff7ed':meta.color==='red'?'#fee2e2':'#f3f4f6'}; color:${meta.color==='blue'?'#1e40af':meta.color==='green'?'#166534':meta.color==='purple'?'#6b21a8':meta.color==='amber'?'#92400e':meta.color==='orange'?'#c2410c':meta.color==='red'?'#991b1b':'#374151'};"><i class="fas ${meta.icon}"></i></div></div>
+                    <div class="relative flex-shrink-0"><div class="timeline-dot w-10 h-10 rounded-full flex items-center justify-center shadow-sm" style="background:${meta.color==='blue'?'#dbeafe':meta.color==='green'?'#dcfce7':meta.color==='purple'?'#f3e8ff':meta.color==='amber'?'#fef3c7':meta.color==='orange'?'#fff7ed':meta.color==='red'?'#fee2e2':'#f3f4f6'}; color:${meta.color==='blue'?'#1e40af':meta.color==='green'?'#166534':meta.color==='purple'?'#6b21a8':meta.color==='amber'?'#92400e':meta.color==='orange'?'#c2410c':meta.color==='red'?'#991b1b':'#374151'};"><i class="fas ${meta.icon}"></i></div></div>
                     <div class="flex-1 pb-6">
-                        <p class="text-xs text-gray-500">${formatDate(act.date)}</p>
+                        <p class="text-xs text-gray-500 font-semibold">${formatDate(act.date)}</p>
                         <p class="font-semibold text-gray-900 capitalize">${act.type.replace('_',' ')}</p>
                         <p class="text-sm text-gray-600">${esc(act.note)}</p>
                     </div>
@@ -964,7 +1198,7 @@ function initRealtorOS() {
     function renderAIResponse(response) {
         const area = document.getElementById('ai-response-area');
         const div = document.createElement('div');
-        div.className = 'bg-white rounded-2xl p-4 shadow-sm slide-up';
+        div.className = 'bg-white rounded-2xl p-4 shadow-sm border border-gray-100 slide-up';
         div.innerHTML = `<p class="font-bold text-gray-900 mb-2">${esc(response.title)}</p>
             ${response.items.length ? `<ul class="space-y-1">${response.items.map(i => `<li class="text-sm text-gray-700 flex gap-2"><span class="text-amber-500">•</span><span>${esc(i)}</span></li>`).join('')}</ul>` : '<p class="text-sm text-gray-500">No results.</p>'}`;
         area.appendChild(div);
