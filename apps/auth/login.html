@@ -333,7 +333,14 @@
         const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5xd3ZzbXV2bHRiaWVrZm52b3Z4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA1NjU4MDAsImV4cCI6MjA5NjE0MTgwMH0.Xrc-bbAuWdvKSPHnVhTaLiQphV61xeYtDepWePqsrdo";
         const EMAIL_DOMAIN = "propdesk.co.ke";
         
-        const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey);
+        // ✅ 1. Added explicit auth configuration for robust session management
+        const supabaseClient = supabase.createClient(supabaseUrl, supabaseKey, {
+            auth: {
+                autoRefreshToken: true,
+                persistSession: true,
+                detectSessionInUrl: true
+            }
+        });
 
         const urlParams = new URLSearchParams(window.location.search);
         let currentRole = urlParams.get('role') || 'agent'; 
@@ -383,7 +390,7 @@
                             .eq('id', user.id)
                             .single();
 
-                        // 🔁 FIXED: Absolute root‑relative paths
+                        // 🔁 Absolute root‑relative paths based on DB role
                         if (profile?.role === 'admin') window.location.href = '/apps/admin/dashboard.html';
                         else if (profile?.role === 'buyer') window.location.href = '/index.html';
                         else window.location.href = '/apps/agent/dashboard.html';
@@ -439,6 +446,14 @@
                 currentRole = btn.dataset.role;
                 document.querySelectorAll('.role-btn').forEach(b => b.classList.remove('active'));
                 btn.classList.add('active');
+                
+                // ✅ 2. Persist role in URL so a page refresh keeps the correct tab active
+                const url = new URL(window.location);
+                url.searchParams.set('role', currentRole);
+                window.history.replaceState({}, '', url);
+
+                // ✅ 3. Clear any existing errors/success messages when switching roles
+                document.querySelectorAll('.error, .success').forEach(err => err.classList.remove('show'));
                 
                 // Update subtitle based on current visible form
                 const loginVisible = !document.getElementById('loginForm').classList.contains('hidden');
@@ -505,6 +520,7 @@
                     return;
                 }
 
+                // 🔒 ENFORCE ROLE CHECK ON LOGIN (Redirects based on DB profile, not just selected tab)
                 const { data: profile } = await supabaseClient
                     .from('profiles')
                     .select('role')
@@ -512,7 +528,6 @@
                     .single();
                 const role = profile?.role || currentRole;
 
-                // 🔁 FIXED: Absolute root‑relative paths
                 if (role === 'admin') window.location.href = '/apps/admin/dashboard.html';
                 else if (role === 'buyer') window.location.href = '/index.html';
                 else window.location.href = '/apps/agent/dashboard.html';
@@ -602,7 +617,6 @@
                     }]);
                 }
 
-                // 🔁 FIXED: Absolute root‑relative paths
                 if (currentRole === 'admin') window.location.href = '/apps/admin/dashboard.html';
                 else if (currentRole === 'buyer') window.location.href = '/index.html';
                 else window.location.href = '/apps/agent/dashboard.html';
@@ -637,7 +651,9 @@
 
             try {
                 const virtualEmail = phoneToEmail(phone, currentRole);
-                const redirectTo = `${window.location.origin}/login.html?role=${currentRole}`;
+                
+                // ✅ 4. Fixed the redirect path to match the actual file location (/apps/auth/)
+                const redirectTo = `${window.location.origin}/apps/auth/login.html?role=${currentRole}`;
 
                 const { error } = await supabaseClient.auth.resetPasswordForEmail(virtualEmail, {
                     redirectTo: redirectTo
@@ -694,7 +710,6 @@
                 // Clear hash and redirect
                 window.location.hash = ''; 
                 setTimeout(() => {
-                    // 🔁 FIXED: Absolute root‑relative paths
                     if (currentRole === 'admin') window.location.href = '/apps/admin/dashboard.html';
                     else if (currentRole === 'buyer') window.location.href = '/index.html';
                     else window.location.href = '/apps/agent/dashboard.html';
