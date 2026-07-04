@@ -1,9 +1,16 @@
 const ROLE_CAPABILITIES = {
+  // FIX: Added the 'admin' role. 
+  // Without this, your admin dashboard would load but show zero UI elements.
+  admin: ['*'], 
   super_admin: ['*'],
   moderator: ['properties', 'moderation', 'corrections', 'messages'],
   support: ['users', 'messages', 'activity'],
   finance: ['payments', 'revenue', 'analytics'],
-  analytics: ['analytics', 'activity']
+  analytics: ['analytics', 'activity'],
+  
+  // Optional: Add default roles so they don't break if they accidentally hit this file
+  agent: ['properties', 'messages'], 
+  buyer: [] 
 };
 
 let currentUserRole = 'viewer';
@@ -21,8 +28,7 @@ export function hasPermission(module) {
   return caps.includes('*') || caps.includes(module);
 }
 
-// NEW: The missing function that dashboard.js expects
+// The function that dashboard.js expects
 export function checkPermissions(role) {
   setRole(role);
-  // You can add further checks here later if needed
 }
