@@ -1,3 +1,6 @@
+Here is the complete, corrected `login-admin.html` file with the safety tweak applied.
+
+```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -557,13 +560,15 @@
                 }
 
                 if (authData.user) {
-                    await supabaseClient.from('profiles').insert([{
+                    // ✅ FIX: Changed 'insert' to 'upsert' to prevent duplicate key errors 
+                    // if you ever add a database trigger that auto-creates profiles.
+                    await supabaseClient.from('profiles').upsert({
                         id: authData.user.id,
                         role: currentRole,
                         full_name: name,
                         phone: formattedPhone,
                         email: email || null
-                    }]);
+                    });
                 }
 
                 window.location.href = '/apps/admin/dashboard.html';
@@ -698,3 +703,4 @@
   </script>
 </body>
 </html>
+```
