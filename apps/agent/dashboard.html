@@ -514,793 +514,789 @@
 </div>
 
 <!-- ========== SCRIPTS ========== -->
-<script>
-  // Dynamic Supabase loader to guarantee availability
-  (function() {
-    const script = document.createElement('script');
-    script.src = 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2';
-    script.onload = function() {
-      initRealtorOS();
-    };
-    script.onerror = function() {
-      document.body.innerHTML = '<div style="padding:2rem;text-align:center;font-family:sans-serif;"><h2>Failed to load the platform</h2><p>Please check your connection and try again.</p></div>';
-    };
-    document.body.appendChild(script);
-  })();
-</script>
+<!-- FIX: Converted to ES Module to use Global Auth/Supabase -->
+<script type="module">
+    // FIX: Import the Single Source of Truth
+    import { supabase } from '/public/js/supabase.js';
+    import { requireRole, logout } from '/public/js/auth.js';
 
-<script>
-// ========== MAIN APPLICATION ==========
-function initRealtorOS() {
-    'use strict';
+    // Make supabase available globally for any legacy inline scripts if needed (optional but safe)
+    window.supabaseClient = supabase;
 
-    const supabase = window.supabase.createClient(
-        'https://nqwvsmuvltbiekfnvovx.supabase.co',
-        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5xd3ZzbXV2bHRiaWVrZm52b3Z4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA1NjU4MDAsImV4cCI6MjA5NjE0MTgwMH0.Xrc-bbAuWdvKSPHnVhTaLiQphV61xeYtDepWePqsrdo'
-    );
+    // ========== MAIN APPLICATION ==========
+    async function initRealtorOS() {
+        'use strict';
 
-    const state = {
-        user: null,
-        profile: null,
-        deals: [],
-        activities: [],
-        networkAgents: [],
-        automationLog: [],
-        notificationChannel: null
-    };
-
-    // ============ UTILITIES ============
-    function esc(str) { const d = document.createElement('div'); d.textContent = str||''; return d.innerHTML; }
-    function formatKES(amount) { return new Intl.NumberFormat('en-KE', { style: 'currency', currency: 'KES', maximumFractionDigits:0 }).format(amount||0); }
-    function daysBetween(a, b) { return Math.floor((new Date(b) - new Date(a)) / (1000*60*60*24)); }
-    function daysSince(dateStr) { if(!dateStr) return 999; return daysBetween(dateStr, new Date().toISOString()); }
-    function addDays(date, days) { const d = new Date(date); d.setDate(d.getDate()+days); return d; }
-    function formatDate(date) { return new Date(date).toLocaleDateString('en-KE', { day:'numeric', month:'short' }); }
-
-    function showToast(title, msg, icon='fa-bell') {
-        const container = document.getElementById('toast-container');
-        const toast = document.createElement('div');
-        toast.className = 'pointer-events-auto toast-premium text-white px-4 py-3 rounded-xl flex items-center gap-3 min-w-[300px] slide-up';
-        toast.innerHTML = `<i class="fas ${icon} text-amber-400"></i><div class="flex-1"><p class="text-sm font-bold">${esc(title)}</p><p class="text-xs text-gray-300">${esc(msg)}</p></div>`;
-        container.appendChild(toast);
-        setTimeout(()=>{ toast.style.opacity='0'; toast.style.transform='translateY(20px)'; setTimeout(()=>toast.remove(),300); },4000);
-    }
-
-    // Dynamic color constants
-    const HEALTH_COLORS = {
-        good: { bg: '#d1fae5', text: '#065f46' },
-        warn: { bg: '#fef3c7', text: '#92400e' },
-        bad:  { bg: '#fee2e2', text: '#991b1b' }
-    };
-    const PRIORITY_COLORS = {
-        critical: { bg: '#fee2e2', text: '#991b1b' },
-        high:     { bg: '#fff7ed', text: '#c2410c' },
-        medium:   { bg: '#fef3c7', text: '#92400e' },
-        low:      { bg: '#e0f2fe', text: '#075985' }
-    };
-
-    function getHealthStyle(health) {
-        if (health >= 80) return HEALTH_COLORS.good;
-        if (health >= 50) return HEALTH_COLORS.warn;
-        return HEALTH_COLORS.bad;
-    }
-
-    // ============ AI SCORING ENGINE ============
-    function computeDealHealth(d) {
-        let score = 50;
-        const daysNoContact = daysSince(d.last_contacted);
-        if (daysNoContact <= 1) score += 20;
-        else if (daysNoContact <= 3) score += 10;
-        else if (daysNoContact > 7) score -= 15;
-        if (d.viewing_done) score += 15;
-        if (d.offer_made) score += 15;
-        if (d.documents_uploaded) score += 10;
-        if (d.deposit_paid) score += 15;
-        if (!d.offer_made && d.stage === 'viewing_completed') score -= 10;
-        return Math.min(100, Math.max(0, score));
-    }
-
-    function computeProbability(d) {
-        const stageProb = {
-            new_lead: 12, qualified: 30, matching: 40, contacted: 55,
-            viewing_scheduled: 65, viewing_completed: 75, negotiation: 80,
-            offer_accepted: 95, legal: 98, payment: 99, commission_paid: 100, closed: 100
+        const state = {
+            user: null,
+            profile: null,
+            deals: [],
+            activities: [],
+            networkAgents: [],
+            automationLog: [],
+            notificationChannel: null
         };
-        let base = stageProb[d.stage] || 50;
-        const health = computeDealHealth(d);
-        const adj = (health - 50) * 0.4;
-        return Math.min(100, Math.max(1, Math.round(base + adj)));
-    }
 
-    function computeUrgency(d) {
-        const prob = computeProbability(d);
-        const commissionFactor = (d.commission || 0) / 200000;
-        const daysInactive = daysSince(d.last_contacted);
-        const inactivityPenalty = Math.max(0, daysInactive - 3) * 3;
-        const appointmentBonus = d.appointment_today ? 30 : 0;
-        const buyerUrgency = (d.buyer_urgency || 50) / 10;
-        return Math.round(prob * 0.4 + commissionFactor * 0.2 + buyerUrgency * 0.2 + appointmentBonus - inactivityPenalty * 0.2);
-    }
+        // ============ UTILITIES ============
+        function esc(str) { const d = document.createElement('div'); d.textContent = str||''; return d.innerHTML; }
+        function formatKES(amount) { return new Intl.NumberFormat('en-KE', { style: 'currency', currency: 'KES', maximumFractionDigits:0 }).format(amount||0); }
+        function daysBetween(a, b) { return Math.floor((new Date(b) - new Date(a)) / (1000*60*60*24)); }
+        function daysSince(dateStr) { if(!dateStr) return 999; return daysBetween(dateStr, new Date().toISOString()); }
+        function addDays(date, days) { const d = new Date(date); d.setDate(d.getDate()+days); return d; }
+        function formatDate(date) { return new Date(date).toLocaleDateString('en-KE', { day:'numeric', month:'short' }); }
 
-    function computeBiggestRisk(d) {
-        const risks = [];
-        const daysNoContact = daysSince(d.last_contacted);
-        if (daysNoContact >= 5) risks.push({ severity: 'high', text: `Buyer silent for ${daysNoContact} days` });
-        if (daysNoContact >= 3 && daysNoContact < 5) risks.push({ severity: 'medium', text: `No contact in ${daysNoContact} days` });
-        if (d.viewing_done && !d.offer_made && daysSince(d.viewing_date) > 3) risks.push({ severity: 'high', text: 'Viewing done but no offer yet — momentum fading' });
-        if (d.offer_made && !d.deposit_paid && daysSince(d.offer_date) > 5) risks.push({ severity: 'high', text: 'Offer accepted but deposit delayed' });
-        if (d.price_reduced_recently) risks.push({ severity: 'low', text: 'Seller reduced price — may signal desperation' });
-        if (d.competing_offers) risks.push({ severity: 'medium', text: 'Competing offers detected' });
-        if (risks.length === 0) return { severity: 'none', text: 'No major risks detected' };
-        return risks.sort((a,b) => ({high:3,medium:2,low:1}[b.severity] - {high:3,medium:2,low:1}[a.severity]))[0];
-    }
+        function showToast(title, msg, icon='fa-bell') {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            toast.className = 'pointer-events-auto toast-premium text-white px-4 py-3 rounded-xl flex items-center gap-3 min-w-[300px] slide-up';
+            toast.innerHTML = `<i class="fas ${icon} text-amber-400"></i><div class="flex-1"><p class="text-sm font-bold">${esc(title)}</p><p class="text-xs text-gray-300">${esc(msg)}</p></div>`;
+            container.appendChild(toast);
+            setTimeout(()=>{ toast.style.opacity='0'; toast.style.transform='translateY(20px)'; setTimeout(()=>toast.remove(),300); },4000);
+        }
 
-    function computeLikelyClosingDate(d) {
-        const stageDaysToClose = {
-            new_lead: 90, qualified: 75, matching: 60, contacted: 45,
-            viewing_scheduled: 35, viewing_completed: 25, negotiation: 18,
-            offer_accepted: 12, legal: 8, payment: 4, commission_paid: 0, closed: 0
+        // Dynamic color constants
+        const HEALTH_COLORS = {
+            good: { bg: '#d1fae5', text: '#065f46' },
+            warn: { bg: '#fef3c7', text: '#92400e' },
+            bad:  { bg: '#fee2e2', text: '#991b1b' }
         };
-        const baseDays = stageDaysToClose[d.stage] ?? 30;
-        const health = computeDealHealth(d);
-        const healthFactor = 1 + ((50 - health) / 100);
-        const adjustedDays = Math.round(baseDays * healthFactor);
-        return addDays(new Date(), adjustedDays).toISOString();
-    }
+        const PRIORITY_COLORS = {
+            critical: { bg: '#fee2e2', text: '#991b1b' },
+            high:     { bg: '#fff7ed', text: '#c2410c' },
+            medium:   { bg: '#fef3c7', text: '#92400e' },
+            low:      { bg: '#e0f2fe', text: '#075985' }
+        };
 
-    function generateSmartRecommendation(d) {
-        const daysNoContact = daysSince(d.last_contacted);
-        const daysSinceViewing = d.viewing_date ? daysSince(d.viewing_date) : 999;
-        const daysSinceOffer = d.offer_date ? daysSince(d.offer_date) : 999;
-
-        if (d.price_reduced_recently && d.viewing_done && !d.offer_made) {
-            return { priority: 'critical', text: `Call now — seller just reduced price. Buyer saw property ${daysSinceViewing}d ago.`, icon: 'fa-fire', color: 'critical' };
+        function getHealthStyle(health) {
+            if (health >= 80) return HEALTH_COLORS.good;
+            if (health >= 50) return HEALTH_COLORS.warn;
+            return HEALTH_COLORS.bad;
         }
-        if (daysNoContact >= 7) return { priority: 'critical', text: `Re-engage urgently — ${daysNoContact} days of silence.`, icon: 'fa-phone-slash', color: 'critical' };
-        if (d.offer_made && !d.deposit_paid && daysSinceOffer > 5) return { priority: 'high', text: `Follow up on deposit — ${daysSinceOffer} days since offer accepted.`, icon: 'fa-money-bill-wave', color: 'high' };
-        if (d.viewing_done && !d.offer_made && daysSinceViewing <= 2) return { priority: 'high', text: `Strike while hot — send offer within 24h of viewing.`, icon: 'fa-bolt', color: 'high' };
-        if (d.viewing_done && !d.offer_made) return { priority: 'medium', text: `Prepare and send offer — viewing was ${daysSinceViewing}d ago.`, icon: 'fa-file-signature', color: 'medium' };
-        if (!d.viewing_done && ['contacted','qualified','matching'].includes(d.stage)) return { priority: 'medium', text: `Schedule a viewing to advance the deal.`, icon: 'fa-calendar-check', color: 'medium' };
-        if (d.appointment_today) return { priority: 'high', text: `Appointment today — prepare materials.`, icon: 'fa-calendar-day', color: 'high' };
-        if (daysNoContact >= 3) return { priority: 'low', text: `Check in — last contact was ${daysNoContact}d ago.`, icon: 'fa-comment', color: 'low' };
-        return { priority: 'low', text: `Maintain momentum — deal is progressing well.`, icon: 'fa-check-circle', color: 'low' };
-    }
 
-    // ============ DATA LAYER ============
-    async function fetchDealsFromSupabase() {
-        try {
-            const { data, error } = await supabase
-                .from('deals')
-                .select('*, properties(title, location, price), activities(*), offers(*), appointments(*)')
-                .eq('agent_id', state.user.id)
-                .order('created_at', { ascending: false });
-            if (error || !data || data.length === 0) throw new Error('No deals or table missing');
-            return data.map(d => ({
-                id: d.id,
-                name: d.buyer_name,
-                stage: d.stage,
-                value: d.value || 0,
-                commission: d.commission || 0,
-                property: d.properties?.title || d.property_name || '',
-                last_contacted: d.last_contacted,
-                viewing_done: d.viewing_done || false,
-                viewing_date: d.viewing_date,
-                offer_made: d.offer_made || false,
-                offer_date: d.offer_date,
-                deposit_paid: d.deposit_paid || false,
-                documents_uploaded: d.documents_uploaded || false,
-                appointment_today: d.appointment_today || false,
-                buyer_urgency: d.buyer_urgency || 50,
-                price_reduced_recently: d.price_reduced_recently || false,
-                competing_offers: d.competing_offers || false,
-                created_at: d.created_at,
-                activities: d.activities || [],
-                offers: d.offers || [],
-                appointments: d.appointments || [],
-                stages_history: d.stages_history || [d.stage]
-            }));
-        } catch (e) {
-            console.warn('Falling back to mock deals (development only):', e.message);
-            return getMockDeals();
+        // ============ AI SCORING ENGINE ============
+        // (Kept exactly as you wrote it - excellent logic)
+        function computeDealHealth(d) {
+            let score = 50;
+            const daysNoContact = daysSince(d.last_contacted);
+            if (daysNoContact <= 1) score += 20;
+            else if (daysNoContact <= 3) score += 10;
+            else if (daysNoContact > 7) score -= 15;
+            if (d.viewing_done) score += 15;
+            if (d.offer_made) score += 15;
+            if (d.documents_uploaded) score += 10;
+            if (d.deposit_paid) score += 15;
+            if (!d.offer_made && d.stage === 'viewing_completed') score -= 10;
+            return Math.min(100, Math.max(0, score));
         }
-    }
 
-    function getMockDeals() {
-        return [
-            { id:1, name:'Peter Mwangi', stage:'negotiation', value:24500000, commission:490000, property:'Karen Villa',
-              last_contacted:'2026-06-29', viewing_done:true, viewing_date:'2026-06-27', offer_made:true, offer_date:'2026-06-28',
-              deposit_paid:false, documents_uploaded:true, appointment_today:true, buyer_urgency:85,
-              price_reduced_recently:false, competing_offers:false, created_at:'2026-06-20',
-              activities:[
-                  {type:'lead_created', date:'2026-06-20', note:'Lead captured from website'},
-                  {type:'call', date:'2026-06-21', note:'Initial discovery call — 15 min'},
-                  {type:'whatsapp', date:'2026-06-23', note:'Sent property brochure'},
-                  {type:'viewing', date:'2026-06-27', note:'Viewed Karen Villa — loved the garden'},
-                  {type:'offer', date:'2026-06-28', note:'Offer submitted at KES 24.5M'},
-                  {type:'negotiation', date:'2026-06-29', note:'Counter-offer received'}
-              ]},
-            { id:2, name:'Grace Atieno', stage:'viewing_completed', value:18200000, commission:364000, property:'Westlands Apartment',
-              last_contacted:'2026-06-25', viewing_done:true, viewing_date:'2026-06-24', offer_made:false, deposit_paid:false, documents_uploaded:false,
-              appointment_today:false, buyer_urgency:55, price_reduced_recently:true, competing_offers:false, created_at:'2026-06-15',
-              activities:[
-                  {type:'lead_created', date:'2026-06-15', note:'Referral from Mary W.'},
-                  {type:'call', date:'2026-06-16', note:'Budget: KES 18M, Westlands preferred'},
-                  {type:'viewing', date:'2026-06-24', note:'Viewed Westlands Apt — interested but cautious'}
-              ]},
-            { id:3, name:'James Kiprotich', stage:'new_lead', value:0, commission:0, property:'',
-              last_contacted:'2026-06-30', viewing_done:false, offer_made:false, deposit_paid:false, documents_uploaded:false,
-              appointment_today:false, buyer_urgency:20, price_reduced_recently:false, competing_offers:false, created_at:'2026-06-30',
-              activities:[{type:'lead_created', date:'2026-06-30', note:'Inbound from Facebook ad'}]},
-            { id:4, name:'Jane Wanjiku', stage:'offer_accepted', value:32000000, commission:640000, property:'Kilimani Maisonette',
-              last_contacted:'2026-06-29', viewing_done:true, viewing_date:'2026-06-26', offer_made:true, offer_date:'2026-06-28',
-              deposit_paid:false, documents_uploaded:true, appointment_today:true, buyer_urgency:98,
-              price_reduced_recently:false, competing_offers:true, created_at:'2026-06-10',
-              activities:[
-                  {type:'lead_created', date:'2026-06-10', note:'Repeat client'},
-                  {type:'viewing', date:'2026-06-26', note:'Second viewing — brought husband'},
-                  {type:'offer', date:'2026-06-28', note:'Offer accepted at KES 32M'},
-                  {type:'negotiation', date:'2026-06-29', note:'Awaiting 10% deposit'}
-              ]},
-            { id:5, name:'David Omondi', stage:'legal', value:41000000, commission:820000, property:'Runda Mansion',
-              last_contacted:'2026-06-28', viewing_done:true, viewing_date:'2026-06-20', offer_made:true, offer_date:'2026-06-22',
-              deposit_paid:true, documents_uploaded:true, appointment_today:false, buyer_urgency:90,
-              price_reduced_recently:false, competing_offers:false, created_at:'2026-05-28',
-              activities:[
-                  {type:'lead_created', date:'2026-05-28', note:'High-net-worth client'},
-                  {type:'viewing', date:'2026-06-20', note:'Private viewing with family'},
-                  {type:'offer', date:'2026-06-22', note:'Offer accepted at KES 41M'},
-                  {type:'deposit', date:'2026-06-24', note:'10% deposit received'},
-                  {type:'legal', date:'2026-06-28', note:'Sale agreement with lawyer'}
-              ]}
-        ];
-    }
-
-    async function fetchNetworkAgents() {
-        return [
-            { id:101, name:'Mary Wanjiku', agency:'Prestige Homes', specialty:'Runda', listings:3, match_score:92, reason:'Has 3 Runda listings — matches buyer David O.' },
-            { id:102, name:'John Kamau', agency:'Nairobi Realty', specialty:'Karen', listings:2, match_score:78, reason:'Karen specialist — could co-market your Karen Villa' }
-        ];
-    }
-
-    function enrichDeals(raw) {
-        return raw.map(d => {
+        function computeProbability(d) {
+            const stageProb = {
+                new_lead: 12, qualified: 30, matching: 40, contacted: 55,
+                viewing_scheduled: 65, viewing_completed: 75, negotiation: 80,
+                offer_accepted: 95, legal: 98, payment: 99, commission_paid: 100, closed: 100
+            };
+            let base = stageProb[d.stage] || 50;
             const health = computeDealHealth(d);
-            const probability = computeProbability(d);
-            const urgency = computeUrgency(d);
-            const recommendation = generateSmartRecommendation(d);
-            const biggestRisk = computeBiggestRisk(d);
-            const likely_close = computeLikelyClosingDate(d);
-            const days_aging = daysSince(d.created_at);
-            return { ...d, health, probability, urgency, recommendation, biggestRisk, likely_close, days_aging };
-        });
-    }
-
-    // ============ AUTOMATION ENGINE ============
-    function runAutomationEngine() {
-        const log = [];
-        state.deals.forEach(d => {
-            const daysSilent = daysSince(d.last_contacted);
-            if (daysSilent >= 5 && d.stage !== 'closed' && d.stage !== 'commission_paid') {
-                log.push({ icon: 'fa-paper-plane', color: 'blue', title: `Auto-reminder queued for ${d.name}`, detail: `Silent ${daysSilent}d — WhatsApp follow-up scheduled for tomorrow 10am`, time: 'Just now' });
-            }
-            if (d.viewing_done && !d.offer_made) {
-                const daysSinceView = daysSince(d.viewing_date);
-                if (daysSinceView >= 2 && daysSinceView <= 3) {
-                    log.push({ icon: 'fa-bell', color: 'amber', title: `Reminder: Send offer to ${d.name}`, detail: `Viewing was ${daysSinceView} days ago — strike while interest is high`, time: 'Scheduled' });
-                }
-            }
-            if (d.offer_made && !d.deposit_paid && daysSince(d.offer_date) >= 5) {
-                log.push({ icon: 'fa-exclamation-circle', color: 'red', title: `Deposit follow-up: ${d.name}`, detail: `Offer accepted ${daysSince(d.offer_date)}d ago — auto-escalating to high priority`, time: 'Escalated' });
-            }
-        });
-        state.automationLog = log;
-        renderAutomationLog();
-    }
-
-    function renderAutomationLog() {
-        const container = document.getElementById('automation-log');
-        if (state.automationLog.length === 0) {
-            container.innerHTML = '<p class="text-center text-gray-400 py-4">No automations triggered today.</p>';
-            return;
+            const adj = (health - 50) * 0.4;
+            return Math.min(100, Math.max(1, Math.round(base + adj)));
         }
-        container.innerHTML = state.automationLog.map(log => `
-            <div class="flex items-start gap-3 p-3 bg-gray-50 rounded-xl border border-gray-100">
-                <div class="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0" style="background: ${log.color==='blue'?'#dbeafe':log.color==='amber'?'#fef3c7':'#fee2e2'}; color: ${log.color==='blue'?'#1e40af':log.color==='amber'?'#92400e':'#991b1b'};">
-                    <i class="fas ${log.icon} text-xs"></i>
-                </div>
-                <div class="flex-1 min-w-0">
-                    <p class="font-semibold text-sm text-gray-900">${esc(log.title)}</p>
-                    <p class="text-xs text-gray-500">${esc(log.detail)}</p>
-                </div>
-                <span class="text-xs text-gray-400 flex-shrink-0 font-medium">${esc(log.time)}</span>
-            </div>
-        `).join('');
-    }
 
-    // ============ AUTH & LOAD ============
-    async function checkAuth() {
-        const { data: { session } } = await supabase.auth.getSession();
-        if(!session) { window.location.href='login.html?role=agent'; return; }
-        const { data: { user }, error } = await supabase.auth.getUser();
-        if(error || !user) { await supabase.auth.signOut(); window.location.href='login.html?role=agent'; return; }
-        state.user = user;
-        document.getElementById('auth-loader').style.display = 'none';
-        await loadDashboard();
-        setupRealtime();
-    }
+        function computeUrgency(d) {
+            const prob = computeProbability(d);
+            const commissionFactor = (d.commission || 0) / 200000;
+            const daysInactive = daysSince(d.last_contacted);
+            const inactivityPenalty = Math.max(0, daysInactive - 3) * 3;
+            const appointmentBonus = d.appointment_today ? 30 : 0;
+            const buyerUrgency = (d.buyer_urgency || 50) / 10;
+            return Math.round(prob * 0.4 + commissionFactor * 0.2 + buyerUrgency * 0.2 + appointmentBonus - inactivityPenalty * 0.2);
+        }
 
-    async function loadDashboard() {
-        const { data: profile } = await supabase.from('profiles').select('*').eq('id', state.user.id).single();
-        state.profile = profile || {};
-        document.getElementById('profile-name').textContent = profile?.full_name || 'Agent';
-        document.getElementById('profile-agency').textContent = profile?.agency || 'Independent';
-        document.getElementById('profile-initial').textContent = (profile?.full_name||'A')[0].toUpperCase();
-        document.getElementById('greeting').textContent = `Good ${new Date().getHours()<12?'morning':'afternoon'}, ${esc(profile?.full_name?.split(' ')[0] || 'Agent')}`;
-        document.getElementById('profile-percent').textContent = `${profile?.profile_completion||0}%`;
-        document.getElementById('profile-bar').style.width = `${profile?.profile_completion||0}%`;
+        function computeBiggestRisk(d) {
+            const risks = [];
+            const daysNoContact = daysSince(d.last_contacted);
+            if (daysNoContact >= 5) risks.push({ severity: 'high', text: `Buyer silent for ${daysNoContact} days` });
+            if (daysNoContact >= 3 && daysNoContact < 5) risks.push({ severity: 'medium', text: `No contact in ${daysNoContact} days` });
+            if (d.viewing_done && !d.offer_made && daysSince(d.viewing_date) > 3) risks.push({ severity: 'high', text: 'Viewing done but no offer yet — momentum fading' });
+            if (d.offer_made && !d.deposit_paid && daysSince(d.offer_date) > 5) risks.push({ severity: 'high', text: 'Offer accepted but deposit delayed' });
+            if (d.price_reduced_recently) risks.push({ severity: 'low', text: 'Seller reduced price — may signal desperation' });
+            if (d.competing_offers) risks.push({ severity: 'medium', text: 'Competing offers detected' });
+            if (risks.length === 0) return { severity: 'none', text: 'No major risks detected' };
+            return risks.sort((a,b) => ({high:3,medium:2,low:1}[b.severity] - {high:3,medium:2,low:1}[a.severity]))[0];
+        }
 
-        const [rawDeals, networkAgents] = await Promise.all([
-            fetchDealsFromSupabase(),
-            fetchNetworkAgents()
-        ]);
-        state.deals = enrichDeals(rawDeals);
-        state.networkAgents = networkAgents;
+        function computeLikelyClosingDate(d) {
+            const stageDaysToClose = {
+                new_lead: 90, qualified: 75, matching: 60, contacted: 45,
+                viewing_scheduled: 35, viewing_completed: 25, negotiation: 18,
+                offer_accepted: 12, legal: 8, payment: 4, commission_paid: 0, closed: 0
+            };
+            const baseDays = stageDaysToClose[d.stage] ?? 30;
+            const health = computeDealHealth(d);
+            const healthFactor = 1 + ((50 - health) / 100);
+            const adjustedDays = Math.round(baseDays * healthFactor);
+            return addDays(new Date(), adjustedDays).toISOString();
+        }
 
-        renderAll();
-        runAutomationEngine();
-        updateNotificationBadge();
-    }
+        function generateSmartRecommendation(d) {
+            const daysNoContact = daysSince(d.last_contacted);
+            const daysSinceViewing = d.viewing_date ? daysSince(d.viewing_date) : 999;
+            const daysSinceOffer = d.offer_date ? daysSince(d.offer_date) : 999;
 
-    function renderAll() {
-        renderCriticalDeals();
-        renderPipeline();
-        renderActionCenter();
-        renderNetworkSuggestions();
-        updateRevenuePulse();
-        updateAIBriefing();
-        updateGamification();
-        loadNotifications();
-    }
+            if (d.price_reduced_recently && d.viewing_done && !d.offer_made) {
+                return { priority: 'critical', text: `Call now — seller just reduced price. Buyer saw property ${daysSinceViewing}d ago.`, icon: 'fa-fire', color: 'critical' };
+            }
+            if (daysNoContact >= 7) return { priority: 'critical', text: `Re-engage urgently — ${daysNoContact} days of silence.`, icon: 'fa-phone-slash', color: 'critical' };
+            if (d.offer_made && !d.deposit_paid && daysSinceOffer > 5) return { priority: 'high', text: `Follow up on deposit — ${daysSinceOffer} days since offer accepted.`, icon: 'fa-money-bill-wave', color: 'high' };
+            if (d.viewing_done && !d.offer_made && daysSinceViewing <= 2) return { priority: 'high', text: `Strike while hot — send offer within 24h of viewing.`, icon: 'fa-bolt', color: 'high' };
+            if (d.viewing_done && !d.offer_made) return { priority: 'medium', text: `Prepare and send offer — viewing was ${daysSinceViewing}d ago.`, icon: 'fa-file-signature', color: 'medium' };
+            if (!d.viewing_done && ['contacted','qualified','matching'].includes(d.stage)) return { priority: 'medium', text: `Schedule a viewing to advance the deal.`, icon: 'fa-calendar-check', color: 'medium' };
+            if (d.appointment_today) return { priority: 'high', text: `Appointment today — prepare materials.`, icon: 'fa-calendar-day', color: 'high' };
+            if (daysNoContact >= 3) return { priority: 'low', text: `Check in — last contact was ${daysNoContact}d ago.`, icon: 'fa-comment', color: 'low' };
+            return { priority: 'low', text: `Maintain momentum — deal is progressing well.`, icon: 'fa-check-circle', color: 'low' };
+        }
 
-    // ============ NOTIFICATIONS ============
-    async function loadNotifications() {
-        try {
-            const { data } = await supabase.from('notifications').select('*').eq('agent_id', state.user.id).order('created_at',{ascending:false}).limit(10);
-            const list = document.getElementById('notif-list');
-            if (!data || data.length === 0) {
-                list.innerHTML = '<div class="p-6 text-center text-gray-400 text-sm">No notifications yet</div>';
+        // ============ DATA LAYER ============
+        async function fetchDealsFromSupabase() {
+            try {
+                const { data, error } = await supabase
+                    .from('deals')
+                    .select('*, properties(title, location, price), activities(*), offers(*), appointments(*)')
+                    .eq('agent_id', state.user.id)
+                    .order('created_at', { ascending: false });
+                if (error || !data || data.length === 0) throw new Error('No deals or table missing');
+                return data.map(d => ({
+                    id: d.id,
+                    name: d.buyer_name,
+                    stage: d.stage,
+                    value: d.value || 0,
+                    commission: d.commission || 0,
+                    property: d.properties?.title || d.property_name || '',
+                    last_contacted: d.last_contacted,
+                    viewing_done: d.viewing_done || false,
+                    viewing_date: d.viewing_date,
+                    offer_made: d.offer_made || false,
+                    offer_date: d.offer_date,
+                    deposit_paid: d.deposit_paid || false,
+                    documents_uploaded: d.documents_uploaded || false,
+                    appointment_today: d.appointment_today || false,
+                    buyer_urgency: d.buyer_urgency || 50,
+                    price_reduced_recently: d.price_reduced_recently || false,
+                    competing_offers: d.competing_offers || false,
+                    created_at: d.created_at,
+                    activities: d.activities || [],
+                    offers: d.offers || [],
+                    appointments: d.appointments || [],
+                    stages_history: d.stages_history || [d.stage]
+                }));
+            } catch (e) {
+                console.warn('Falling back to mock deals (development only):', e.message);
+                return getMockDeals();
+            }
+        }
+
+        function getMockDeals() {
+            return [
+                { id:1, name:'Peter Mwangi', stage:'negotiation', value:24500000, commission:490000, property:'Karen Villa',
+                  last_contacted:'2026-06-29', viewing_done:true, viewing_date:'2026-06-27', offer_made:true, offer_date:'2026-06-28',
+                  deposit_paid:false, documents_uploaded:true, appointment_today:true, buyer_urgency:85,
+                  price_reduced_recently:false, competing_offers:false, created_at:'2026-06-20',
+                  activities:[
+                      {type:'lead_created', date:'2026-06-20', note:'Lead captured from website'},
+                      {type:'call', date:'2026-06-21', note:'Initial discovery call — 15 min'},
+                      {type:'whatsapp', date:'2026-06-23', note:'Sent property brochure'},
+                      {type:'viewing', date:'2026-06-27', note:'Viewed Karen Villa — loved the garden'},
+                      {type:'offer', date:'2026-06-28', note:'Offer submitted at KES 24.5M'},
+                      {type:'negotiation', date:'2026-06-29', note:'Counter-offer received'}
+                  ]},
+                { id:2, name:'Grace Atieno', stage:'viewing_completed', value:18200000, commission:364000, property:'Westlands Apartment',
+                  last_contacted:'2026-06-25', viewing_done:true, viewing_date:'2026-06-24', offer_made:false, deposit_paid:false, documents_uploaded:false,
+                  appointment_today:false, buyer_urgency:55, price_reduced_recently:true, competing_offers:false, created_at:'2026-06-15',
+                  activities:[
+                      {type:'lead_created', date:'2026-06-15', note:'Referral from Mary W.'},
+                      {type:'call', date:'2026-06-16', note:'Budget: KES 18M, Westlands preferred'},
+                      {type:'viewing', date:'2026-06-24', note:'Viewed Westlands Apt — interested but cautious'}
+                  ]},
+                { id:3, name:'James Kiprotich', stage:'new_lead', value:0, commission:0, property:'',
+                  last_contacted:'2026-06-30', viewing_done:false, offer_made:false, deposit_paid:false, documents_uploaded:false,
+                  appointment_today:false, buyer_urgency:20, price_reduced_recently:false, competing_offers:false, created_at:'2026-06-30',
+                  activities:[{type:'lead_created', date:'2026-06-30', note:'Inbound from Facebook ad'}]},
+                { id:4, name:'Jane Wanjiku', stage:'offer_accepted', value:32000000, commission:640000, property:'Kilimani Maisonette',
+                  last_contacted:'2026-06-29', viewing_done:true, viewing_date:'2026-06-26', offer_made:true, offer_date:'2026-06-28',
+                  deposit_paid:false, documents_uploaded:true, appointment_today:true, buyer_urgency:98,
+                  price_reduced_recently:false, competing_offers:true, created_at:'2026-06-10',
+                  activities:[
+                      {type:'lead_created', date:'2026-06-10', note:'Repeat client'},
+                      {type:'viewing', date:'2026-06-26', note:'Second viewing — brought husband'},
+                      {type:'offer', date:'2026-06-28', note:'Offer accepted at KES 32M'},
+                      {type:'negotiation', date:'2026-06-29', note:'Awaiting 10% deposit'}
+                  ]},
+                { id:5, name:'David Omondi', stage:'legal', value:41000000, commission:820000, property:'Runda Mansion',
+                  last_contacted:'2026-06-28', viewing_done:true, viewing_date:'2026-06-20', offer_made:true, offer_date:'2026-06-22',
+                  deposit_paid:true, documents_uploaded:true, appointment_today:false, buyer_urgency:90,
+                  price_reduced_recently:false, competing_offers:false, created_at:'2026-05-28',
+                  activities:[
+                      {type:'lead_created', date:'2026-05-28', note:'High-net-worth client'},
+                      {type:'viewing', date:'2026-06-20', note:'Private viewing with family'},
+                      {type:'offer', date:'2026-06-22', note:'Offer accepted at KES 41M'},
+                      {type:'deposit', date:'2026-06-24', note:'10% deposit received'},
+                      {type:'legal', date:'2026-06-28', note:'Sale agreement with lawyer'}
+                  ]}
+            ];
+        }
+
+        async function fetchNetworkAgents() {
+            return [
+                { id:101, name:'Mary Wanjiku', agency:'Prestige Homes', specialty:'Runda', listings:3, match_score:92, reason:'Has 3 Runda listings — matches buyer David O.' },
+                { id:102, name:'John Kamau', agency:'Nairobi Realty', specialty:'Karen', listings:2, match_score:78, reason:'Karen specialist — could co-market your Karen Villa' }
+            ];
+        }
+
+        function enrichDeals(raw) {
+            return raw.map(d => {
+                const health = computeDealHealth(d);
+                const probability = computeProbability(d);
+                const urgency = computeUrgency(d);
+                const recommendation = generateSmartRecommendation(d);
+                const biggestRisk = computeBiggestRisk(d);
+                const likely_close = computeLikelyClosingDate(d);
+                const days_aging = daysSince(d.created_at);
+                return { ...d, health, probability, urgency, recommendation, biggestRisk, likely_close, days_aging };
+            });
+        }
+
+        // ============ AUTOMATION ENGINE ============
+        function runAutomationEngine() {
+            const log = [];
+            state.deals.forEach(d => {
+                const daysSilent = daysSince(d.last_contacted);
+                if (daysSilent >= 5 && d.stage !== 'closed' && d.stage !== 'commission_paid') {
+                    log.push({ icon: 'fa-paper-plane', color: 'blue', title: `Auto-reminder queued for ${d.name}`, detail: `Silent ${daysSilent}d — WhatsApp follow-up scheduled for tomorrow 10am`, time: 'Just now' });
+                }
+                if (d.viewing_done && !d.offer_made) {
+                    const daysSinceView = daysSince(d.viewing_date);
+                    if (daysSinceView >= 2 && daysSinceView <= 3) {
+                        log.push({ icon: 'fa-bell', color: 'amber', title: `Reminder: Send offer to ${d.name}`, detail: `Viewing was ${daysSinceView} days ago — strike while interest is high`, time: 'Scheduled' });
+                    }
+                }
+                if (d.offer_made && !d.deposit_paid && daysSince(d.offer_date) >= 5) {
+                    log.push({ icon: 'fa-exclamation-circle', color: 'red', title: `Deposit follow-up: ${d.name}`, detail: `Offer accepted ${daysSince(d.offer_date)}d ago — auto-escalating to high priority`, time: 'Escalated' });
+                }
+            });
+            state.automationLog = log;
+            renderAutomationLog();
+        }
+
+        function renderAutomationLog() {
+            const container = document.getElementById('automation-log');
+            if (state.automationLog.length === 0) {
+                container.innerHTML = '<p class="text-center text-gray-400 py-4">No automations triggered today.</p>';
                 return;
             }
-            list.innerHTML = data.map(n => {
-                const icon = getNotifIcon(n.type);
-                const color = getNotifIconColor(n.type);
-                return `
-                <div class="notif-item p-4 border-b border-gray-50 hover:bg-gray-50 cursor-pointer transition ${n.is_read?'opacity-60':''}" data-link="${esc(n.link||'')}" data-id="${esc(n.id)}">
-                    <div class="flex items-start gap-3">
-                        <div class="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 mt-1" style="background:${color.bg}; color:${color.text};"><i class="fas ${icon} text-xs"></i></div>
-                        <div class="flex-1">
-                            <p class="text-sm font-semibold text-gray-800">${esc(n.title)}</p>
-                            <p class="text-xs text-gray-500 mt-1">${esc(n.message)}</p>
-                            <p class="text-[10px] text-gray-400 mt-2 font-medium">${timeAgo(n.created_at)}</p>
-                        </div>
-                        ${!n.is_read ? '<div class="w-2 h-2 bg-blue-600 rounded-full flex-shrink-0 mt-2"></div>' : ''}
+            container.innerHTML = state.automationLog.map(log => `
+                <div class="flex items-start gap-3 p-3 bg-gray-50 rounded-xl border border-gray-100">
+                    <div class="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0" style="background: ${log.color==='blue'?'#dbeafe':log.color==='amber'?'#fef3c7':'#fee2e2'}; color: ${log.color==='blue'?'#1e40af':log.color==='amber'?'#92400e':'#991b1b'};">
+                        <i class="fas ${log.icon} text-xs"></i>
                     </div>
-                </div>`;
-            }).join('');
-        } catch (e) { /* silent */ }
-    }
-
-    function getNotifIcon(type) {
-        const icons = { new_lead:'fa-user-plus', new_message:'fa-comment-dots', collaboration_request:'fa-handshake', commission_update:'fa-wallet', property_match:'fa-bolt' };
-        return icons[type] || 'fa-bell';
-    }
-    function getNotifIconColor(type) {
-        const colors = { new_lead:{bg:'#dcfce7',text:'#166534'}, new_message:{bg:'#dbeafe',text:'#1e40af'}, collaboration_request:{bg:'#f3e8ff',text:'#6b21a8'}, commission_update:{bg:'#fef3c7',text:'#92400e'}, property_match:{bg:'#ffe4e6',text:'#9f1239'} };
-        return colors[type] || {bg:'#f3f4f6',text:'#374151'};
-    }
-    function timeAgo(date) { const s = Math.floor((new Date() - new Date(date))/1000); if(s<60) return 'now'; if(s<3600) return Math.floor(s/60)+'m'; if(s<86400) return Math.floor(s/3600)+'h'; return Math.floor(s/86400)+'d'; }
-
-    async function markAllRead() {
-        await supabase.from('notifications').update({is_read:true}).eq('agent_id',state.user.id).eq('is_read',false);
-        updateNotificationBadge();
-        loadNotifications();
-    }
-
-    // ============ CRITICAL DEALS ============
-    function renderCriticalDeals() {
-        const container = document.getElementById('critical-deals-container');
-        const noCritical = document.getElementById('no-critical-deals');
-        const critical = state.deals.filter(d => d.urgency >= 70 && d.stage !== 'closed');
-        if (critical.length === 0) {
-            container.innerHTML = '';
-            noCritical.classList.remove('hidden');
-            return;
-        }
-        noCritical.classList.add('hidden');
-        container.innerHTML = critical.sort((a,b)=>b.urgency-a.urgency).map(deal => `
-            <div class="flex items-center justify-between p-4 bg-gray-50 rounded-xl border border-gray-100 hover:shadow-md hover:border-gray-200 transition-all cursor-pointer group" data-deal-id="${deal.id}">
-                <div class="flex items-center gap-3 flex-1 min-w-0">
-                    <div class="w-10 h-10 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0 shadow-sm" style="background:${getHealthStyle(deal.health).bg}; color:${getHealthStyle(deal.health).text};">${deal.probability}%</div>
                     <div class="flex-1 min-w-0">
-                        <p class="font-semibold text-sm truncate text-gray-900 group-hover:text-amber-600 transition-colors">${esc(deal.name)}</p>
-                        <p class="text-xs text-gray-500 truncate font-medium">${esc(deal.property)} • ${formatKES(deal.commission)}</p>
-                        <p class="text-[10px] text-gray-400 mt-0.5">Closes ~${formatDate(deal.likely_close)} · Risk: ${esc(deal.biggestRisk.text)}</p>
+                        <p class="font-semibold text-sm text-gray-900">${esc(log.title)}</p>
+                        <p class="text-xs text-gray-500">${esc(log.detail)}</p>
                     </div>
+                    <span class="text-xs text-gray-400 flex-shrink-0 font-medium">${esc(log.time)}</span>
                 </div>
-                <div class="flex flex-col items-end gap-1 flex-shrink-0 ml-2">
-                    <span class="text-[10px] font-bold px-2 py-0.5 rounded-full" style="background:${PRIORITY_COLORS[deal.recommendation.priority].bg}; color:${PRIORITY_COLORS[deal.recommendation.priority].text};">${deal.recommendation.priority.toUpperCase()}</span>
-                    <button class="text-xs font-semibold text-amber-600 hover:underline" onclick="event.stopPropagation(); showToast('AI recommends','${esc(deal.recommendation.text)}','fa-${deal.recommendation.icon}')">${deal.recommendation.text.substring(0,30)}... →</button>
-                </div>
-            </div>
-        `).join('');
-    }
-
-    // ============ PIPELINE ============
-    const stages = [
-        { id: 'new_lead', label: 'New Lead', color: 'bg-blue-100 text-blue-800' },
-        { id: 'qualified', label: 'Qualified', color: 'bg-sky-100 text-sky-800' },
-        { id: 'matching', label: 'Matching', color: 'bg-indigo-100 text-indigo-800' },
-        { id: 'contacted', label: 'Contacted', color: 'bg-violet-100 text-violet-800' },
-        { id: 'viewing_scheduled', label: 'Viewing Scheduled', color: 'bg-purple-100 text-purple-800' },
-        { id: 'viewing_completed', label: 'Viewing Completed', color: 'bg-fuchsia-100 text-fuchsia-800' },
-        { id: 'negotiation', label: 'Negotiation', color: 'bg-pink-100 text-pink-800' },
-        { id: 'offer_accepted', label: 'Offer Accepted', color: 'bg-rose-100 text-rose-800' },
-        { id: 'legal', label: 'Legal Process', color: 'bg-orange-100 text-orange-800' },
-        { id: 'payment', label: 'Payment & Transfer', color: 'bg-amber-100 text-amber-800' },
-        { id: 'commission_paid', label: 'Commission Paid', color: 'bg-green-100 text-green-800' },
-        { id: 'closed', label: 'Closed', color: 'bg-emerald-100 text-emerald-800' }
-    ];
-
-    function renderPipeline() {
-        const container = document.querySelector('#pipeline-container > div');
-        let html = '';
-        stages.forEach(stage => {
-            const stageDeals = state.deals.filter(d => d.stage === stage.id);
-            html += `
-            <div class="flex-shrink-0 w-72 pipeline-column p-3">
-                <div class="flex items-center justify-between mb-3 px-1">
-                    <span class="text-xs font-semibold px-3 py-1 rounded-full ${stage.color}">${stage.label}</span>
-                    <span class="text-xs text-gray-500 font-bold bg-white px-2 py-0.5 rounded-full shadow-sm">${stageDeals.length}</span>
-                </div>
-                <div class="space-y-3">
-                    ${stageDeals.map(deal => `
-                    <div class="pipeline-card p-4 cursor-pointer" data-deal-id="${deal.id}">
-                        <div class="flex items-center justify-between mb-2">
-                            <h3 class="font-semibold text-sm text-gray-900">${esc(deal.name)}</h3>
-                            <span class="text-xs px-2 py-0.5 rounded-full font-bold shadow-sm" style="background:${getHealthStyle(deal.health).bg}; color:${getHealthStyle(deal.health).text};">${deal.health}%</span>
-                        </div>
-                        ${deal.property ? `<p class="text-xs text-gray-600 mb-2 font-medium"><i class="fas fa-home mr-1 text-gray-400"></i>${esc(deal.property)}</p>` : ''}
-                        ${deal.value > 0 ? `<p class="text-xs text-gray-600 font-medium"><i class="fas fa-tag mr-1 text-gray-400"></i>${formatKES(deal.value)}</p>` : ''}
-                        ${deal.commission > 0 ? `<p class="text-xs text-amber-600 font-bold mt-1"><i class="fas fa-coins mr-1"></i>${formatKES(deal.commission)}</p>` : ''}
-                        <div class="mt-3 text-[10px] bg-red-50 p-2 rounded-lg border border-red-100" style="color:#991b1b;">
-                            <i class="fas fa-exclamation-triangle text-red-500 mr-1"></i>${esc(deal.biggestRisk.text)}
-                        </div>
-                        <div class="mt-3 flex items-center justify-between pt-3 border-t border-gray-100">
-                            <span class="text-xs text-gray-500 font-medium">~${formatDate(deal.likely_close)}</span>
-                            <button class="text-xs text-amber-600 font-semibold hover:underline" onclick="event.stopPropagation(); showToast('AI recommends','${esc(deal.recommendation.text)}','fa-${deal.recommendation.icon}')">AI →</button>
-                        </div>
-                    </div>
-                    `).join('')}
-                </div>
-            </div>`;
-        });
-        container.innerHTML = html;
-    }
-
-    // ============ ACTION CENTER ============
-    function renderActionCenter() {
-        const container = document.getElementById('action-center');
-        const actions = state.deals
-            .filter(d => d.recommendation)
-            .map(d => ({
-                text: d.recommendation.text,
-                buyer: d.name,
-                commission: d.commission,
-                urgency: d.urgency,
-                priority: d.recommendation.priority,
-                icon: d.recommendation.icon,
-                color: d.recommendation.color,
-                dealId: d.id
-            }))
-            .sort((a,b) => b.urgency - a.urgency);
-        container.innerHTML = actions.length ? actions.map(a => `
-            <div class="flex items-center gap-4 p-4 hover:bg-gray-50 transition-all cursor-pointer group" data-deal-id="${a.dealId}">
-                <div class="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 shadow-sm" style="background:${PRIORITY_COLORS[a.priority].bg}; color:${PRIORITY_COLORS[a.priority].text};">
-                    <i class="fas fa-${a.icon}"></i>
-                </div>
-                <div class="flex-1 min-w-0">
-                    <p class="font-semibold text-sm text-gray-900 group-hover:text-amber-600 transition-colors">${esc(a.text)}</p>
-                    <p class="text-xs text-gray-500 font-medium">${esc(a.buyer)} • ${formatKES(a.commission)}</p>
-                </div>
-                <span class="text-xs font-bold px-2.5 py-1 rounded-full shadow-sm" style="background:${PRIORITY_COLORS[a.priority].bg}; color:${PRIORITY_COLORS[a.priority].text};">${a.priority}</span>
-            </div>
-        `).join('') : '<div class="p-6 text-center text-gray-400 font-medium">All caught up!</div>';
-    }
-
-    // ============ NETWORK ============
-    function renderNetworkSuggestions() {
-        const container = document.getElementById('network-suggestions');
-        if (!state.networkAgents.length) {
-            container.innerHTML = '<p class="text-sm text-gray-500 font-medium">No collaboration opportunities right now.</p>';
-            return;
+            `).join('');
         }
-        container.innerHTML = state.networkAgents.map(agent => `
-            <div class="network-card flex items-center gap-4 p-4">
-                <div class="w-12 h-12 bg-gradient-to-br from-indigo-400 to-purple-500 rounded-full flex items-center justify-center text-white font-bold flex-shrink-0 shadow-md shadow-indigo-500/20">${agent.name[0]}</div>
-                <div class="flex-1 min-w-0">
-                    <p class="font-semibold text-sm text-gray-900">${esc(agent.name)} <span class="text-xs text-gray-500 font-normal">• ${esc(agent.agency)}</span></p>
-                    <p class="text-xs text-gray-600 mt-0.5">${esc(agent.reason)}</p>
-                </div>
-                <div class="text-right flex-shrink-0">
-                    <p class="text-xs text-gray-500 font-medium">Match</p>
-                    <p class="font-bold text-indigo-600 text-lg">${agent.match_score}%</p>
-                    <button class="mt-1 text-xs bg-indigo-600 text-white px-3 py-1.5 rounded-lg hover:bg-indigo-700 transition-colors font-semibold shadow-sm">Connect</button>
-                </div>
-            </div>
-        `).join('');
-    }
 
-    // ============ REVENUE + GAMIFICATION ============
-    function updateRevenuePulse() {
-        const pipelineValue = state.deals.reduce((sum,d) => sum + (d.value||0), 0);
-        const expCommission = state.deals.reduce((sum,d) => sum + ((d.commission||0) * d.probability / 100), 0);
-        document.getElementById('flight-pipeline-value').textContent = formatKES(pipelineValue);
-        document.getElementById('flight-exp-commission').textContent = formatKES(expCommission);
-    }
-
-    function updateGamification() {
-        const closedThisMonth = state.deals.filter(d => d.stage === 'commission_paid' || d.stage === 'closed').length;
-        const totalDeals = state.deals.length || 1;
-        const conversion = Math.round((closedThisMonth / totalDeals) * 100);
-        const monthRevenue = state.deals.filter(d => d.stage === 'commission_paid').reduce((s,d) => s + (d.commission||0), 0);
-        document.getElementById('closing-streak').textContent = `${Math.max(closedThisMonth, 7)} deals`;
-        document.getElementById('conversion-rate').textContent = `${Math.max(conversion, 34)}%`;
-        document.getElementById('month-closed').textContent = formatKES(Math.max(monthRevenue, 4200000));
-    }
-
-    function updateAIBriefing() {
-        const deals = state.deals;
-        const criticalCount = deals.filter(d => d.urgency >= 70).length;
-        const atRisk = deals.filter(d => d.biggestRisk.severity === 'high').length;
-        const topPriority = [...deals].sort((a,b)=>b.urgency-a.urgency)[0];
-        const expToday = deals.filter(d => d.appointment_today).reduce((s,d) => s + (d.commission||0), 0);
-        const closesSoon = deals.filter(d => daysBetween(new Date(), d.likely_close) <= 14 && d.stage !== 'closed').length;
-        let summary = `You have ${deals.length} active deals. `;
-        if (criticalCount > 0) summary += `${criticalCount} need urgent attention. `;
-        if (atRisk > 0) summary += `${atRisk} at high risk of collapse. `;
-        if (topPriority) summary += `Top priority: ${topPriority.name} (${formatKES(topPriority.commission)}). `;
-        if (closesSoon > 0) summary += `${closesSoon} deals likely to close in the next 14 days. `;
-        if (expToday > 0) summary += `Expected commission today: ${formatKES(expToday)}.`;
-        document.getElementById('ai-summary').textContent = summary;
-    }
-
-    // ============ TIMELINE MODAL ============
-    window.showTimelineModal = function(dealId) {
-        const deal = state.deals.find(d => d.id === dealId);
-        if (!deal) return;
-        document.getElementById('timeline-title').textContent = deal.name;
-        document.getElementById('timeline-subtitle').textContent = `${deal.property || 'No property'} • ${formatKES(deal.value)}`;
-        const container = document.getElementById('timeline-content');
-        const activities = (deal.activities || []).sort((a,b) => new Date(b.date) - new Date(a.date));
-        const iconMap = {
-            lead_created: { icon: 'fa-user-plus', color: 'blue' },
-            call: { icon: 'fa-phone', color: 'green' },
-            whatsapp: { icon: 'fab fa-whatsapp', color: 'green' },
-            viewing: { icon: 'fa-home', color: 'purple' },
-            offer: { icon: 'fa-file-signature', color: 'amber' },
-            negotiation: { icon: 'fa-handshake', color: 'orange' },
-            deposit: { icon: 'fa-money-bill-wave', color: 'green' },
-            legal: { icon: 'fa-gavel', color: 'red' }
-        };
-        let html = '';
-        html += `
-            <div class="relative timeline-item">
-                <div class="flex gap-4">
-                    <div class="relative flex-shrink-0"><div class="timeline-dot w-10 h-10 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-full flex items-center justify-center text-white shadow-md shadow-indigo-500/20"><i class="fas fa-crystal-ball"></i></div></div>
-                    <div class="flex-1 pb-6">
-                        <p class="text-xs text-indigo-600 font-semibold uppercase tracking-wide">AI Prediction</p>
-                        <p class="font-bold text-gray-900 text-lg">Likely closing: ${formatDate(deal.likely_close)}</p>
-                        <p class="text-sm text-gray-600 mt-1 font-medium">Probability: ${deal.probability}% · Expected commission: ${formatKES(deal.commission)}</p>
-                        <div class="mt-2 text-xs bg-red-50 border border-red-100 rounded-lg p-3">
-                            <i class="fas fa-exclamation-triangle text-red-500 mr-1"></i>Biggest risk: ${esc(deal.biggestRisk.text)}
-                        </div>
-                    </div>
-                </div>
-            </div>`;
-        activities.forEach(act => {
-            const meta = iconMap[act.type] || { icon: 'fa-circle', color: 'gray' };
-            html += `
-            <div class="relative timeline-item">
-                <div class="flex gap-4">
-                    <div class="relative flex-shrink-0"><div class="timeline-dot w-10 h-10 rounded-full flex items-center justify-center shadow-sm" style="background:${meta.color==='blue'?'#dbeafe':meta.color==='green'?'#dcfce7':meta.color==='purple'?'#f3e8ff':meta.color==='amber'?'#fef3c7':meta.color==='orange'?'#fff7ed':meta.color==='red'?'#fee2e2':'#f3f4f6'}; color:${meta.color==='blue'?'#1e40af':meta.color==='green'?'#166534':meta.color==='purple'?'#6b21a8':meta.color==='amber'?'#92400e':meta.color==='orange'?'#c2410c':meta.color==='red'?'#991b1b':'#374151'};"><i class="fas ${meta.icon}"></i></div></div>
-                    <div class="flex-1 pb-6">
-                        <p class="text-xs text-gray-500 font-semibold">${formatDate(act.date)}</p>
-                        <p class="font-semibold text-gray-900 capitalize">${act.type.replace('_',' ')}</p>
-                        <p class="text-sm text-gray-600">${esc(act.note)}</p>
-                    </div>
-                </div>
-            </div>`;
-        });
-        container.innerHTML = html || '<p class="text-center text-gray-400">No activity recorded yet.</p>';
-        document.getElementById('timeline-modal').classList.remove('hidden');
-    };
-
-    // ============ AI COMMAND CENTER ============
-    const AICommandCenter = {
-        intents: {
-            'call_today|who to call|first today|call first': (deals) => {
-                const sorted = [...deals].sort((a,b)=>b.urgency-a.urgency).slice(0,3);
-                return { title: '📞 Top 3 people to call today', items: sorted.map(d => `${d.name} — ${d.recommendation.text} (${formatKES(d.commission)})`) };
-            },
-            'at risk|collapse|trouble|failing|danger': (deals) => {
-                const atRisk = deals.filter(d => d.biggestRisk.severity === 'high');
-                if (!atRisk.length) return { title: '✅ No deals at high risk right now', items: ['All your deals look healthy.'] };
-                return { title: `⚠️ ${atRisk.length} deals at risk`, items: atRisk.map(d => `${d.name}: ${d.biggestRisk.text}`) };
-            },
-            'closing soon|close in|next two weeks|14 days|this week': (deals) => {
-                const soon = deals.filter(d => daysBetween(new Date(), d.likely_close) <= 14 && !['closed','commission_paid'].includes(d.stage));
-                if (!soon.length) return { title: '📅 No deals closing in the next 2 weeks', items: [] };
-                return { title: `🎯 ${soon.length} deals likely to close within 14 days`, items: soon.map(d => `${d.name} — closes ~${formatDate(d.likely_close)} (${formatKES(d.commission)})`) };
-            },
-            'pipeline value|total pipeline|worth': (deals) => {
-                const total = deals.reduce((s,d) => s + (d.value||0), 0);
-                const exp = deals.reduce((s,d) => s + ((d.commission||0) * d.probability / 100), 0);
-                return { title: '💰 Pipeline Summary', items: [`Total pipeline value: ${formatKES(total)}`, `Expected commission: ${formatKES(exp)}`, `Active deals: ${deals.length}`] };
-            },
-            'overpriced|price reduced|too expensive': (deals) => {
-                const reduced = deals.filter(d => d.price_reduced_recently);
-                if (!reduced.length) return { title: '🏷️ No recent price reductions detected', items: [] };
-                return { title: `📉 ${reduced.length} properties with recent price drops`, items: reduced.map(d => `${d.property} — ${d.name} is interested`) };
-            },
-            'follow.?up.*for|message.*for|generate.*for': (deals, match) => {
-                const nameMatch = match.match(/for\s+(\w+(?:\s+\w+)?)/i);
-                if (!nameMatch) return { title: '📝 Who should I generate a message for?', items: [] };
-                const name = nameMatch[1].toLowerCase();
-                const deal = deals.find(d => d.name.toLowerCase().includes(name));
-                if (!deal) return { title: `❓ I couldn't find a deal matching "${nameMatch[1]}"`, items: [] };
-                const msg = `Hi ${deal.name.split(' ')[0]}, hope you're well. Following up on ${deal.property || 'the property'} we discussed. I have an update that might interest you — are you free for a quick call today?`;
-                return { title: `✉️ Draft message for ${deal.name}`, items: [msg] };
-            },
-            'today.*tasks|tasks.*today|action.*today': (deals) => {
-                const today = deals.filter(d => d.appointment_today || d.urgency >= 70);
-                return { title: `📋 ${today.length} priority tasks today`, items: today.map(d => `${d.name}: ${d.recommendation.text}`) };
-            },
-            'best deal|strongest|most likely': (deals) => {
-                const best = [...deals].sort((a,b)=>b.probability-a.probability)[0];
-                if (!best) return { title: 'No active deals', items: [] };
-                return { title: `🏆 Your strongest deal`, items: [`${best.name} — ${best.probability}% probability, closes ~${formatDate(best.likely_close)}`, `Commission: ${formatKES(best.commission)}`, `Next step: ${best.recommendation.text}`] };
-            }
-        },
-        process(query) {
-            const q = query.toLowerCase().trim();
-            for (const [pattern, handler] of Object.entries(this.intents)) {
-                const regex = new RegExp(pattern.split('|').join('|'), 'i');
-                if (regex.test(q)) return handler(state.deals, q);
-            }
-            const match = state.deals.find(d => d.name.toLowerCase().includes(q));
-            if (match) {
-                return {
-                    title: `🔎 ${match.name}`,
-                    items: [
-                        `Stage: ${match.stage.replace('_',' ')}`,
-                        `Probability: ${match.probability}%`,
-                        `Likely close: ${formatDate(match.likely_close)}`,
-                        `Commission: ${formatKES(match.commission)}`,
-                        `Next step: ${match.recommendation.text}`,
-                        `Biggest risk: ${match.biggestRisk.text}`
-                    ]
-                };
-            }
-            return { title: "🤔 I'm not sure how to help with that yet", items: ['Try asking about: who to call, deals at risk, pipeline value, closing soon, or a specific buyer name.'] };
+        // ============ AUTH & LOAD ============
+        // FIX: Replaced manual checkAuth() with Global requireRole()
+        async function checkAuth() {
+            // This enforces that only 'agent' or 'admin' can access this page.
+            // If they are a buyer, global auth redirects them automatically.
+            const auth = await requireRole(['agent', 'admin']);
+            if (!auth) return; 
+            
+            state.user = auth.user;
+            document.getElementById('auth-loader').style.display = 'none';
+            await loadDashboard();
+            setupRealtime();
         }
-    };
 
-    function renderAIResponse(response) {
-        const area = document.getElementById('ai-response-area');
-        const div = document.createElement('div');
-        div.className = 'bg-white rounded-2xl p-4 shadow-sm border border-gray-100 slide-up';
-        div.innerHTML = `<p class="font-bold text-gray-900 mb-2">${esc(response.title)}</p>
-            ${response.items.length ? `<ul class="space-y-1">${response.items.map(i => `<li class="text-sm text-gray-700 flex gap-2"><span class="text-amber-500">•</span><span>${esc(i)}</span></li>`).join('')}</ul>` : '<p class="text-sm text-gray-500">No results.</p>'}`;
-        area.appendChild(div);
-        area.scrollTop = area.scrollHeight;
-    }
+        async function loadDashboard() {
+            const { data: profile } = await supabase.from('profiles').select('*').eq('id', state.user.id).single();
+            state.profile = profile || {};
+            document.getElementById('profile-name').textContent = profile?.full_name || 'Agent';
+            document.getElementById('profile-agency').textContent = profile?.agency || 'Independent';
+            document.getElementById('profile-initial').textContent = (profile?.full_name||'A')[0].toUpperCase();
+            document.getElementById('greeting').textContent = `Good ${new Date().getHours()<12?'morning':'afternoon'}, ${esc(profile?.full_name?.split(' ')[0] || 'Agent')}`;
+            document.getElementById('profile-percent').textContent = `${profile?.profile_completion||0}%`;
+            document.getElementById('profile-bar').style.width = `${profile?.profile_completion||0}%`;
 
-    function handleAIQuery() {
-        const input = document.getElementById('ai-input');
-        const query = input.value.trim();
-        if (!query) return;
-        const area = document.getElementById('ai-response-area');
-        const userMsg = document.createElement('div');
-        userMsg.className = 'bg-indigo-600 text-white rounded-2xl p-3 ml-8 slide-up';
-        userMsg.innerHTML = `<p class="text-sm">${esc(query)}</p>`;
-        area.appendChild(userMsg);
-        input.value = '';
-        setTimeout(() => {
-            const response = AICommandCenter.process(query);
-            renderAIResponse(response);
-        }, 400);
-    }
+            const [rawDeals, networkAgents] = await Promise.all([
+                fetchDealsFromSupabase(),
+                fetchNetworkAgents()
+            ]);
+            state.deals = enrichDeals(rawDeals);
+            state.networkAgents = networkAgents;
 
-    // ============ EVENT DELEGATION ============
-    document.getElementById('critical-deals-container').addEventListener('click', (e) => {
-        const card = e.target.closest('[data-deal-id]');
-        if (card) showTimelineModal(parseInt(card.dataset.dealId));
-    });
-    document.querySelector('#pipeline-container > div').addEventListener('click', (e) => {
-        const card = e.target.closest('[data-deal-id]');
-        if (card) showTimelineModal(parseInt(card.dataset.dealId));
-    });
-    document.getElementById('action-center').addEventListener('click', (e) => {
-        const card = e.target.closest('[data-deal-id]');
-        if (card) showTimelineModal(parseInt(card.dataset.dealId));
-    });
+            renderAll();
+            runAutomationEngine();
+            updateNotificationBadge();
+        }
 
-    // ============ NOTIFICATION EVENTS ============
-    document.getElementById('notif-list').addEventListener('click', async (e) => {
-        const item = e.target.closest('.notif-item');
-        if (item) {
-            const link = item.dataset.link;
-            const id = item.dataset.id;
-            await supabase.from('notifications').update({is_read:true}).eq('id',id);
-            if (link && (link.startsWith('/') || link.startsWith('http'))) window.location.href = link;
-            else showToast('Notification', 'Marked as read');
+        function renderAll() {
+            renderCriticalDeals();
+            renderPipeline();
+            renderActionCenter();
+            renderNetworkSuggestions();
+            updateRevenuePulse();
+            updateAIBriefing();
+            updateGamification();
+            loadNotifications();
+        }
+
+        // ============ NOTIFICATIONS ============
+        async function loadNotifications() {
+            try {
+                const { data } = await supabase.from('notifications').select('*').eq('agent_id', state.user.id).order('created_at',{ascending:false}).limit(10);
+                const list = document.getElementById('notif-list');
+                if (!data || data.length === 0) {
+                    list.innerHTML = '<div class="p-6 text-center text-gray-400 text-sm">No notifications yet</div>';
+                    return;
+                }
+                list.innerHTML = data.map(n => {
+                    const icon = getNotifIcon(n.type);
+                    const color = getNotifIconColor(n.type);
+                    return `
+                    <div class="notif-item p-4 border-b border-gray-50 hover:bg-gray-50 cursor-pointer transition ${n.is_read?'opacity-60':''}" data-link="${esc(n.link||'')}" data-id="${esc(n.id)}">
+                        <div class="flex items-start gap-3">
+                            <div class="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 mt-1" style="background:${color.bg}; color:${color.text};"><i class="fas ${icon} text-xs"></i></div>
+                            <div class="flex-1">
+                                <p class="text-sm font-semibold text-gray-800">${esc(n.title)}</p>
+                                <p class="text-xs text-gray-500 mt-1">${esc(n.message)}</p>
+                                <p class="text-[10px] text-gray-400 mt-2 font-medium">${timeAgo(n.created_at)}</p>
+                            </div>
+                            ${!n.is_read ? '<div class="w-2 h-2 bg-blue-600 rounded-full flex-shrink-0 mt-2"></div>' : ''}
+                        </div>
+                    </div>`;
+                }).join('');
+            } catch (e) { /* silent */ }
+        }
+
+        function getNotifIcon(type) {
+            const icons = { new_lead:'fa-user-plus', new_message:'fa-comment-dots', collaboration_request:'fa-handshake', commission_update:'fa-wallet', property_match:'fa-bolt' };
+            return icons[type] || 'fa-bell';
+        }
+        function getNotifIconColor(type) {
+            const colors = { new_lead:{bg:'#dcfce7',text:'#166534'}, new_message:{bg:'#dbeafe',text:'#1e40af'}, collaboration_request:{bg:'#f3e8ff',text:'#6b21a8'}, commission_update:{bg:'#fef3c7',text:'#92400e'}, property_match:{bg:'#ffe4e6',text:'#9f1239'} };
+            return colors[type] || {bg:'#f3f4f6',text:'#374151'};
+        }
+        function timeAgo(date) { const s = Math.floor((new Date() - new Date(date))/1000); if(s<60) return 'now'; if(s<3600) return Math.floor(s/60)+'m'; if(s<86400) return Math.floor(s/3600)+'h'; return Math.floor(s/86400)+'d'; }
+
+        async function markAllRead() {
+            await supabase.from('notifications').update({is_read:true}).eq('agent_id',state.user.id).eq('is_read',false);
             updateNotificationBadge();
             loadNotifications();
         }
-    });
-    document.getElementById('mark-all-read-btn').addEventListener('click', markAllRead);
 
-    // ============ REALTIME ============
-    function setupRealtime() {
-        if(state.notificationChannel) supabase.removeChannel(state.notificationChannel);
-        state.notificationChannel = supabase.channel('agent-updates')
-            .on('postgres_changes', { event:'INSERT', schema:'public', table:'notifications', filter:`agent_id=eq.${state.user.id}` }, payload => {
-                updateNotificationBadge();
-                showToast(payload.new.title, payload.new.message, 'fa-bell');
-                loadNotifications();
-            })
-            .subscribe();
-    }
+        // ============ CRITICAL DEALS ============
+        function renderCriticalDeals() {
+            const container = document.getElementById('critical-deals-container');
+            const noCritical = document.getElementById('no-critical-deals');
+            const critical = state.deals.filter(d => d.urgency >= 70 && d.stage !== 'closed');
+            if (critical.length === 0) {
+                container.innerHTML = '';
+                noCritical.classList.remove('hidden');
+                return;
+            }
+            noCritical.classList.add('hidden');
+            container.innerHTML = critical.sort((a,b)=>b.urgency-a.urgency).map(deal => `
+                <div class="flex items-center justify-between p-4 bg-gray-50 rounded-xl border border-gray-100 hover:shadow-md hover:border-gray-200 transition-all cursor-pointer group" data-deal-id="${deal.id}">
+                    <div class="flex items-center gap-3 flex-1 min-w-0">
+                        <div class="w-10 h-10 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0 shadow-sm" style="background:${getHealthStyle(deal.health).bg}; color:${getHealthStyle(deal.health).text};">${deal.probability}%</div>
+                        <div class="flex-1 min-w-0">
+                            <p class="font-semibold text-sm truncate text-gray-900 group-hover:text-amber-600 transition-colors">${esc(deal.name)}</p>
+                            <p class="text-xs text-gray-500 truncate font-medium">${esc(deal.property)} • ${formatKES(deal.commission)}</p>
+                            <p class="text-[10px] text-gray-400 mt-0.5">Closes ~${formatDate(deal.likely_close)} · Risk: ${esc(deal.biggestRisk.text)}</p>
+                        </div>
+                    </div>
+                    <div class="flex flex-col items-end gap-1 flex-shrink-0 ml-2">
+                        <span class="text-[10px] font-bold px-2 py-0.5 rounded-full" style="background:${PRIORITY_COLORS[deal.recommendation.priority].bg}; color:${PRIORITY_COLORS[deal.recommendation.priority].text};">${deal.recommendation.priority.toUpperCase()}</span>
+                        <button class="text-xs font-semibold text-amber-600 hover:underline" onclick="event.stopPropagation(); showToast('AI recommends','${esc(deal.recommendation.text)}','fa-${deal.recommendation.icon}')">${deal.recommendation.text.substring(0,30)}... →</button>
+                    </div>
+                </div>
+            `).join('');
+        }
 
-    async function updateNotificationBadge() {
-        const { count } = await supabase.from('notifications').select('*',{count:'exact',head:true}).eq('agent_id', state.user.id).eq('is_read',false);
-        const badge = document.getElementById('notif-badge');
-        if(count>0) { badge.classList.remove('hidden'); badge.textContent = count>9?'9+':count; }
-        else badge.classList.add('hidden');
-    }
+        // ============ PIPELINE ============
+        const stages = [
+            { id: 'new_lead', label: 'New Lead', color: 'bg-blue-100 text-blue-800' },
+            { id: 'qualified', label: 'Qualified', color: 'bg-sky-100 text-sky-800' },
+            { id: 'matching', label: 'Matching', color: 'bg-indigo-100 text-indigo-800' },
+            { id: 'contacted', label: 'Contacted', color: 'bg-violet-100 text-violet-800' },
+            { id: 'viewing_scheduled', label: 'Viewing Scheduled', color: 'bg-purple-100 text-purple-800' },
+            { id: 'viewing_completed', label: 'Viewing Completed', color: 'bg-fuchsia-100 text-fuchsia-800' },
+            { id: 'negotiation', label: 'Negotiation', color: 'bg-pink-100 text-pink-800' },
+            { id: 'offer_accepted', label: 'Offer Accepted', color: 'bg-rose-100 text-rose-800' },
+            { id: 'legal', label: 'Legal Process', color: 'bg-orange-100 text-orange-800' },
+            { id: 'payment', label: 'Payment & Transfer', color: 'bg-amber-100 text-amber-800' },
+            { id: 'commission_paid', label: 'Commission Paid', color: 'bg-green-100 text-green-800' },
+            { id: 'closed', label: 'Closed', color: 'bg-emerald-100 text-emerald-800' }
+        ];
 
-    // ============ MISC EVENTS ============
-    document.querySelectorAll('.btn-quick-action').forEach(btn => {
-        btn.addEventListener('click', () => {
-            const msgs = { call:'Opening phone dialer...', whatsapp:'Opening WhatsApp...', schedule:'Opening calendar...', 'send-flyer':'Generating property flyer...' };
-            showToast('Quick Action', msgs[btn.dataset.action] || 'Action triggered');
+        function renderPipeline() {
+            const container = document.querySelector('#pipeline-container > div');
+            let html = '';
+            stages.forEach(stage => {
+                const stageDeals = state.deals.filter(d => d.stage === stage.id);
+                html += `
+                <div class="flex-shrink-0 w-72 pipeline-column p-3">
+                    <div class="flex items-center justify-between mb-3 px-1">
+                        <span class="text-xs font-semibold px-3 py-1 rounded-full ${stage.color}">${stage.label}</span>
+                        <span class="text-xs text-gray-500 font-bold bg-white px-2 py-0.5 rounded-full shadow-sm">${stageDeals.length}</span>
+                    </div>
+                    <div class="space-y-3">
+                        ${stageDeals.map(deal => `
+                        <div class="pipeline-card p-4 cursor-pointer" data-deal-id="${deal.id}">
+                            <div class="flex items-center justify-between mb-2">
+                                <h3 class="font-semibold text-sm text-gray-900">${esc(deal.name)}</h3>
+                                <span class="text-xs px-2 py-0.5 rounded-full font-bold shadow-sm" style="background:${getHealthStyle(deal.health).bg}; color:${getHealthStyle(deal.health).text};">${deal.health}%</span>
+                            </div>
+                            ${deal.property ? `<p class="text-xs text-gray-600 mb-2 font-medium"><i class="fas fa-home mr-1 text-gray-400"></i>${esc(deal.property)}</p>` : ''}
+                            ${deal.value > 0 ? `<p class="text-xs text-gray-600 font-medium"><i class="fas fa-tag mr-1 text-gray-400"></i>${formatKES(deal.value)}</p>` : ''}
+                            ${deal.commission > 0 ? `<p class="text-xs text-amber-600 font-bold mt-1"><i class="fas fa-coins mr-1"></i>${formatKES(deal.commission)}</p>` : ''}
+                            <div class="mt-3 text-[10px] bg-red-50 p-2 rounded-lg border border-red-100" style="color:#991b1b;">
+                                <i class="fas fa-exclamation-triangle text-red-500 mr-1"></i>${esc(deal.biggestRisk.text)}
+                            </div>
+                            <div class="mt-3 flex items-center justify-between pt-3 border-t border-gray-100">
+                                <span class="text-xs text-gray-500 font-medium">~${formatDate(deal.likely_close)}</span>
+                                <button class="text-xs text-amber-600 font-semibold hover:underline" onclick="event.stopPropagation(); showToast('AI recommends','${esc(deal.recommendation.text)}','fa-${deal.recommendation.icon}')">AI →</button>
+                            </div>
+                        </div>
+                        `).join('')}
+                    </div>
+                </div>`;
+            });
+            container.innerHTML = html;
+        }
+
+        // ============ ACTION CENTER ============
+        function renderActionCenter() {
+            const container = document.getElementById('action-center');
+            const actions = state.deals
+                .filter(d => d.recommendation)
+                .map(d => ({
+                    text: d.recommendation.text,
+                    buyer: d.name,
+                    commission: d.commission,
+                    urgency: d.urgency,
+                    priority: d.recommendation.priority,
+                    icon: d.recommendation.icon,
+                    color: d.recommendation.color,
+                    dealId: d.id
+                }))
+                .sort((a,b) => b.urgency - a.urgency);
+            container.innerHTML = actions.length ? actions.map(a => `
+                <div class="flex items-center gap-4 p-4 hover:bg-gray-50 transition-all cursor-pointer group" data-deal-id="${a.dealId}">
+                    <div class="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 shadow-sm" style="background:${PRIORITY_COLORS[a.priority].bg}; color:${PRIORITY_COLORS[a.priority].text};">
+                        <i class="fas fa-${a.icon}"></i>
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <p class="font-semibold text-sm text-gray-900 group-hover:text-amber-600 transition-colors">${esc(a.text)}</p>
+                        <p class="text-xs text-gray-500 font-medium">${esc(a.buyer)} • ${formatKES(a.commission)}</p>
+                    </div>
+                    <span class="text-xs font-bold px-2.5 py-1 rounded-full shadow-sm" style="background:${PRIORITY_COLORS[a.priority].bg}; color:${PRIORITY_COLORS[a.priority].text};">${a.priority}</span>
+                </div>
+            `).join('') : '<div class="p-6 text-center text-gray-400 font-medium">All caught up!</div>';
+        }
+
+        // ============ NETWORK ============
+        function renderNetworkSuggestions() {
+            const container = document.getElementById('network-suggestions');
+            if (!state.networkAgents.length) {
+                container.innerHTML = '<p class="text-sm text-gray-500 font-medium">No collaboration opportunities right now.</p>';
+                return;
+            }
+            container.innerHTML = state.networkAgents.map(agent => `
+                <div class="network-card flex items-center gap-4 p-4">
+                    <div class="w-12 h-12 bg-gradient-to-br from-indigo-400 to-purple-500 rounded-full flex items-center justify-center text-white font-bold flex-shrink-0 shadow-md shadow-indigo-500/20">${agent.name[0]}</div>
+                    <div class="flex-1 min-w-0">
+                        <p class="font-semibold text-sm text-gray-900">${esc(agent.name)} <span class="text-xs text-gray-500 font-normal">• ${esc(agent.agency)}</span></p>
+                        <p class="text-xs text-gray-600 mt-0.5">${esc(agent.reason)}</p>
+                    </div>
+                    <div class="text-right flex-shrink-0">
+                        <p class="text-xs text-gray-500 font-medium">Match</p>
+                        <p class="font-bold text-indigo-600 text-lg">${agent.match_score}%</p>
+                        <button class="mt-1 text-xs bg-indigo-600 text-white px-3 py-1.5 rounded-lg hover:bg-indigo-700 transition-colors font-semibold shadow-sm">Connect</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // ============ REVENUE + GAMIFICATION ============
+        function updateRevenuePulse() {
+            const pipelineValue = state.deals.reduce((sum,d) => sum + (d.value||0), 0);
+            const expCommission = state.deals.reduce((sum,d) => sum + ((d.commission||0) * d.probability / 100), 0);
+            document.getElementById('flight-pipeline-value').textContent = formatKES(pipelineValue);
+            document.getElementById('flight-exp-commission').textContent = formatKES(expCommission);
+        }
+
+        function updateGamification() {
+            const closedThisMonth = state.deals.filter(d => d.stage === 'commission_paid' || d.stage === 'closed').length;
+            const totalDeals = state.deals.length || 1;
+            const conversion = Math.round((closedThisMonth / totalDeals) * 100);
+            const monthRevenue = state.deals.filter(d => d.stage === 'commission_paid').reduce((s,d) => s + (d.commission||0), 0);
+            document.getElementById('closing-streak').textContent = `${Math.max(closedThisMonth, 7)} deals`;
+            document.getElementById('conversion-rate').textContent = `${Math.max(conversion, 34)}%`;
+            document.getElementById('month-closed').textContent = formatKES(Math.max(monthRevenue, 4200000));
+        }
+
+        function updateAIBriefing() {
+            const deals = state.deals;
+            const criticalCount = deals.filter(d => d.urgency >= 70).length;
+            const atRisk = deals.filter(d => d.biggestRisk.severity === 'high').length;
+            const topPriority = [...deals].sort((a,b)=>b.urgency-a.urgency)[0];
+            const expToday = deals.filter(d => d.appointment_today).reduce((s,d) => s + (d.commission||0), 0);
+            const closesSoon = deals.filter(d => daysBetween(new Date(), d.likely_close) <= 14 && d.stage !== 'closed').length;
+            let summary = `You have ${deals.length} active deals. `;
+            if (criticalCount > 0) summary += `${criticalCount} need urgent attention. `;
+            if (atRisk > 0) summary += `${atRisk} at high risk of collapse. `;
+            if (topPriority) summary += `Top priority: ${topPriority.name} (${formatKES(topPriority.commission)}). `;
+            if (closesSoon > 0) summary += `${closesSoon} deals likely to close in the next 14 days. `;
+            if (expToday > 0) summary += `Expected commission today: ${formatKES(expToday)}.`;
+            document.getElementById('ai-summary').textContent = summary;
+        }
+
+        // ============ TIMELINE MODAL ============
+        window.showTimelineModal = function(dealId) {
+            const deal = state.deals.find(d => d.id === dealId);
+            if (!deal) return;
+            document.getElementById('timeline-title').textContent = deal.name;
+            document.getElementById('timeline-subtitle').textContent = `${deal.property || 'No property'} • ${formatKES(deal.value)}`;
+            const container = document.getElementById('timeline-content');
+            const activities = (deal.activities || []).sort((a,b) => new Date(b.date) - new Date(a.date));
+            const iconMap = {
+                lead_created: { icon: 'fa-user-plus', color: 'blue' },
+                call: { icon: 'fa-phone', color: 'green' },
+                whatsapp: { icon: 'fab fa-whatsapp', color: 'green' },
+                viewing: { icon: 'fa-home', color: 'purple' },
+                offer: { icon: 'fa-file-signature', color: 'amber' },
+                negotiation: { icon: 'fa-handshake', color: 'orange' },
+                deposit: { icon: 'fa-money-bill-wave', color: 'green' },
+                legal: { icon: 'fa-gavel', color: 'red' }
+            };
+            let html = '';
+            html += `
+                <div class="relative timeline-item">
+                    <div class="flex gap-4">
+                        <div class="relative flex-shrink-0"><div class="timeline-dot w-10 h-10 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-full flex items-center justify-center text-white shadow-md shadow-indigo-500/20"><i class="fas fa-crystal-ball"></i></div></div>
+                        <div class="flex-1 pb-6">
+                            <p class="text-xs text-indigo-600 font-semibold uppercase tracking-wide">AI Prediction</p>
+                            <p class="font-bold text-gray-900 text-lg">Likely closing: ${formatDate(deal.likely_close)}</p>
+                            <p class="text-sm text-gray-600 mt-1 font-medium">Probability: ${deal.probability}% · Expected commission: ${formatKES(deal.commission)}</p>
+                            <div class="mt-2 text-xs bg-red-50 border border-red-100 rounded-lg p-3">
+                                <i class="fas fa-exclamation-triangle text-red-500 mr-1"></i>Biggest risk: ${esc(deal.biggestRisk.text)}
+                            </div>
+                        </div>
+                    </div>
+                </div>`;
+            activities.forEach(act => {
+                const meta = iconMap[act.type] || { icon: 'fa-circle', color: 'gray' };
+                html += `
+                <div class="relative timeline-item">
+                    <div class="flex gap-4">
+                        <div class="relative flex-shrink-0"><div class="timeline-dot w-10 h-10 rounded-full flex items-center justify-center shadow-sm" style="background:${meta.color==='blue'?'#dbeafe':meta.color==='green'?'#dcfce7':meta.color==='purple'?'#f3e8ff':meta.color==='amber'?'#fef3c7':meta.color==='orange'?'#fff7ed':meta.color==='red'?'#fee2e2':'#f3f4f6'}; color:${meta.color==='blue'?'#1e40af':meta.color==='green'?'#166534':meta.color==='purple'?'#6b21a8':meta.color==='amber'?'#92400e':meta.color==='orange'?'#c2410c':meta.color==='red'?'#991b1b':'#374151'};"><i class="fas ${meta.icon}"></i></div></div>
+                        <div class="flex-1 pb-6">
+                            <p class="text-xs text-gray-500 font-semibold">${formatDate(act.date)}</p>
+                            <p class="font-semibold text-gray-900 capitalize">${act.type.replace('_',' ')}</p>
+                            <p class="text-sm text-gray-600">${esc(act.note)}</p>
+                        </div>
+                    </div>
+                </div>`;
+            });
+            container.innerHTML = html || '<p class="text-center text-gray-400">No activity recorded yet.</p>';
+            document.getElementById('timeline-modal').classList.remove('hidden');
+        };
+
+        // ============ AI COMMAND CENTER ============
+        const AICommandCenter = {
+            intents: {
+                'call_today|who to call|first today|call first': (deals) => {
+                    const sorted = [...deals].sort((a,b)=>b.urgency-a.urgency).slice(0,3);
+                    return { title: '📞 Top 3 people to call today', items: sorted.map(d => `${d.name} — ${d.recommendation.text} (${formatKES(d.commission)})`) };
+                },
+                'at risk|collapse|trouble|failing|danger': (deals) => {
+                    const atRisk = deals.filter(d => d.biggestRisk.severity === 'high');
+                    if (!atRisk.length) return { title: '✅ No deals at high risk right now', items: ['All your deals look healthy.'] };
+                    return { title: `⚠️ ${atRisk.length} deals at risk`, items: atRisk.map(d => `${d.name}: ${d.biggestRisk.text}`) };
+                },
+                'closing soon|close in|next two weeks|14 days|this week': (deals) => {
+                    const soon = deals.filter(d => daysBetween(new Date(), d.likely_close) <= 14 && !['closed','commission_paid'].includes(d.stage));
+                    if (!soon.length) return { title: '📅 No deals closing in the next 2 weeks', items: [] };
+                    return { title: `🎯 ${soon.length} deals likely to close within 14 days`, items: soon.map(d => `${d.name} — closes ~${formatDate(d.likely_close)} (${formatKES(d.commission)})`) };
+                },
+                'pipeline value|total pipeline|worth': (deals) => {
+                    const total = deals.reduce((s,d) => s + (d.value||0), 0);
+                    const exp = deals.reduce((s,d) => s + ((d.commission||0) * d.probability / 100), 0);
+                    return { title: '💰 Pipeline Summary', items: [`Total pipeline value: ${formatKES(total)}`, `Expected commission: ${formatKES(exp)}`, `Active deals: ${deals.length}`] };
+                },
+                'overpriced|price reduced|too expensive': (deals) => {
+                    const reduced = deals.filter(d => d.price_reduced_recently);
+                    if (!reduced.length) return { title: '🏷️ No recent price reductions detected', items: [] };
+                    return { title: `📉 ${reduced.length} properties with recent price drops`, items: reduced.map(d => `${d.property} — ${d.name} is interested`) };
+                },
+                'follow.?up.*for|message.*for|generate.*for': (deals, match) => {
+                    const nameMatch = match.match(/for\s+(\w+(?:\s+\w+)?)/i);
+                    if (!nameMatch) return { title: '📝 Who should I generate a message for?', items: [] };
+                    const name = nameMatch[1].toLowerCase();
+                    const deal = deals.find(d => d.name.toLowerCase().includes(name));
+                    if (!deal) return { title: `❓ I couldn't find a deal matching "${nameMatch[1]}"`, items: [] };
+                    const msg = `Hi ${deal.name.split(' ')[0]}, hope you're well. Following up on ${deal.property || 'the property'} we discussed. I have an update that might interest you — are you free for a quick call today?`;
+                    return { title: `✉️ Draft message for ${deal.name}`, items: [msg] };
+                },
+                'today.*tasks|tasks.*today|action.*today': (deals) => {
+                    const today = deals.filter(d => d.appointment_today || d.urgency >= 70);
+                    return { title: `📋 ${today.length} priority tasks today`, items: today.map(d => `${d.name}: ${d.recommendation.text}`) };
+                },
+                'best deal|strongest|most likely': (deals) => {
+                    const best = [...deals].sort((a,b)=>b.probability-a.probability)[0];
+                    if (!best) return { title: 'No active deals', items: [] };
+                    return { title: `🏆 Your strongest deal`, items: [`${best.name} — ${best.probability}% probability, closes ~${formatDate(best.likely_close)}`, `Commission: ${formatKES(best.commission)}`, `Next step: ${best.recommendation.text}`] };
+                }
+            },
+            process(query) {
+                const q = query.toLowerCase().trim();
+                for (const [pattern, handler] of Object.entries(this.intents)) {
+                    const regex = new RegExp(pattern.split('|').join('|'), 'i');
+                    if (regex.test(q)) return handler(state.deals, q);
+                }
+                const match = state.deals.find(d => d.name.toLowerCase().includes(q));
+                if (match) {
+                    return {
+                        title: `🔎 ${match.name}`,
+                        items: [
+                            `Stage: ${match.stage.replace('_',' ')}`,
+                            `Probability: ${match.probability}%`,
+                            `Likely close: ${formatDate(match.likely_close)}`,
+                            `Commission: ${formatKES(match.commission)}`,
+                            `Next step: ${match.recommendation.text}`,
+                            `Biggest risk: ${match.biggestRisk.text}`
+                        ]
+                    };
+                }
+                return { title: "🤔 I'm not sure how to help with that yet", items: ['Try asking about: who to call, deals at risk, pipeline value, closing soon, or a specific buyer name.'] };
+            }
+        };
+
+        function renderAIResponse(response) {
+            const area = document.getElementById('ai-response-area');
+            const div = document.createElement('div');
+            div.className = 'bg-white rounded-2xl p-4 shadow-sm border border-gray-100 slide-up';
+            div.innerHTML = `<p class="font-bold text-gray-900 mb-2">${esc(response.title)}</p>
+                ${response.items.length ? `<ul class="space-y-1">${response.items.map(i => `<li class="text-sm text-gray-700 flex gap-2"><span class="text-amber-500">•</span><span>${esc(i)}</span></li>`).join('')}</ul>` : '<p class="text-sm text-gray-500">No results.</p>'}`;
+            area.appendChild(div);
+            area.scrollTop = area.scrollHeight;
+        }
+
+        function handleAIQuery() {
+            const input = document.getElementById('ai-input');
+            const query = input.value.trim();
+            if (!query) return;
+            const area = document.getElementById('ai-response-area');
+            const userMsg = document.createElement('div');
+            userMsg.className = 'bg-indigo-600 text-white rounded-2xl p-3 ml-8 slide-up';
+            userMsg.innerHTML = `<p class="text-sm">${esc(query)}</p>`;
+            area.appendChild(userMsg);
+            input.value = '';
+            setTimeout(() => {
+                const response = AICommandCenter.process(query);
+                renderAIResponse(response);
+            }, 400);
+        }
+
+        // ============ EVENT DELEGATION ============
+        document.getElementById('critical-deals-container').addEventListener('click', (e) => {
+            const card = e.target.closest('[data-deal-id]');
+            if (card) showTimelineModal(parseInt(card.dataset.dealId));
         });
-    });
-    document.getElementById('mobile-menu-btn').addEventListener('click',()=>{ document.getElementById('sidebar').classList.toggle('mobile-open'); document.getElementById('mobile-overlay').classList.toggle('hidden'); });
-    document.getElementById('mobile-overlay').addEventListener('click',()=>{ document.getElementById('sidebar').classList.remove('mobile-open'); document.getElementById('mobile-overlay').classList.add('hidden'); });
-    
-    // Header Logout Button Event
-    document.getElementById('header-logout-btn').addEventListener('click', async(e)=>{ 
-        e.preventDefault(); 
-        await supabase.auth.signOut(); 
-        window.location.href='login.html?role=agent'; 
-    });
-    
-    // Sidebar Logout Button Event
-    document.getElementById('logout-btn').addEventListener('click', async(e)=>{ e.preventDefault(); await supabase.auth.signOut(); window.location.href='login.html?role=agent'; });
-    document.getElementById('notif-bell-btn').addEventListener('click',()=>{ document.getElementById('notif-dropdown').classList.toggle('hidden'); });
-    document.getElementById('ai-copilot-btn').addEventListener('click', () => document.getElementById('ai-modal').classList.remove('hidden'));
-    document.getElementById('close-ai-modal').addEventListener('click', () => document.getElementById('ai-modal').classList.add('hidden'));
-    document.getElementById('ai-modal').addEventListener('click', (e) => { if (e.target.id === 'ai-modal') document.getElementById('ai-modal').classList.add('hidden'); });
-    document.getElementById('ai-send-btn').addEventListener('click', handleAIQuery);
-    document.getElementById('ai-input').addEventListener('keypress', (e) => { if (e.key === 'Enter') handleAIQuery(); });
-    document.querySelectorAll('.ai-suggestion').forEach(btn => btn.addEventListener('click', () => { document.getElementById('ai-input').value = btn.textContent.trim(); handleAIQuery(); }));
-    document.getElementById('close-timeline-modal').addEventListener('click', () => document.getElementById('timeline-modal').classList.add('hidden'));
-    document.getElementById('timeline-modal').addEventListener('click', (e) => { if (e.target.id === 'timeline-modal') document.getElementById('timeline-modal').classList.add('hidden'); });
+        document.querySelector('#pipeline-container > div').addEventListener('click', (e) => {
+            const card = e.target.closest('[data-deal-id]');
+            if (card) showTimelineModal(parseInt(card.dataset.dealId));
+        });
+        document.getElementById('action-center').addEventListener('click', (e) => {
+            const card = e.target.closest('[data-deal-id]');
+            if (card) showTimelineModal(parseInt(card.dataset.dealId));
+        });
 
-    // Start the engine
-    checkAuth();
-}
+        // ============ NOTIFICATION EVENTS ============
+        document.getElementById('notif-list').addEventListener('click', async (e) => {
+            const item = e.target.closest('.notif-item');
+            if (item) {
+                const link = item.dataset.link;
+                const id = item.dataset.id;
+                await supabase.from('notifications').update({is_read:true}).eq('id',id);
+                if (link && (link.startsWith('/') || link.startsWith('http'))) window.location.href = link;
+                else showToast('Notification', 'Marked as read');
+                updateNotificationBadge();
+                loadNotifications();
+            }
+        });
+        document.getElementById('mark-all-read-btn').addEventListener('click', markAllRead);
+
+        // ============ REALTIME ============
+        function setupRealtime() {
+            if(state.notificationChannel) supabase.removeChannel(state.notificationChannel);
+            state.notificationChannel = supabase.channel('agent-updates')
+                .on('postgres_changes', { event:'INSERT', schema:'public', table:'notifications', filter:`agent_id=eq.${state.user.id}` }, payload => {
+                    updateNotificationBadge();
+                    showToast(payload.new.title, payload.new.message, 'fa-bell');
+                    loadNotifications();
+                })
+                .subscribe();
+        }
+
+        async function updateNotificationBadge() {
+            const { count } = await supabase.from('notifications').select('*',{count:'exact',head:true}).eq('agent_id', state.user.id).eq('is_read',false);
+            const badge = document.getElementById('notif-badge');
+            if(count>0) { badge.classList.remove('hidden'); badge.textContent = count>9?'9+':count; }
+            else badge.classList.add('hidden');
+        }
+
+        // ============ MISC EVENTS ============
+        document.querySelectorAll('.btn-quick-action').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const msgs = { call:'Opening phone dialer...', whatsapp:'Opening WhatsApp...', schedule:'Opening calendar...', 'send-flyer':'Generating property flyer...' };
+                showToast('Quick Action', msgs[btn.dataset.action] || 'Action triggered');
+            });
+        });
+        document.getElementById('mobile-menu-btn').addEventListener('click',()=>{ document.getElementById('sidebar').classList.toggle('mobile-open'); document.getElementById('mobile-overlay').classList.toggle('hidden'); });
+        document.getElementById('mobile-overlay').addEventListener('click',()=>{ document.getElementById('sidebar').classList.remove('mobile-open'); document.getElementById('mobile-overlay').classList.add('hidden'); });
+        
+        // FIX: Use global logout function
+        document.getElementById('header-logout-btn').addEventListener('click', async(e)=>{ 
+            e.preventDefault(); 
+            await logout(); 
+        });
+        
+        document.getElementById('logout-btn').addEventListener('click', async(e)=>{ 
+            e.preventDefault(); 
+            await logout(); 
+        });
+
+        document.getElementById('notif-bell-btn').addEventListener('click',()=>{ document.getElementById('notif-dropdown').classList.toggle('hidden'); });
+        document.getElementById('ai-copilot-btn').addEventListener('click', () => document.getElementById('ai-modal').classList.remove('hidden'));
+        document.getElementById('close-ai-modal').addEventListener('click', () => document.getElementById('ai-modal').classList.add('hidden'));
+        document.getElementById('ai-modal').addEventListener('click', (e) => { if (e.target.id === 'ai-modal') document.getElementById('ai-modal').classList.add('hidden'); });
+        document.getElementById('ai-send-btn').addEventListener('click', handleAIQuery);
+        document.getElementById('ai-input').addEventListener('keypress', (e) => { if (e.key === 'Enter') handleAIQuery(); });
+        document.querySelectorAll('.ai-suggestion').forEach(btn => btn.addEventListener('click', () => { document.getElementById('ai-input').value = btn.textContent.trim(); handleAIQuery(); }));
+        document.getElementById('close-timeline-modal').addEventListener('click', () => document.getElementById('timeline-modal').classList.add('hidden'));
+        document.getElementById('timeline-modal').addEventListener('click', (e) => { if (e.target.id === 'timeline-modal') document.getElementById('timeline-modal').classList.add('hidden'); });
+
+        // Start the engine
+        checkAuth();
+    }
+
+    // Run immediately
+    initRealtorOS();
 </script>
 </body>
 </html>
