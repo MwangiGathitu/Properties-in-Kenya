@@ -1,6 +1,7 @@
 // FIXED IMPORTS – all relative to this file's location (apps/admin/js/dashboard/)
-import { supabase } from '/public/js/supabase.js';          // updated path
-import { requireRole } from './auth.js';                   // same folder (auth.js is here)
+import { supabase } from '/public/js/supabase.js';          
+// FIX 1: Import from the GLOBAL auth file, not the local duplicate.
+import { requireRole } from '/public/js/auth.js';                   
 
 // Local dashboard modules (same folder)
 import { UI } from './ui.js';
@@ -22,12 +23,17 @@ async function init() {
     if (isBooted) return;
     isBooted = true;
 
+    // This now uses the global, clean auth.js
     const auth = await requireRole('admin');
     if (!auth) return;
 
     UI.cacheElements();
     UI.initOfflineAwareness();
-    checkPermissions(auth.user.role);
+    
+    // FIX 2: Our new requireRole returns { user, role } at the top level.
+    // We use auth.role instead of the non-existent auth.user.role.
+    checkPermissions(auth.role); 
+    
     initCommandPalette();
 
     initOperationsRenderer();
