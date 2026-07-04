@@ -246,20 +246,15 @@
   </div>
 
   <!-- ========================================== -->
-  <!-- AUTHENTICATION & BOOTSTRAP SCRIPT          -->
+  <!-- CLEAN BOOTSTRAP SCRIPT (SURGICALLY FIXED)  -->
   <!-- ========================================== -->
   <script type="module">
-    import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.108.2/+esm';
-    
-    const supabase = createClient(
-      'https://nqwvsmuvltbiekfnvovx.supabase.co',
-      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5xd3ZzbXV2bHRiaWVrZm52b3Z4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA1NjU4MDAsImV4cCI6MjA5NjE0MTgwMH0.Xrc-bbAuWdvKSPHnVhTaLiQphV61xeYtDepWePqsrdo',
-      {
-        auth: { autoRefreshToken: true, persistSession: true, detectSessionInUrl: true }
-      }
-    );
+    // FIX 1: Import the global Supabase client and Auth system.
+    // NO MORE creating a duplicate client here!
+    import { initAuth, requireRole } from '/public/js/auth.js';
+    import { supabase } from '/public/js/supabase.js';
 
-    // Offline detection
+    // Offline detection (kept exactly as you wrote it)
     const offlineBanner = document.getElementById('offlineBanner');
     const updateOfflineStatus = () => {
       if (navigator.onLine) offlineBanner.classList.remove('active');
@@ -270,66 +265,42 @@
     updateOfflineStatus();
 
     async function bootAdminOS() {
-      const { data: { session } } = await supabase.auth.getSession();
-      
-      if (!session) {
-        window.location.href = '/apps/auth/login.html?role=admin';
-        return;
-      }
+      // FIX 2: Initialize the global auth state ONCE.
+      await initAuth();
 
-      const { data: { user }, error } = await supabase.auth.getUser();
-      if (error || !user) {
-        await supabase.auth.signOut();
-        window.location.href = '/apps/auth/login.html?role=admin';
-        return;
-      }
-
-      const { data: profile, error: profileError } = await supabase
-        .from('profiles')
-        .select('role, full_name, email')
-        .eq('id', user.id)
-        .single();
-
-      // 🔒 ROLE VERIFICATION
-      if (profileError || !profile || profile.role !== 'admin') {
-        document.body.innerHTML = `
-          <div style="display:flex;align-items:center;justify-content:center;height:100vh;font-family:'Inter',system-ui,sans-serif;background:linear-gradient(135deg, #0f172a, #1e293b);color:#f8fafc;margin:0;padding:20px;">
-            <div style="text-align:center;max-width:420px;padding:48px 32px;background:rgba(255,255,255,0.03);border-radius:24px;border:1px solid rgba(255,255,255,0.08);backdrop-filter:blur(20px);box-shadow:0 20px 40px rgba(0,0,0,0.4);">
-              <div style="font-size:72px;margin-bottom:24px;filter:drop-shadow(0 0 20px rgba(239,68,68,0.5));">🚫</div>
-              <h1 style="font-size:32px;font-weight:800;margin-bottom:16px;background:linear-gradient(to right, #fff, #cbd5e1);-webkit-background-clip:text;-webkit-text-fill-color:transparent;letter-spacing:-0.5px;">Access Denied</h1>
-              <p style="color:#94a3b8;font-size:16px;margin-bottom:32px;line-height:1.6;">You do not have the required administrative privileges to access the RealtorOS Control Center.</p>
-              <a href="/apps/auth/login.html?role=admin" style="display:inline-flex;align-items:center;gap:8px;padding:14px 28px;background:linear-gradient(135deg, #f59e0b, #d97706);color:white;text-decoration:none;border-radius:12px;font-weight:600;font-size:15px;transition:all 0.3s;box-shadow:0 8px 20px rgba(245,158,11,0.3);">
-                <i class="ti ti-arrow-left" style="font-size:18px;"></i> Return to Login
-              </a>
-            </div>
-          </div>
-        `;
-        throw new Error('Not admin');
-      }
+      // FIX 3: Use the Single Source of Truth to enforce the admin role.
+      // If they aren't an admin, requireRole automatically redirects them 
+      // to their correct dashboard (agent or buyer). No more dead-end "Access Denied" pages.
+      const auth = await requireRole('admin');
+      if (!auth) return; 
 
       // ✅ USER IS VERIFIED ADMIN
+      
+      // Fetch display name for the header (using the global supabase client)
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('full_name')
+        .eq('id', auth.user.id)
+        .maybeSingle();
+
       const adminEmailEl = document.getElementById('adminEmail');
       if (adminEmailEl) {
-        adminEmailEl.textContent = profile.full_name || profile.email || 'Admin';
+        adminEmailEl.textContent = profile?.full_name || auth.user.email || 'Admin';
       }
 
       // Hide global loading overlay
       const globalLoading = document.getElementById('globalLoading');
       if (globalLoading) globalLoading.style.display = 'none';
 
-      // Dynamically import the main dashboard module ONLY after auth is verified
-      import('/apps/admin/js/dashboard/dashboard.js')
-        .then(module => {
-          if (typeof module.initDashboard === 'function') {
-            module.initDashboard(supabase, user, profile);
-          } else if (typeof module.default === 'function') {
-            module.default(supabase, user, profile);
-          }
-        })
-        .catch(err => {
-          console.error('Failed to load dashboard module:', err);
-          document.body.innerHTML = `<div style="padding:40px;text-align:center;color:#ef4444;">Failed to load dashboard modules. Check console.</div>`;
-        });
+      // FIX 4: Load the dashboard module cleanly.
+      // dashboard.js runs init() automatically at the bottom of the file.
+      // We just need to import it. No need to pass arguments or call non-existent functions.
+      try {
+        await import('/apps/admin/js/dashboard/dashboard.js');
+      } catch (err) {
+        console.error('Failed to load dashboard module:', err);
+        document.body.innerHTML = `<div style="padding:40px;text-align:center;color:#ef4444;">Failed to load dashboard modules. Check console.</div>`;
+      }
     }
 
     bootAdminOS();
