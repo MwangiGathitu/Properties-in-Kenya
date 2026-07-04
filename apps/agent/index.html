@@ -27,7 +27,7 @@
 }
 </script>
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<!-- FIX: Removed CDN script. We will import the global client via ES Module below. -->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -202,6 +202,7 @@ body {
 .avatar-lg img, .avatar img { width: 100%; height: 100%; object-fit: cover; }
 .agent-name { font-weight: 700; margin-bottom: 6px; display: flex; align-items: center; justify-content: center; gap: 8px; font-size: 1.125rem; }
 .verified-tick { color: var(--success); font-size: 0.875rem; }
+/* FIX: Changed class name conceptually, but kept CSS same */
 .agent-company { font-size: 0.875rem; color: var(--primary); font-weight: 600; margin-bottom: 4px; }
 .agent-loc { font-size: 0.8125rem; color: var(--gray-500); margin-bottom: 12px; display: flex; align-items: center; justify-content: center; gap: 6px; }
 .agent-specs { display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; margin-bottom: 16px; }
@@ -444,17 +445,15 @@ body {
   <p>© 2026 Properties in Kenya. All rights reserved. | Powered by The Caretaker AI</p>
 </footer>
 
-<script>
-(function() {
-    'use strict';
+<!-- FIX: Converted to ES Module to use Global Supabase Client -->
+<script type="module">
+    import { supabase } from '/public/js/supabase.js';
 
     // ==========================================
     // 1. CONFIGURATION & STATE
     // ==========================================
-    const sb = supabase.createClient(
-        "https://nqwvsmuvltbiekfnvovx.supabase.co",
-        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5xd3ZzbXV2bHRiaWVrZm52b3Z4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA1NjU4MDAsImV4cCI6MjA5NjE0MTgwMH0.Xrc-bbAuWdvKSPHnVhTaLiQphV61xeYtDepWePqsrdo"
-    );
+    // FIX: Removed hardcoded keys. Using the imported global client.
+    // Renamed 'sb' to 'supabase' for consistency.
 
     const state = {
         allAgents: [],
@@ -511,7 +510,7 @@ body {
         state.hasError = false;
         
         try {
-            const { data: agents, error } = await sb
+            const { data: agents, error } = await supabase
                 .from('profiles')
                 .select('*')
                 .eq('role', 'agent')
@@ -520,9 +519,9 @@ body {
             if (error) throw error;
             state.allAgents = agents || [];
 
-            // Load listing counts – gracefully handle missing agent_id column
+            // Load listing counts
             try {
-                const { data: listings, error: listErr } = await sb
+                const { data: listings, error: listErr } = await supabase
                     .from('properties')
                     .select('agent_id')
                     .eq('approval_status', 'approved');
@@ -620,7 +619,8 @@ body {
 
         let filtered = state.allAgents.filter(a => {
             if (search) {
-                const haystack = `${a.full_name || ''} ${a.company || ''} ${a.location || ''} ${(a.specializations || []).join(' ')} ${(a.bio || '')}`.toLowerCase();
+                // FIX: Added 'agency' to the search haystack instead of 'company'
+                const haystack = `${a.full_name || ''} ${a.agency || ''} ${a.location || ''} ${(a.bio || '')}`.toLowerCase();
                 if (!haystack.includes(search)) return false;
             }
             if (location && a.location !== location) return false;
@@ -677,14 +677,14 @@ body {
         const listings = state.agentListingsCount[a.id] || 0;
         const rating = (a.average_rating || 0).toFixed(1);
         const trust = a.trust_score || 0;
-        const verified = a.is_verified_identity || trust >= 50;
-        const specs = a.specializations || [];
+        const verified = a.is_licensed_agent || a.is_verified_identity || trust >= 50;
 
         const cardClass = isTop ? 'top-card' : 'agent-card';
         const avatarClass = isTop ? 'avatar-lg' : 'avatar';
         const topBadge = isTop ? `<div class="top-badge"><i class="fas fa-crown"></i> Top Agent</div>` : '';
 
-        const agentUrl = `/agent/${encodeURIComponent(a.slug || a.id)}`;
+        // FIX: Removed 'slug' (doesn't exist in DB). Using ID fallback matching sitemap.js
+        const agentUrl = `/agent-profile.html?id=${encodeURIComponent(a.id)}`;
 
         return `
             <a href="${esc(agentUrl)}" class="${cardClass}">
@@ -694,8 +694,8 @@ body {
                     ${esc(a.full_name || 'Agent')}
                     ${verified ? '<i class="fas fa-check-circle verified-tick" title="Verified Agent"></i>' : ''}
                 </div>
-                <div class="agent-company">${esc(a.company || 'Independent Agent')}</div>
-                ${specs.length > 0 ? `<div class="agent-specs">${specs.map(s => `<span class="spec-tag">${esc(s)}</span>`).join('')}</div>` : ''}
+                <!-- FIX: Changed 'a.company' to 'a.agency' to match profiles schema -->
+                <div class="agent-company">${esc(a.agency || 'Independent Agent')}</div>
                 <div class="agent-loc">
                     <i class="fas fa-map-marker-alt"></i> ${esc(a.location || 'Kenya')}
                 </div>
@@ -760,12 +760,10 @@ body {
         });
     }
 
-    document.addEventListener('DOMContentLoaded', () => {
-        initEventListeners();
-        loadAgents();
-    });
+    // Run immediately since type="module" is deferred by default
+    initEventListeners();
+    loadAgents();
 
-})();
 </script>
 
 </body>
