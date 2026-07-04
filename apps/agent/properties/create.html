@@ -4,65 +4,108 @@
 <meta charset="UTF-8">
 <title>Create Property</title>
 <script src="https://cdn.tailwindcss.com"></script>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 
 <body class="bg-gray-100 p-6">
 
 <h1 class="text-2xl font-bold mb-4">Create Property</h1>
 
-<form id="form" class="bg-white p-6 rounded shadow space-y-4">
+<form id="form" class="bg-white p-6 rounded shadow space-y-4 max-w-2xl">
 
-<input id="title" placeholder="Title" class="border p-2 w-full" required>
+  <input id="title" placeholder="Property Title" class="border p-2 w-full" required>
+  
+  <textarea id="description" placeholder="Description" class="border p-2 w-full" rows="3" required></textarea>
 
-<input id="price" type="number" placeholder="Price" class="border p-2 w-full" required>
+  <div class="grid grid-cols-2 gap-4">
+    <input id="price" type="number" placeholder="Price (KES)" class="border p-2 w-full" required>
+    <select id="property_type" class="border p-2 w-full" required>
+      <option value="">Select Type</option>
+      <option value="house">House</option>
+      <option value="apartment">Apartment</option>
+      <option value="land">Land</option>
+      <option value="commercial">Commercial</option>
+    </select>
+  </div>
 
-<select id="status" class="border p-2 w-full">
-  <option value="available">Available</option>
-  <option value="pending">Pending</option>
-  <option value="sold">Sold</option>
-</select>
+  <div class="grid grid-cols-3 gap-4">
+    <input id="county" placeholder="County (e.g., Nairobi)" class="border p-2 w-full" required>
+    <input id="town" placeholder="Town (e.g., Kilimani)" class="border p-2 w-full" required>
+    <input id="location" placeholder="Specific Location" class="border p-2 w-full">
+  </div>
 
-<input id="image" placeholder="Image URL" class="border p-2 w-full">
+  <div class="grid grid-cols-3 gap-4">
+    <input id="bedrooms" type="number" placeholder="Bedrooms" class="border p-2 w-full">
+    <input id="bathrooms" type="number" placeholder="Bathrooms" class="border p-2 w-full">
+    <input id="area_sqft" type="number" placeholder="Area (sqft)" class="border p-2 w-full">
+  </div>
 
-<button class="bg-green-600 text-white px-4 py-2 rounded">
-  Save Property
-</button>
+  <input id="image" placeholder="Image URL (comma separated for multiple)" class="border p-2 w-full">
+
+  <button type="submit" class="bg-green-600 text-white px-4 py-2 rounded w-full font-semibold hover:bg-green-700">
+    Submit for Moderation
+  </button>
 
 </form>
 
-<script>
-const supabase = window.supabase.createClient(
-  "https://nqwvsmuvltbiekfnvovx.supabase.co",
-  "YOUR_ANON_KEY"
-);
+<!-- FIX: Import the global Supabase client and Auth system we built -->
+<script type="module">
+  import { supabase } from '/public/js/supabase.js';
+  import { requireRole } from '/public/js/auth.js';
 
-let user = null;
+  let currentUser = null;
 
-async function auth() {
-  const { data } = await supabase.auth.getUser();
-  user = data.user;
-
-  if (!user) {
-    window.location.href = "../auth/login.html?role=agent";
+  async function init() {
+    // FIX: Enforce that only agents or admins can access this page
+    const auth = await requireRole(['agent', 'admin']);
+    if (!auth) return; 
+    
+    currentUser = auth.user;
   }
-}
 
-document.getElementById("form").addEventListener("submit", async (e) => {
-  e.preventDefault();
+  // Run auth check immediately
+  init();
 
-  await supabase.from("properties").insert([{
-    agent_id: user.id,
-    title: document.getElementById("title").value,
-    price: parseFloat(document.getElementById("price").value),
-    status: document.getElementById("status").value,
-    images: [document.getElementById("image").value]
-  }]);
+  document.getElementById("form").addEventListener("submit", async (e) => {
+    e.preventDefault();
 
-  window.location.href = "index.html";
-});
+    if (!currentUser) {
+      alert("Please wait for authentication to complete.");
+      return;
+    }
 
-auth();
+    // Parse image URLs into an array (Supabase 'images' column is text[])
+    const imageInput = document.getElementById("image").value.trim();
+    const imagesArray = imageInput ? imageInput.split(',').map(url => url.trim()) : [];
+
+    // FIX: Insert data that actually matches your 'properties' table schema
+    const { error } = await supabase.from("properties").insert([{
+      agent_id: currentUser.id,
+      title: document.getElementById("title").value,
+      description: document.getElementById("description").value,
+      price: parseFloat(document.getElementById("price").value),
+      property_type: document.getElementById("property_type").value,
+      status: 'available', // Default status
+      visibility: 'public', // Default visibility
+      county: document.getElementById("county").value,
+      town: document.getElementById("town").value,
+      location: document.getElementById("location").value,
+      bedrooms: parseInt(document.getElementById("bedrooms").value) || null,
+      bathrooms: parseInt(document.getElementById("bathrooms").value) || null,
+      area_sqft: parseInt(document.getElementById("area_sqft").value) || null,
+      images: imagesArray,
+      // FIX: Automatically set to pending so it goes to the Admin Moderation Queue
+      approval_status: 'pending' 
+    }]);
+
+    if (error) {
+      console.error("Insert error:", error);
+      alert("Failed to create property: " + error.message);
+      return;
+    }
+
+    // Redirect to agent dashboard after successful creation
+    window.location.href = "/apps/agent/dashboard.html";
+  });
 </script>
 
 </body>
