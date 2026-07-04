@@ -18,11 +18,13 @@ export default async function handler(req, res) {
         .eq('approval_status', 'approved');
 
     // 2. Fetch verified agents
+    // FIX: Changed 'is_verified' to 'is_licensed_agent' (based on your actual profiles schema)
+    // FIX: Removed 'slug' from select because it doesn't exist in the profiles table
     const { data: agents } = await supabase
         .from('profiles')
-        .select('id, slug, updated_at')
+        .select('id, updated_at') 
         .eq('role', 'agent')
-        .eq('is_verified', true);
+        .eq('is_licensed_agent', true); 
 
     // Build XML
     let xml = `<?xml version="1.0" encoding="UTF-8"?>
@@ -44,8 +46,9 @@ export default async function handler(req, res) {
     if (agents) {
         agents.forEach(a => {
             const lastmod = a.updated_at ? new Date(a.updated_at).toISOString() : currentDate;
-            // Use slug if available, otherwise fallback to ID
-            const agentUrl = a.slug ? `${baseUrl}/agent/${a.slug}` : `${baseUrl}/agent-profile.html?id=${a.id}`;
+            // FIX: Removed slug logic since the column doesn't exist in your DB. 
+            // It will now cleanly fallback to the ID every time.
+            const agentUrl = `${baseUrl}/agent-profile.html?id=${a.id}`;
             xml += `<url><loc>${agentUrl}</loc><lastmod>${lastmod}</lastmod></url>`;
         });
     }
