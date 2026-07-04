@@ -4,85 +4,159 @@
 <meta charset="UTF-8">
 <title>Edit Property</title>
 <script src="https://cdn.tailwindcss.com"></script>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 
 <body class="bg-gray-100 p-6">
 
 <h1 class="text-2xl font-bold mb-4">Edit Property</h1>
 
-<form id="form" class="bg-white p-6 rounded shadow space-y-4">
+<form id="form" class="bg-white p-6 rounded shadow space-y-4 max-w-2xl">
 
-<input id="title" class="border p-2 w-full">
-<input id="price" type="number" class="border p-2 w-full">
+  <input id="title" placeholder="Property Title" class="border p-2 w-full" required>
+  
+  <textarea id="description" placeholder="Description" class="border p-2 w-full" rows="3" required></textarea>
 
-<select id="status" class="border p-2 w-full">
-  <option value="available">Available</option>
-  <option value="pending">Pending</option>
-  <option value="sold">Sold</option>
-</select>
+  <div class="grid grid-cols-2 gap-4">
+    <input id="price" type="number" placeholder="Price (KES)" class="border p-2 w-full" required>
+    <select id="property_type" class="border p-2 w-full" required>
+      <option value="">Select Type</option>
+      <option value="house">House</option>
+      <option value="apartment">Apartment</option>
+      <option value="land">Land</option>
+      <option value="commercial">Commercial</option>
+    </select>
+  </div>
 
-<input id="image" class="border p-2 w-full">
+  <div class="grid grid-cols-3 gap-4">
+    <input id="county" placeholder="County (e.g., Nairobi)" class="border p-2 w-full" required>
+    <input id="town" placeholder="Town (e.g., Kilimani)" class="border p-2 w-full" required>
+    <input id="location" placeholder="Specific Location" class="border p-2 w-full">
+  </div>
 
-<button class="bg-blue-600 text-white px-4 py-2 rounded">
-  Update Property
-</button>
+  <div class="grid grid-cols-3 gap-4">
+    <input id="bedrooms" type="number" placeholder="Bedrooms" class="border p-2 w-full">
+    <input id="bathrooms" type="number" placeholder="Bathrooms" class="border p-2 w-full">
+    <input id="area_sqft" type="number" placeholder="Area (sqft)" class="border p-2 w-full">
+  </div>
+
+  <input id="image" placeholder="Image URL (comma separated for multiple)" class="border p-2 w-full">
+
+  <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded w-full font-semibold hover:bg-blue-700">
+    Save Changes
+  </button>
 
 </form>
 
-<script>
-const supabase = window.supabase.createClient(
-  "https://nqwvsmuvltbiekfnvovx.supabase.co",
-  "YOUR_ANON_KEY"
-);
+<!-- FIX: Import the global Supabase client and Auth system we built -->
+<script type="module">
+  import { supabase } from '/public/js/supabase.js';
+  import { requireRole } from '/public/js/auth.js';
 
-let user = null;
-let propertyId = null;
+  let currentUser = null;
+  let currentRole = null;
+  let propertyId = null;
 
-async function auth() {
-  const { data } = await supabase.auth.getUser();
-  user = data.user;
+  async function init() {
+    // FIX: Enforce that only agents or admins can access this page
+    const auth = await requireRole(['agent', 'admin']);
+    if (!auth) return; 
+    
+    currentUser = auth.user;
+    currentRole = auth.role;
 
-  if (!user) {
-    window.location.href = "../auth/login.html?role=agent";
+    // Get property ID from URL
+    const url = new URL(window.location.href);
+    propertyId = url.searchParams.get("id");
+
+    if (!propertyId) {
+      alert("No property ID provided.");
+      window.location.href = "/apps/agent/dashboard.html";
+      return;
+    }
+
+    await loadProperty();
   }
 
-  const url = new URL(window.location.href);
-  propertyId = url.searchParams.get("id");
+  async function loadProperty() {
+    const { data, error } = await supabase
+      .from("properties")
+      .select("*")
+      .eq("id", propertyId)
+      .single();
 
-  loadProperty();
-}
+    if (error || !data) {
+      alert("Property not found.");
+      window.location.href = "/apps/agent/dashboard.html";
+      return;
+    }
 
-async function loadProperty() {
-  const { data } = await supabase
-    .from("properties")
-    .select("*")
-    .eq("id", propertyId)
-    .single();
+    // 🔒 SECURITY CHECK: Only the owner or an admin can edit this property
+    if (data.agent_id !== currentUser.id && currentRole !== 'admin') {
+      alert("You do not have permission to edit this property.");
+      window.location.href = "/apps/agent/dashboard.html";
+      return;
+    }
 
-  document.getElementById("title").value = data.title;
-  document.getElementById("price").value = data.price;
-  document.getElementById("status").value = data.status;
-  document.getElementById("image").value = data.images?.[0] || "";
-}
+    // Populate form with existing data
+    document.getElementById("title").value = data.title || '';
+    document.getElementById("description").value = data.description || '';
+    document.getElementById("price").value = data.price || 0;
+    document.getElementById("property_type").value = data.property_type || '';
+    document.getElementById("county").value = data.county || '';
+    document.getElementById("town").value = data.town || '';
+    document.getElementById("location").value = data.location || '';
+    document.getElementById("bedrooms").value = data.bedrooms || '';
+    document.getElementById("bathrooms").value = data.bathrooms || '';
+    document.getElementById("area_sqft").value = data.area_sqft || '';
+    
+    // Images is an array in DB, join with comma for the input
+    document.getElementById("image").value = Array.isArray(data.images) ? data.images.join(', ') : '';
+  }
 
-document.getElementById("form").addEventListener("submit", async (e) => {
-  e.preventDefault();
+  document.getElementById("form").addEventListener("submit", async (e) => {
+    e.preventDefault();
 
-  await supabase.from("properties")
-    .update({
-      title: document.getElementById("title").value,
-      price: parseFloat(document.getElementById("price").value),
-      status: document.getElementById("status").value,
-      images: [document.getElementById("image").value]
-    })
-    .eq("id", propertyId)
-    .eq("agent_id", user.id);
+    if (!currentUser || !propertyId) {
+      alert("Please wait for authentication to complete.");
+      return;
+    }
 
-  window.location.href = "index.html";
-});
+    // Parse image URLs into an array
+    const imageInput = document.getElementById("image").value.trim();
+    const imagesArray = imageInput ? imageInput.split(',').map(url => url.trim()) : [];
 
-auth();
+    // FIX: Update data that actually matches your 'properties' table schema
+    const { error } = await supabase.from("properties")
+      .update({
+        title: document.getElementById("title").value,
+        description: document.getElementById("description").value,
+        price: parseFloat(document.getElementById("price").value),
+        property_type: document.getElementById("property_type").value,
+        county: document.getElementById("county").value,
+        town: document.getElementById("town").value,
+        location: document.getElementById("location").value,
+        bedrooms: parseInt(document.getElementById("bedrooms").value) || null,
+        bathrooms: parseInt(document.getElementById("bathrooms").value) || null,
+        area_sqft: parseInt(document.getElementById("area_sqft").value) || null,
+        images: imagesArray,
+        updated_at: new Date().toISOString() // Triggers your audit logs
+      })
+      .eq("id", propertyId)
+      // 🔒 SECURITY: Double-check ownership on the DB side (RLS should handle this, but belt-and-suspenders)
+      .eq("agent_id", currentUser.id); 
+
+    if (error) {
+      console.error("Update error:", error);
+      alert("Failed to update property: " + error.message);
+      return;
+    }
+
+    // Redirect back to property details or dashboard
+    window.location.href = `/property.html?id=${propertyId}`; 
+  });
+
+  // Run init immediately
+  init();
 </script>
 
 </body>
