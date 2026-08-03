@@ -6,7 +6,7 @@
     <title>Lead Center - Properties in Kenya</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <!-- FIX: Removed CDN Supabase script. We will import the global client via ES Module below. -->
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap');
         body { font-family: 'Inter', system_ui, sans-serif; }
@@ -187,17 +187,12 @@
 <!-- Toast Container -->
 <div id="toast-container" class="fixed bottom-6 right-6 z-[100] flex flex-col gap-3"></div>
 
-<script>
-(function() {
-    'use strict';
+<!-- FIX: Converted to ES Module to use Global Supabase Client and Auth -->
+<script type="module">
+    import { supabase } from '/public/js/supabase.js';
+    import { requireRole, logout } from '/public/js/auth.js';
 
-    // ==========================================
-    // 1. CONFIGURATION & STATE
-    // ==========================================
-    const supabase = window.supabase.createClient(
-        'https://nqvsmuvltbiekfnvovx.supabase.co',
-        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5xd3ZzbXV2bHRiaWVrZm52b3Z4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA1NjU4MDAsImV4cCI6MjA5NjE0MTgwMH0.Xrc-bbAuWdvKSPHnVhTaLiQphV61xeYtDepWePqsrdo'
-    );
+    'use strict';
 
     const state = {
         user: null,
@@ -264,18 +259,20 @@
     }
 
     // ==========================================
-    // 3. AUTH & DATA LOADING
+    // 3. AUTH & DATA LOADING (Using Global Single Source of Truth)
     // ==========================================
     async function checkAuth() {
-        const { data: { user } } = await supabase.auth.getUser();
-        if (!user) { window.location.href = 'login.html'; return; }
-        state.user = user;
-        
-        supabase.auth.onAuthStateChange((event) => {
-            if (event === 'SIGNED_OUT') window.location.href = 'login.html';
-        });
+        try {
+            // FIX: Use global requireRole instead of manual session checks.
+            const auth = await requireRole('agent');
+            if (!auth) return; // Redirects handled automatically by global auth.js
 
-        loadLeads();
+            state.user = auth.user;
+            loadLeads();
+        } catch (err) {
+            console.error('Auth check failed:', err);
+            window.location.href = '/apps/auth/login.html?role=agent';
+        }
     }
 
     async function loadLeads() {
@@ -332,7 +329,6 @@
                  draggable="true" 
                  data-lead-id="${esc(lead.id)}">
                 
-                <!-- 🔒 FIX: Corrected Tailwind classes for mobile/desktop visibility -->
                 <select class="mobile-move-select absolute top-2 right-2 opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity w-24 text-xs bg-gray-50 border border-gray-200 rounded-lg py-1 px-1 z-10">
                     <option value="" disabled selected>Move...</option>
                     ${columns.filter(c => c.id !== colId).map(c => `<option value="${esc(c.id)}">${esc(c.title)}</option>`).join('')}
@@ -626,11 +622,10 @@
             document.getElementById('mobile-overlay').classList.add('hidden');
         });
 
-        // Logout
+        // FIX: Use global logout function for consistent session clearing
         document.getElementById('logout-btn').addEventListener('click', async (e) => {
             e.preventDefault();
-            await supabase.auth.signOut();
-            window.location.href = 'login.html';
+            await logout();
         });
 
         // Add Lead Modal
@@ -662,8 +657,6 @@
         initEventListeners();
         checkAuth();
     });
-
-})();
 </script>
 </body>
 </html>
