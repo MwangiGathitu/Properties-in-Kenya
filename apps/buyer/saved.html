@@ -6,7 +6,7 @@
     <title>Saved Homes - Properties in Kenya</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <!-- FIX: Removed CDN Supabase script. We will import the global client via ES Module below. -->
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap');
         body { font-family: 'Inter', system_ui, sans-serif; }
@@ -123,14 +123,12 @@
     </main>
 </div>
 
-<script>
-(function() {
-    'use strict';
+<!-- FIX: Converted to ES Module to use Global Supabase Client and Auth -->
+<script type="module">
+    import { supabase } from '/public/js/supabase.js';
+    import { requireRole, logout } from '/public/js/auth.js';
 
-    const supabase = window.supabase.createClient(
-        'https://nqwvsmuvltbiekfnvovx.supabase.co',
-        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5xd3ZzbXV2bHRiaWVrZm52b3Z4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA1NjU4MDAsImV4cCI6MjA5NjE0MTgwMH0.Xrc-bbAuWdvKSPHnVhTaLiQphV61xeYtDepWePqsrdo'
-    );
+    'use strict';
 
     const FALLBACK_IMG = 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=800&auto=format&fit=crop';
     const state = { user: null, savedProperties: [] };
@@ -169,39 +167,29 @@
     }
 
     // ==========================================
-    // BULLETPROOF AUTH
+    // BULLETPROOF AUTH (Using Global Single Source of Truth)
     // ==========================================
     async function checkAuth() {
         try {
-            const { data: { session } } = await supabase.auth.getSession();
-            if (!session) {
-                window.location.href = 'login.html?role=buyer';
-                return;
-            }
+            // FIX: Use global requireRole instead of manual session checks.
+            const auth = await requireRole('buyer');
+            if (!auth) return; // Redirects handled automatically by global auth.js
 
-            const { data: { user }, error } = await supabase.auth.getUser();
-            if (error || !user) {
-                await supabase.auth.signOut();
-                window.location.href = 'login.html?role=buyer';
-                return;
-            }
-
-            const { data: profile } = await supabase.from('profiles').select('role, full_name').eq('id', user.id).single();
-            if (profile?.role !== 'buyer' && profile?.role !== 'admin') {
-                window.location.href = 'agent-dashboard.html';
-                return;
-            }
-
-            state.user = user;
-            document.getElementById('profile-name').textContent = profile?.full_name || 'Buyer';
-            document.getElementById('profile-initial').textContent = (profile?.full_name || 'B').charAt(0).toUpperCase();
-            document.getElementById('auth-loader').style.display = 'none';
+            state.user = auth.user;
             
-            loadSavedProperties();
+            // Fetch profile for UI display
+            const { data: profile } = await supabase.from('profiles').select('full_name').eq('id', state.user.id).single();
+            if (profile) {
+                document.getElementById('profile-name').textContent = profile.full_name || 'Buyer';
+                document.getElementById('profile-initial').textContent = (profile.full_name || 'B').charAt(0).toUpperCase();
+            }
+
+            document.getElementById('auth-loader').style.display = 'none';
+            await loadSavedProperties();
 
         } catch (err) {
             console.error('Auth check failed:', err);
-            window.location.href = 'login.html?role=buyer';
+            window.location.href = '/apps/auth/login.html?role=buyer';
         }
     }
 
@@ -300,7 +288,7 @@
 
                     <div class="flex items-center justify-between pt-4 border-t border-gray-100">
                         <span class="text-xl font-bold text-sky-600">${formatKES(prop.price)}</span>
-                        <a href="/property/${prop.id}" class="px-4 py-2 bg-sky-50 text-sky-600 rounded-lg text-sm font-semibold hover:bg-sky-100 transition">
+                        <a href="/property.html?id=${prop.id}" class="px-4 py-2 bg-sky-50 text-sky-600 rounded-lg text-sm font-semibold hover:bg-sky-100 transition">
                             View Details
                         </a>
                     </div>
@@ -343,10 +331,10 @@
             document.getElementById('mobile-overlay').classList.add('hidden');
         });
 
+        // FIX: Use global logout function for consistent session clearing
         document.getElementById('logout-btn').addEventListener('click', async (e) => {
             e.preventDefault();
-            await supabase.auth.signOut();
-            window.location.href = 'login.html?role=buyer';
+            await logout();
         });
 
         // 🔒 SECURE EVENT DELEGATION for Remove Buttons
@@ -363,8 +351,6 @@
         initEventListeners();
         checkAuth();
     });
-
-})();
 </script>
 
 </body>
