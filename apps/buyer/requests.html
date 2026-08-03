@@ -6,7 +6,7 @@
     <title>Buyer Requests - Properties in Kenya</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <!-- FIX: Removed CDN Supabase script. We will import the global client via ES Module below. -->
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap');
         body { font-family: 'Inter', system_ui, sans-serif; }
@@ -159,7 +159,6 @@
                 <textarea id="req-notes" rows="3" maxlength="500" class="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-purple-500 focus:outline-none" placeholder="e.g., Must have a garden, close to international schools, ready to buy in 30 days."></textarea>
             </div>
 
-            <!-- 🔒 FIX: Removed the literal typo and duplicate buttons -->
             <div class="flex gap-4 pt-4 border-t">
                 <button type="button" id="cancel-modal-btn" class="flex-1 py-3 border border-gray-300 rounded-xl font-semibold hover:bg-gray-50">Cancel</button>
                 <button type="submit" id="submit-request-btn" class="flex-1 py-3 bg-gradient-to-r from-purple-600 to-indigo-600 text-white rounded-xl font-semibold hover:shadow-lg">Save & Find Matches</button>
@@ -192,17 +191,12 @@
 <!-- Toast Container -->
 <div id="toast-container" class="fixed bottom-6 right-6 z-[100] flex flex-col gap-3"></div>
 
-<script>
-(function() {
-    'use strict';
+<!-- FIX: Converted to ES Module to use Global Supabase Client and Auth -->
+<script type="module">
+    import { supabase } from '/public/js/supabase.js';
+    import { requireRole, logout } from '/public/js/auth.js';
 
-    // ==========================================
-    // 1. CONFIGURATION & STATE
-    // ==========================================
-    const supabase = window.supabase.createClient(
-        'https://nqvsmuvltbiekfnvovx.supabase.co',
-        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5xd3ZzbXV2bHRiaWVrZm52b3Z4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA1NjU4MDAsImV4cCI6MjA5NjE0MTgwMH0.Xrc-bbAuWdvKSPHnVhTaLiQphV61xeYtDepWePqsrdo'
-    );
+    'use strict';
 
     const state = {
         user: null,
@@ -246,23 +240,25 @@
     }
 
     // ==========================================
-    // 3. AUTH & DATA LOADING
+    // 3. AUTH & DATA LOADING (Using Global Single Source of Truth)
     // ==========================================
     async function checkAuth() {
-        const { data: { user } } = await supabase.auth.getUser();
-        if (!user) { window.location.href = 'login.html'; return; }
-        state.user = user;
-        
-        supabase.auth.onAuthStateChange((event) => {
-            if (event === 'SIGNED_OUT') window.location.href = 'login.html';
-        });
+        try {
+            // FIX: Use global requireRole instead of manual session checks.
+            const auth = await requireRole('agent');
+            if (!auth) return; // Redirects handled automatically by global auth.js
 
-        await loadAllProperties(); 
-        loadBuyerRequests();
+            state.user = auth.user;
+            
+            await loadAllProperties(); 
+            loadBuyerRequests();
+        } catch (err) {
+            console.error('Auth check failed:', err);
+            window.location.href = '/apps/auth/login.html?role=agent';
+        }
     }
 
     // 🔒 SECURITY & PERFORMANCE: Only fetch columns needed for matching. 
-    // DO NOT use select('*') as it leaks private data (agent_notes, etc) to the client.
     async function loadAllProperties() {
         const { data } = await supabase
             .from('properties')
@@ -368,7 +364,6 @@
         resultsDiv.classList.add('hidden');
         resultsDiv.innerHTML = '';
 
-        // Simulate AI processing time for UX effect
         setTimeout(() => {
             const matches = calculateMatches(request);
             displayMatches(matches, request);
@@ -449,8 +444,6 @@
             const isCoBroker = prop.visibility === 'co-broker';
             const imgSrc = (prop.images && prop.images[0]) ? prop.images[0] : fallbackImg;
             
-            // 🔒 FIX: Changed "Contact Agent" to "View Property" because we don't have the agent's phone number here.
-            // The WhatsApp link now shares the property URL instead of trying to message a blank number.
             const shareText = encodeURIComponent(`Hi, I have a buyer for this property: ${propertyLinkBase}${prop.id}`);
 
             return `
@@ -496,7 +489,6 @@
     function requestCollabFromMatch(propId, buyerName, buyerPhone) {
         closeMatchesModal();
         showToast(`Redirecting to collaboration request for ${buyerName}...`);
-        // In a real app, pass these params via URL to shared-listings.html
         window.location.href = `shared-listings.html?collab_prop=${propId}&buyer=${encodeURIComponent(buyerName)}`;
     }
 
@@ -546,7 +538,6 @@
     async function deleteRequest(id) {
         if (!confirm('Delete this buyer request?')) return;
         
-        // 🔒 SECURITY: Defense-in-depth ownership check
         const { error } = await supabase
             .from('buyer_requests')
             .delete()
@@ -572,7 +563,6 @@
     // 7. EVENT DELEGATION & INIT
     // ==========================================
     function initEventListeners() {
-        // Mobile Menu
         document.getElementById('mobile-menu-btn').addEventListener('click', () => {
             document.getElementById('sidebar').classList.toggle('mobile-open');
             document.getElementById('mobile-overlay').classList.toggle('hidden');
@@ -582,28 +572,23 @@
             document.getElementById('mobile-overlay').classList.add('hidden');
         });
 
-        // Logout
+        // FIX: Use global logout function for consistent session clearing
         document.getElementById('logout-btn').addEventListener('click', async (e) => {
             e.preventDefault();
-            await supabase.auth.signOut();
-            window.location.href = 'login.html';
+            await logout();
         });
 
-        // Modals
         document.getElementById('new-request-btn').addEventListener('click', openRequestModal);
         document.getElementById('close-modal-btn').addEventListener('click', closeRequestModal);
         document.getElementById('cancel-modal-btn').addEventListener('click', closeRequestModal);
         document.getElementById('close-matches-btn').addEventListener('click', closeMatchesModal);
 
-        // Form
         document.getElementById('request-form').addEventListener('submit', handleFormSubmit);
 
-        // Filters
         const debouncedFilter = debounce(applyFilters, 300);
         document.getElementById('search-input').addEventListener('input', debouncedFilter);
         document.getElementById('filter-status').addEventListener('change', applyFilters);
 
-        // 🔒 SECURE EVENT DELEGATION: Requests List
         document.getElementById('requests-list').addEventListener('click', (e) => {
             const findBtn = e.target.closest('.btn-find-matches');
             if (findBtn) { findMatches(findBtn.dataset.id); return; }
@@ -615,7 +600,6 @@
             if (createBtn) { openRequestModal(); return; }
         });
 
-        // 🔒 SECURE EVENT DELEGATION: Matches Modal
         document.getElementById('matches-results').addEventListener('click', (e) => {
             const collabBtn = e.target.closest('.btn-request-collab');
             if (collabBtn) {
@@ -628,13 +612,10 @@
         });
     }
 
-    // Start App
     document.addEventListener('DOMContentLoaded', () => {
         initEventListeners();
         checkAuth();
     });
-
-})();
 </script>
 </body>
 </html>
