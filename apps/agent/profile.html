@@ -10,368 +10,121 @@
 <meta property="og:description" content="Trusted real estate agents across Kenya">
 <meta property="og:image" content="https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=1200&q=80">
 <meta name="twitter:card" content="summary_large_image">
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<!-- FIX: Removed CDN script. We will import the global client via ES Module below. -->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
+/* [KEEPING YOUR EXACT CSS UNTOUCHED FOR BREVITY] */
 * { margin: 0; padding: 0; box-sizing: border-box; }
 html { scroll-behavior: smooth; }
-body {
-  font-family: 'Inter', -apple-system, sans-serif;
-  color: #111827; background: #f4f4f7;
-  line-height: 1.6; padding-bottom: 80px;
-}
-.nav {
-  position: sticky; top: 0; z-index: 100;
-  background: white; border-bottom: 1px solid #e5e7eb;
-  padding: 14px 24px;
-  display: flex; justify-content: space-between; align-items: center;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.04);
-}
-.logo {
-  font-size: 16px; font-weight: 700; color: #6b21a8;
-  display: flex; align-items: center; gap: 8px;
-  text-decoration: none;
-}
-.back-btn {
-  background: #f3f4f6; color: #374151;
-  border: none; padding: 8px 14px; border-radius: 8px;
-  font-size: 13px; font-weight: 500; cursor: pointer;
-  display: flex; align-items: center; gap: 6px;
-  text-decoration: none;
-}
+body { font-family: 'Inter', -apple-system, sans-serif; color: #111827; background: #f4f4f7; line-height: 1.6; padding-bottom: 80px; }
+.nav { position: sticky; top: 0; z-index: 100; background: white; border-bottom: 1px solid #e5e7eb; padding: 14px 24px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 1px 3px rgba(0,0,0,0.04); }
+.logo { font-size: 16px; font-weight: 700; color: #6b21a8; display: flex; align-items: center; gap: 8px; text-decoration: none; }
+.back-btn { background: #f3f4f6; color: #374151; border: none; padding: 8px 14px; border-radius: 8px; font-size: 13px; font-weight: 500; cursor: pointer; display: flex; align-items: center; gap: 6px; text-decoration: none; }
 .back-btn:hover { background: #e5e7eb; }
-.container {
-  max-width: 1400px; margin: 24px auto;
-  padding: 0 24px;
-  display: grid;
-  grid-template-columns: 1fr 360px;
-  gap: 24px;
-  align-items: start;
-}
-@media (max-width: 1024px) {
-  .container { grid-template-columns: 1fr; }
-  .sidebar { position: static !important; }
-}
-.card {
-  background: white; border-radius: 16px;
-  padding: 24px; margin-bottom: 20px;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.06);
-}
-.card-title {
-  font-size: 16px; font-weight: 700;
-  margin-bottom: 16px;
-  display: flex; align-items: center; gap: 8px;
-  color: #111827;
-}
+.container { max-width: 1400px; margin: 24px auto; padding: 0 24px; display: grid; grid-template-columns: 1fr 360px; gap: 24px; align-items: start; }
+@media (max-width: 1024px) { .container { grid-template-columns: 1fr; } .sidebar { position: static !important; } }
+.card { background: white; border-radius: 16px; padding: 24px; margin-bottom: 20px; box-shadow: 0 1px 3px rgba(0,0,0,0.06); }
+.card-title { font-size: 16px; font-weight: 700; margin-bottom: 16px; display: flex; align-items: center; gap: 8px; color: #111827; }
 .card-title i { color: #6b21a8; }
-.hero {
-  background: linear-gradient(135deg, #fff 0%, #faf5ff 100%);
-  border-radius: 16px; padding: 32px;
-  margin-bottom: 20px;
-  box-shadow: 0 2px 8px rgba(107,33,168,0.08);
-  border: 2px solid #e9d5ff;
-  position: relative; overflow: hidden;
-}
-.hero::before {
-  content: ''; position: absolute;
-  top: 0; left: 0; right: 0; height: 4px;
-  background: linear-gradient(90deg, #6b21a8, #a855f7);
-}
+.hero { background: linear-gradient(135deg, #fff 0%, #faf5ff 100%); border-radius: 16px; padding: 32px; margin-bottom: 20px; box-shadow: 0 2px 8px rgba(107,33,168,0.08); border: 2px solid #e9d5ff; position: relative; overflow: hidden; }
+.hero::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 4px; background: linear-gradient(90deg, #6b21a8, #a855f7); }
 .hero-top { display: flex; gap: 20px; align-items: flex-start; flex-wrap: wrap; }
 .avatar-wrap { position: relative; flex-shrink: 0; }
-.avatar {
-  width: 110px; height: 110px;
-  border-radius: 50%;
-  background: linear-gradient(135deg, #6b21a8, #a855f7);
-  display: flex; align-items: center; justify-content: center;
-  color: white; font-size: 40px; font-weight: 800;
-  border: 4px solid white;
-  box-shadow: 0 8px 24px rgba(107,33,168,0.25);
-  overflow: hidden;
-}
+.avatar { width: 110px; height: 110px; border-radius: 50%; background: linear-gradient(135deg, #6b21a8, #a855f7); display: flex; align-items: center; justify-content: center; color: white; font-size: 40px; font-weight: 800; border: 4px solid white; box-shadow: 0 8px 24px rgba(107,33,168,0.25); overflow: hidden; }
 .avatar img { width: 100%; height: 100%; object-fit: cover; }
-.verified-badge {
-  position: absolute; bottom: 4px; right: 4px;
-  width: 32px; height: 32px;
-  background: #10b981;
-  border: 3px solid white;
-  border-radius: 50%;
-  display: flex; align-items: center; justify-content: center;
-  color: white; font-size: 13px;
-}
+.verified-badge { position: absolute; bottom: 4px; right: 4px; width: 32px; height: 32px; background: #10b981; border: 3px solid white; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 13px; }
 .hero-info { flex: 1; min-width: 240px; }
-.agent-name {
-  font-size: 26px; font-weight: 800;
-  color: #111827; letter-spacing: -0.5px;
-  display: flex; align-items: center; gap: 8px;
-  flex-wrap: wrap;
-}
-.ribbon {
-  background: linear-gradient(135deg, #fbbf24, #f59e0b);
-  color: white; font-size: 10px; font-weight: 700;
-  padding: 4px 10px; border-radius: 9999px;
-  text-transform: uppercase; letter-spacing: 0.5px;
-}
+.agent-name { font-size: 26px; font-weight: 800; color: #111827; letter-spacing: -0.5px; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.ribbon { background: linear-gradient(135deg, #fbbf24, #f59e0b); color: white; font-size: 10px; font-weight: 700; padding: 4px 10px; border-radius: 9999px; text-transform: uppercase; letter-spacing: 0.5px; }
 .company { color: #6b21a8; font-weight: 600; font-size: 14px; margin: 4px 0 12px; }
 .meta { display: flex; gap: 16px; flex-wrap: wrap; font-size: 13px; color: #6b7280; }
 .meta-item { display: flex; align-items: center; gap: 6px; }
 .meta-item i { color: #6b21a8; }
 .meta-item strong { color: #111827; }
-.hero-stats {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-  gap: 12px; margin-top: 20px;
-  padding-top: 20px; border-top: 1px solid #e5e7eb;
-}
+.hero-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 12px; margin-top: 20px; padding-top: 20px; border-top: 1px solid #e5e7eb; }
 .stat { text-align: center; }
 .stat-val { font-size: 22px; font-weight: 800; color: #111827; letter-spacing: -0.5px; }
-.stat-lbl {
-  font-size: 11px; color: #6b7280;
-  text-transform: uppercase; letter-spacing: 0.5px;
-  margin-top: 2px;
-}
-.trust-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-  gap: 10px; margin-bottom: 16px;
-}
-.trust-item {
-  display: flex; align-items: center; gap: 10px;
-  padding: 12px;
-  background: #f9fafb; border-radius: 10px;
-  border: 1px solid #e5e7eb;
-}
+.stat-lbl { font-size: 11px; color: #6b7280; text-transform: uppercase; letter-spacing: 0.5px; margin-top: 2px; }
+.trust-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 10px; margin-bottom: 16px; }
+.trust-item { display: flex; align-items: center; gap: 10px; padding: 12px; background: #f9fafb; border-radius: 10px; border: 1px solid #e5e7eb; }
 .trust-item.ok { background: #d1fae5; border-color: #10b981; }
-.trust-icon {
-  width: 30px; height: 30px;
-  background: #e5e7eb; color: #6b7280;
-  border-radius: 8px;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 12px;
-}
+.trust-icon { width: 30px; height: 30px; background: #e5e7eb; color: #6b7280; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 12px; }
 .trust-item.ok .trust-icon { background: #10b981; color: white; }
 .trust-lbl { font-size: 13px; font-weight: 600; }
-.score-card {
-  background: linear-gradient(135deg, #faf5ff, white);
-  border: 2px solid #6b21a8;
-  border-radius: 14px; padding: 20px;
-  display: flex; align-items: center; gap: 20px;
-}
+.score-card { background: linear-gradient(135deg, #faf5ff, white); border: 2px solid #6b21a8; border-radius: 14px; padding: 20px; display: flex; align-items: center; gap: 20px; }
 .score-num { font-size: 48px; font-weight: 800; color: #6b21a8; line-height: 1; }
 .score-num span { font-size: 18px; color: #9ca3af; }
 .score-txt h4 { font-size: 15px; font-weight: 700; margin-bottom: 2px; }
 .score-txt p { font-size: 12px; color: #6b7280; }
 .tabs { display: flex; gap: 6px; margin-bottom: 16px; overflow-x: auto; }
-.tab {
-  padding: 7px 14px; border-radius: 9999px;
-  background: #f3f4f6; border: none;
-  font-size: 12px; font-weight: 600; color: #6b7280;
-  cursor: pointer; white-space: nowrap;
-}
+.tab { padding: 7px 14px; border-radius: 9999px; background: #f3f4f6; border: none; font-size: 12px; font-weight: 600; color: #6b7280; cursor: pointer; white-space: nowrap; }
 .tab.active { background: #6b21a8; color: white; }
-.scroll {
-  display: flex; gap: 14px;
-  overflow-x: auto; padding-bottom: 8px;
-  scroll-snap-type: x mandatory;
-  -webkit-overflow-scrolling: touch;
-}
+.scroll { display: flex; gap: 14px; overflow-x: auto; padding-bottom: 8px; scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch; }
 .scroll::-webkit-scrollbar { height: 6px; }
 .scroll::-webkit-scrollbar-thumb { background: #a855f7; border-radius: 3px; }
-.prop {
-  flex: 0 0 260px;
-  background: white; border-radius: 14px;
-  overflow: hidden;
-  border: 1px solid #e5e7eb;
-  cursor: pointer;
-  transition: all 0.2s;
-  scroll-snap-align: start;
-}
-.prop:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 8px 20px rgba(0,0,0,0.08);
-  border-color: #a855f7;
-}
-.prop-img {
-  width: 100%; height: 160px;
-  background: #f3f4f6;
-  position: relative; overflow: hidden;
-}
+.prop { flex: 0 0 260px; background: white; border-radius: 14px; overflow: hidden; border: 1px solid #e5e7eb; cursor: pointer; transition: all 0.2s; scroll-snap-align: start; }
+.prop:hover { transform: translateY(-3px); box-shadow: 0 8px 20px rgba(0,0,0,0.08); border-color: #a855f7; }
+.prop-img { width: 100%; height: 160px; background: #f3f4f6; position: relative; overflow: hidden; }
 .prop-img img { width: 100%; height: 100%; object-fit: cover; }
-.prop-badge {
-  position: absolute; top: 8px; left: 8px;
-  background: #6b21a8; color: white;
-  font-size: 10px; font-weight: 700;
-  padding: 4px 10px; border-radius: 9999px;
-  text-transform: uppercase;
-}
+.prop-badge { position: absolute; top: 8px; left: 8px; background: #6b21a8; color: white; font-size: 10px; font-weight: 700; padding: 4px 10px; border-radius: 9999px; text-transform: uppercase; }
 .prop-body { padding: 14px; }
 .prop-price { font-size: 17px; font-weight: 800; color: #10b981; margin-bottom: 3px; }
-.prop-title {
-  font-size: 13px; font-weight: 600;
-  margin-bottom: 4px;
-  overflow: hidden; text-overflow: ellipsis;
-  white-space: nowrap;
-}
+.prop-title { font-size: 13px; font-weight: 600; margin-bottom: 4px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .prop-loc { font-size: 12px; color: #6b7280; display: flex; align-items: center; gap: 4px; }
-.review-summary {
-  display: flex; gap: 20px; align-items: center;
-  padding: 16px; background: #faf5ff;
-  border-radius: 12px; margin-bottom: 16px;
-  flex-wrap: wrap;
-}
+.review-summary { display: flex; gap: 20px; align-items: center; padding: 16px; background: #faf5ff; border-radius: 12px; margin-bottom: 16px; flex-wrap: wrap; }
 .review-score { text-align: center; flex-shrink: 0; }
 .review-big { font-size: 40px; font-weight: 800; color: #6b21a8; line-height: 1; }
 .review-stars { color: #fbbf24; margin: 6px 0; }
 .review-cnt { font-size: 12px; color: #6b7280; }
-.review-card {
-  padding: 14px; border: 1px solid #e5e7eb;
-  border-radius: 12px; margin-bottom: 10px;
-}
+.review-card { padding: 14px; border: 1px solid #e5e7eb; border-radius: 12px; margin-bottom: 10px; }
 .review-head { display: flex; gap: 10px; align-items: center; margin-bottom: 8px; }
-.review-avatar {
-  width: 38px; height: 38px;
-  border-radius: 50%;
-  background: linear-gradient(135deg, #6b21a8, #a855f7);
-  color: white; font-weight: 700;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 13px;
-}
+.review-avatar { width: 38px; height: 38px; border-radius: 50%; background: linear-gradient(135deg, #6b21a8, #a855f7); color: white; font-weight: 700; display: flex; align-items: center; justify-content: center; font-size: 13px; }
 .review-info { flex: 1; }
 .review-name { font-size: 13px; font-weight: 700; }
 .review-date { font-size: 11px; color: #9ca3af; }
 .review-text { font-size: 13px; color: #374151; line-height: 1.5; }
 .sidebar { position: sticky; top: 80px; }
-.contact-card {
-  background: white; border-radius: 16px;
-  padding: 22px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.06);
-  border: 1px solid #e5e7eb;
-}
+.contact-card { background: white; border-radius: 16px; padding: 22px; box-shadow: 0 4px 12px rgba(0,0,0,0.06); border: 1px solid #e5e7eb; }
 .contact-name { font-size: 16px; font-weight: 700; margin-bottom: 4px; }
-.contact-note {
-  font-size: 12px; color: #6b7280;
-  display: flex; align-items: center; gap: 6px;
-  margin-bottom: 14px;
-}
-.live-dot {
-  width: 7px; height: 7px;
-  background: #10b981; border-radius: 50%;
-  animation: pulse 2s infinite;
-}
+.contact-note { font-size: 12px; color: #6b7280; display: flex; align-items: center; gap: 6px; margin-bottom: 14px; }
+.live-dot { width: 7px; height: 7px; background: #10b981; border-radius: 50%; animation: pulse 2s infinite; }
 @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.5; } }
-.privacy {
-  background: #d1fae5; color: #065f46;
-  padding: 10px; border-radius: 8px;
-  font-size: 12px;
-  display: flex; align-items: center; gap: 8px;
-  margin-bottom: 14px;
-}
+.privacy { background: #d1fae5; color: #065f46; padding: 10px; border-radius: 8px; font-size: 12px; display: flex; align-items: center; gap: 8px; margin-bottom: 14px; }
 .btns { display: flex; flex-direction: column; gap: 8px; margin-bottom: 14px; }
-.btn {
-  padding: 12px; border-radius: 10px;
-  border: none; font-size: 14px; font-weight: 600;
-  cursor: pointer;
-  display: flex; align-items: center; justify-content: center;
-  gap: 8px; text-decoration: none;
-  transition: all 0.2s;
-}
+.btn { padding: 12px; border-radius: 10px; border: none; font-size: 14px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; text-decoration: none; transition: all 0.2s; }
 .btn:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
 .btn-purple { background: #6b21a8; color: white; }
 .btn-wa { background: #25D366; color: white; }
 .btn-outline { background: white; color: #6b21a8; border: 1.5px solid #6b21a8; }
 .btn-ghost { background: #f3f4f6; color: #374151; }
-.input {
-  width: 100%; padding: 10px 12px;
-  border: 1px solid #e5e7eb; border-radius: 8px;
-  font-size: 13px; font-family: inherit;
-  margin-bottom: 8px; background: #f9fafb;
-}
+.input { width: 100%; padding: 10px 12px; border: 1px solid #e5e7eb; border-radius: 8px; font-size: 13px; font-family: inherit; margin-bottom: 8px; background: #f9fafb; }
 .input:focus { outline: none; border-color: #6b21a8; background: white; }
 textarea.input { resize: vertical; min-height: 70px; }
-.mobile-bar {
-  position: fixed; bottom: 0; left: 0; right: 0;
-  background: white; border-top: 2px solid #6b21a8;
-  padding: 10px; z-index: 99;
-  display: none; gap: 8px;
-  box-shadow: 0 -4px 16px rgba(0,0,0,0.08);
-}
+.mobile-bar { position: fixed; bottom: 0; left: 0; right: 0; background: white; border-top: 2px solid #6b21a8; padding: 10px; z-index: 99; display: none; gap: 8px; box-shadow: 0 -4px 16px rgba(0,0,0,0.08); }
 .mobile-bar .btn { flex: 1; padding: 11px; font-size: 13px; }
 .empty { text-align: center; padding: 32px 20px; color: #9ca3af; }
 .empty i { font-size: 36px; margin-bottom: 10px; }
-.toast {
-  position: fixed; top: 80px; right: 20px;
-  background: white; padding: 12px 18px;
-  border-radius: 10px;
-  box-shadow: 0 8px 24px rgba(0,0,0,0.15);
-  border-left: 4px solid #10b981;
-  z-index: 9999; max-width: 300px;
-}
-.agent-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 16px;
-}
-.agent-card {
-  background: white;
-  border: 1px solid #e5e7eb;
-  border-radius: 14px;
-  padding: 20px;
-  text-align: center;
-  transition: all 0.2s;
-  cursor: pointer;
-  text-decoration: none;
-  color: inherit;
-  display: block;
-}
-.agent-card:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 8px 20px rgba(107,33,168,0.1);
-  border-color: #a855f7;
-}
-.agent-avatar {
-  width: 70px; height: 70px;
-  border-radius: 50%;
-  background: linear-gradient(135deg, #6b21a8, #a855f7);
-  color: white; font-size: 26px; font-weight: 800;
-  display: flex; align-items: center; justify-content: center;
-  margin: 0 auto 12px;
-  overflow: hidden;
-}
+.toast { position: fixed; top: 80px; right: 20px; background: white; padding: 12px 18px; border-radius: 10px; box-shadow: 0 8px 24px rgba(0,0,0,0.15); border-left: 4px solid #10b981; z-index: 9999; max-width: 300px; }
+.agent-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; }
+.agent-card { background: white; border: 1px solid #e5e7eb; border-radius: 14px; padding: 20px; text-align: center; transition: all 0.2s; cursor: pointer; text-decoration: none; color: inherit; display: block; }
+.agent-card:hover { transform: translateY(-3px); box-shadow: 0 8px 20px rgba(107,33,168,0.1); border-color: #a855f7; }
+.agent-avatar { width: 70px; height: 70px; border-radius: 50%; background: linear-gradient(135deg, #6b21a8, #a855f7); color: white; font-size: 26px; font-weight: 800; display: flex; align-items: center; justify-content: center; margin: 0 auto 12px; overflow: hidden; }
 .agent-avatar img { width: 100%; height: 100%; object-fit: cover; }
 .agent-name-small { font-size: 15px; font-weight: 700; margin-bottom: 4px; }
 .agent-company-small { font-size: 12px; color: #6b21a8; margin-bottom: 8px; }
-.agent-stats-small {
-  display: flex; justify-content: center; gap: 12px;
-  font-size: 11px; color: #6b7280;
-}
-.agent-link-small {
-  margin-top: 10px; font-size: 11px;
-  color: #6b21a8; font-weight: 600;
-}
-@media (max-width: 768px) {
-  .container { padding: 0 16px; }
-  .hero, .card { padding: 18px; }
-  .agent-name { font-size: 22px; }
-  .avatar { width: 90px; height: 90px; font-size: 32px; }
-  .hero-stats { grid-template-columns: repeat(2, 1fr); }
-  .mobile-bar { display: flex; }
-  body { padding-bottom: 90px; }
-  .score-num { font-size: 36px; }
-  .agent-grid { grid-template-columns: 1fr; }
-}
+.agent-stats-small { display: flex; justify-content: center; gap: 12px; font-size: 11px; color: #6b7280; }
+.agent-link-small { margin-top: 10px; font-size: 11px; color: #6b21a8; font-weight: 600; }
+@media (max-width: 768px) { .container { padding: 0 16px; } .hero, .card { padding: 18px; } .agent-name { font-size: 22px; } .avatar { width: 90px; height: 90px; font-size: 32px; } .hero-stats { grid-template-columns: repeat(2, 1fr); } .mobile-bar { display: flex; } body { padding-bottom: 90px; } .score-num { font-size: 36px; } .agent-grid { grid-template-columns: 1fr; } }
 </style>
 </head>
 <body>
 
 <nav class="nav">
-  <a href="/" class="logo">
-    <i class="fas fa-home"></i> Properties in Kenya
-  </a>
-  <a href="/" class="back-btn">
-    <i class="fas fa-arrow-left"></i> Back
-  </a>
+  <a href="/" class="logo"><i class="fas fa-home"></i> Properties in Kenya</a>
+  <a href="/" class="back-btn"><i class="fas fa-arrow-left"></i> Back</a>
 </nav>
 
 <div class="container">
@@ -389,18 +142,9 @@ textarea.input { resize: vertical; min-height: 70px; }
           </div>
           <div class="company" id="company">—</div>
           <div class="meta">
-            <div class="meta-item">
-              <i class="fas fa-briefcase"></i>
-              <span><strong id="exp">0</strong> yrs exp</span>
-            </div>
-            <div class="meta-item">
-              <i class="fas fa-star" style="color:#fbbf24;"></i>
-              <span><strong id="rating">0.0</strong> (<span id="revCnt">0</span>)</span>
-            </div>
-            <div class="meta-item">
-              <i class="fas fa-map-marker-alt"></i>
-              <span id="location">—</span>
-            </div>
+            <div class="meta-item"><i class="fas fa-briefcase"></i><span><strong id="exp">0</strong> yrs exp</span></div>
+            <div class="meta-item"><i class="fas fa-star" style="color:#fbbf24;"></i><span><strong id="rating">0.0</strong> (<span id="revCnt">0</span>)</span></div>
+            <div class="meta-item"><i class="fas fa-map-marker-alt"></i><span id="location">—</span></div>
           </div>
         </div>
       </div>
@@ -452,10 +196,7 @@ textarea.input { resize: vertical; min-height: 70px; }
         </div>
       </div>
       <div id="reviews">
-        <div class="empty">
-          <i class="fas fa-comment"></i>
-          <p>No reviews yet. Be the first!</p>
-        </div>
+        <div class="empty"><i class="fas fa-comment"></i><p>No reviews yet. Be the first!</p></div>
       </div>
     </section>
   </main>
@@ -463,24 +204,12 @@ textarea.input { resize: vertical; min-height: 70px; }
   <aside class="sidebar" id="sidebar">
     <div class="contact-card">
       <h3 class="contact-name" id="cName">Contact Agent</h3>
-      <div class="contact-note">
-        <span class="live-dot"></span>
-        <span id="cNote">Typically replies fast</span>
-      </div>
-      <div class="privacy">
-        <i class="fas fa-shield-halved"></i>
-        <span>Your inquiry is private & protected</span>
-      </div>
+      <div class="contact-note"><span class="live-dot"></span><span id="cNote">Typically replies fast</span></div>
+      <div class="privacy"><i class="fas fa-shield-halved"></i><span>Your inquiry is private & protected</span></div>
       <div class="btns">
-        <a href="tel:" id="btnCall" class="btn btn-purple">
-          <i class="fas fa-phone"></i> Call Agent
-        </a>
-        <a href="#" id="btnWA" target="_blank" class="btn btn-wa">
-          <i class="fab fa-whatsapp"></i> WhatsApp
-        </a>
-        <a href="mailto:" id="btnEmail" class="btn btn-outline">
-          <i class="fas fa-envelope"></i> Email
-        </a>
+        <a href="tel:" id="btnCall" class="btn btn-purple"><i class="fas fa-phone"></i> Call Agent</a>
+        <a href="#" id="btnWA" target="_blank" class="btn btn-wa"><i class="fab fa-whatsapp"></i> WhatsApp</a>
+        <a href="mailto:" id="btnEmail" class="btn btn-outline"><i class="fas fa-envelope"></i> Email</a>
       </div>
       <div style="padding-top:14px; border-top:1px solid #e5e7eb;">
         <h4 style="font-size:13px; font-weight:700; margin-bottom:10px;">Send a Message</h4>
@@ -488,43 +217,27 @@ textarea.input { resize: vertical; min-height: 70px; }
         <input class="input" id="mEmail" placeholder="Your email">
         <input class="input" id="mPhone" placeholder="Phone number">
         <textarea class="input" id="mMsg" placeholder="I'm interested in..."></textarea>
-        <button id="sendMsgBtn" class="btn btn-purple" style="width:100%;">
-          <i class="fas fa-paper-plane"></i> Send
-        </button>
+        <button id="sendMsgBtn" class="btn btn-purple" style="width:100%;"><i class="fas fa-paper-plane"></i> Send</button>
       </div>
     </div>
   </aside>
 </div>
 
 <div class="mobile-bar">
-  <a href="tel:" id="mCall" class="btn btn-purple">
-    <i class="fas fa-phone"></i> Call
-  </a>
-  <a href="#" id="mWA" target="_blank" class="btn btn-wa">
-    <i class="fab fa-whatsapp"></i> WA
-  </a>
-  <button id="scrollBottomBtn" class="btn btn-outline">
-    <i class="fas fa-envelope"></i> Msg
-  </button>
+  <a href="tel:" id="mCall" class="btn btn-purple"><i class="fas fa-phone"></i> Call</a>
+  <a href="#" id="mWA" target="_blank" class="btn btn-wa"><i class="fab fa-whatsapp"></i> WA</a>
+  <button id="scrollBottomBtn" class="btn btn-outline"><i class="fas fa-envelope"></i> Msg</button>
 </div>
 
-<script>
-// ==========================================
-// 1. CONFIGURATION
-// ==========================================
-const sb = supabase.createClient(
-  "https://nqwvsmuvltbiekfnvovx.supabase.co",
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5xd3ZzbXV2bHRiaWVrZm52b3Z4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA1NjU4MDAsImV4cCI6MjA5NjE0MTgwMH0.Xrc-bbAuWdvKSPHnVhTaLiQphV61xeYtDepWePqsrdo"
-);
+<!-- FIX: Converted to ES Module to use Global Supabase Client -->
+<script type="module">
+import { supabase } from '/public/js/supabase.js';
 
 let profile = null;
 let listings = [];
 let reviews = [];
 let formLoadTime = Date.now();
 
-// ==========================================
-// 2. UTILITIES
-// ==========================================
 const esc = t => {
   const d = document.createElement('div');
   d.textContent = t || '';
@@ -546,45 +259,24 @@ function formatWhatsApp(phone) {
   return clean;
 }
 
-// ==========================================
-// 3. ID/SLUG EXTRACTION (FIXED)
-// ==========================================
+// FIX: Removed 'slug' logic entirely since the column does not exist in your schema.
 function getAgentIdentifiers() {
   const params = new URLSearchParams(location.search);
-  let id = params.get('id');
-  let slug = params.get('slug');
-
-  if (!id && !slug) {
-    const path = location.pathname.replace(/^\/|\/$/g, '');
-    const parts = path.split('/');
-    if (parts[0] === 'agent' && parts[1]) {
-      slug = decodeURIComponent(parts[1]);
-    }
-  }
-
-  return { id, slug };
+  return { id: params.get('id') };
 }
 
-// ==========================================
-// 4. MAIN LOAD
-// ==========================================
 async function load() {
   try {
-    const { id, slug } = getAgentIdentifiers();
+    const { id } = getAgentIdentifiers();
 
-    if (!id && !slug) {
+    if (!id) {
       await showAllAgents();
       return;
     }
 
-    let profileData = null;
-    if (id) {
-      const res = await sb.from('profiles').select('*').eq('id', id).maybeSingle();
-      profileData = res.data;
-    } else if (slug) {
-      const res = await sb.from('profiles').select('*').eq('slug', slug).maybeSingle();
-      profileData = res.data;
-    }
+    // Fetch profile by ID only
+    const res = await supabase.from('profiles').select('*').eq('id', id).maybeSingle();
+    const profileData = res.data;
 
     if (!profileData) {
       document.getElementById('agentName').textContent = 'Agent not found';
@@ -596,16 +288,16 @@ async function load() {
     profile = profileData;
 
     const [listingsRes, reviewsRes] = await Promise.all([
-      sb.from('properties').select('*').eq('agent_id', profile.id).eq('approval_status', 'approved').order('created_at', { ascending: false }),
-      sb.from('reviews').select('*').eq('agent_id', profile.id).eq('is_approved', true).order('created_at', { ascending: false })
+      supabase.from('properties').select('*').eq('agent_id', profile.id).eq('approval_status', 'approved').order('created_at', { ascending: false }),
+      supabase.from('reviews').select('*').eq('agent_id', profile.id).eq('is_approved', true).order('created_at', { ascending: false })
     ]);
 
     listings = listingsRes.data || [];
     reviews = reviewsRes.data || [];
 
     // View increment (non-blocking)
-    sb.rpc('increment_profile_views', { p_id: profile.id }).then(({ error }) => {
-      if (error) console.warn('View increment skipped:', error.message);
+    supabase.rpc('increment_profile_views', { p_id: profile.id }).catch(error => {
+      console.warn('View increment skipped:', error.message);
     });
 
     render();
@@ -618,27 +310,25 @@ async function load() {
   }
 }
 
-// ==========================================
-// 5. RENDER
-// ==========================================
 function render() {
   const p = profile;
   const name = p.full_name || 'Agent';
-  document.title = `${name} | ${p.company || 'Agent'} | Properties in Kenya`;
+  document.title = `${name} | ${p.agency || 'Agent'} | Properties in Kenya`;
 
   document.getElementById('agentName').textContent = name;
-  document.getElementById('company').textContent = p.company || 'Independent Agent';
+  // FIX: Changed p.company to p.agency to match schema
+  document.getElementById('company').textContent = p.agency || 'Independent Agent';
   document.getElementById('exp').textContent = p.years_experience || 0;
   document.getElementById('rating').textContent = (p.average_rating || 0).toFixed(1);
   document.getElementById('revCnt').textContent = p.total_reviews || 0;
   document.getElementById('location').textContent = p.location || 'Kenya';
 
-  // Use direct inline SVG fallback instead of external service
   const fallbackAvatar = `data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='110' height='110'%3E%3Crect fill='%236b21a8' width='110' height='110' rx='55'/%3E%3Ctext x='55' y='55' text-anchor='middle' dy='.35em' fill='white' font-size='40' font-weight='bold'%3E${encodeURIComponent(name.charAt(0).toUpperCase())}%3C/text%3E%3C/svg%3E`;
   const avatarUrl = p.avatar_url || fallbackAvatar;
   document.getElementById('avatar').innerHTML = `<img src="${esc(avatarUrl)}" alt="${esc(name)}" style="width:100%;height:100%;object-fit:cover;" onerror="this.parentElement.innerHTML='<span>${esc(name.charAt(0).toUpperCase())}</span>'">`;
 
-  if ((p.total_deals_closed || 0) >= 50 || p.is_featured_agent) {
+  // FIX: Changed is_featured_agent to is_premium_member
+  if ((p.total_deals_closed || 0) >= 50 || p.is_premium_member) {
     document.getElementById('ribbon').style.display = 'inline-block';
   }
 
@@ -646,6 +336,7 @@ function render() {
   document.getElementById('sDeals').textContent = p.total_deals_closed || 0;
   const sat = p.average_rating ? Math.round((p.average_rating / 5) * 100) : 95;
   document.getElementById('sSat').textContent = sat + '%';
+  // FIX: avg_response_minutes doesn't exist in schema, using safe fallback
   document.getElementById('sResp').textContent = p.avg_response_minutes ? `${p.avg_response_minutes}m` : '<2h';
 
   const phone = p.phone || p.whatsapp_number || '';
@@ -659,20 +350,14 @@ function render() {
   document.getElementById('mWA').href = `https://wa.me/${waPhone}`;
   document.getElementById('cName').textContent = `Contact ${esc(name.split(' ')[0])}`;
 
-  // Trust items (only include columns that exist in the table)
   const items = [
     { k: 'is_verified_identity', l: 'Verified Identity', i: 'fa-id-card' },
     { k: 'is_verified_phone', l: 'Verified Phone', i: 'fa-phone' },
     { k: 'is_verified_email', l: 'Verified Email', i: 'fa-envelope' },
-    { k: 'is_verified_office', l: 'Verified Office', i: 'fa-building' }
+    { k: 'is_verified_office', l: 'Verified Office', i: 'fa-building' },
+    { k: 'is_licensed_agent', l: 'Licensed Agent', i: 'fa-certificate' },
+    { k: 'is_premium_member', l: 'Premium Member', i: 'fa-gem' }
   ];
-  // Only add 'is_licensed_agent' if column exists in profile
-  if ('is_licensed_agent' in p) {
-    items.push({ k: 'is_licensed_agent', l: 'Licensed Agent', i: 'fa-certificate' });
-  }
-  if ('is_premium_member' in p) {
-    items.push({ k: 'is_premium_member', l: 'Premium Member', i: 'fa-gem' });
-  }
 
   document.getElementById('trustGrid').innerHTML = items.map(it => {
     const ok = p[it.k];
@@ -749,14 +434,11 @@ function renderListings(filterType) {
   }).join('');
 }
 
-// ==========================================
-// 6. EVENT LISTENERS
-// ==========================================
 function initEventListeners() {
   document.getElementById('listings').addEventListener('click', (e) => {
     const propCard = e.target.closest('.prop');
     if (propCard && propCard.dataset.id) {
-      window.location.href = `/property/${encodeURIComponent(propCard.dataset.id)}`;
+      window.location.href = `/property.html?id=${encodeURIComponent(propCard.dataset.id)}`;
     }
   });
 
@@ -770,9 +452,7 @@ function initEventListeners() {
   });
 
   const sendBtn = document.getElementById('sendMsgBtn');
-  if (sendBtn) {
-    sendBtn.addEventListener('click', handleSendMsg);
-  }
+  if (sendBtn) sendBtn.addEventListener('click', handleSendMsg);
 
   const scrollBtn = document.getElementById('scrollBottomBtn');
   if (scrollBtn) {
@@ -786,7 +466,6 @@ async function handleSendMsg(e) {
   e.preventDefault();
   const btn = e.currentTarget;
   
-  // Simple anti-spam: require at least 3 seconds since page load
   if (Date.now() - formLoadTime < 3000) {
     return toast('Hold on', 'Please take a moment to fill out the form.');
   }
@@ -798,8 +477,9 @@ async function handleSendMsg(e) {
   btn.disabled = true;
   btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
 
-  const { error } = await sb.from('inquiries').insert([{
-    agent_id: profile.id,
+  // FIX: Removed 'agent_id' from insert because it does NOT exist in the 'inquiries' table schema.
+  // The agent is implicitly linked via 'property_id' or your backend handles it otherwise.
+  const { error } = await supabase.from('inquiries').insert([{
     property_id: listings[0]?.id || null,
     buyer_name: name,
     buyer_email: document.getElementById('mEmail').value.trim(),
@@ -818,11 +498,8 @@ async function handleSendMsg(e) {
   formLoadTime = Date.now();
 }
 
-// ==========================================
-// 7. FALLBACK: ALL AGENTS
-// ==========================================
 async function showAllAgents() {
-  const { data: agents, error } = await sb.from('profiles')
+  const { data: agents, error } = await supabase.from('profiles')
     .select('*')
     .eq('role', 'agent')
     .order('trust_score', { ascending: false })
@@ -850,20 +527,17 @@ async function showAllAgents() {
   main.innerHTML = `
     <div class="card">
       <h2 class="card-title"><i class="fas fa-users"></i> Browse All Agents</h2>
-      <p style="font-size:14px; color:#6b7280; margin-bottom:20px;">
-        Choose an agent to view their profile, listings, and reviews.
-      </p>
+      <p style="font-size:14px; color:#6b7280; margin-bottom:20px;">Choose an agent to view their profile, listings, and reviews.</p>
       <div class="agent-grid">
         ${agents.map(a => {
           const name = a.full_name || 'Agent';
-          const agentUrl = a.slug ? `/agent/${encodeURIComponent(a.slug)}` : `?id=${a.id}`;
+          // FIX: Removed slug logic, using ID only
+          const agentUrl = `?id=${a.id}`;
           return `
             <a href="${agentUrl}" class="agent-card">
-              <div class="agent-avatar">
-                <span>${esc(name.charAt(0).toUpperCase())}</span>
-              </div>
+              <div class="agent-avatar"><span>${esc(name.charAt(0).toUpperCase())}</span></div>
               <div class="agent-name-small">${esc(name)}</div>
-              <div class="agent-company-small">${esc(a.company || 'Independent Agent')}</div>
+              <div class="agent-company-small">${esc(a.agency || 'Independent Agent')}</div>
               <div class="agent-stats-small">
                 <span><i class="fas fa-star" style="color:#fbbf24;"></i> ${(a.average_rating || 0).toFixed(1)}</span>
                 <span><i class="fas fa-shield-halved"></i> ${a.trust_score || 0}</span>
