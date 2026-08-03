@@ -6,7 +6,7 @@
     <title>Messages & Network - Properties in Kenya</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <!-- FIX: Removed CDN Supabase script. We will import the global client via ES Module below. -->
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap');
         body { font-family: 'Inter', system_ui, sans-serif; }
@@ -154,17 +154,12 @@
     </div>
 </div>
 
-<script>
-(function() {
-    'use strict';
+<!-- FIX: Converted to ES Module to use Global Supabase Client and Auth -->
+<script type="module">
+    import { supabase } from '/public/js/supabase.js';
+    import { requireRole, logout } from '/public/js/auth.js';
 
-    // ==========================================
-    // 1. CONFIGURATION & STATE
-    // ==========================================
-    const supabase = window.supabase.createClient(
-        'https://nqvsmuvltbiekfnvovx.supabase.co',
-        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5xd3ZzbXV2bHRiaWVrZm52b3Z4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA1NjU4MDAsImV4cCI6MjA5NjE0MTgwMH0.Xrc-bbAuWdvKSPHnVhTaLiQphV61xeYtDepWePqsrdo'
-    );
+    'use strict';
 
     const state = {
         user: null,
@@ -209,43 +204,23 @@
     }
 
     // ==========================================
-    // 3. AUTH & INITIALIZATION
+    // 3. AUTH & INITIALIZATION (Using Global Single Source of Truth)
     // ==========================================
     async function checkAuth() {
         try {
-            // 1. Check local browser session
-            const { data: { session } } = await supabase.auth.getSession();
+            // FIX: Use global requireRole instead of manual session checks.
+            const auth = await requireRole('agent');
+            if (!auth) return; // Redirects handled automatically by global auth.js
 
-            if (!session) {
-                window.location.href = 'login.html?role=agent';
-                return;
-            }
-
-            // 2. 🔒 BULLETPROOF FIX: Verify the session is actually valid on the server.
-            // This kills the "Ghost Session" redirect loop.
-            const { data: { user }, error } = await supabase.auth.getUser();
-
-            if (error || !user) {
-                // The local session was broken/expired. Sign out completely to clear it.
-                await supabase.auth.signOut();
-                window.location.href = 'login.html?role=agent';
-                return;
-            }
-
-            // 3. Session is 100% valid. Hide the loader and proceed.
-            state.user = user;
+            state.user = auth.user;
             document.getElementById('auth-loader').style.display = 'none';
             
-            supabase.auth.onAuthStateChange((event) => {
-                if (event === 'SIGNED_OUT') window.location.href = 'login.html?role=agent';
-            });
-
             loadConversations();
             loadNetworkAgents();
 
         } catch (err) {
             console.error('Auth check failed:', err);
-            window.location.href = 'login.html?role=agent';
+            window.location.href = '/apps/auth/login.html?role=agent';
         }
     }
 
@@ -309,11 +284,12 @@
     // 5. NETWORK DIRECTORY
     // ==========================================
     async function loadNetworkAgents() {
+        // FIX: Schema alignment. Changed 'is_verified' to 'is_licensed_agent'
         const { data, error } = await supabase
             .from('profiles')
-            .select('id, full_name, agency, county, specialization, is_verified')
+            .select('id, full_name, agency, county, specialization, is_licensed_agent')
             .neq('id', state.user.id)
-            .eq('is_verified', true);
+            .eq('is_licensed_agent', true);
 
         if (error) { console.error(error); return; }
 
@@ -333,7 +309,7 @@
             <div class="bg-white p-4 rounded-xl border border-gray-100 flex items-center gap-3">
                 <div class="w-12 h-12 bg-gray-200 rounded-full flex items-center justify-center text-gray-600 font-bold flex-shrink-0 relative">
                     ${esc((agent.full_name || 'A').charAt(0))}
-                    ${agent.is_verified ? '<i class="fas fa-check-circle absolute -bottom-1 -right-1 text-blue-500 bg-white rounded-full text-xs"></i>' : ''}
+                    ${agent.is_licensed_agent ? '<i class="fas fa-check-circle absolute -bottom-1 -right-1 text-blue-500 bg-white rounded-full text-xs"></i>' : ''}
                 </div>
                 <div class="flex-1 min-w-0">
                     <h4 class="font-bold text-gray-900 text-sm truncate">${esc(agent.full_name)}</h4>
@@ -555,10 +531,11 @@
             document.getElementById('sidebar').classList.remove('mobile-open');
             document.getElementById('mobile-overlay').classList.add('hidden');
         });
+        
+        // FIX: Use global logout function for consistent session clearing
         document.getElementById('logout-btn').addEventListener('click', async (e) => {
             e.preventDefault();
-            await supabase.auth.signOut();
-            window.location.href = 'login.html?role=agent';
+            await logout();
         });
 
         // Tabs
@@ -649,8 +626,6 @@
         initEventListeners();
         checkAuth();
     });
-
-})();
 </script>
 </body>
 </html>
