@@ -1,524 +1,357 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Buy Property in Kenya — Properties in Kenya</title>
-  <meta name="description" content="Find verified houses, apartments, land, villas, and commercial properties for sale across Kenya." />
-  <meta name="theme-color" content="#B8922E" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Saved Homes - Properties in Kenya</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <!-- FIX: Removed CDN Supabase script. We will import the global client via ES Module below. -->
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap');
+        body { font-family: 'Inter', system_ui, sans-serif; }
+        .heading-font { font-family: 'Space Grotesk', sans-serif; }
+        
+        /* Buyer Theme: Elegant Blue/Teal */
+        .sidebar-link.active { background: linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%); color: white; }
+        .sidebar-link:hover:not(.active) { background-color: #e0f2fe; color: #0284c7; }
+        
+        @media (max-width: 1024px) { .sidebar { display: none; } .sidebar.mobile-open { display: block; } }
 
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;500;600;700;800&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
-
-  <style>
-    /* =============================================
-       DESIGN TOKENS
-    ============================================= */
-    :root {
-      --gold: #B8922E;
-      --gold-light: #D4AF37;
-      --gold-dark: #8B6914;
-      --text-primary: #0F172A;
-      --text-secondary: #475569;
-      --text-muted: #94A3B8;
-      --bg-page: #FAFAFA;
-      --bg-surface: #FFFFFF;
-      --border: #E8ECF0;
-      --shadow-sm: 0 1px 2px rgba(0,0,0,0.04);
-      --shadow-md: 0 4px 12px rgba(0,0,0,0.06);
-      --shadow-lg: 0 12px 32px rgba(0,0,0,0.08);
-      --shadow-xl: 0 20px 48px rgba(0,0,0,0.12);
-      --radius-sm: 8px;
-      --radius-md: 12px;
-      --radius-lg: 16px;
-      --radius-xl: 24px;
-      --transition-fast: 150ms ease;
-      --transition-base: 250ms ease;
-    }
-
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    html { scroll-behavior: smooth; -webkit-font-smoothing: antialiased; }
-    body {
-      font-family: 'Inter', system-ui, -apple-system, sans-serif;
-      font-size: 16px;
-      line-height: 1.6;
-      color: var(--text-primary);
-      background: var(--bg-page);
-      overflow-x: hidden;
-    }
-    img { max-width: 100%; height: auto; display: block; }
-    a { color: inherit; text-decoration: none; }
-    button { font: inherit; cursor: pointer; border: none; background: none; }
-    :focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
-
-    .container { max-width: 1280px; margin: 0 auto; padding: 0 24px; }
-
-    .nav {
-      position: sticky; top: 0; z-index: 100;
-      background: rgba(255,255,255,0.9); backdrop-filter: blur(20px);
-      border-bottom: 1px solid var(--border); height: 64px;
-    }
-    .nav-inner {
-      max-width: 1280px; margin: 0 auto; padding: 0 24px;
-      height: 100%; display: flex; align-items: center; justify-content: space-between;
-    }
-    .nav-logo { display: flex; align-items: center; gap: 12px; font-weight: 700; font-size: 1.25rem; }
-    .nav-logo-icon {
-      width: 36px; height: 36px; background: linear-gradient(135deg, var(--gold), var(--gold-light));
-      border-radius: var(--radius-md); display: grid; place-items: center; color: white; font-size: 1rem;
-    }
-    .nav-links { display: flex; gap: 4px; }
-    .nav-link {
-      padding: 8px 16px; font-weight: 500; font-size: 0.875rem;
-      color: var(--text-secondary); border-radius: 9999px;
-      transition: background var(--transition-fast), color var(--transition-fast);
-    }
-    .nav-link:hover, .nav-link.active { background: rgba(184,146,46,0.1); color: var(--gold-dark); }
-    .btn-signin {
-      background: var(--gold); color: white; font-weight: 600; padding: 8px 20px;
-      border-radius: 9999px; font-size: 0.875rem;
-      box-shadow: 0 4px 12px rgba(184,146,46,0.3);
-      transition: transform var(--transition-fast), box-shadow var(--transition-fast);
-    }
-    .btn-signin:hover { transform: translateY(-1px); box-shadow: 0 8px 20px rgba(184,146,46,0.4); }
-
-    .hamburger { display: none; width: 40px; height: 40px; border-radius: var(--radius-sm); flex-direction: column; align-items: center; justify-content: center; gap: 5px; }
-    .hamburger-line { width: 20px; height: 2px; background: var(--text-primary); border-radius: 2px; transition: var(--transition-base); }
-
-    .mobile-menu { display: none; position: fixed; inset: 0; z-index: 200; background: white; flex-direction: column; padding: 24px; }
-    .mobile-menu.active { display: flex; }
-    .mobile-link { padding: 14px 0; border-bottom: 1px solid var(--border); font-weight: 500; }
-
-    .hero {
-      position: relative; background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.6)),
-                  url('https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=1500&q=80') center/cover no-repeat;
-      min-height: 70vh; display: flex; align-items: center; justify-content: center;
-      text-align: center; color: white; padding: 80px 24px;
-    }
-    .hero-content { max-width: 900px; }
-    .hero-title { font-size: clamp(2rem, 5vw, 3.5rem); font-weight: 800; letter-spacing: -0.02em; margin-bottom: 12px; }
-    .hero-subtitle { font-size: 1.125rem; opacity: 0.9; margin-bottom: 32px; }
-
-    .search-container {
-      background: rgba(255,255,255,0.15); backdrop-filter: blur(20px);
-      border-radius: 60px; padding: 8px; display: flex; flex-wrap: wrap; gap: 8px;
-      box-shadow: var(--shadow-xl); max-width: 100%;
-    }
-    .search-group {
-      flex: 1; min-width: 160px; background: white; border-radius: 50px;
-      display: flex; align-items: center; padding: 0 16px;
-    }
-    .search-group i { color: var(--text-muted); margin-right: 8px; }
-    .search-input {
-      flex: 1; border: none; outline: none; padding: 14px 0;
-      font-size: 0.9rem; background: transparent;
-    }
-    .search-btn {
-      background: var(--gold); color: white; font-weight: 600;
-      padding: 14px 32px; border-radius: 50px; font-size: 0.9rem;
-      display: flex; align-items: center; gap: 8px;
-      transition: background var(--transition-fast), transform var(--transition-fast);
-      box-shadow: 0 4px 12px rgba(184,146,46,0.3);
-    }
-    .search-btn:hover { background: var(--gold-dark); transform: translateY(-2px); }
-
-    .type-filters { padding: 48px 0 24px; }
-    .filter-grid {
-      display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-      gap: 16px;
-    }
-    .filter-card {
-      background: white; border-radius: var(--radius-lg); padding: 24px 16px;
-      text-align: center; border: 1px solid var(--border);
-      transition: transform var(--transition-base), box-shadow var(--transition-base), border-color var(--transition-base);
-      cursor: pointer;
-    }
-    .filter-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-lg); border-color: var(--gold-light); }
-    .filter-card.active { border-color: var(--gold); background: #FFF9F0; }
-    .filter-icon { font-size: 2rem; margin-bottom: 8px; color: var(--gold); }
-    .filter-label { font-weight: 600; margin-bottom: 4px; }
-    .filter-count { font-size: 0.75rem; color: var(--text-muted); }
-
-    .properties-section { padding: 24px 0 64px; }
-    .section-header { margin-bottom: 32px; }
-    .section-title { font-size: 1.75rem; font-weight: 700; }
-
-    .property-grid {
-      display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px;
-    }
-    .property-card {
-      background: white; border-radius: var(--radius-lg); overflow: hidden;
-      border: 1px solid var(--border); transition: transform var(--transition-base), box-shadow var(--transition-base);
-      cursor: pointer;
-    }
-    .property-card:hover { transform: translateY(-6px); box-shadow: var(--shadow-xl); }
-
-    .property-image { position: relative; height: 220px; overflow: hidden; }
-    .property-image img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s; }
-    .property-card:hover .property-image img { transform: scale(1.05); }
-
-    .property-badges { position: absolute; top: 12px; left: 12px; display: flex; gap: 6px; }
-    .badge {
-      padding: 4px 10px; border-radius: 20px; font-size: 0.6875rem; font-weight: 600;
-      text-transform: uppercase; backdrop-filter: blur(8px);
-    }
-    .badge-sale { background: rgba(0,0,0,0.7); color: white; }
-    .badge-verified { background: rgba(16,185,129,0.9); color: white; }
-
-    .favorite-btn {
-      position: absolute; top: 12px; right: 12px;
-      width: 36px; height: 36px; background: rgba(255,255,255,0.9); backdrop-filter: blur(8px);
-      border-radius: 50%; display: grid; place-items: center;
-      color: var(--text-muted); transition: color var(--transition-fast), transform var(--transition-fast);
-    }
-    .favorite-btn:hover { transform: scale(1.1); }
-    .favorite-btn.active { color: #EF4444; }
-
-    .property-info { padding: 16px; }
-    .property-location { display: flex; align-items: center; gap: 6px; font-size: 0.8125rem; color: var(--text-muted); margin-bottom: 8px; }
-    .property-title { font-size: 1rem; font-weight: 700; margin-bottom: 12px; line-height: 1.3; }
-
-    .property-features {
-      display: flex; gap: 16px; padding: 12px 0;
-      border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);
-      margin-bottom: 12px;
-    }
-    .feature-item { display: flex; align-items: center; gap: 4px; font-size: 0.75rem; color: var(--text-secondary); }
-
-    .property-footer { display: flex; justify-content: space-between; align-items: center; }
-    .property-price { font-size: 1.25rem; font-weight: 800; color: var(--gold-dark); }
-    .property-agent { display: flex; align-items: center; gap: 8px; font-size: 0.75rem; }
-    .agent-avatar {
-      width: 24px; height: 24px; border-radius: 50%; background: var(--gold);
-      color: white; display: grid; place-items: center; font-size: 0.625rem; font-weight: 700;
-    }
-
-    .no-results { text-align: center; padding: 64px; color: var(--text-muted); display: none; }
-
-    .agent-cta {
-      background: linear-gradient(135deg, var(--gold), var(--gold-dark));
-      border-radius: var(--radius-xl); padding: 64px 24px;
-      text-align: center; color: white; margin: 48px 0;
-    }
-    .agent-cta h2 { font-size: 2rem; font-weight: 700; margin-bottom: 12px; }
-    .agent-cta p { font-size: 1rem; opacity: 0.9; margin-bottom: 24px; }
-    .cta-btn {
-      display: inline-flex; align-items: center; gap: 8px;
-      background: white; color: var(--gold-dark); font-weight: 600;
-      padding: 14px 32px; border-radius: 9999px; font-size: 1rem;
-      transition: transform var(--transition-fast), box-shadow var(--transition-fast);
-      box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-    }
-    .cta-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(0,0,0,0.25); }
-
-    .footer {
-      border-top: 1px solid var(--border); padding: 32px 0;
-      display: flex; justify-content: space-between; align-items: center;
-      flex-wrap: wrap; gap: 16px; color: var(--text-muted); font-size: 0.8125rem;
-    }
-
-    @media (max-width: 1024px) {
-      .property-grid { grid-template-columns: repeat(2, 1fr); }
-    }
-    @media (max-width: 768px) {
-      .nav-links { display: none; }
-      .hamburger { display: flex; }
-      .search-container { flex-direction: column; border-radius: 24px; }
-      .search-group { width: 100%; }
-      .property-grid { grid-template-columns: 1fr; }
-      .filter-grid { grid-template-columns: repeat(2, 1fr); }
-    }
-  </style>
+        .stat-card { transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+        .stat-card:hover { transform: translateY(-4px); box-shadow: 0 20px 40px -12px rgb(0 0 0 / 0.15); }
+        
+        /* Toast Notification */
+        .toast {
+            position: fixed; bottom: 20px; right: 20px;
+            background: #111827; color: white;
+            padding: 12px 20px; border-radius: 10px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            z-index: 9999; display: flex; align-items: center; gap: 10px;
+            animation: slideIn 0.3s ease-out;
+        }
+        @keyframes slideIn { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+    </style>
 </head>
-<body>
-  <nav class="nav" aria-label="Primary">
-    <div class="nav-inner">
-      <a href="/" class="nav-logo">
-        <div class="nav-logo-icon"><i class="fas fa-home"></i></div>
-        <span>Properties in Kenya</span>
-      </a>
-      <div class="nav-links">
-        <a href="/buy.html" class="nav-link active">Buy</a>
-        <a href="/rent.html" class="nav-link">Rent</a>
-        <a href="/blog.html" class="nav-link">Blog</a>
-        <a href="/agents.html" class="nav-link">Agents</a>
-        <a href="/login.html" class="btn-signin">Sign In</a>
-      </div>
-      <button class="hamburger" id="hamburgerBtn" aria-label="Menu">
-        <span class="hamburger-line"></span>
-        <span class="hamburger-line"></span>
-        <span class="hamburger-line"></span>
-      </button>
-    </div>
-  </nav>
+<body class="bg-gray-50">
 
-  <div class="mobile-menu" id="mobileMenu">
-    <button id="closeMobileMenu" style="align-self:flex-end; font-size:1.5rem;">&times;</button>
-    <a href="/buy.html" class="mobile-link">Buy</a>
-    <a href="/rent.html" class="mobile-link">Rent</a>
-    <a href="/blog.html" class="mobile-link">Blog</a>
-    <a href="/agents.html" class="mobile-link">Agents</a>
-    <a href="/login.html" class="mobile-link" style="color:var(--gold-dark); font-weight:700;">Sign In</a>
-  </div>
+<!-- 🔒 FIX: Full screen loader to prevent visual flipping/flickering -->
+<div id="auth-loader" style="position:fixed; inset:0; background:white; z-index:9999; display:flex; align-items:center; justify-content:center;">
+    <i class="fas fa-spinner fa-spin text-4xl text-sky-500"></i>
+</div>
 
-  <main>
-    <section class="hero">
-      <div class="hero-content">
-        <h1 class="hero-title">Find your dream home in Kenya</h1>
-        <p class="hero-subtitle">Verified houses, apartments, and land across all 47 counties</p>
-        <div class="search-container">
-          <div class="search-group">
-            <i class="fas fa-map-marker-alt"></i>
-            <input type="text" class="search-input" id="searchLocation" placeholder="Location (e.g. Ruai, Kilimani)" />
-          </div>
-          <div class="search-group">
-            <i class="fas fa-home"></i>
-            <select class="search-input" id="searchType">
-              <option value="">Property Type</option>
-              <option value="house">House</option>
-              <option value="apartment">Apartment</option>
-              <option value="land">Land</option>
-              <option value="villa">Villa</option>
-              <option value="commercial">Commercial</option>
-            </select>
-          </div>
-          <div class="search-group">
-            <i class="fas fa-tag"></i>
-            <input type="number" class="search-input" id="searchBudget" placeholder="Max Budget (KES)" />
-          </div>
-          <button class="search-btn" id="searchBtn"><i class="fas fa-search"></i> Search</button>
-        </div>
-      </div>
-    </section>
+<button id="mobile-menu-btn" class="lg:hidden fixed top-4 left-4 z-50 bg-white p-3 rounded-xl shadow-lg" aria-label="Toggle menu">
+    <i class="fas fa-bars text-gray-700"></i>
+</button>
+<div id="mobile-overlay" class="hidden lg:hidden fixed inset-0 bg-black/50 z-40"></div>
 
-    <div class="container">
-      <section class="type-filters">
-        <div class="filter-grid" id="typeFilters"></div>
-      </section>
-
-      <section class="properties-section">
-        <div class="section-header">
-          <h2 class="section-title" id="listingTitle">Featured Properties for Sale</h2>
-        </div>
-        <div class="property-grid" id="propertyGrid"></div>
-        <div class="no-results" id="noResults">
-          <i class="fas fa-search" style="font-size:2rem; opacity:0.3;"></i>
-          <p>No properties match your criteria. Try adjusting your filters.</p>
-        </div>
-      </section>
-
-      <section class="agent-cta">
-        <h2>Are you a real estate agent?</h2>
-        <p>List your properties and reach thousands of buyers across Kenya.</p>
-        <a href="/login.html?role=agent" class="cta-btn"><i class="fas fa-plus-circle"></i> List Your Properties</a>
-      </section>
-    </div>
-  </main>
-
-  <footer class="footer container">
-    <div>© 2026 Properties in Kenya</div>
-    <div style="display:flex; gap:16px;">
-      <a href="#">Terms</a>
-      <a href="#">Privacy</a>
-      <a href="#">Cookies</a>
-    </div>
-  </footer>
-
-  <!-- Supabase client: use local copy if CDN fails -->
-  <script src="supabase-js-2.js"></script>
-  <script>
-    (function() {
-      // Initialize Supabase
-      const supabase = window.supabase.createClient(
-        'https://nqwvsmuvltbiekfnvovx.supabase.co',
-        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5xd3ZzbXV2bHRiaWVrZm52b3Z4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA1NjU4MDAsImV4cCI6MjA5NjE0MTgwMH0.Xrc-bbAuWdvKSPHnVhTaLiQphV61xeYtDepWePqsrdo'
-      );
-
-      // State
-      let properties = []; // will hold the fetched properties
-      let activeType = 'all';
-      let favorites = JSON.parse(localStorage.getItem('pik_favorites')) || [];
-      let currentFilter = { location: '', type: '', budget: Infinity };
-
-      // Helper: count per type
-      const countByType = (type) => properties.filter(p => type === 'all' || p.property_type === type).length;
-
-      // Render type filter cards
-      function renderTypeFilters() {
-        const types = [
-          { key: 'all', label: 'View All', icon: 'fa-list' },
-          { key: 'house', label: 'Houses', icon: 'fa-home' },
-          { key: 'apartment', label: 'Apartments', icon: 'fa-building' },
-          { key: 'land', label: 'Land', icon: 'fa-map' },
-          { key: 'villa', label: 'Villas', icon: 'fa-tree' },
-          { key: 'commercial', label: 'Commercial', icon: 'fa-store' }
-        ];
-        const container = document.getElementById('typeFilters');
-        container.innerHTML = types.map(t => `
-          <div class="filter-card ${activeType === t.key ? 'active' : ''}" data-type="${t.key}">
-            <div class="filter-icon"><i class="fas ${t.icon}"></i></div>
-            <div class="filter-label">${t.label}</div>
-            <div class="filter-count">${countByType(t.key)} listings</div>
-          </div>
-        `).join('');
-        container.querySelectorAll('.filter-card').forEach(card => {
-          card.addEventListener('click', () => {
-            activeType = card.dataset.type;
-            renderTypeFilters();
-            applyFilters();
-          });
-        });
-      }
-
-      // Render property cards
-      function renderProperties(filtered) {
-        const grid = document.getElementById('propertyGrid');
-        const noRes = document.getElementById('noResults');
-        if (filtered.length === 0) {
-          grid.innerHTML = '';
-          noRes.style.display = 'block';
-        } else {
-          noRes.style.display = 'none';
-          grid.innerHTML = filtered.map(p => {
-            const isFav = favorites.includes(p.id);
-            const img = (p.images && p.images.length > 0) ? p.images[0] : 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=600&q=80';
-            const typeLabel = (p.property_type || 'house').charAt(0).toUpperCase() + (p.property_type || 'house').slice(1);
-            const agentInitials = p.agent?.initials || (p.agent_name ? p.agent_name.split(' ').map(n=>n[0]).join('') : 'AG');
-            const agentName = p.agent?.name || p.agent_name || 'Agent';
-            return `
-              <div class="property-card" data-id="${p.id}">
-                <div class="property-image">
-                  <img src="${img}" alt="${p.title}" loading="lazy" />
-                  <div class="property-badges">
-                    <span class="badge badge-sale">For Sale</span>
-                    ${p.approval_status === 'approved' ? '<span class="badge badge-verified"><i class="fas fa-check-circle"></i> Verified</span>' : ''}
-                  </div>
-                  <button class="favorite-btn ${isFav ? 'active' : ''}" aria-label="Save property">
-                    <i class="${isFav ? 'fas' : 'far'} fa-heart"></i>
-                  </button>
+<div class="flex min-h-screen">
+    <!-- SIDEBAR -->
+    <aside id="sidebar" class="sidebar fixed lg:sticky top-0 left-0 h-screen w-72 bg-white border-r border-gray-200 z-40 overflow-y-auto">
+        <div class="p-6 border-b border-gray-200">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 bg-gradient-to-br from-sky-400 to-blue-600 rounded-xl flex items-center justify-center text-white font-bold text-xl">🏡</div>
+                <div>
+                    <h1 class="heading-font text-xl font-bold">Buyer Portal</h1>
+                    <p class="text-xs text-gray-500">Properties in Kenya</p>
                 </div>
-                <div class="property-info">
-                  <div class="property-location"><i class="fas fa-map-marker-alt"></i> ${p.location || ''}</div>
-                  <h3 class="property-title">${p.title || 'Untitled'}</h3>
-                  <div class="property-features">
-                    ${p.bedrooms ? `<span class="feature-item"><i class="fas fa-bed"></i> ${p.bedrooms} Beds</span>` : ''}
-                    ${p.bathrooms ? `<span class="feature-item"><i class="fas fa-bath"></i> ${p.bathrooms} Baths</span>` : ''}
-                    ${p.area_sqft ? `<span class="feature-item"><i class="fas fa-vector-square"></i> ${p.area_sqft} sqft</span>` : ''}
-                  </div>
-                  <div class="property-footer">
-                    <span class="property-price">KES ${(p.price || 0).toLocaleString()}</span>
-                    <div class="property-agent">
-                      <div class="agent-avatar">${agentInitials}</div>
-                      ${agentName}
+            </div>
+        </div>
+
+        <!-- Profile Card -->
+        <div class="p-4 border-b border-gray-200">
+            <div class="bg-gradient-to-br from-sky-50 to-blue-50 rounded-2xl p-4">
+                <div class="flex items-center gap-3">
+                    <div class="w-12 h-12 bg-gradient-to-br from-sky-400 to-blue-600 rounded-full flex items-center justify-center text-white font-bold text-lg" id="profile-initial">B</div>
+                    <div class="flex-1 min-w-0">
+                        <p class="font-semibold text-sm truncate" id="profile-name">Loading...</p>
+                        <p class="text-xs text-gray-500 truncate">Property Buyer</p>
                     </div>
-                  </div>
                 </div>
-              </div>
-            `;
-          }).join('');
+            </div>
+        </div>
 
-          // Favorite button
-          grid.querySelectorAll('.favorite-btn').forEach(btn => {
-            btn.addEventListener('click', (e) => {
-              e.stopPropagation();
-              const card = btn.closest('.property-card');
-              const id = card.dataset.id;
-              toggleFavorite(id);
-              applyFilters();
-            });
-          });
+        <!-- Navigation -->
+        <nav class="p-4 space-y-1">
+            <a href="buyer-dashboard.html" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-gray-700">
+                <i class="fas fa-chart-line w-5"></i> Dashboard
+            </a>
+            <a href="buyer-saved.html" class="sidebar-link active flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium">
+                <i class="fas fa-heart w-5"></i> Saved Homes
+            </a>
+            <a href="buyer-inquiries.html" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-gray-700">
+                <i class="fas fa-envelope w-5"></i> My Inquiries
+            </a>
+            <a href="buyer-requests.html" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-gray-700">
+                <i class="fas fa-search w-5"></i> Property Alerts
+            </a>
+            
+            <div class="pt-4 mt-4 border-t border-gray-200">
+                <a href="buyer-profile.html" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-gray-700">
+                    <i class="fas fa-user-circle w-5"></i> My Profile
+                </a>
+                <a href="#" id="logout-btn" class="sidebar-link flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium text-gray-700">
+                    <i class="fas fa-sign-out-alt w-5"></i> Logout
+                </a>
+            </div>
+        </nav>
+    </aside>
 
-          // Card click → property detail page
-          grid.querySelectorAll('.property-card').forEach(card => {
-            card.addEventListener('click', () => {
-              window.location.href = `/property/${card.dataset.id}`;
-            });
-          });
-        }
-      }
+    <!-- MAIN CONTENT -->
+    <main class="flex-1 lg:ml-0">
+        <header class="bg-white border-b border-gray-200 sticky top-0 z-30">
+            <div class="px-6 py-4 flex items-center justify-between">
+                <div class="lg:pl-0 pl-12">
+                    <h1 class="heading-font text-2xl font-bold">Saved Homes</h1>
+                    <p class="text-sm text-gray-500">Properties you've shortlisted for viewing</p>
+                </div>
+                <a href="/" class="hidden sm:flex items-center gap-2 bg-white border border-gray-200 text-gray-700 px-4 py-2.5 rounded-xl font-semibold text-sm hover:bg-gray-50 transition">
+                    <i class="fas fa-search"></i> Browse More
+                </a>
+            </div>
+        </header>
 
-      function applyFilters() {
-        let filtered = properties.filter(p => {
-          if (activeType !== 'all' && p.property_type !== activeType) return false;
-          if (currentFilter.location && !p.location?.toLowerCase().includes(currentFilter.location.toLowerCase())) return false;
-          if (currentFilter.type && p.property_type !== currentFilter.type) return false;
-          if ((p.price || 0) > currentFilter.budget) return false;
-          return true;
-        });
-        renderProperties(filtered);
-      }
+        <div class="p-6">
+            <!-- Grid Container -->
+            <div id="saved-grid" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+                <div class="col-span-full text-center py-12 text-gray-400">
+                    <i class="fas fa-spinner fa-spin text-3xl mb-3"></i>
+                    <p>Loading your saved homes...</p>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
 
-      function toggleFavorite(id) {
-        if (favorites.includes(id)) {
-          favorites = favorites.filter(f => f !== id);
-        } else {
-          favorites.push(id);
-        }
-        localStorage.setItem('pik_favorites', JSON.stringify(favorites));
-      }
+<!-- FIX: Converted to ES Module to use Global Supabase Client and Auth -->
+<script type="module">
+    import { supabase } from '/public/js/supabase.js';
+    import { requireRole, logout } from '/public/js/auth.js';
 
-      // Load properties from Supabase
-      async function loadProperties() {
+    'use strict';
+
+    const FALLBACK_IMG = 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=800&auto=format&fit=crop';
+    const state = { user: null, savedProperties: [] };
+
+    // ==========================================
+    // UTILITIES
+    // ==========================================
+    function esc(str) {
+        if (!str) return '';
+        const div = document.createElement('div');
+        div.textContent = str;
+        return div.innerHTML;
+    }
+
+    function isValidUrl(string) {
         try {
-          const { data, error } = await supabase
-            .from('properties')
-            .select('*')
-            .eq('approval_status', 'approved')
-            .order('created_at', { ascending: false });
+            const url = new URL(string);
+            return url.protocol === 'http:' || url.protocol === 'https:';
+        } catch (_) { return false; }
+    }
 
-          if (error) throw error;
-          properties = data || [];
-          if (properties.length === 0) {
-            console.warn('No approved properties found. Showing mock data.');
-            properties = getMockProperties(); // fallback to static data for demo
-          }
+    function formatKES(amount) {
+        return new Intl.NumberFormat('en-KE', { style: 'currency', currency: 'KES', maximumFractionDigits: 0 }).format(amount || 0);
+    }
+
+    function showToast(message) {
+        const toast = document.createElement('div');
+        toast.className = 'toast';
+        toast.innerHTML = `<i class="fas fa-check-circle text-green-400"></i> ${esc(message)}`;
+        document.body.appendChild(toast);
+        setTimeout(() => {
+            toast.style.opacity = '0';
+            toast.style.transform = 'translateY(20px)';
+            setTimeout(() => toast.remove(), 300);
+        }, 3000);
+    }
+
+    // ==========================================
+    // BULLETPROOF AUTH (Using Global Single Source of Truth)
+    // ==========================================
+    async function checkAuth() {
+        try {
+            // FIX: Use global requireRole instead of manual session checks.
+            const auth = await requireRole('buyer');
+            if (!auth) return; // Redirects handled automatically by global auth.js
+
+            state.user = auth.user;
+            
+            // Fetch profile for UI display
+            const { data: profile } = await supabase.from('profiles').select('full_name').eq('id', state.user.id).single();
+            if (profile) {
+                document.getElementById('profile-name').textContent = profile.full_name || 'Buyer';
+                document.getElementById('profile-initial').textContent = (profile.full_name || 'B').charAt(0).toUpperCase();
+            }
+
+            document.getElementById('auth-loader').style.display = 'none';
+            await loadSavedProperties();
+
         } catch (err) {
-          console.error('Failed to load properties:', err);
-          properties = getMockProperties();
+            console.error('Auth check failed:', err);
+            window.location.href = '/apps/auth/login.html?role=buyer';
         }
-        renderTypeFilters();
-        applyFilters();
-      }
+    }
 
-      function getMockProperties() {
-        return [
-          { id: 1, property_type: 'house', location: 'Ruai', price: 12000000, bedrooms: 4, bathrooms: 3, area_sqft: '0.25 acres', approval_status: 'approved', images: ['https://images.unsplash.com/photo-1564013799919-ab600027ffc6?w=600&q=80'], agent_name: 'John Kamau', title: '4 Bed House in Ruai' },
-          { id: 2, property_type: 'apartment', location: 'Kilimani', price: 15000000, bedrooms: 3, bathrooms: 2, area_sqft: '1,800 sqft', approval_status: 'approved', images: ['https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=600&q=80'], agent_name: 'Sarah Mwangi', title: '3 Bed Apartment in Kilimani' },
-          { id: 3, property_type: 'land', location: 'Syokimau', price: 3500000, bedrooms: 0, bathrooms: 0, area_sqft: '0.5 acres', approval_status: 'approved', images: ['https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=600&q=80'], agent_name: 'Peter Ochieng', title: 'Plot in Syokimau' },
-          { id: 4, property_type: 'villa', location: 'Karen', price: 85000000, bedrooms: 5, bathrooms: 4, area_sqft: '1 acre', approval_status: 'approved', images: ['https://images.unsplash.com/photo-1613490493576-7fde63acd811?w=600&q=80'], agent_name: 'Mike Kariuki', title: 'Luxury Villa in Karen' },
-          { id: 5, property_type: 'commercial', location: 'Westlands', price: 250000000, bedrooms: 0, bathrooms: 2, area_sqft: '10,000 sqft', approval_status: 'approved', images: ['https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=600&q=80'], agent_name: 'Alice Njeri', title: 'Commercial Building' }
-        ];
-      }
+    // ==========================================
+    // DATA LOADING & RENDERING
+    // ==========================================
+    async function loadSavedProperties() {
+        const grid = document.getElementById('saved-grid');
+        
+        // 1. Get IDs from localStorage (Synced with index.html heart icon)
+        const savedIds = JSON.parse(localStorage.getItem('propertiesinkenya_favorites') || '[]');
+        
+        if (savedIds.length === 0) {
+            renderEmptyState();
+            return;
+        }
 
-      // Event listeners
-      document.getElementById('searchBtn').addEventListener('click', () => {
-        currentFilter.location = document.getElementById('searchLocation').value.trim();
-        currentFilter.type = document.getElementById('searchType').value;
-        const budgetVal = document.getElementById('searchBudget').value;
-        currentFilter.budget = budgetVal ? parseInt(budgetVal) : Infinity;
-        activeType = 'all';
-        renderTypeFilters();
-        applyFilters();
-      });
+        try {
+            // 2. 🔥 PERFORMANCE FIX: Fetch all saved properties in ONE single query
+            const { data, error } = await supabase
+                .from('properties')
+                .select('*')
+                .in('id', savedIds)
+                .eq('approval_status', 'approved'); // Only show approved properties
 
-      document.querySelectorAll('.search-input').forEach(input => {
-        input.addEventListener('keypress', (e) => {
-          if (e.key === 'Enter') document.getElementById('searchBtn').click();
+            if (error) throw error;
+
+            state.savedProperties = data || [];
+            
+            if (state.savedProperties.length === 0) {
+                renderEmptyState();
+                return;
+            }
+
+            renderGrid(state.savedProperties);
+
+        } catch (err) {
+            console.error(err);
+            grid.innerHTML = `<div class="col-span-full text-center text-red-500 py-8"><i class="fas fa-exclamation-triangle mb-2 text-2xl"></i><p>Error loading saved homes.</p></div>`;
+        }
+    }
+
+    function renderEmptyState() {
+        const grid = document.getElementById('saved-grid');
+        grid.innerHTML = `
+            <div class="col-span-full text-center py-16 bg-white rounded-2xl border border-gray-100">
+                <div class="w-20 h-20 bg-sky-50 rounded-full flex items-center justify-center mx-auto mb-6">
+                    <i class="fas fa-heart text-4xl text-sky-300"></i>
+                </div>
+                <h3 class="text-xl font-bold text-gray-800 mb-2">No saved homes yet</h3>
+                <p class="text-gray-500 mb-6 max-w-md mx-auto">Start browsing our verified listings and click the heart icon on any property to save it here for quick access.</p>
+                <a href="/" class="inline-flex items-center gap-2 bg-sky-500 text-white px-6 py-3 rounded-xl font-semibold hover:bg-sky-600 transition">
+                    <i class="fas fa-search"></i> Browse Properties
+                </a>
+            </div>
+        `;
+    }
+
+    function renderGrid(properties) {
+        const grid = document.getElementById('saved-grid');
+        
+        grid.innerHTML = properties.map(prop => {
+            const imgSrc = (prop.images && prop.images[0] && isValidUrl(prop.images[0])) ? prop.images[0] : FALLBACK_IMG;
+            
+            return `
+            <div class="bg-white rounded-2xl border border-gray-100 overflow-hidden hover:shadow-xl transition-shadow duration-300 group relative">
+                <div class="relative h-56 bg-gray-200">
+                    <img src="${esc(imgSrc)}" loading="lazy" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" alt="Property">
+                    
+                    <!-- Status Badge -->
+                    <div class="absolute top-3 left-3">
+                        <span class="px-3 py-1 rounded-full text-xs font-bold uppercase bg-white/90 backdrop-blur text-gray-800 shadow-sm">
+                            ${esc(prop.property_type || 'For Sale')}
+                        </span>
+                    </div>
+
+                    <!-- Remove Button -->
+                    <button class="btn-remove absolute top-3 right-3 w-9 h-9 flex items-center justify-center rounded-full bg-white/90 backdrop-blur text-rose-500 hover:bg-rose-500 hover:text-white transition shadow-sm" 
+                            data-id="${esc(prop.id)}" aria-label="Remove from saved">
+                        <i class="fas fa-heart"></i>
+                    </button>
+                </div>
+                
+                <div class="p-5">
+                    <div class="flex items-start justify-between mb-2">
+                        <h3 class="font-bold text-lg text-gray-900 line-clamp-1 pr-2">${esc(prop.title)}</h3>
+                    </div>
+                    <p class="text-sm text-gray-500 mb-4 flex items-center gap-1">
+                        <i class="fas fa-map-marker-alt text-sky-500"></i> ${esc(prop.town || prop.county)}, ${esc(prop.county)}
+                    </p>
+                    
+                    <div class="flex items-center gap-4 text-sm text-gray-600 mb-4">
+                        ${prop.bedrooms ? `<span><i class="fas fa-bed mr-1 text-gray-400"></i> ${prop.bedrooms} Beds</span>` : ''}
+                        ${prop.bathrooms ? `<span><i class="fas fa-bath mr-1 text-gray-400"></i> ${prop.bathrooms} Baths</span>` : ''}
+                    </div>
+
+                    <div class="flex items-center justify-between pt-4 border-t border-gray-100">
+                        <span class="text-xl font-bold text-sky-600">${formatKES(prop.price)}</span>
+                        <a href="/property.html?id=${prop.id}" class="px-4 py-2 bg-sky-50 text-sky-600 rounded-lg text-sm font-semibold hover:bg-sky-100 transition">
+                            View Details
+                        </a>
+                    </div>
+                </div>
+            </div>`;
+        }).join('');
+    }
+
+    // ==========================================
+    // ACTIONS
+    // ==========================================
+    function removeSaved(propertyId) {
+        // 1. Remove from localStorage
+        let savedIds = JSON.parse(localStorage.getItem('propertiesinkenya_favorites') || '[]');
+        savedIds = savedIds.filter(id => id !== propertyId);
+        localStorage.setItem('propertiesinkenya_favorites', JSON.stringify(savedIds));
+        
+        // 2. Update UI instantly
+        state.savedProperties = state.savedProperties.filter(p => p.id !== propertyId);
+        
+        if (state.savedProperties.length === 0) {
+            renderEmptyState();
+        } else {
+            renderGrid(state.savedProperties);
+        }
+        
+        showToast('Removed from saved homes');
+    }
+
+    // ==========================================
+    // EVENT LISTENERS
+    // ==========================================
+    function initEventListeners() {
+        document.getElementById('mobile-menu-btn').addEventListener('click', () => {
+            document.getElementById('sidebar').classList.toggle('mobile-open');
+            document.getElementById('mobile-overlay').classList.toggle('hidden');
         });
-      });
+        document.getElementById('mobile-overlay').addEventListener('click', () => {
+            document.getElementById('sidebar').classList.remove('mobile-open');
+            document.getElementById('mobile-overlay').classList.add('hidden');
+        });
 
-      document.getElementById('hamburgerBtn').addEventListener('click', () => {
-        document.getElementById('mobileMenu').classList.add('active');
-      });
-      document.getElementById('closeMobileMenu').addEventListener('click', () => {
-        document.getElementById('mobileMenu').classList.remove('active');
-      });
+        // FIX: Use global logout function for consistent session clearing
+        document.getElementById('logout-btn').addEventListener('click', async (e) => {
+            e.preventDefault();
+            await logout();
+        });
 
-      // Start
-      loadProperties();
-    })();
-  </script>
+        // 🔒 SECURE EVENT DELEGATION for Remove Buttons
+        document.getElementById('saved-grid').addEventListener('click', (e) => {
+            const removeBtn = e.target.closest('.btn-remove');
+            if (removeBtn) {
+                e.stopPropagation(); // Prevent triggering card click
+                removeSaved(removeBtn.dataset.id);
+            }
+        });
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        initEventListeners();
+        checkAuth();
+    });
+</script>
+
 </body>
 </html>
