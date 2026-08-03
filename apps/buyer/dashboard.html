@@ -6,7 +6,7 @@
     <title>My Dashboard - Properties in Kenya</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <!-- FIX: Removed CDN Supabase script. We will import the global client via ES Module below. -->
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap');
         body { font-family: 'Inter', system_ui, sans-serif; }
@@ -204,51 +204,33 @@
     </main>
 </div>
 
-<script>
-(function() {
-    'use strict';
+<!-- FIX: Converted to ES Module to use Global Supabase Client and Auth -->
+<script type="module">
+    import { supabase } from '/public/js/supabase.js';
+    import { requireRole, logout } from '/public/js/auth.js';
 
-    const supabase = window.supabase.createClient(
-        'https://nqwvsmuvltbiekfnvovx.supabase.co',
-        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5xd3ZzbXV2bHRiaWVrZm52b3Z4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA1NjU4MDAsImV4cCI6MjA5NjE0MTgwMH0.Xrc-bbAuWdvKSPHnVhTaLiQphV61xeYtDepWePqsrdo'
-    );
+    'use strict';
 
     const state = { user: null };
 
     // ==========================================
-    // BULLETPROOF AUTH (Prevents Flickering & Loops)
+    // BULLETPROOF AUTH (Using Global Single Source of Truth)
     // ==========================================
     async function checkAuth() {
         try {
-            const { data: { session } } = await supabase.auth.getSession();
-            if (!session) {
-                window.location.href = 'login.html?role=buyer';
-                return;
-            }
+            // FIX: Use global requireRole instead of manual session checks.
+            // This guarantees the user is authenticated AND their role is 'buyer'.
+            const auth = await requireRole('buyer');
+            if (!auth) return; // Redirects handled automatically by global auth.js
 
-            // Verify with server to prevent ghost sessions
-            const { data: { user }, error } = await supabase.auth.getUser();
-            if (error || !user) {
-                await supabase.auth.signOut();
-                window.location.href = 'login.html?role=buyer';
-                return;
-            }
-
-            // Ensure they are actually a buyer
-            const { data: profile } = await supabase.from('profiles').select('role').eq('id', user.id).single();
-            if (profile?.role !== 'buyer' && profile?.role !== 'admin') {
-                // If an agent tries to access buyer portal, kick them to agent portal
-                window.location.href = 'agent-dashboard.html';
-                return;
-            }
-
-            state.user = user;
+            state.user = auth.user;
             document.getElementById('auth-loader').style.display = 'none';
-            loadDashboard();
+            await loadDashboard();
 
         } catch (err) {
             console.error('Auth check failed:', err);
-            window.location.href = 'login.html?role=buyer';
+            // Fallback redirect handled by global auth, but safe to have here
+            window.location.href = '/apps/auth/login.html?role=buyer';
         }
     }
 
@@ -264,14 +246,17 @@
             document.getElementById('greeting').textContent = `Welcome back, ${profile.full_name?.split(' ')[0] || 'Buyer'}`;
         }
 
-        // 2. Load Stats (Using localStorage for saved items since we haven't created a DB table for it yet)
+        // 2. Load Stats 
+        // (Note: localStorage for saved items is retained as requested, pending DB table creation)
         const savedItems = JSON.parse(localStorage.getItem('propertiesinkenya_favorites') || '[]');
         document.getElementById('stat-saved').textContent = savedItems.length;
 
-        // Fetch Inquiries & Alerts from DB
+        // FIX: Fetch Inquiries & Alerts from DB with correct schema alignment.
+        // Inquiries: matched by buyer_email (as per schema)
+        // Alerts: matched by buyer_id (as per buyer_alerts schema, NOT buyer_requests which lacks buyer_id)
         const [inquiriesRes, alertsRes] = await Promise.all([
             supabase.from('inquiries').select('id', { count: 'exact', head: true }).eq('buyer_email', state.user.email),
-            supabase.from('buyer_requests').select('id', { count: 'exact', head: true }).eq('agent_id', state.user.id) // Assuming buyers can post requests too
+            supabase.from('buyer_alerts').select('id', { count: 'exact', head: true }).eq('buyer_id', state.user.id)
         ]);
 
         document.getElementById('stat-inquiries').textContent = inquiriesRes.count || 0;
@@ -291,19 +276,18 @@
             document.getElementById('mobile-overlay').classList.add('hidden');
         });
 
+        // FIX: Use global logout function for consistent session clearing
         document.getElementById('logout-btn').addEventListener('click', async (e) => {
             e.preventDefault();
-            await supabase.auth.signOut();
-            window.location.href = 'login.html?role=buyer';
+            await logout();
         });
     }
 
+    // Run immediately (ES modules are deferred by default, but DOMContentLoaded is safe)
     document.addEventListener('DOMContentLoaded', () => {
         initEventListeners();
         checkAuth();
     });
-
-})();
 </script>
 
 </body>
