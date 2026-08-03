@@ -8,7 +8,7 @@
 <meta name="robots" content="noindex, nofollow">
 <link rel="canonical" href="https://propertiesinkenya.co.ke/saved.html">
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<!-- FIX: Removed CDN Supabase script. We will import the global client via ES Module below. -->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -399,14 +399,9 @@ body {
   <span id="toastMessage">Property removed from saved</span>
 </div>
 
-<script>
-(function() {
-    'use strict';
-
-    const sb = supabase.createClient(
-        "https://nqwvsmuvltbiekfnvovx.supabase.co",
-        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5xd3ZzbXV2bHRiaWVrZm52b3Z4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA1NjU4MDAsImV4cCI6MjA5NjE0MTgwMH0.Xrc-bbAuWdvKSPHnVhTaLiQphV61xeYtDepWePqsrdo"
-    );
+<!-- FIX: Converted to ES Module to use Global Supabase Client -->
+<script type="module">
+    import { supabase } from '/public/js/supabase.js';
 
     const FAVORITES_KEY = 'propertiesinkenya_favorites';
     const SAVED_DATES_KEY = 'propertiesinkenya_saved_dates';
@@ -453,7 +448,7 @@ body {
         state.savedDates = getSavedDates();
         if (savedIds.length === 0) { renderEmptyState(); updateStats(); return; }
         try {
-            const { data: properties, error } = await sb.from('properties').select('*').in('id', savedIds).eq('approval_status', 'approved');
+            const { data: properties, error } = await supabase.from('properties').select('*').in('id', savedIds).eq('approval_status', 'approved');
             if (error) throw error;
             state.savedProperties = properties || [];
             const existingIds = state.savedProperties.map(p => p.id);
@@ -484,7 +479,8 @@ body {
         if (properties.length === 0) { renderEmptyState(); return; }
         container.innerHTML = properties.map(p => {
             const img = getSafeImage(p);
-            const propertyUrl = `/property/${p.id}`;
+            // FIX: Updated property URL to match established routing structure
+            const propertyUrl = `/property.html?id=${p.id}`;
             const savedDate = state.savedDates[p.id];
             const savedAgo = savedDate ? getTimeAgo(savedDate) : '';
             return `
@@ -497,7 +493,8 @@ body {
                     </button>
                 </div>
                 <div class="saved-card-content">
-                    <div class="saved-card-location"><i class="fas fa-map-marker-alt"></i> ${esc(p.location||'Kenya')} ${savedAgo ? `<span style="margin-left:auto;font-size:11px;color:#9ca3af;">Saved ${savedAgo}</span>` : ''}</div>
+                    <!-- FIX: Changed p.location to p.town || p.county to match actual schema -->
+                    <div class="saved-card-location"><i class="fas fa-map-marker-alt"></i> ${esc(p.town || p.county || 'Kenya')} ${savedAgo ? `<span style="margin-left:auto;font-size:11px;color:#9ca3af;">Saved ${savedAgo}</span>` : ''}</div>
                     <h3 class="saved-card-title" onclick="window.location.href='${propertyUrl}'">${esc(p.title||'Untitled Property')}</h3>
                     <p class="saved-card-description">${esc(p.description||'No description available.')}</p>
                     <div class="saved-card-features">
@@ -530,7 +527,8 @@ body {
         document.getElementById('savedCount').textContent = count;
         const totalValue = state.savedProperties.reduce((sum, p) => sum + (p.price||0), 0);
         document.getElementById('totalValue').textContent = count > 0 ? formatCompact(totalValue) : '—';
-        const locations = [...new Set(state.savedProperties.map(p => p.location).filter(loc => loc))];
+        // FIX: Updated to use town/county instead of location
+        const locations = [...new Set(state.savedProperties.map(p => p.town || p.county).filter(loc => loc))];
         document.getElementById('locationsCount').textContent = locations.length;
     }
 
@@ -586,7 +584,6 @@ body {
     });
 
     document.addEventListener('DOMContentLoaded', loadSavedProperties);
-})();
 </script>
 </body>
 </html>
