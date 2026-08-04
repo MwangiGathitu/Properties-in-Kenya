@@ -335,7 +335,9 @@
     <div class="container">
       <!-- Rental Type Filter Cards -->
       <section class="type-filters">
-        <div class="filter-grid" id="typeFilters"></div>
+        <div class="filter-grid" id="typeFilters">
+          <!-- Rendered by JS -->
+        </div>
       </section>
 
       <!-- Property Listings -->
@@ -343,7 +345,11 @@
         <div class="section-header">
           <h2 class="section-title" id="listingTitle">Featured Rentals</h2>
         </div>
-        <div class="property-grid" id="propertyGrid"></div>
+        <div class="property-grid" id="propertyGrid">
+          <!-- Loading skeletons -->
+          <div class="property-card"><div class="property-image" style="background:#e5e7eb;"></div><div class="property-info"><div style="height:20px; background:#e5e7eb; width:60%; border-radius:4px; margin-bottom:8px;"></div><div style="height:16px; background:#e5e7eb; width:40%; border-radius:4px;"></div></div></div>
+          <div class="property-card"><div class="property-image" style="background:#e5e7eb;"></div><div class="property-info"><div style="height:20px; background:#e5e7eb; width:60%; border-radius:4px; margin-bottom:8px;"></div><div style="height:16px; background:#e5e7eb; width:40%; border-radius:4px;"></div></div></div>
+        </div>
         <div class="no-results" id="noResults">
           <i class="fas fa-search" style="font-size:2rem; opacity:0.3;"></i>
           <p>No rentals match your criteria. Try adjusting your filters.</p>
@@ -354,7 +360,7 @@
       <section class="landlord-cta">
         <h2>Are you a landlord?</h2>
         <p>List your rental property and reach thousands of verified tenants. We handle verification and support.</p>
-        <a href="/login.html?role=landlord" class="cta-btn"><i class="fas fa-plus-circle"></i> List Your Property</a>
+        <a href="/login.html?role=agent" class="cta-btn"><i class="fas fa-plus-circle"></i> List Your Property</a>
       </section>
     </div>
   </main>
@@ -369,115 +375,20 @@
     </div>
   </footer>
 
-  <script>
-    // ======================
-    // STRUCTURED RENTAL DATA
-    // ======================
-    const properties = [
-      {
-        id: 1,
-        type: 'apartment',
-        location: 'Kilimani',
-        rent: 65000,
-        bedrooms: 2,
-        bathrooms: 2,
-        size: '1,100 sqft',
-        verified: true,
-        image: 'https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=600&q=80',
-        agent: { name: 'James Mwangi', initials: 'JM' }
-      },
-      {
-        id: 2,
-        type: 'bedsitter',
-        location: 'Ruai',
-        rent: 12000,
-        bedrooms: 1,
-        bathrooms: 1,
-        size: '350 sqft',
-        verified: true,
-        image: 'https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=600&q=80',
-        agent: { name: 'Sarah Mwangi', initials: 'SM' }
-      },
-      {
-        id: 3,
-        type: 'house',
-        location: 'Westlands',
-        rent: 120000,
-        bedrooms: 3,
-        bathrooms: 2,
-        size: '1,800 sqft',
-        verified: true,
-        image: 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=600&q=80',
-        agent: { name: 'Peter Ochieng', initials: 'PO' }
-      },
-      {
-        id: 4,
-        type: 'studio',
-        location: 'Kileleshwa',
-        rent: 35000,
-        bedrooms: 0,
-        bathrooms: 1,
-        size: '450 sqft',
-        verified: true,
-        image: 'https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=600&q=80',
-        agent: { name: 'Jane Wanjiku', initials: 'JW' }
-      },
-      {
-        id: 5,
-        type: 'apartment',
-        location: 'Karen',
-        rent: 45000,
-        bedrooms: 1,
-        bathrooms: 1,
-        size: '700 sqft',
-        verified: true,
-        image: 'https://images.unsplash.com/photo-1545324418-cc1a3fa10c00?w=600&q=80',
-        agent: { name: 'Mike Kariuki', initials: 'MK' }
-      },
-      {
-        id: 6,
-        type: 'room',
-        location: 'Kilimani',
-        rent: 15000,
-        bedrooms: 1,
-        bathrooms: 'Shared',
-        size: '200 sqft',
-        verified: true,
-        image: 'https://images.unsplash.com/photo-1595526114035-0d45ed16cfbf?w=600&q=80',
-        agent: { name: 'Alice Njeri', initials: 'AN' }
-      },
-      {
-        id: 7,
-        type: 'house',
-        location: 'Kilimani',
-        rent: 180000,
-        bedrooms: 4,
-        bathrooms: 3,
-        size: '2,500 sqft',
-        verified: true,
-        image: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=600&q=80',
-        agent: { name: 'David Muthoni', initials: 'DM' }
-      },
-      {
-        id: 8,
-        type: 'bedsitter',
-        location: 'Buruburu',
-        rent: 10000,
-        bedrooms: 1,
-        bathrooms: 1,
-        size: '300 sqft',
-        verified: true,
-        image: 'https://images.unsplash.com/photo-1505691938895-1758d7feb511?w=600&q=80',
-        agent: { name: 'Robert Kiprop', initials: 'RK' }
-      }
-    ];
+  <!-- FIX: Converted to ES Module to use Global Supabase Client -->
+  <script type="module">
+    import { supabase } from '/public/js/supabase.js';
 
     // ======================
     // STATE
     // ======================
+    let properties = [];
     let activeType = 'all';
     let favorites = JSON.parse(localStorage.getItem('pik_favorites_rent')) || [];
     let currentFilter = { location: '', type: '', budget: Infinity };
+
+    // Helper: count per type
+    const countByType = (type) => properties.filter(p => type === 'all' || p.property_type === type).length;
 
     // ======================
     // RENDER TYPE FILTER CARDS
@@ -496,7 +407,7 @@
         <div class="filter-card ${activeType === t.key ? 'active' : ''}" data-type="${t.key}">
           <div class="filter-icon"><i class="fas ${t.icon}"></i></div>
           <div class="filter-label">${t.label}</div>
-          <div class="filter-count">${properties.filter(p => t.key === 'all' || p.type === t.key).length} listings</div>
+          <div class="filter-count">${countByType(t.key)} listings</div>
         </div>
       `).join('');
       container.querySelectorAll('.filter-card').forEach(card => {
@@ -514,6 +425,7 @@
     function renderProperties(filtered) {
       const grid = document.getElementById('propertyGrid');
       const noRes = document.getElementById('noResults');
+      
       if (filtered.length === 0) {
         grid.innerHTML = '';
         noRes.style.display = 'block';
@@ -521,35 +433,42 @@
         noRes.style.display = 'none';
         grid.innerHTML = filtered.map(p => {
           const isFav = favorites.includes(p.id);
-          const typeLabel = p.type.charAt(0).toUpperCase() + p.type.slice(1);
+          const img = (p.images && p.images.length > 0) ? p.images[0] : 'https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=600&q=80';
+          
+          // FIX: Map DB schema to UI
+          const displayLocation = p.town || p.county || 'Kenya';
+          const agentName = p.profiles?.full_name || 'Agent';
+          const agentInitials = agentName.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
+          const typeLabel = (p.property_type || 'apartment').charAt(0).toUpperCase() + (p.property_type || 'apartment').slice(1);
+
           return `
-            <div class="property-card" data-id="${p.id}" data-type="${p.type}" data-location="${p.location.toLowerCase()}" data-rent="${p.rent}">
+            <div class="property-card" data-id="${p.id}">
               <div class="property-image">
-                <img src="${p.image}" alt="${typeLabel} in ${p.location}" loading="lazy" />
+                <img src="${img}" alt="${typeLabel} in ${displayLocation}" loading="lazy" />
                 <div class="property-badges">
                   <span class="badge badge-rent">For Rent</span>
-                  ${p.verified ? '<span class="badge badge-verified"><i class="fas fa-check-circle"></i> Verified</span>' : ''}
+                  ${p.approval_status === 'approved' ? '<span class="badge badge-verified"><i class="fas fa-check-circle"></i> Verified</span>' : ''}
                 </div>
                 <button class="favorite-btn ${isFav ? 'active' : ''}" aria-label="Save property">
                   <i class="${isFav ? 'fas' : 'far'} fa-heart"></i>
                 </button>
               </div>
               <div class="property-info">
-                <div class="property-location"><i class="fas fa-map-marker-alt"></i> ${p.location}</div>
-                <h3 class="property-title">${typeLabel} in ${p.location}</h3>
+                <div class="property-location"><i class="fas fa-map-marker-alt"></i> ${displayLocation}</div>
+                <h3 class="property-title">${typeLabel} in ${displayLocation}</h3>
                 <div class="property-features">
-                  ${p.bedrooms > 0 ? `<span class="feature-item"><i class="fas fa-bed"></i> ${p.bedrooms} ${p.bedrooms === 1 ? 'Bed' : 'Beds'}</span>` : `<span class="feature-item"><i class="fas fa-couch"></i> Studio</span>`}
-                  <span class="feature-item"><i class="fas fa-bath"></i> ${p.bathrooms} ${typeof p.bathrooms === 'string' ? p.bathrooms : p.bathrooms + ' Bath' + (p.bathrooms > 1 ? 's' : '')}</span>
-                  <span class="feature-item"><i class="fas fa-ruler-combined"></i> ${p.size}</span>
+                  ${p.bedrooms ? `<span class="feature-item"><i class="fas fa-bed"></i> ${p.bedrooms} ${p.bedrooms === 1 ? 'Bed' : 'Beds'}</span>` : '<span class="feature-item"><i class="fas fa-couch"></i> Studio</span>'}
+                  ${p.bathrooms ? `<span class="feature-item"><i class="fas fa-bath"></i> ${p.bathrooms} Bath${p.bathrooms > 1 ? 's' : ''}</span>` : ''}
+                  ${p.area_sqft ? `<span class="feature-item"><i class="fas fa-ruler-combined"></i> ${p.area_sqft}</span>` : ''}
                 </div>
                 <div class="property-footer">
                   <div>
-                    <span class="property-price">KES ${p.rent.toLocaleString()}</span>
+                    <span class="property-price">KES ${(p.price || 0).toLocaleString()}</span>
                     <span class="property-period">/ month</span>
                   </div>
                   <div class="property-agent">
-                    <div class="agent-avatar">${p.agent.initials}</div>
-                    ${p.agent.name}
+                    <div class="agent-avatar">${agentInitials}</div>
+                    ${agentName}
                   </div>
                 </div>
               </div>
@@ -562,16 +481,17 @@
           btn.addEventListener('click', (e) => {
             e.stopPropagation();
             const card = btn.closest('.property-card');
-            const id = parseInt(card.dataset.id);
+            const id = card.dataset.id;
             toggleFavorite(id);
             applyFilters();
           });
         });
 
+        // Navigate to detail page
         grid.querySelectorAll('.property-card').forEach(card => {
           card.addEventListener('click', () => {
-            const id = card.dataset.id;
-            window.location.href = `/rental/${id}`;
+            // FIX: Updated routing to match established structure
+            window.location.href = `/property.html?id=${card.dataset.id}`;
           });
         });
       }
@@ -582,10 +502,11 @@
     // ======================
     function applyFilters() {
       let filtered = properties.filter(p => {
-        if (activeType !== 'all' && p.type !== activeType) return false;
-        if (currentFilter.location && !p.location.toLowerCase().includes(currentFilter.location.toLowerCase())) return false;
-        if (currentFilter.type && p.type !== currentFilter.type) return false;
-        if (p.rent > currentFilter.budget) return false;
+        if (activeType !== 'all' && p.property_type !== activeType) return false;
+        const loc = (p.town || p.county || '').toLowerCase();
+        if (currentFilter.location && !loc.includes(currentFilter.location.toLowerCase())) return false;
+        if (currentFilter.type && p.property_type !== currentFilter.type) return false;
+        if ((p.price || 0) > currentFilter.budget) return false;
         return true;
       });
       renderProperties(filtered);
@@ -601,6 +522,31 @@
         favorites.push(id);
       }
       localStorage.setItem('pik_favorites_rent', JSON.stringify(favorites));
+    }
+
+    // ======================
+    // LOAD PROPERTIES FROM SUPABASE
+    // ======================
+    async function loadProperties() {
+      try {
+        const { data, error } = await supabase
+          .from('properties')
+          .select(`
+            *,
+            profiles (full_name)
+          `)
+          .eq('approval_status', 'approved')
+          // Optional: You can add .in('property_type', ['apartment', 'house', 'bedsitter', 'room', 'studio']) 
+          // if you want to strictly limit to rental types at the DB level.
+          .order('created_at', { ascending: false });
+
+        if (error) throw error;
+        properties = data || [];
+      } catch (err) {
+        console.error('Failed to load properties:', err);
+      }
+      renderTypeFilters();
+      applyFilters();
     }
 
     // ======================
@@ -633,8 +579,7 @@
     // ======================
     // INITIAL RENDER
     // ======================
-    renderTypeFilters();
-    applyFilters();
+    loadProperties();
   </script>
 </body>
 </html>
