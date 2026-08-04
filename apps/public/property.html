@@ -13,8 +13,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;400;500;600;700;800;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
-  <!-- Supabase -->
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <!-- FIX: Removed CDN Supabase script. We will import the global client via ES Module below. -->
 
   <style>
     /* =============================================
@@ -79,6 +78,7 @@
       background: rgba(255,255,255,0.9); backdrop-filter: blur(20px);
       border-bottom: 1px solid var(--border); height: 64px;
     }
+    .nav.scrolled { background: rgba(255,255,255,0.98); box-shadow: var(--shadow-sm); }
     .nav-inner {
       max-width: 1280px; margin: 0 auto; padding: 0 var(--space-6);
       height: 100%; display: flex; align-items: center; justify-content: space-between;
@@ -103,6 +103,13 @@
       transition: transform var(--transition-fast), box-shadow var(--transition-fast);
     }
     .btn-signin:hover { transform: translateY(-1px); box-shadow: 0 8px 20px rgba(99,102,241,0.4); }
+    .nav-actions { display: flex; align-items: center; gap: 16px; }
+    .favorites-count {
+      background: var(--color-danger); color: white; font-size: 0.625rem; font-weight: 700;
+      min-width: 18px; height: 18px; border-radius: 9999px; display: none;
+      align-items: center; justify-content: center;
+    }
+    .favorites-count.visible { display: inline-flex; }
 
     /* Hamburger */
     .hamburger { display: none; width: 40px; height: 40px; border-radius: var(--radius-sm); flex-direction: column; align-items: center; justify-content: center; gap: 5px; }
@@ -149,7 +156,7 @@
       gap: var(--space-8);
       max-width: 1280px;
       margin: 0 auto;
-      padding: 0 var(--space-6);
+      padding: 0 var(--space-6) var(--space-8);
     }
     .property-main { min-width: 0; }
 
@@ -247,8 +254,6 @@
       background-image: url('https://images.unsplash.com/photo-1524661135-423995f22d0b?w=1200&q=80');
       background-size: cover; background-position: center; filter: grayscale(20%);
     }
-    .nearby-places { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: var(--space-2); }
-    .place-item { display: flex; align-items: center; gap: var(--space-2); font-size: 0.875rem; color: var(--text-secondary); }
 
     /* Sidebar */
     .property-sidebar-wrapper { position: relative; }
@@ -263,14 +268,13 @@
       display: flex; align-items: center; gap: var(--space-4); padding-bottom: var(--space-6);
       margin-bottom: var(--space-6); border-bottom: 1px solid var(--border-subtle);
     }
-    .agent-avatar-lg { width: 64px; height: 64px; border-radius: 50%; object-fit: cover; border: 3px solid var(--border-subtle); }
+    .agent-avatar-lg { width: 64px; height: 64px; border-radius: 50%; object-fit: cover; border: 3px solid var(--border-subtle); background: var(--color-primary); color: white; display: grid; place-items: center; font-weight: 700; font-size: 1.25rem; }
     .agent-info h4 { font-size: 1rem; font-weight: 700; margin-bottom: 2px; }
     .agent-info p { font-size: 0.875rem; color: var(--text-muted); display: flex; align-items: center; gap: 4px; }
-    .rating { color: #FBBF24; }
     .sidebar-actions { display: flex; flex-direction: column; gap: var(--space-3); }
     .btn-whatsapp, .btn-call, .btn-secondary-full {
       width: 100%; justify-content: center; padding: var(--space-4); font-size: 1rem;
-      border-radius: var(--radius-md); display: flex; align-items: center; gap: var(--space-2); font-weight: 600; cursor: pointer;
+      border-radius: var(--radius-md); display: flex; align-items: center; gap: var(--space-2); font-weight: 600; cursor: pointer; text-decoration: none;
     }
     .btn-whatsapp { background: #25D366; color: white; }
     .btn-whatsapp:hover { background: #128C7E; }
@@ -330,7 +334,7 @@
 </head>
 <body>
   <!-- Navigation -->
-  <nav class="nav" aria-label="Primary">
+  <nav class="nav" aria-label="Primary" id="mainNav">
     <div class="nav-inner">
       <a href="/" class="nav-logo">
         <div class="nav-logo-icon"><i class="fas fa-home"></i></div>
@@ -348,7 +352,7 @@
         <a href="/saved.html" class="nav-link" style="color: var(--color-danger);">
           <i class="fas fa-heart"></i> <span class="favorites-count" id="favoritesCount">0</span>
         </a>
-        <a href="login.html" class="btn-signin">Sign In</a>
+        <a href="/login.html" class="btn-signin">Sign In</a>
         <button class="hamburger" id="hamburgerBtn" aria-label="Toggle menu" aria-expanded="false">
           <span class="hamburger-line"></span>
           <span class="hamburger-line"></span>
@@ -375,7 +379,7 @@
       <a href="/blog.html" class="mobile-link"><i class="fas fa-newspaper"></i> Blog</a>
       <a href="/agents.html" class="mobile-link"><i class="fas fa-users"></i> Agents</a>
       <div class="mobile-divider"></div>
-      <a href="login.html" class="mobile-cta">Sign In</a>
+      <a href="/login.html" class="mobile-cta">Sign In</a>
     </div>
   </div>
 
@@ -403,7 +407,7 @@
               <button class="gallery-action-btn" id="favoriteBtn" aria-label="Save property">
                 <i class="far fa-heart"></i>
               </button>
-              <button class="gallery-action-btn" aria-label="Share property">
+              <button class="gallery-action-btn" aria-label="Share property" onclick="navigator.share ? navigator.share({title: document.title, url: window.location.href}) : alert('Link copied!')">
                 <i class="fas fa-share-alt"></i>
               </button>
             </div>
@@ -448,7 +452,6 @@
           <div class="map-container">
             <div class="map-placeholder"></div>
           </div>
-          <div class="nearby-places" id="nearbyPlaces"></div>
         </div>
 
         <!-- Similar Properties -->
@@ -466,17 +469,16 @@
           <div class="sidebar-price-period" id="sidebarMortgage">Estimated Mortgage: KSh —/mo</div>
           
           <div class="agent-card-sidebar" id="agentCard">
-            <img id="agentAvatar" src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='64' height='64'%3E%3Crect fill='%23ddd' width='64' height='64' rx='32'/%3E%3Ctext x='32' y='32' text-anchor='middle' dy='.35em' fill='%23555' font-size='20'%3EAG%3C/text%3E%3C/svg%3E" alt="Agent" class="agent-avatar-lg">
+            <div id="agentAvatar" class="agent-avatar-lg">AG</div>
             <div class="agent-info">
               <h4 id="agentName">Agent</h4>
-              <p id="agentRating"><i class="fas fa-star rating"></i> — (0 reviews)</p>
-              <p style="margin-top:2px; font-size:12px;" id="agentCompany">Independent Agent</p>
+              <p id="agentCompany" style="margin-top:2px; font-size:12px;">Independent Agent</p>
             </div>
           </div>
 
           <div class="sidebar-actions">
-            <button class="btn-whatsapp"><i class="fab fa-whatsapp"></i> Chat on WhatsApp</button>
-            <button class="btn-call"><i class="fas fa-phone-alt"></i> Call Agent</button>
+            <a href="#" id="btnWhatsapp" class="btn-whatsapp" target="_blank" rel="noopener noreferrer"><i class="fab fa-whatsapp"></i> Chat on WhatsApp</a>
+            <a href="#" id="btnCall" class="btn-call"><i class="fas fa-phone-alt"></i> Call Agent</a>
             <button class="btn-secondary-full"><i class="fas fa-envelope"></i> Send Email</button>
             <button class="btn-secondary-full"><i class="fas fa-calendar-alt"></i> Schedule Viewing</button>
           </div>
@@ -494,262 +496,289 @@
     </div>
   </footer>
 
-  <script>
-    (function() {
-      'use strict';
+  <!-- FIX: Converted to ES Module to use Global Supabase Client -->
+  <script type="module">
+    import { supabase } from '/public/js/supabase.js';
 
-      // ---------- CONFIG ----------
-      const supabase = window.supabase.createClient(
-        'https://nqwvsmuvltbiekfnvovx.supabase.co',
-        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5xd3ZzbXV2bHRiaWVrZm52b3Z4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA1NjU4MDAsImV4cCI6MjA5NjE0MTgwMH0.Xrc-bbAuWdvKSPHnVhTaLiQphV61xeYtDepWePqsrdo'
-      );
+    // ---------- CONFIG ----------
+    const FAVORITES_KEY = 'propertiesinkenya_favorites';
+    
+    // FIX: Extract ID from query string (e.g., ?id=123)
+    const urlParams = new URLSearchParams(window.location.search);
+    const PROPERTY_ID = urlParams.get('id');
 
-      const FAVORITES_KEY = 'propertiesinkenya_favorites';
-      const PROPERTY_ID = window.location.pathname.split('/').pop(); // e.g., "5"
+    // ---------- UTILITIES ----------
+    function formatKES(amount) {
+      return `KSh ${Number(amount || 0).toLocaleString()}`;
+    }
 
-      // ---------- UTILITIES ----------
-      function formatKES(amount) {
-        return `KSh ${Number(amount || 0).toLocaleString()}`;
+    function isValidUrl(string) {
+      if (!string) return false;
+      return string.startsWith('http://') || string.startsWith('https://');
+    }
+
+    function getSafeImages(images) {
+      if (Array.isArray(images) && images.length > 0) return images.filter(isValidUrl);
+      return ['https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=1600&q=80'];
+    }
+
+    function formatWhatsApp(phone) {
+      if (!phone) return '';
+      let clean = phone.replace(/\D/g, '');
+      if (clean.startsWith('0')) clean = '254' + clean.substring(1);
+      return clean;
+    }
+
+    // ---------- FAVORITES ----------
+    function getFavorites() {
+      try { return JSON.parse(localStorage.getItem(FAVORITES_KEY)) || []; } catch { return []; }
+    }
+    function saveFavorites(favs) { localStorage.setItem(FAVORITES_KEY, JSON.stringify(favs)); }
+
+    function updateFavoriteUI() {
+      const favs = getFavorites();
+      const isFav = favs.includes(PROPERTY_ID);
+      const icon = document.querySelector('#favoriteBtn i');
+      icon.className = isFav ? 'fas fa-heart' : 'far fa-heart';
+      document.getElementById('favoriteBtn').classList.toggle('active', isFav);
+      
+      const countEl = document.getElementById('favoritesCount');
+      countEl.textContent = favs.length;
+      countEl.classList.toggle('visible', favs.length > 0);
+    }
+
+    document.getElementById('favoriteBtn').addEventListener('click', () => {
+      const favs = getFavorites();
+      const idx = favs.indexOf(PROPERTY_ID);
+      if (idx === -1) favs.push(PROPERTY_ID);
+      else favs.splice(idx, 1);
+      saveFavorites(favs);
+      updateFavoriteUI();
+    });
+
+    // ---------- MOBILE MENU ----------
+    const hamburgerBtn = document.getElementById('hamburgerBtn');
+    const overlay = document.getElementById('mobileOverlay');
+    const drawer = document.getElementById('mobileDrawer');
+    const closeBtn = document.getElementById('closeMobileMenu');
+    function openMobileMenu() {
+      overlay.classList.add('active'); drawer.classList.add('active');
+      hamburgerBtn.setAttribute('aria-expanded', 'true');
+      overlay.setAttribute('aria-hidden', 'false');
+      document.body.style.overflow = 'hidden';
+    }
+    function closeMobileMenu() {
+      overlay.classList.remove('active'); drawer.classList.remove('active');
+      hamburgerBtn.setAttribute('aria-expanded', 'false');
+      overlay.setAttribute('aria-hidden', 'true');
+      document.body.style.overflow = '';
+    }
+    hamburgerBtn.addEventListener('click', openMobileMenu);
+    closeBtn.addEventListener('click', closeMobileMenu);
+    overlay.addEventListener('click', closeMobileMenu);
+    document.addEventListener('keydown', e => { if (e.key === 'Escape' && drawer.classList.contains('active')) closeMobileMenu(); });
+
+    // ---------- IMAGE GALLERY ----------
+    window.changeImage = function(btn, src) {
+      document.getElementById('mainImage').src = src;
+      document.querySelectorAll('.gallery-thumb').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+    };
+
+    // ---------- DESCRIPTION TOGGLE ----------
+    const descDiv = document.getElementById('propertyDescription');
+    const expandBtn = document.getElementById('expandBtn');
+    const expandText = document.getElementById('expandText');
+    const expandIcon = document.getElementById('expandIcon');
+    expandBtn.addEventListener('click', () => {
+      const expanded = descDiv.classList.toggle('expanded');
+      expandText.textContent = expanded ? 'Show less' : 'Show more';
+      expandIcon.className = expanded ? 'fas fa-chevron-up' : 'fas fa-chevron-down';
+      expandBtn.setAttribute('aria-expanded', expanded);
+    });
+
+    // ---------- LOAD PROPERTY ----------
+    async function loadProperty() {
+      if (!PROPERTY_ID) {
+        document.body.innerHTML = `<div style="text-align:center; padding:80px;">Invalid property ID.</div>`;
+        return;
       }
 
-      function isValidUrl(string) {
-        if (!string) return false;
-        return string.startsWith('http://') || string.startsWith('https://');
-      }
+      try {
+        // FIX: Join profiles table to get agent details
+        const { data, error } = await supabase
+          .from('properties')
+          .select(`
+            *,
+            profiles (
+              full_name,
+              agency,
+              phone,
+              avatar_url
+            )
+          `)
+          .eq('id', PROPERTY_ID)
+          .single();
 
-      function getSafeImages(images) {
-        if (Array.isArray(images) && images.length > 0) return images.filter(isValidUrl);
-        return ['https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=1600&q=80'];
-      }
-
-      // ---------- FAVORITES ----------
-      function getFavorites() {
-        try { return JSON.parse(localStorage.getItem(FAVORITES_KEY)) || []; } catch { return []; }
-      }
-      function saveFavorites(favs) { localStorage.setItem(FAVORITES_KEY, JSON.stringify(favs)); }
-
-      function updateFavoriteUI() {
-        const favs = getFavorites();
-        const isFav = favs.includes(PROPERTY_ID);
-        const icon = document.querySelector('#favoriteBtn i');
-        icon.className = isFav ? 'fas fa-heart' : 'far fa-heart';
-        document.getElementById('favoriteBtn').classList.toggle('active', isFav);
-        document.getElementById('favoritesCount').textContent = favs.length;
-      }
-
-      document.getElementById('favoriteBtn').addEventListener('click', () => {
-        const favs = getFavorites();
-        const idx = favs.indexOf(PROPERTY_ID);
-        if (idx === -1) favs.push(PROPERTY_ID);
-        else favs.splice(idx, 1);
-        saveFavorites(favs);
-        updateFavoriteUI();
-      });
-
-      // ---------- MOBILE MENU ----------
-      const hamburgerBtn = document.getElementById('hamburgerBtn');
-      const overlay = document.getElementById('mobileOverlay');
-      const drawer = document.getElementById('mobileDrawer');
-      const closeBtn = document.getElementById('closeMobileMenu');
-      function openMobileMenu() {
-        overlay.classList.add('active'); drawer.classList.add('active');
-        hamburgerBtn.setAttribute('aria-expanded', 'true');
-        overlay.setAttribute('aria-hidden', 'false');
-        document.body.style.overflow = 'hidden';
-      }
-      function closeMobileMenu() {
-        overlay.classList.remove('active'); drawer.classList.remove('active');
-        hamburgerBtn.setAttribute('aria-expanded', 'false');
-        overlay.setAttribute('aria-hidden', 'true');
-        document.body.style.overflow = '';
-      }
-      hamburgerBtn.addEventListener('click', openMobileMenu);
-      closeBtn.addEventListener('click', closeMobileMenu);
-      overlay.addEventListener('click', closeMobileMenu);
-      document.addEventListener('keydown', e => { if (e.key === 'Escape' && drawer.classList.contains('active')) closeMobileMenu(); });
-
-      // ---------- IMAGE GALLERY ----------
-      window.changeImage = function(btn, src) {
-        document.getElementById('mainImage').src = src;
-        document.querySelectorAll('.gallery-thumb').forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-      };
-
-      // ---------- DESCRIPTION TOGGLE ----------
-      const descDiv = document.getElementById('propertyDescription');
-      const expandBtn = document.getElementById('expandBtn');
-      const expandText = document.getElementById('expandText');
-      const expandIcon = document.getElementById('expandIcon');
-      expandBtn.addEventListener('click', () => {
-        const expanded = descDiv.classList.toggle('expanded');
-        expandText.textContent = expanded ? 'Show less' : 'Show more';
-        expandIcon.className = expanded ? 'fas fa-chevron-up' : 'fas fa-chevron-down';
-        expandBtn.setAttribute('aria-expanded', expanded);
-      });
-
-      // ---------- LOAD PROPERTY ----------
-      async function loadProperty() {
-        try {
-          const { data, error } = await supabase
-            .from('properties')
-            .select('*')
-            .eq('id', PROPERTY_ID)
-            .single();
-
-          if (error || !data) {
-            document.body.innerHTML = `<div style="text-align:center; padding:80px;">Property not found.</div>`;
-            return;
-          }
-
-          renderProperty(data);
-          updateFavoriteUI();
-
-          // Also load similar properties
-          loadSimilar(data);
-
-        } catch (err) {
-          console.error(err);
-          document.body.innerHTML = `<div style="text-align:center; padding:80px;">Failed to load property.</div>`;
-        }
-      }
-
-      function renderProperty(prop) {
-        // Title & Location
-        document.getElementById('propertyTitle').textContent = prop.title || 'Untitled';
-        document.getElementById('propertyLocation').textContent = prop.location || 'Kenya';
-        document.getElementById('breadcrumbLocation').textContent = prop.location || 'Location';
-
-        // Badges
-        const badges = document.getElementById('badges');
-        badges.innerHTML = `
-          ${prop.verified ? '<span class="badge badge-success"><i class="fas fa-check-circle"></i> Verified</span>' : ''}
-          <span class="badge badge-primary">${prop.property_type || 'For Sale'}</span>
-          ${prop.is_new ? '<span class="badge badge-accent">New Listing</span>' : ''}
-        `;
-
-        // Price
-        document.getElementById('sidebarPrice').textContent = formatKES(prop.price);
-
-        // Stats
-        document.getElementById('propertyStats').innerHTML = `
-          <div class="stat-box">
-            <i class="fas fa-bed"></i>
-            <div class="stat-box-value">${prop.bedrooms || '—'}</div>
-            <div class="stat-box-label">Bedrooms</div>
-          </div>
-          <div class="stat-box">
-            <i class="fas fa-bath"></i>
-            <div class="stat-box-value">${prop.bathrooms || '—'}</div>
-            <div class="stat-box-label">Bathrooms</div>
-          </div>
-          <div class="stat-box">
-            <i class="fas fa-car"></i>
-            <div class="stat-box-value">${prop.parking || '—'}</div>
-            <div class="stat-box-label">Parking</div>
-          </div>
-          <div class="stat-box">
-            <i class="fas fa-ruler-combined"></i>
-            <div class="stat-box-value">${prop.area_sqft || '—'}</div>
-            <div class="stat-box-label">sqft</div>
-          </div>
-        `;
-
-        // Description
-        document.getElementById('descriptionText').textContent = prop.description || 'No description available.';
-
-        // Images
-        const images = getSafeImages(prop.images);
-        document.getElementById('mainImage').src = images[0];
-        const thumbs = document.getElementById('thumbnails');
-        thumbs.innerHTML = images.map((img, i) => `
-          <button class="gallery-thumb ${i === 0 ? 'active' : ''}" onclick="changeImage(this, '${img}')" aria-label="View ${i+1}">
-            <img src="${img}" alt="View ${i+1}">
-          </button>
-        `).join('');
-
-        // Amenities
-        const amenities = prop.amenities && Array.isArray(prop.amenities) ? prop.amenities : [];
-        document.getElementById('amenitiesGrid').innerHTML = amenities.map(a => `
-          <div class="amenity-card">
-            <div class="amenity-icon"><i class="fas fa-check-circle"></i></div>
-            <div class="amenity-name">${a}</div>
-          </div>
-        `).join('') || '<p>No amenities listed.</p>';
-
-        // Agent info (if available)
-        if (prop.agent) {
-          document.getElementById('agentName').textContent = prop.agent.name || 'Agent';
-          document.getElementById('agentRating').innerHTML = `<i class="fas fa-star rating"></i> ${prop.agent.rating || '—'} (${prop.agent.reviews || 0} reviews)`;
-          document.getElementById('agentCompany').textContent = prop.agent.company || 'Independent Agent';
-          if (prop.agent.avatar && isValidUrl(prop.agent.avatar)) {
-            document.getElementById('agentAvatar').src = prop.agent.avatar;
-          }
-        }
-      }
-
-      async function loadSimilar(current) {
-        try {
-          const { data } = await supabase
-            .from('properties')
-            .select('id, title, location, price, bedrooms, bathrooms, area_sqft, images, property_type')
-            .neq('id', current.id)
-            .eq('location', current.location)
-            .limit(2);
-
-          if (!data || data.length === 0) {
-            // fallback to any two others
-            const { data: fallback } = await supabase
-              .from('properties')
-              .select('id, title, location, price, bedrooms, bathrooms, area_sqft, images, property_type')
-              .limit(2);
-            renderSimilar(fallback || []);
-          } else {
-            renderSimilar(data);
-          }
-        } catch (err) {
-          console.error('Similar properties load error:', err);
-        }
-      }
-
-      function renderSimilar(similar) {
-        const grid = document.getElementById('similarGrid');
-        if (similar.length === 0) {
-          grid.innerHTML = '<p>No similar properties found.</p>';
+        if (error || !data) {
+          document.body.innerHTML = `<div style="text-align:center; padding:80px;">Property not found.</div>`;
           return;
         }
-        grid.innerHTML = similar.map(p => {
-          const img = (Array.isArray(p.images) && p.images[0] && isValidUrl(p.images[0])) ? p.images[0] : 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=600&q=80';
-          return `
-            <a href="/property/${p.id}" class="property-card">
-              <div class="property-card-image">
-                <img src="${img}" alt="${p.title}" loading="lazy">
-              </div>
-              <div class="property-card-content">
-                <div class="property-card-location"><i class="fas fa-map-marker-alt"></i> ${p.location}</div>
-                <h3 class="property-card-title">${p.title}</h3>
-                <div class="property-card-features">
-                  <span class="property-card-feature"><i class="fas fa-bed"></i> ${p.bedrooms || '—'}</span>
-                  <span class="property-card-feature"><i class="fas fa-bath"></i> ${p.bathrooms || '—'}</span>
-                  <span class="property-card-feature"><i class="fas fa-ruler-combined"></i> ${p.area_sqft || '—'}</span>
-                </div>
-                <div class="property-card-footer">
-                  <div class="property-card-price">${formatKES(p.price)}</div>
-                </div>
-              </div>
-            </a>
-          `;
-        }).join('');
+
+        renderProperty(data);
+        updateFavoriteUI();
+        loadSimilar(data);
+
+      } catch (err) {
+        console.error(err);
+        document.body.innerHTML = `<div style="text-align:center; padding:80px;">Failed to load property.</div>`;
+      }
+    }
+
+    function renderProperty(prop) {
+      // FIX: Use town or county instead of non-existent location column
+      const displayLocation = prop.town || prop.county || 'Kenya';
+      
+      // Title & Location
+      document.getElementById('propertyTitle').textContent = prop.title || 'Untitled';
+      document.getElementById('propertyLocation').textContent = displayLocation;
+      document.getElementById('breadcrumbLocation').textContent = displayLocation;
+
+      // Badges
+      const badges = document.getElementById('badges');
+      badges.innerHTML = `
+        ${prop.approval_status === 'approved' ? '<span class="badge badge-success"><i class="fas fa-check-circle"></i> Verified</span>' : ''}
+        <span class="badge badge-primary">${prop.property_type || 'Property'}</span>
+      `;
+
+      // Price
+      document.getElementById('sidebarPrice').textContent = formatKES(prop.price);
+
+      // Stats
+      document.getElementById('propertyStats').innerHTML = `
+        <div class="stat-box">
+          <i class="fas fa-bed"></i>
+          <div class="stat-box-value">${prop.bedrooms || '—'}</div>
+          <div class="stat-box-label">Bedrooms</div>
+        </div>
+        <div class="stat-box">
+          <i class="fas fa-bath"></i>
+          <div class="stat-box-value">${prop.bathrooms || '—'}</div>
+          <div class="stat-box-label">Bathrooms</div>
+        </div>
+        <div class="stat-box">
+          <i class="fas fa-car"></i>
+          <div class="stat-box-value">${prop.parking || '—'}</div>
+          <div class="stat-box-label">Parking</div>
+        </div>
+        <div class="stat-box">
+          <i class="fas fa-ruler-combined"></i>
+          <div class="stat-box-value">${prop.area_sqft || '—'}</div>
+          <div class="stat-box-label">sqft</div>
+        </div>
+      `;
+
+      // Description
+      document.getElementById('descriptionText').textContent = prop.description || 'No description available.';
+
+      // Images
+      const images = getSafeImages(prop.images);
+      document.getElementById('mainImage').src = images[0];
+      const thumbs = document.getElementById('thumbnails');
+      thumbs.innerHTML = images.map((img, i) => `
+        <button class="gallery-thumb ${i === 0 ? 'active' : ''}" onclick="changeImage(this, '${img}')" aria-label="View ${i+1}">
+          <img src="${img}" alt="View ${i+1}">
+        </button>
+      `).join('');
+
+      // Amenities (Fallback gracefully if column doesn't exist or is null)
+      const amenities = prop.amenities && Array.isArray(prop.amenities) ? prop.amenities : [];
+      document.getElementById('amenitiesGrid').innerHTML = amenities.length > 0 
+        ? amenities.map(a => `
+            <div class="amenity-card">
+              <div class="amenity-icon"><i class="fas fa-check-circle"></i></div>
+              <div class="amenity-name">${a}</div>
+            </div>
+          `).join('')
+        : '<p style="color:var(--text-muted);">No specific amenities listed.</p>';
+
+      // Agent info (from joined profiles table)
+      const agent = prop.profiles || {};
+      const agentName = agent.full_name || 'Agent';
+      const agentInitials = agentName.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
+      
+      document.getElementById('agentName').textContent = agentName;
+      document.getElementById('agentCompany').textContent = agent.agency || 'Independent Agent';
+      
+      const avatarEl = document.getElementById('agentAvatar');
+      if (agent.avatar_url && isValidUrl(agent.avatar_url)) {
+        avatarEl.innerHTML = `<img src="${agent.avatar_url}" alt="${agentName}" style="width:100%;height:100%;object-fit:cover;border-radius:50%;">`;
+      } else {
+        avatarEl.textContent = agentInitials;
       }
 
-      // ---------- START ----------
-      loadProperty();
-      updateFavoriteUI();
+      // Sidebar Actions
+      const waNumber = formatWhatsApp(agent.phone);
+      document.getElementById('btnWhatsapp').href = waNumber 
+        ? `https://wa.me/${waNumber}?text=${encodeURIComponent(`Hi ${agentName}, I am interested in: ${prop.title}`)}` 
+        : '#';
+      document.getElementById('btnCall').href = agent.phone ? `tel:${agent.phone}` : '#';
+    }
 
-      // Nav scroll effect
-      window.addEventListener('scroll', () => {
-        document.querySelector('.nav').classList.toggle('scrolled', window.scrollY > 50);
-      });
-    })();
+    async function loadSimilar(current) {
+      try {
+        // FIX: Use town/county for similarity, and correct routing
+        const { data } = await supabase
+          .from('properties')
+          .select('id, title, town, county, price, bedrooms, bathrooms, area_sqft, images, property_type')
+          .neq('id', current.id)
+          .eq('approval_status', 'approved')
+          .limit(3);
+
+        renderSimilar(data || []);
+      } catch (err) {
+        console.error('Similar properties load error:', err);
+      }
+    }
+
+    function renderSimilar(similar) {
+      const grid = document.getElementById('similarGrid');
+      if (similar.length === 0) {
+        grid.innerHTML = '<p style="color:var(--text-muted);">No similar properties found.</p>';
+        return;
+      }
+      grid.innerHTML = similar.map(p => {
+        const img = (Array.isArray(p.images) && p.images[0] && isValidUrl(p.images[0])) ? p.images[0] : 'https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=600&q=80';
+        const loc = p.town || p.county || 'Kenya';
+        return `
+          <a href="/property.html?id=${p.id}" class="property-card">
+            <div class="property-card-image">
+              <img src="${img}" alt="${p.title}" loading="lazy">
+            </div>
+            <div class="property-card-content">
+              <div class="property-card-location"><i class="fas fa-map-marker-alt"></i> ${loc}</div>
+              <h3 class="property-card-title">${p.title}</h3>
+              <div class="property-card-features">
+                <span class="property-card-feature"><i class="fas fa-bed"></i> ${p.bedrooms || '—'}</span>
+                <span class="property-card-feature"><i class="fas fa-bath"></i> ${p.bathrooms || '—'}</span>
+                <span class="property-card-feature"><i class="fas fa-ruler-combined"></i> ${p.area_sqft || '—'}</span>
+              </div>
+              <div class="property-card-footer">
+                <div class="property-card-price">${formatKES(p.price)}</div>
+              </div>
+            </div>
+          </a>
+        `;
+      }).join('');
+    }
+
+    // ---------- START ----------
+    loadProperty();
+
+    // Nav scroll effect
+    window.addEventListener('scroll', () => {
+      document.getElementById('mainNav').classList.toggle('scrolled', window.scrollY > 50);
+    });
   </script>
 </body>
 </html>
