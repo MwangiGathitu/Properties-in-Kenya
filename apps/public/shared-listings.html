@@ -6,7 +6,7 @@
     <title>Shared Listings - Properties in Kenya</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <!-- FIX: Removed CDN Supabase script. We will import the global client via ES Module below. -->
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap');
         body { font-family: 'Inter', system_ui, sans-serif; }
@@ -145,17 +145,12 @@
 <!-- Toast Container -->
 <div id="toast-container" class="fixed bottom-6 right-6 z-[100] flex flex-col gap-3"></div>
 
-<script>
-(function() {
-    'use strict';
+<!-- FIX: Converted to ES Module to use Global Supabase Client and Auth -->
+<script type="module">
+    import { supabase } from '/public/js/supabase.js';
+    import { requireRole, logout } from '/public/js/auth.js';
 
-    // ==========================================
-    // 1. CONFIGURATION & STATE
-    // ==========================================
-    const supabase = window.supabase.createClient(
-        'https://nqvsmuvltbiekfnvovx.supabase.co',
-        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5xd3ZzbXV2bHRiaWVrZm52b3Z4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA1NjU4MDAsImV4cCI6MjA5NjE0MTgwMH0.Xrc-bbAuWdvKSPHnVhTaLiQphV61xeYtDepWePqsrdo'
-    );
+    'use strict';
 
     const state = {
         user: null,
@@ -207,24 +202,31 @@
     }
 
     // ==========================================
-    // 3. AUTH & DATA LOADING
+    // 3. AUTH & DATA LOADING (Using Global Single Source of Truth)
     // ==========================================
     async function checkAuth() {
-        const { data: { user } } = await supabase.auth.getUser();
-        if (!user) { window.location.href = 'login.html'; return; }
-        state.user = user;
-        loadSharedListings();
+        try {
+            // FIX: Use global requireRole instead of manual session checks.
+            const auth = await requireRole('agent');
+            if (!auth) return; // Redirects handled automatically by global auth.js
+
+            state.user = auth.user;
+            loadSharedListings();
+        } catch (err) {
+            console.error('Auth check failed:', err);
+            window.location.href = '/apps/auth/login.html?role=agent';
+        }
     }
 
     async function loadSharedListings() {
         const grid = document.getElementById('shared-grid');
         try {
-            // 🔥 PERFORMANCE FIX: Added .limit(100) to prevent memory exhaustion on large datasets
+            // FIX: Changed 'status' to 'approval_status' to match actual schema
             const { data, error } = await supabase
                 .from('properties')
-                .select(`*, profiles (full_name, agency)`) // 🔒 SECURITY: Removed 'phone' to prevent data leakage
+                .select(`*, profiles (full_name, agency)`)
                 .eq('visibility', 'co-broker')
-                .eq('status', 'available')
+                .eq('approval_status', 'approved')
                 .neq('agent_id', state.user.id)
                 .order('created_at', { ascending: false })
                 .limit(100); 
@@ -284,8 +286,6 @@
             const ownerAgency = prop.profiles?.agency || 'Independent';
             const imgSrc = (prop.images && prop.images[0] && isValidUrl(prop.images[0])) ? prop.images[0] : fallbackImg;
             
-            // 🔒 FIX: Removed hardcoded 2% math to avoid legal/financial disputes. 
-            // Clearly labeled as a percentage split.
             return `
             <div class="bg-white rounded-2xl border border-gray-100 overflow-hidden hover:shadow-xl transition-shadow duration-300 group flex flex-col">
                 <div class="relative h-48 bg-gray-200">
@@ -325,7 +325,6 @@
                             </div>
                         </div>
 
-                        <!-- 🔒 FIX: Replaced dangerous inline onclick with data attributes -->
                         <button class="btn-request-collab w-full py-3 bg-gradient-to-r from-amber-500 to-yellow-600 text-white rounded-xl font-semibold hover:shadow-lg transition flex items-center justify-center gap-2" 
                                 data-id="${esc(prop.id)}" 
                                 data-owner="${esc(prop.agent_id)}" 
@@ -396,11 +395,10 @@
             document.getElementById('mobile-overlay').classList.add('hidden');
         });
 
-        // Logout
+        // FIX: Use global logout function for consistent session clearing
         document.getElementById('logout-btn').addEventListener('click', async (e) => {
             e.preventDefault();
-            await supabase.auth.signOut();
-            window.location.href = 'login.html';
+            await logout();
         });
 
         // Modal Controls
@@ -429,8 +427,6 @@
         initEventListeners();
         checkAuth();
     });
-
-})();
 </script>
 </body>
 </html>
