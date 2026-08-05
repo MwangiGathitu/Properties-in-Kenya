@@ -1,0 +1,13 @@
+{
+  "rewrites": [
+    { "source": "/property.html", "destination": "/public/property.html" },
+    { "source": "/buy.html", "destination": "/public/buy.html" },
+    { "source": "/rent.html", "destination": "/public/rent.html" },
+    { "source": "/lease.html", "destination": "/public/lease.html" },
+    { "source": "/pikbnb.html", "destination": "/public/pikbnb.html" },
+    { "source": "/shared-listings.html", "destination": "/public/shared-listings.html" },
+    { "source": "/blog.html", "destination": "/public/blog.html" },
+    { "source": "/agents.html", "destination": "/public/agents.html" },
+    { "source": "/saved.html", "destination": "/public/saved.html" }
+  ]
+}
