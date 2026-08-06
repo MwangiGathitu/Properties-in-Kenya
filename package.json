@@ -2,7 +2,10 @@
   "name": "properties-in-kenya",
   "version": "1.0.0",
   "private": true,
+  "description": "Properties in Kenya Platform",
   "scripts": {
-    "start": "echo 'Static site – no build required'"
+    "dev": "echo \"Static site - no development server required\"",
+    "build": "echo \"Static site - no build required\"",
+    "start": "echo \"Static site deployed on Vercel\""
   }
 }
