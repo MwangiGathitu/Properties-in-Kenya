@@ -1,0 +1,148 @@
+/* ============================================================
+   REALTOR OS — RESPONSIVE
+   Tablet & mobile adaptations
+   Aligned with the revised production Design System
+   ============================================================ */
+
+/* Tablet (≤1024px) */
+@media (max-width: 1024px) {
+  .sidebar {
+    width: 80px;
+    padding: var(--space-4);
+    overflow-y: auto; /* FIXED: Allow vertical scrolling for landscape/short viewports */
+    overflow-x: hidden;
+    align-items: center;
+  }
+
+  /* FIXED: Visually hide text but keep accessible for screen readers (sr-only pattern) */
+  .nav-item span,
+  .nav-label,
+  .user-meta, 
+  .logo span {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
+
+  .nav-item {
+    justify-content: center;
+    padding: var(--space-3);
+    width: 100%;
+  }
+
+  .user-card {
+    justify-content: center;
+    padding: var(--space-2);
+  }
+
+  .main {
+    padding: var(--space-6);
+  }
+}
+
+/* Mobile (≤768px) */
+@media (max-width: 768px) {
+  /* FIXED: Target app-shell wrappers, and body as a fallback to prevent layout shattering */
+  .app-shell,
+  body.app-shell,
+  body {
+    flex-direction: column;
+  }
+
+  .sidebar {
+    width: 100%;
+    flex-direction: row;
+    padding: var(--space-3);
+    overflow-x: auto;
+    overflow-y: hidden;
+    gap: var(--space-2);
+    border-right: none;
+    border-bottom: 1px solid var(--border-subtle);
+    max-height: none;
+    position: relative; /* Required for the fade overlay pseudo-element */
+    
+    /* Hide native scrollbar */
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    -webkit-overflow-scrolling: touch;
+  }
+  
+  .sidebar::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* FIXED: Fade overlay using pseudo-element instead of mask-image to prevent permanent fading of the last item */
+  .sidebar::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: 24px;
+    background: linear-gradient(to right, transparent, var(--bg-elevated));
+    pointer-events: none;
+    z-index: 2;
+  }
+
+  .nav-group {
+    flex-direction: row;
+    flex-wrap: nowrap;
+    gap: var(--space-2);
+  }
+
+  .nav-item {
+    white-space: nowrap;
+    flex-shrink: 0;
+    min-height: 44px; /* FIXED: Meet WCAG minimum touch target height */
+    min-width: 44px;  /* FIXED: Meet WCAG minimum touch target width */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* FIXED: Restore text visibility on mobile to support horizontal "chip" navigation and prevent cascade bleed */
+  .nav-item span,
+  .logo span {
+    position: static;
+    width: auto;
+    height: auto;
+    margin: 0;
+    overflow: visible;
+    clip: auto;
+    white-space: nowrap;
+    margin-left: var(--space-2);
+  }
+
+  .user-card {
+    margin-top: 0;
+    margin-left: var(--space-2);
+    flex-shrink: 0;
+  }
+
+  .main {
+    padding: var(--space-4);
+    flex: 1;
+    min-height: 0;
+  }
+
+  .grid {
+    grid-template-columns: 1fr;
+  }
+
+  .topbar {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-3);
+  }
+
+  .actions {
+    width: 100%;
+    justify-content: flex-end;
+  }
+}
