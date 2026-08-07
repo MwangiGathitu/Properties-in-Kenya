@@ -1,116 +1,152 @@
-// FIXED IMPORTS – Standard root-relative paths for Vercel/Cloudflare static assets.
-import { supabase } from '/js/supabase.js';
-import { Store } from './store.js';
+// public/js/auth.js
+import { supabase } from './supabase.js';
 
-const RPC_ENDPOINTS = {
-  stats: 'rpc_dashboard_stats',
-  ai: 'rpc_dashboard_ai',
-  revenue: 'rpc_dashboard_revenue',
-  health: 'rpc_dashboard_health',
-  queue: 'rpc_dashboard_queue',
-  activity: 'rpc_dashboard_activity'
-};
+// Centralized base path for redirects to support subdirectory deployments
+const BASE_PATH = window.__APP_BASE_PATH__ || '';
 
-const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+let currentUser = null;
+let currentRole = null;
+let currentUserId = null;
+let isInitialized = false;
+let initPromise = null; // Prevents race conditions on concurrent init calls
+let authSubscription = null; // For cleanup
 
-// Helper to timeout individual RPCs so one slow widget doesn't block the others
-const withTimeout = (promise, ms, name) => {
-  let timeoutId;
-  const timeoutPromise = new Promise((_, reject) => {
-    timeoutId = setTimeout(() => reject(new Error(`${name} timed out`)), ms);
-  });
-  return Promise.race([promise, timeoutPromise]).finally(() => clearTimeout(timeoutId));
-};
+/**
+ * 1. Initialize the session when the app first loads.
+ * Call this ONCE in your main app entry point (e.g., app.js or main.js).
+ */
+export async function initAuth() {
+  if (isInitialized) return;
+  if (initPromise) return initPromise;
 
-// FIXED: Skip retries for deterministic client errors (4xx, Auth, RLS)
-const isRetryable = (err) => {
-  const status = err?.status || err?.code || 0;
-  if (status >= 400 && status < 500) return false;
-  
-  const msg = String(err?.message || '').toLowerCase();
-  if (msg.includes('jwt') || msg.includes('unauthorized') || msg.includes('policy') || msg.includes('permission')) {
-    return false;
-  }
-  return true;
-};
-
-async function safeRpc(rpcName, retries = 2) {
-  try {
-    const { data, error } = await supabase.rpc(rpcName);
-    if (error) throw error;
-    return data;
-  } catch (err) {
-    if (retries > 0 && isRetryable(err)) {
-      await sleep(500 * (3 - retries)); 
-      return safeRpc(rpcName, retries - 1);
-    }
-    throw err;
-  }
-}
-
-export async function loadDashboardData() {
-  if (typeof performance !== 'undefined') {
-    // FIXED: Clear previous marks to prevent timeline clutter on manual refresh/polling
-    performance.clearMarks('dashboard-api-start');
-    performance.clearMarks('dashboard-api-end');
-    performance.clearMeasures('dashboard-api-load');
-    performance.mark('dashboard-api-start');
-  }
-
-  const entries = Object.entries(RPC_ENDPOINTS);
-
-  // FIXED: Use Promise.allSettled and individual timeouts. 
-  // A slow widget now fails gracefully in the Store instead of crashing the global caller timeout.
-  const results = await Promise.allSettled(
-    entries.map(async ([key, rpcName]) => {
-      try {
-        const data = await withTimeout(safeRpc(rpcName), 8000, rpcName);
-        return { key, data, error: null };
-      } catch (error) {
-        return { key, data: null, error };
-      }
-    })
-  );
-
-  results.forEach((result) => {
-    if (result.status === 'fulfilled') {
-      const { key, data, error } = result.value;
-      if (error) {
-        handleModuleError(key, error);
+  initPromise = (async () => {
+    try {
+      // FIXED: Use getUser() instead of getSession() to verify token with server
+      const { data: { user }, error } = await supabase.auth.getUser();
+      
+      if (error || !user) {
+        currentUser = null;
+        currentRole = null;
+        currentUserId = null;
       } else {
-        Store.set(key, data);
+        await handleSession(user);
       }
-    } else {
-      console.error('Unexpected promise rejection in dashboard load:', result.reason);
+
+      // Listen for auth changes
+      const { data } = supabase.auth.onAuthStateChange(async (_event, session) => {
+        if (session?.user) {
+          await handleSession(session.user);
+        } else {
+          currentUser = null;
+          currentRole = null;
+          currentUserId = null;
+        }
+      });
+      authSubscription = data.subscription;
+      
+      isInitialized = true;
+    } finally {
+      initPromise = null;
     }
-  });
+  })();
 
-  if (typeof performance !== 'undefined') {
-    performance.mark('dashboard-api-end');
-    performance.measure('dashboard-api-load', 'dashboard-api-start', 'dashboard-api-end');
+  return initPromise;
+}
+
+/**
+ * Internal function to process the session and fetch the role from the DB.
+ */
+async function handleSession(user) {
+  if (!user) return;
+
+  currentUser = user;
+
+  // FIXED: Only fetch if user changed OR if we don't have a role yet (e.g. previous fetch failed)
+  if (!currentRole || currentUserId !== user.id) {
+    const { data: profile, error } = await supabase
+      .from('profiles')
+      .select('role')
+      .eq('id', user.id)
+      .maybeSingle();
+
+    if (error || !profile) {
+      console.error('Error fetching profile role:', error);
+      // FIXED: Do NOT set currentUserId if fetch fails, so it retries next time
+      // Leave currentRole null so requireRole handles the failure gracefully
+      currentRole = null; 
+      return;
+    }
+
+    currentUserId = user.id;
+    currentRole = profile.role || 'buyer';
   }
 }
 
-export async function loadModule(key) {
-  const rpcName = RPC_ENDPOINTS[key];
-  if (!rpcName) return;
+/**
+ * 2. The requireRole function.
+ * 
+ * @param {string|string[]} allowedRoles - e.g., 'admin' or ['admin', 'moderator']
+ */
+export async function requireRole(allowedRoles = []) {
+  if (!isInitialized) {
+    await initAuth();
+  }
 
+  if (!currentUser) {
+    window.location.href = `${BASE_PATH}/login`;
+    return null;
+  }
+
+  // FIXED: If role failed to fetch due to network error, treat as unauthorized to prevent bypass
+  if (!currentRole) {
+     console.warn('User role could not be verified. Redirecting to login.');
+     window.location.href = `${BASE_PATH}/login`;
+     return null;
+  }
+
+  const rolesArray = Array.isArray(allowedRoles) ? allowedRoles : [allowedRoles];
+
+  if (rolesArray.length > 0 && !rolesArray.includes(currentRole)) {
+    console.warn(`Access denied. User role '${currentRole}' not in allowed roles:`, rolesArray);
+    
+    if (currentRole === 'admin') {
+      window.location.href = `${BASE_PATH}/admin`; 
+    } else if (currentRole === 'agent') {
+      window.location.href = `${BASE_PATH}/mission-control`; 
+    } else {
+      window.location.href = `${BASE_PATH}/`; 
+    }
+    return null;
+  }
+
+  return { user: currentUser, role: currentRole };
+}
+
+/**
+ * 3. Helper to get the current user/role without forcing a redirect.
+ */
+export function getCurrentAuth() {
+  return { user: currentUser, role: currentRole };
+}
+
+/**
+ * 4. Clean logout function.
+ */
+export async function logout() {
   try {
-    const data = await withTimeout(safeRpc(rpcName), 8000, rpcName);
-    Store.set(key, data);
+    await supabase.auth.signOut();
   } catch (err) {
-    handleModuleError(key, err);
+    console.error('Logout network error:', err);
+  } finally {
+    // FIXED: Cleanup subscription to prevent memory leaks
+    if (authSubscription) {
+      authSubscription.unsubscribe();
+      authSubscription = null;
+    }
+    currentUser = null;
+    currentRole = null;
+    currentUserId = null;
+    isInitialized = false;
+    window.location.href = `${BASE_PATH}/login`;
   }
-}
-
-function handleModuleError(key, error) {
-  console.error(`[Dashboard API Error] ${key}:`, error);
-  
-  // Store the error state. 
-  // NOTE: Widget renderers MUST check for `data.__error === true` before calling .map() or .length
-  Store.set(key, { 
-    __error: true, 
-    message: `${key.toUpperCase()} module failed to load.`,
-    details: error?.message || 'Unknown error'
-  });
 }
