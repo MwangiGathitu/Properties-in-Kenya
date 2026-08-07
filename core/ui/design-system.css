@@ -1,0 +1,897 @@
+/* ============================================================
+   REALTOR OS — DESIGN SYSTEM
+   Revised production version (Final Polish)
+   ============================================================ */
+
+/* ============================================================
+   1. DESIGN TOKENS
+   ============================================================ */
+
+:root {
+  /* Color palette */
+  --bg-deep: #0b0f1c;
+  --bg-primary: #0f172a;
+  --bg-elevated: #151d33;
+  --bg-card: #1a2744;
+  --bg-hover: #1f2e50;
+
+  --border-subtle: rgba(255, 255, 255, 0.06);
+  --border-muted: rgba(255, 255, 255, 0.1);
+
+  --text-primary: #f1f5f9;
+  --text-secondary: #b9c7dd;
+  --text-muted: #7f8ea8;
+  --text-disabled: #64748b;
+
+  --accent: #3b82f6;
+  --accent-secondary: #8b5cf6;
+
+  --accent-soft: rgba(59, 130, 246, 0.15);
+  --accent-glow: 0 0 20px rgba(59, 130, 246, 0.3);
+
+  --success: #22c55e;
+  --success-soft: rgba(34, 197, 94, 0.15);
+
+  --warning: #f59e0b;
+  --warning-soft: rgba(245, 158, 11, 0.15);
+
+  --danger: #ef4444;
+  --danger-soft: rgba(239, 68, 68, 0.15);
+
+  /* Typography */
+  --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+  --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
+
+  /* Spacing scale */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-10: 40px;
+  --space-12: 48px;
+
+  /* Radii */
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 20px;
+  --radius-full: 9999px;
+
+  /* Shadows */
+  --shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.3);
+  --shadow-sm: 0 4px 12px rgba(0, 0, 0, 0.35);
+  --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.4);
+  --shadow-lg: 0 16px 48px rgba(0, 0, 0, 0.5);
+  --shadow-glow: var(--accent-glow);
+
+  /* Transitions */
+  --transition-fast: 150ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-smooth: 250ms cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-bounce: 300ms cubic-bezier(0.34, 1.56, 0.64, 1);
+
+  /* Glass effect */
+  --glass-bg: rgba(21, 29, 51, 0.7);
+  --glass-border: rgba(255, 255, 255, 0.08);
+  --glass-blur: blur(16px);
+
+  /* Native controls */
+  color-scheme: dark;
+  accent-color: var(--accent);
+
+  /* Scrollbar hints */
+  scrollbar-color: var(--bg-hover) transparent;
+  scrollbar-width: thin;
+}
+
+/*
+  Theme-aware soft colors where supported.
+  Older browsers keep the static RGBA values above.
+*/
+@supports (color: color-mix(in srgb, red 10%, white)) {
+  :root {
+    --accent-secondary: color-mix(in srgb, var(--accent) 60%, white);
+    --accent-soft: color-mix(in srgb, var(--accent) 15%, transparent);
+    --success-soft: color-mix(in srgb, var(--success) 15%, transparent);
+    --warning-soft: color-mix(in srgb, var(--warning) 15%, transparent);
+    --danger-soft: color-mix(in srgb, var(--danger) 15%, transparent);
+  }
+}
+
+/* ============================================================
+   2. RESET & GLOBAL BASE
+   ============================================================ */
+
+*,
+*::before,
+*::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  font-size: 16px;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  height: 100%;
+}
+
+/* Improve link underline legibility */
+a {
+  text-decoration-skip-ink: auto;
+}
+
+/* Eliminate 300ms tap delay on older mobile browsers */
+a, 
+button, 
+.logo, 
+.nav-item {
+  touch-action: manipulation;
+}
+
+/* ============================================================
+   3. BASE BODY
+   The body is scrollable by default.
+   App-shell pages must opt in using .app-shell or body.app-shell.
+   ============================================================ */
+
+body {
+  background-color: var(--bg-deep);
+
+  /* Fallback gradients if color-mix is unsupported */
+  background-image:
+    radial-gradient(
+      ellipse at 20% 20%,
+      rgba(59, 130, 246, 0.08) 0%,
+      transparent 50%
+    ),
+    radial-gradient(
+      ellipse at 80% 80%,
+      rgba(139, 92, 246, 0.05) 0%,
+      transparent 50%
+    );
+
+  /* Modern theme-aware gradients */
+  background-image:
+    radial-gradient(
+      ellipse at 20% 20%,
+      color-mix(in srgb, var(--accent) 8%, transparent) 0%,
+      transparent 50%
+    ),
+    radial-gradient(
+      ellipse at 80% 80%,
+      color-mix(in srgb, var(--accent-secondary) 5%, transparent) 0%,
+      transparent 50%
+    );
+
+  color: var(--text-primary);
+  font-family: var(--font-sans);
+  line-height: 1.6;
+
+  display: block;
+  overflow: auto;
+  height: auto;
+
+  min-height: 100vh;
+  min-height: 100dvh;
+}
+
+/* ============================================================
+   4. APP SHELL
+   Use:
+   <div class="app-shell">...</div>
+   or:
+   <body class="app-shell">...</body>
+   ============================================================ */
+
+.app-shell,
+body.app-shell {
+  display: flex;
+  width: 100%;
+  height: 100vh;
+  height: 100dvh;
+  overflow: hidden;
+}
+
+/*
+  Escape hatch for non-app-shell pages.
+  These must remain normally scrollable.
+*/
+body.public,
+body.auth,
+body.error,
+body.no-shell {
+  display: block;
+  height: auto;
+  overflow: auto;
+}
+
+/* ============================================================
+   5. GLOBAL OVERLAY ROOT
+   Use this for toasts, modals, banners, loading states, etc.
+   ============================================================ */
+
+.global-overlay-root {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  pointer-events: none;
+}
+
+.global-overlay-root > * {
+  pointer-events: auto;
+}
+
+/* ============================================================
+   6. GLOBAL FOCUS STATES
+   ============================================================ */
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+:focus:not(:focus-visible) {
+  outline: none;
+}
+
+/* ============================================================
+   7. TYPOGRAPHY
+   ============================================================ */
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  color: var(--text-primary);
+  font-weight: 600;
+  line-height: 1.3;
+}
+
+h1 {
+  font-size: 2rem;
+  letter-spacing: -0.02em;
+}
+
+h2 {
+  font-size: 1.5rem;
+}
+
+h3 {
+  font-size: 1.125rem;
+}
+
+p {
+  color: var(--text-secondary);
+}
+
+small {
+  color: var(--text-muted);
+}
+
+::selection {
+  background: var(--accent-soft);
+  color: var(--text-primary);
+}
+
+/* ============================================================
+   8. SIDEBAR
+   ============================================================ */
+
+.sidebar {
+  width: 280px;
+  background: var(--bg-elevated);
+  border-right: 1px solid var(--border-subtle);
+  padding: var(--space-6);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-8);
+  flex-shrink: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  text-decoration: none;
+  letter-spacing: -0.01em;
+  border-radius: var(--radius-md);
+}
+
+/*
+  Safe gradient text logo.
+  No nested @supports.
+*/
+.logo span {
+  color: var(--accent);
+}
+
+@supports (-webkit-background-clip: text) or (background-clip: text) {
+  .logo span {
+    background: linear-gradient(
+      135deg,
+      var(--accent),
+      var(--accent-secondary)
+    );
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    -webkit-text-fill-color: transparent;
+  }
+}
+
+.nav-group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  min-height: 0;
+}
+
+.nav-label {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--text-muted);
+  font-weight: 600;
+  padding: 0 var(--space-3);
+  margin-bottom: var(--space-1);
+}
+
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-2) var(--space-3);
+  border-radius: var(--radius-md);
+  color: var(--text-secondary);
+  text-decoration: none;
+  font-weight: 500;
+  transition:
+    background var(--transition-fast),
+    color var(--transition-fast);
+  position: relative;
+}
+
+.nav-item i {
+  font-size: 1.2rem;
+  opacity: 0.7;
+}
+
+.nav-item:hover {
+  background: var(--bg-hover);
+  color: var(--text-primary);
+}
+
+.nav-item.active {
+  background: var(--accent-soft);
+  color: var(--accent);
+  font-weight: 600;
+}
+
+.nav-item.active i {
+  opacity: 1;
+}
+
+.nav-item.active::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 3px;
+  height: 20px;
+  background: var(--accent);
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+}
+
+.user-card {
+  margin-top: auto;
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-3);
+  border-radius: var(--radius-lg);
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+}
+
+.user-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius-full);
+  background: linear-gradient(
+    135deg,
+    var(--accent),
+    var(--accent-secondary)
+  );
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  color: white;
+  font-size: 0.8rem;
+  flex-shrink: 0;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.user-meta {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.user-name {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.user-role {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ============================================================
+   9. MAIN CONTENT
+   ============================================================ */
+
+.main {
+  flex: 1;
+  padding: var(--space-8);
+  overflow-y: auto;
+  background: transparent;
+  min-width: 0;
+  overscroll-behavior: contain;
+}
+
+/* ============================================================
+   10. TOP BAR
+   ============================================================ */
+
+.topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--space-8);
+  gap: var(--space-4);
+  flex-wrap: wrap;
+}
+
+.title-section {
+  min-width: 0;
+}
+
+.title-section h1 {
+  font-size: 1.75rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  margin-bottom: var(--space-1);
+  overflow-wrap: anywhere;
+}
+
+.breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  flex-wrap: wrap;
+}
+
+.actions {
+  display: flex;
+  gap: var(--space-3);
+  flex-wrap: wrap;
+}
+
+/* ============================================================
+   11. GRID
+   ============================================================ */
+
+.grid {
+  display: grid;
+
+  /* Fallback for older browsers */
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+
+  /* Modern safer expression */
+  grid-template-columns: repeat(auto-fit, minmax(min(240px, 100%), 1fr));
+
+  gap: var(--space-5);
+}
+
+.grid > * {
+  min-width: 0;
+}
+
+/* ============================================================
+   12. UTILITIES
+   Prefixed to avoid collisions with Tailwind.
+   Update markup from .flex to .ds-flex, etc.
+   ============================================================ */
+
+.ds-flex {
+  display: flex;
+}
+
+.ds-flex-col {
+  flex-direction: column;
+}
+
+.ds-items-center {
+  align-items: center;
+}
+
+.ds-justify-between {
+  justify-content: space-between;
+}
+
+.ds-gap-2 {
+  gap: var(--space-2);
+}
+
+.ds-gap-3 {
+  gap: var(--space-3);
+}
+
+.ds-gap-4 {
+  gap: var(--space-4);
+}
+
+.ds-mt-4 {
+  margin-top: var(--space-4);
+}
+
+.ds-mb-4 {
+  margin-bottom: var(--space-4);
+}
+
+.ds-text-center {
+  text-align: center;
+}
+
+.ds-w-full {
+  width: 100%;
+}
+
+.ds-text-muted {
+  color: var(--text-muted);
+}
+
+.ds-text-accent {
+  color: var(--accent);
+}
+
+.ds-text-success {
+  color: var(--success);
+}
+
+.ds-text-danger {
+  color: var(--danger);
+}
+
+.ds-text-warning {
+  color: var(--warning);
+}
+
+/*
+  If you are not using Tailwind and need temporary compatibility,
+  you may keep the old utility names during migration.
+  If Tailwind is present, prefer removing these entirely.
+*/
+
+/*
+.flex { display: flex; }
+.flex-col { flex-direction: column; }
+.items-center { align-items: center; }
+.justify-between { justify-content: space-between; }
+.gap-2 { gap: var(--space-2); }
+.gap-3 { gap: var(--space-3); }
+.gap-4 { gap: var(--space-4); }
+.mt-4 { margin-top: var(--space-4); }
+.mb-4 { margin-bottom: var(--space-4); }
+.text-center { text-align: center; }
+.w-full { width: 100%; }
+.text-muted { color: var(--text-muted); }
+.text-accent { color: var(--accent); }
+.text-success { color: var(--success); }
+.text-danger { color: var(--danger); }
+.text-warning { color: var(--warning); }
+*/
+
+/* ============================================================
+   13. RICH TEXT
+   Used for AI output, property descriptions, notes, etc.
+   ============================================================ */
+
+.rich-text {
+  color: var(--text-secondary);
+  overflow-wrap: break-word;
+  min-width: 0;
+}
+
+.rich-text h1,
+.rich-text h2,
+.rich-text h3,
+.rich-text h4,
+.rich-text h5,
+.rich-text h6 {
+  margin-top: var(--space-6);
+  margin-bottom: var(--space-3);
+  color: var(--text-primary);
+}
+
+.rich-text h1 {
+  font-size: 1.75rem;
+}
+
+.rich-text h2 {
+  font-size: 1.5rem;
+}
+
+.rich-text h3 {
+  font-size: 1.25rem;
+}
+
+.rich-text p {
+  margin-bottom: var(--space-4);
+}
+
+.rich-text ul,
+.rich-text ol {
+  padding-left: 1.5rem;
+  margin-bottom: var(--space-4);
+}
+
+.rich-text li {
+  margin-bottom: var(--space-2);
+}
+
+.rich-text a {
+  color: var(--accent);
+  text-decoration: underline;
+  overflow-wrap: anywhere;
+}
+
+.rich-text blockquote {
+  border-left: 3px solid var(--border-muted);
+  padding-left: var(--space-4);
+  margin-bottom: var(--space-4);
+  color: var(--text-secondary);
+  font-style: italic;
+}
+
+.rich-text code {
+  background: var(--bg-elevated);
+  padding: 2px 6px;
+  border-radius: var(--radius-sm);
+  font-family: var(--font-mono);
+  font-size: 0.9em;
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
+}
+
+.rich-text pre {
+  background: var(--bg-elevated);
+  padding: var(--space-4);
+  border-radius: var(--radius-md);
+  overflow-x: auto;
+  margin-bottom: var(--space-4);
+}
+
+.rich-text pre code {
+  background: transparent;
+  padding: 0;
+  white-space: pre;
+  overflow-wrap: normal;
+}
+
+.rich-text hr {
+  border: none;
+  border-top: 1px solid var(--border-subtle);
+  margin: var(--space-6) 0;
+}
+
+.rich-text img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+  border-radius: var(--radius-md);
+  margin-bottom: var(--space-4);
+}
+
+/*
+  Safe table scrolling.
+  Tables should be wrapped in:
+  <div class="table-scroll">
+    <table>...</table>
+  </div>
+*/
+.table-scroll {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  margin-bottom: var(--space-4);
+  border-radius: var(--radius-md);
+}
+
+.table-scroll table {
+  margin-bottom: 0;
+}
+
+.rich-text table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: var(--space-4);
+  display: table;
+  overflow: visible;
+  white-space: normal;
+}
+
+.rich-text th,
+.rich-text td {
+  border: 1px solid var(--border-subtle);
+  padding: var(--space-2) var(--space-3);
+  text-align: left;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  vertical-align: top;
+}
+
+.rich-text th {
+  color: var(--text-primary);
+  background: var(--bg-elevated);
+  font-weight: 600;
+}
+
+/* ============================================================
+   14. MOBILE
+   ============================================================ */
+
+@media (max-width: 768px) {
+  .app-shell,
+  body.app-shell {
+    flex-direction: column;
+  }
+
+  .sidebar {
+    width: 100%;
+    max-height: 24vh;
+    border-right: none;
+    border-bottom: 1px solid var(--border-subtle);
+    padding: var(--space-4);
+    gap: var(--space-4);
+  }
+
+  .main {
+    padding: var(--space-4);
+    flex: 1;
+    min-height: 0;
+  }
+
+  .topbar {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .actions {
+    width: 100%;
+  }
+
+  .title-section h1 {
+    font-size: 1.5rem;
+  }
+}
+
+/* ============================================================
+   15. PRINT
+   ============================================================ */
+
+@media print {
+  body,
+  body.app-shell,
+  .app-shell {
+    display: block;
+    height: auto;
+    overflow: visible;
+  }
+
+  .sidebar,
+  .actions,
+  .global-overlay-root {
+    display: none !important;
+  }
+
+  .main {
+    overflow: visible;
+    height: auto;
+    padding: 0;
+  }
+
+  .topbar {
+    margin-bottom: var(--space-4);
+  }
+
+  .table-scroll {
+    overflow: visible;
+  }
+
+  .rich-text table {
+    white-space: normal;
+  }
+
+  .rich-text pre,
+  .rich-text code {
+    white-space: pre-wrap;
+    overflow: visible;
+  }
+}
+
+/* ============================================================
+   16. REDUCED MOTION
+   ============================================================ */
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  /*
+    Non-motion loading hint.
+    Components should also provide text/status feedback.
+  */
+  [aria-busy="true"] {
+    opacity: 0.7;
+    cursor: progress;
+  }
+}
+
+/* ============================================================
+   17. FORCED COLORS / HIGH CONTRAST
+   ============================================================ */
+
+@media (forced-colors: active) {
+  :focus-visible {
+    outline: 2px solid CanvasText;
+  }
+
+  .logo span {
+    background: transparent;
+    color: CanvasText;
+    -webkit-text-fill-color: CanvasText;
+  }
+
+  .user-avatar {
+    background: Canvas;
+    color: CanvasText;
+  }
+
+  .nav-item.active {
+    border: 1px solid CanvasText;
+  }
+
+  .nav-item.active::before {
+    background: CanvasText;
+  }
+}
